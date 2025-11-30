@@ -100,7 +100,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
             if (useDocumentApi) {
                 DocumentFile documentFile = getDocumentManager().getFile(file);
                 if (documentFile == null) {
-                    Log.e(ExportTask.class.getName(), "Error accessing file uri " + file);
+                    Log.e(ImportTask.class.getName(), "Error accessing file uri " + file);
                     return new SystemSetupResult(false, false, "", "");
                 }
                 fileDescriptor = getImportFileDescriptor(documentFile);
@@ -124,7 +124,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 try {
                     fileDescriptor.close();
                 } catch (Exception exc) {
-                    Log.e(ExportTask.class.getName(), "Error closing file descriptor", exc);
+                    Log.e(ImportTask.class.getName(), "Error closing file descriptor", exc);
                 }
             }
         }
@@ -191,12 +191,12 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         }
         Log.d(ImportTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(ImportTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
-        Log.d(DBPurgeTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
-        Log.d(DBPurgeTask.class.getName(), "intervalTableSuccess: " + intervalTableSuccess);
-        Log.d(DBPurgeTask.class.getName(), "schedulerStateTableSuccess: " + schedulerStateTableSuccess);
-        Log.d(DBPurgeTask.class.getName(), "accessTypeDataTableSuccess: " + accessTypeDataTableSuccess);
-        Log.d(DBPurgeTask.class.getName(), "resolveTableSuccess: " + resolveTableSuccess);
-        Log.d(DBPurgeTask.class.getName(), "headerTableSuccess: " + headerTableSuccess);
+        Log.d(ImportTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
+        Log.d(ImportTask.class.getName(), "intervalTableSuccess: " + intervalTableSuccess);
+        Log.d(ImportTask.class.getName(), "schedulerStateTableSuccess: " + schedulerStateTableSuccess);
+        Log.d(ImportTask.class.getName(), "accessTypeDataTableSuccess: " + accessTypeDataTableSuccess);
+        Log.d(ImportTask.class.getName(), "resolveTableSuccess: " + resolveTableSuccess);
+        Log.d(ImportTask.class.getName(), "headerTableSuccess: " + headerTableSuccess);
         return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess && headerTableSuccess;
     }
 

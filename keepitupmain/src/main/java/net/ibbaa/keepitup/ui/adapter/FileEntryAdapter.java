@@ -95,7 +95,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     public FileEntry getItem(int position) {
         Log.d(FileEntryAdapter.class.getName(), "getItem for position " + position);
         if (position < 0 || position >= getItemCount()) {
-            Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
+            Log.e(FileEntryAdapter.class.getName(), "position " + position + " is invalid");
             return null;
         }
         return getFileEntries().get(position);
@@ -178,7 +178,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     public void selectItem(int position) {
         Log.d(FileEntryAdapter.class.getName(), "selectItem for position " + position);
         if (position < 0 || position >= getItemCount()) {
-            Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
+            Log.e(FileEntryAdapter.class.getName(), "position " + position + " is invalid");
             return;
         }
         unselectItem();
@@ -200,7 +200,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
                 Log.d(FileEntryAdapter.class.getName(), "unselect item for position " + selected);
                 viewHolder.setFileEntryUnselected();
             } else {
-                Log.d(LogEntryAdapter.class.getName(), "selected item view holder is null");
+                Log.d(FileEntryAdapter.class.getName(), "selected item view holder is null");
             }
             selected = -1;
         } else {

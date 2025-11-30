@@ -35,7 +35,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.GlobalHeaderAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
@@ -200,7 +199,7 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
     }
 
     private void reattachItemTouchHelper() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "reattachItemTouchHelper");
+        Log.d(GlobalHeadersDialog.class.getName(), "reattachItemTouchHelper");
         RecyclerView recyclerView = dialogView.findViewById(R.id.listview_dialog_global_headers_headers);
         if (itemTouchHelper != null) {
             itemTouchHelper.attachToRecyclerView(null);
@@ -294,7 +293,7 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
         Log.d(GlobalHeadersDialog.class.getName(), "getGlobalHeaderHandler");
         Activity activity = getActivity();
         if (!(activity instanceof GlobalSettingsActivity)) {
-            Log.e(SuspensionIntervalsDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
+            Log.e(GlobalHeadersDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
             return null;
         }
         return new GlobalHeaderHandler((GlobalSettingsActivity) activity, this);

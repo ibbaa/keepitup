@@ -99,7 +99,7 @@ public class BatteryOptimizationDialog extends DialogFragmentBase {
         if (batteryOptimizationSupport != null) {
             batteryOptimizationSupport.onBatteryOptimizationDialogOkClicked(this);
         } else {
-            Log.e(SettingsInputDialog.class.getName(), "batteryOptimizationSupport is null");
+            Log.e(BatteryOptimizationDialog.class.getName(), "batteryOptimizationSupport is null");
             dismiss();
         }
     }

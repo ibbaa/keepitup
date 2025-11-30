@@ -111,7 +111,7 @@ public class ResolveDAO extends BaseDAO {
     }
 
     private Resolve updateResolve(Resolve resolve, SQLiteDatabase db) {
-        Log.d(IntervalDAO.class.getName(), "updateResolve, resolve is " + resolve);
+        Log.d(ResolveDAO.class.getName(), "updateResolve, resolve is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(resolve.getId())};

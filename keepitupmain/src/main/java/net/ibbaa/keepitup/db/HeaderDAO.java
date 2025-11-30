@@ -80,7 +80,7 @@ public class HeaderDAO extends BaseDAO {
     }
 
     public void deleteHeader(Header header) {
-        Log.d(IntervalDAO.class.getName(), "Deleting header with id " + header.getId());
+        Log.d(HeaderDAO.class.getName(), "Deleting header with id " + header.getId());
         executeDBOperationInTransaction(header, this::deleteHeader);
         dumpDatabase("Dump after deleteInterval call");
     }
@@ -224,7 +224,7 @@ public class HeaderDAO extends BaseDAO {
     }
 
     private int deleteHeader(Header header, SQLiteDatabase db) {
-        Log.d(IntervalDAO.class.getName(), "deleteHeader, header is " + header);
+        Log.d(HeaderDAO.class.getName(), "deleteHeader, header is " + header);
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(header.getId())};

@@ -48,7 +48,6 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.IThemeManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
-import net.ibbaa.keepitup.service.StartupService;
 import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
@@ -452,7 +451,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return;
         }
         String arbitraryFolder = uri.toString();
-        Log.d(GlobalSettingsActivity.class.getName(), "Chosen arbitrary folder is " + arbitraryFolder);
+        Log.d(SystemActivity.class.getName(), "Chosen arbitrary folder is " + arbitraryFolder);
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceArbitraryLogFolder(arbitraryFolder);
         preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryFolder);
@@ -969,7 +968,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         IThemeManager themeManager = getThemeManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
         int themeCode = preferenceManager.getPreferenceTheme();
-        Log.d(StartupService.class.getName(), "theme is " + themeManager.getThemeName(themeCode));
+        Log.d(SystemActivity.class.getName(), "theme is " + themeManager.getThemeName(themeCode));
         themeManager.setThemeByCode(themeCode);
     }
 

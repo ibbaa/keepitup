@@ -85,7 +85,7 @@ public class ContextOptionAdapter extends RecyclerView.Adapter<ContextOptionView
     public void selectItem(int position) {
         Log.d(ContextOptionAdapter.class.getName(), "selectItem for position " + position);
         if (position < 0 || position >= getItemCount()) {
-            Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
+            Log.e(ContextOptionAdapter.class.getName(), "position " + position + " is invalid");
             return;
         }
         unselectItem();
@@ -104,10 +104,10 @@ public class ContextOptionAdapter extends RecyclerView.Adapter<ContextOptionView
         if (selected >= 0) {
             ContextOptionViewHolder selectedViewHolder = getViewHolder(selected);
             if (selectedViewHolder != null) {
-                Log.d(FileEntryAdapter.class.getName(), "unselect item for position " + selected);
+                Log.d(ContextOptionAdapter.class.getName(), "unselect item for position " + selected);
                 selectedViewHolder.setContextOptionEntryUnselected();
             } else {
-                Log.d(LogEntryAdapter.class.getName(), "selected item view holder is null");
+                Log.d(ContextOptionAdapter.class.getName(), "selected item view holder is null");
             }
             selected = -1;
         } else {

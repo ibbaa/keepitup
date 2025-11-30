@@ -35,7 +35,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
@@ -255,7 +254,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     }
 
     private void reattachItemTouchHelper() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "reattachItemTouchHelper");
+        Log.d(SuspensionIntervalsDialog.class.getName(), "reattachItemTouchHelper");
         RecyclerView recyclerView = dialogView.findViewById(R.id.listview_dialog_suspension_intervals_intervals);
         if (itemTouchHelper != null) {
             itemTouchHelper.attachToRecyclerView(null);

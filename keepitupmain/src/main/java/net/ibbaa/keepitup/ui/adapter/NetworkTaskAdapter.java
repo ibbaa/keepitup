@@ -414,9 +414,9 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public NetworkTaskUIWrapper getItem(int position) {
-        Log.d(LogEntryAdapter.class.getName(), "getItem for position " + position);
+        Log.d(NetworkTaskAdapter.class.getName(), "getItem for position " + position);
         if (position < 0 || position >= networkTaskWrapperList.size()) {
-            Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
+            Log.e(NetworkTaskAdapter.class.getName(), "position " + position + " is invalid");
             return null;
         }
         return networkTaskWrapperList.get(position);

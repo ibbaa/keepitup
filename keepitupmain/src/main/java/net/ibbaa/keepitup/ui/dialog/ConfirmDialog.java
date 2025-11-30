@@ -172,7 +172,7 @@ public class ConfirmDialog extends DialogFragmentBase {
                 return (ConfirmSupport) fragment;
             }
         }
-        Log.d(ContextOptionsDialog.class.getName(), "getConfirmSupport, no parent fragment implementing " + ConfirmSupport.class.getSimpleName());
+        Log.d(ConfirmDialog.class.getName(), "getConfirmSupport, no parent fragment implementing " + ConfirmSupport.class.getSimpleName());
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(ConfirmDialog.class.getName(), "getConfirmSupport, activity is null");

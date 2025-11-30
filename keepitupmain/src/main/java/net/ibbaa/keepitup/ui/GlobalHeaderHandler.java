@@ -89,7 +89,7 @@ public class GlobalHeaderHandler {
                 } else if (DBSyncHandler.Action.DELETE.equals(actionWrapper.action())) {
                     deleteHeader(actionWrapper.object());
                 } else {
-                    Log.e(IntervalHandler.class.getName(), "Unknown action " + actionWrapper.action());
+                    Log.e(GlobalHeaderHandler.class.getName(), "Unknown action " + actionWrapper.action());
                 }
             }
             return !headerActions.isEmpty();
@@ -113,17 +113,17 @@ public class GlobalHeaderHandler {
     }
 
     private void insertHeader(Header header) {
-        Log.d(IntervalHandler.class.getName(), "insertHeader, header) = " + header);
+        Log.d(GlobalHeaderHandler.class.getName(), "insertHeader, header) = " + header);
         headerDAO.insertHeader(header);
     }
 
     private void updateHeader(Header header) {
-        Log.d(IntervalHandler.class.getName(), "updateHeader, header = " + header);
+        Log.d(GlobalHeaderHandler.class.getName(), "updateHeader, header = " + header);
         headerDAO.updateHeader(header);
     }
 
     private void deleteHeader(Header header) {
-        Log.d(IntervalHandler.class.getName(), "deleteHeader, header = " + header);
+        Log.d(GlobalHeaderHandler.class.getName(), "deleteHeader, header = " + header);
         headerDAO.deleteHeader(header);
     }
 

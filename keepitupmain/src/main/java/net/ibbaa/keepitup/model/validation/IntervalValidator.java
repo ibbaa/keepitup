@@ -53,10 +53,10 @@ public class IntervalValidator {
         Log.d(IntervalValidator.class.getName(), "validateDuration of interval " + interval);
         int intervalMinDuration = context.getResources().getInteger(R.integer.suspension_interval_min_duration);
         if (!TimeUtil.isDurationMin(interval, intervalMinDuration)) {
-            Log.d(NetworkTaskValidator.class.getName(), "Duration is below minimum. Returning false.");
+            Log.d(IntervalValidator.class.getName(), "Duration is below minimum. Returning false.");
             return false;
         }
-        Log.d(NetworkTaskValidator.class.getName(), "Duration is valid. Returning true.");
+        Log.d(IntervalValidator.class.getName(), "Duration is valid. Returning true.");
         return true;
     }
 
@@ -76,7 +76,7 @@ public class IntervalValidator {
                 return false;
             }
         }
-        Log.d(NetworkTaskValidator.class.getName(), "Intervals do not overlap. Returning true.");
+        Log.d(IntervalValidator.class.getName(), "Intervals do not overlap. Returning true.");
         return true;
     }
 
@@ -96,7 +96,7 @@ public class IntervalValidator {
                 return false;
             }
         }
-        Log.d(NetworkTaskValidator.class.getName(), "Intervals do not overlap. Returning true.");
+        Log.d(IntervalValidator.class.getName(), "Intervals do not overlap. Returning true.");
         return true;
     }
 }

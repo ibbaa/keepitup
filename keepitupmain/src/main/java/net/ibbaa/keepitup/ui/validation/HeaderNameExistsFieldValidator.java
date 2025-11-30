@@ -47,7 +47,7 @@ public class HeaderNameExistsFieldValidator implements FieldValidator {
         for (String currentName : names) {
             currentName = StringUtil.notNull(currentName).trim();
             if (currentName.equals(value)) {
-                Log.d(StandardHeaderValidator.class.getName(), "validate, name exists");
+                Log.d(HeaderNameExistsFieldValidator.class.getName(), "validate, name exists");
                 return new ValidationResult(false, field, failedMessage);
             }
         }

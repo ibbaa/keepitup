@@ -61,7 +61,7 @@ public class AlarmPermissionDialog extends DialogFragmentBase {
         if (alarmPermissionSupport != null) {
             alarmPermissionSupport.onAlarmPermissionDialogOkClicked(this);
         } else {
-            Log.e(SettingsInputDialog.class.getName(), "alarmPermissionSupport is null");
+            Log.e(AlarmPermissionDialog.class.getName(), "alarmPermissionSupport is null");
             dismiss();
         }
     }

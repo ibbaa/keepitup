@@ -471,7 +471,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 String arbitraryDownloadFolder = preferenceManager.getPreferenceArbitraryDownloadFolder();
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified arbitrary external download folder is " + arbitraryDownloadFolder);
                 if (getDocumentManager().getArbitraryDirectory(arbitraryDownloadFolder) == null) {
-                    Log.e(NetworkTaskWorker.class.getName(), "Error accessing folder " + arbitraryDownloadFolder);
+                    Log.e(DownloadNetworkTaskWorker.class.getName(), "Error accessing folder " + arbitraryDownloadFolder);
                     return null;
                 }
                 if (!getStoragePermissionManager().hasPersistentPermission(getContext(), arbitraryDownloadFolder)) {

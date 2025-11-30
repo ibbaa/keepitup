@@ -42,7 +42,6 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
-import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.adapter.FileEntryAdapter;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
@@ -160,7 +159,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         try {
             return Type.valueOf(typeString);
         } catch (IllegalArgumentException exc) {
-            Log.e(ConfirmDialog.class.getName(), Type.class.getSimpleName() + "." + typeString + " does not exist");
+            Log.e(FileChooseDialog.class.getName(), Type.class.getSimpleName() + "." + typeString + " does not exist");
             Log.d(FileChooseDialog.class.getName(), "No mode specified.");
             return null;
         }
@@ -325,7 +324,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
     }
 
     private void onShowFilesCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onShowFilesCheckedChanged, new value is " + isChecked);
+        Log.d(FileChooseDialog.class.getName(), "onShowFilesCheckedChanged, new value is " + isChecked);
         FileEntryAdapter adapter = getAdapter();
         adapter.unselectItem();
         adapter.notifyDataSetChanged();

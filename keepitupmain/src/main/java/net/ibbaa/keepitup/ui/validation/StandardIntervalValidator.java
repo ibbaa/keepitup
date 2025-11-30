@@ -41,7 +41,7 @@ public class StandardIntervalValidator implements IntervalValidator {
     public ValidationResult validateDuration() {
         Log.d(StandardIntervalValidator.class.getName(), "validateDuration");
         boolean result = validator.validateDuration(existingIntervals);
-        Log.d(StandardHostPortValidator.class.getName(), "Validation result is " + result);
+        Log.d(StandardIntervalValidator.class.getName(), "Validation result is " + result);
         String message;
         if (result) {
             message = context.getResources().getString(R.string.validation_successful);

@@ -37,7 +37,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
-import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
@@ -153,12 +152,12 @@ public class DefaultsActivity extends SettingsInputActivity {
     }
 
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onAccessTypeChanged");
+        Log.d(DefaultsActivity.class.getName(), "onAccessTypeChanged");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(checkedId);
         if (selectedAccessTypeRadioButton != null) {
             AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-            Log.d(NetworkTaskEditDialog.class.getName(), "checked access type radio button is " + accessType);
+            Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
             if (accessType != null) {
                 preferenceManager.setPreferenceAccessType(accessType);
             }

@@ -27,7 +27,6 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -60,7 +59,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
                 AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
                 AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(networkTask.getId());
                 if (data == null) {
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned null for access type data. Creating new one.");
+                    Log.d(NetworkTaskMainUISyncTask.class.getName(), "Database returned null for access type data. Creating new one.");
                     data = new AccessTypeData(context);
                     data.setNetworkTaskId(networkTask.getId());
                     accessTypeDataDAO.insertAccessTypeData(data);

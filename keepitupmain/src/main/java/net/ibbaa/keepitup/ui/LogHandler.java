@@ -40,7 +40,7 @@ public class LogHandler {
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             getAdapter().removeItems();
         } catch (Exception exc) {
-            Log.e(NetworkTaskHandler.class.getName(), "Error deleting logs.", exc);
+            Log.e(LogHandler.class.getName(), "Error deleting logs.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_delete_logs));
         }
     }

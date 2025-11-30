@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui.sync;
 
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Syncable;
-import net.ibbaa.keepitup.ui.IntervalHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +40,14 @@ public class DBSyncHandler<T extends Syncable<T>> {
                 actionList.add(new ActionWrapper<>(object, Action.INSERT));
             } else {
                 T oldObject = findById(object.getId(), oldSyncList);
-                Log.d(IntervalHandler.class.getName(), "Found old object = " + oldObject);
+                Log.d(DBSyncHandler.class.getName(), "Found old object = " + oldObject);
                 if (oldObject != null) {
                     if (!object.isEqual(oldObject)) {
                         actionList.add(new ActionWrapper<>(object, Action.UPDATE));
                     }
                     oldSyncList.remove(oldObject);
                 } else {
-                    Log.e(IntervalHandler.class.getName(), "No object with id " + object.getId() + " found");
+                    Log.e(DBSyncHandler.class.getName(), "No object with id " + object.getId() + " found");
                 }
             }
         }

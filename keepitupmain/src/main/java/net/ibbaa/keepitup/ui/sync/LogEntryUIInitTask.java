@@ -46,7 +46,7 @@ public class LogEntryUIInitTask extends UIBackgroundTask<List<LogEntry>> {
     @Override
     protected List<LogEntry> runInBackground() {
         Log.d(LogEntryUIInitTask.class.getName(), "runInBackground");
-        Log.d(LogEntryUISyncTask.class.getName(), "Reading log entries for network task " + networkTask);
+        Log.d(LogEntryUIInitTask.class.getName(), "Reading log entries for network task " + networkTask);
         try {
             Context context = getActivity();
             if (context != null) {
@@ -74,7 +74,7 @@ public class LogEntryUIInitTask extends UIBackgroundTask<List<LogEntry>> {
         LogEntryAdapter adapter = adapterRef.get();
         if (adapter != null) {
             try {
-                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Initializing adapter");
+                Log.d(LogEntryUIInitTask.class.getName(), "Initializing adapter");
                 adapter.replaceItems(logEntries);
                 adapter.notifyDataSetChanged();
             } catch (Exception exc) {

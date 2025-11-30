@@ -27,7 +27,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerId;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -679,7 +678,7 @@ public class NetworkTaskDAO extends BaseDAO {
                 }
             }
         }
-        Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following index tasks: " + (result.isEmpty() ? "no index tasks" : ""));
+        Log.d(NetworkTaskDAO.class.getName(), "Database returned the following index tasks: " + (result.isEmpty() ? "no index tasks" : ""));
         if (BuildConfig.DEBUG) {
             for (NetworkTaskDBConstants.IndexTask indexTask : result) {
                 Log.d(NetworkTaskDAO.class.getName(), indexTask.toString());

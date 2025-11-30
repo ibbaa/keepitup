@@ -256,7 +256,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     private void sendNotification(NetworkTask task, LogEntry logEntry) {
         Log.d(NetworkTaskWorker.class.getName(), "sendNotification for network task " + task + " and log entry " + logEntry);
         if (!getPermissionManager().hasPostNotificationsPermission(getContext())) {
-            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
+            Log.e(NetworkTaskWorker.class.getName(), "Cannot send notification because of missing permission.");
             return;
         }
         notificationHandler.sendMessageNotificationForNetworkTask(task, logEntry);

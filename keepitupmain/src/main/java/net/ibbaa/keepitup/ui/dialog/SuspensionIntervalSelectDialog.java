@@ -341,42 +341,42 @@ public class SuspensionIntervalSelectDialog extends DialogFragmentBase {
     }
 
     private SuspensionIntervalSelectSupport getSuspensionIntervalSelectSupport() {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "getSuspensionIntervalSelectSupport");
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "getSuspensionIntervalSelectSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof SuspensionIntervalSelectSupport) {
                 return (SuspensionIntervalSelectSupport) fragment;
             }
         }
-        Log.d(SuspensionIntervalsDialog.class.getName(), "getSuspensionIntervalSelectSupport, no parent fragment implementing " + SuspensionIntervalsDialog.class.getSimpleName());
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "getSuspensionIntervalSelectSupport, no parent fragment implementing " + SuspensionIntervalSelectDialog.class.getSimpleName());
         Activity activity = getActivity();
         if (activity == null) {
-            Log.e(SuspensionIntervalsDialog.class.getName(), "getSuspensionIntervalSelectSupport, activity is null");
+            Log.e(SuspensionIntervalSelectDialog.class.getName(), "getSuspensionIntervalSelectSupport, activity is null");
             return null;
         }
         if (!(activity instanceof SuspensionIntervalSelectSupport)) {
-            Log.e(ConfirmDialog.class.getName(), "getSuspensionIntervalSelectSupport, activity is not an instance of " + SuspensionIntervalSelectSupport.class.getSimpleName());
+            Log.e(SuspensionIntervalSelectDialog.class.getName(), "getSuspensionIntervalSelectSupport, activity is not an instance of " + SuspensionIntervalSelectSupport.class.getSimpleName());
             return null;
         }
         return (SuspensionIntervalSelectSupport) activity;
     }
 
     private IntervalValidator getIntervalValidator() {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator");
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "getIntervalValidator");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof IntervalValidator) {
                 return (IntervalValidator) fragment;
             }
         }
-        Log.d(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator, no parent fragment implementing " + IntervalValidator.class.getSimpleName());
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "getIntervalValidator, no parent fragment implementing " + IntervalValidator.class.getSimpleName());
         Activity activity = getActivity();
         if (activity == null) {
-            Log.e(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator, activity is null");
+            Log.e(SuspensionIntervalSelectDialog.class.getName(), "getIntervalValidator, activity is null");
             return null;
         }
         if (!(activity instanceof IntervalValidator)) {
-            Log.e(ConfirmDialog.class.getName(), "getIntervalValidator, activity is not an instance of " + IntervalValidator.class.getSimpleName());
+            Log.e(SuspensionIntervalSelectDialog.class.getName(), "getIntervalValidator, activity is not an instance of " + IntervalValidator.class.getSimpleName());
             return null;
         }
         return (IntervalValidator) activity;

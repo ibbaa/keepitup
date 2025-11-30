@@ -123,12 +123,12 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     }
 
     public Bundle saveStateToBundle() {
-        Log.d(FileEntryAdapter.class.getName(), "saveStateToBundle");
+        Log.d(LogEntryAdapter.class.getName(), "saveStateToBundle");
         return BundleUtil.booleanToBundle(getHideSuccessfulKey(), hideSuccessful);
     }
 
     public void restoreStateFromBundle(Bundle bundle) {
-        Log.d(FileEntryAdapter.class.getName(), "restoreStateFromBundle");
+        Log.d(LogEntryAdapter.class.getName(), "restoreStateFromBundle");
         if (bundle.containsKey(getHideSuccessfulKey())) {
             hideSuccessful = bundle.getBoolean(getHideSuccessfulKey());
         }

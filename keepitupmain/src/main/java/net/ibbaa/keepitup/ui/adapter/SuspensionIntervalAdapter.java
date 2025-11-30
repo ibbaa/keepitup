@@ -76,7 +76,7 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
     }
 
     private void bindIntervalText(@NonNull SuspensionIntervalViewHolder suspensionIntervalViewHolder, Interval interval) {
-        Log.d(LogEntryAdapter.class.getName(), "bindIntervalText");
+        Log.d(SuspensionIntervalAdapter.class.getName(), "bindIntervalText");
         suspensionIntervalViewHolder.setIntervalText(TimeUtil.formatSuspensionIntervalText(interval, getContext()));
     }
 

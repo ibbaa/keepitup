@@ -80,42 +80,42 @@ public class DBSetup {
         try {
             dropSchedulerIdHistoryTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropSchedulerIdHistoryTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropSchedulerIdHistoryTable failed ", exc);
         }
         try {
             dropLogTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropLogTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropLogTable failed ", exc);
         }
         try {
             dropNetworkTaskTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropNetworkTaskTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropNetworkTaskTable failed ", exc);
         }
         try {
             dropIntervalTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropIntervalTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropIntervalTable failed ", exc);
         }
         try {
             dropSchedulerStateTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropSchedulerStateTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropSchedulerStateTable failed ", exc);
         }
         try {
             dropAccessTypeDataTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropAccessTypeDataTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropAccessTypeDataTable failed ", exc);
         }
         try {
             dropResolveTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropResolveTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropResolveTable failed ", exc);
         }
         try {
             dropHeaderTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropHeaderTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropHeaderTable failed ", exc);
         }
     }
 
@@ -244,7 +244,7 @@ public class DBSetup {
         try {
             dropNetworkTaskTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropNetworkTaskTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropNetworkTaskTable failed ", exc);
         }
     }
 
@@ -272,7 +272,7 @@ public class DBSetup {
         try {
             dropLogTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropLogTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropLogTable failed ", exc);
         }
     }
 
@@ -285,7 +285,7 @@ public class DBSetup {
         try {
             dropSchedulerIdHistoryTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropSchedulerIdHistoryTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropSchedulerIdHistoryTable failed ", exc);
         }
     }
 
@@ -298,7 +298,7 @@ public class DBSetup {
         try {
             dropIntervalTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropIntervalTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropIntervalTable failed ", exc);
         }
     }
 
@@ -311,7 +311,7 @@ public class DBSetup {
         try {
             dropSchedulerStateTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropSchedulerStateTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropSchedulerStateTable failed ", exc);
         }
     }
 
@@ -324,7 +324,7 @@ public class DBSetup {
         try {
             dropAccessTypeDataTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropAccessTypeDataTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropAccessTypeDataTable failed ", exc);
         }
     }
 
@@ -347,7 +347,7 @@ public class DBSetup {
         try {
             dropResolveTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropResolveTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropResolveTable failed ", exc);
         }
     }
 
@@ -360,7 +360,7 @@ public class DBSetup {
         try {
             dropHeaderTable(db);
         } catch (Exception exc) {
-            Log.d(DBMigrate.class.getName(), "dropHeaderTable failed ", exc);
+            Log.d(DBSetup.class.getName(), "dropHeaderTable failed ", exc);
         }
     }
 

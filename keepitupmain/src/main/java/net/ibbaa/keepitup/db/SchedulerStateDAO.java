@@ -38,7 +38,7 @@ public class SchedulerStateDAO extends BaseDAO {
     public SchedulerState insertSchedulerState(SchedulerState schedulerState) {
         Log.d(SchedulerStateDAO.class.getName(), "Inserting schedulerState " + schedulerState);
         SchedulerState returnedSchedulerState = executeDBOperationInTransaction(schedulerState, this::insertSchedulerState);
-        Log.d(IntervalDAO.class.getName(), "Inserted schedulerState is " + returnedSchedulerState);
+        Log.d(SchedulerStateDAO.class.getName(), "Inserted schedulerState is " + returnedSchedulerState);
         dumpDatabase("Dump after insertInterval call");
         return returnedSchedulerState;
     }

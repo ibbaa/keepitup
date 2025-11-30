@@ -29,7 +29,6 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -56,35 +55,35 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
         try {
             Context context = getActivity();
             if (context != null) {
-                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Reading all network tasks");
+                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all network tasks");
                 List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
                 NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
                 List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
-                Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
+                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
                 if (BuildConfig.DEBUG) {
                     for (NetworkTask currentTask : tasks) {
-                        Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
+                        Log.d(NetworkTaskMainUIInitTask.class.getName(), currentTask.toString());
                     }
                 }
                 for (NetworkTask currentTask : tasks) {
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading access type data for " + currentTask);
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading access type data for " + currentTask);
                     AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
                     AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(currentTask.getId());
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following access type data: " + (data == null ? "null" : data.toString()));
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following access type data: " + (data == null ? "null" : data.toString()));
                     if (data == null) {
-                        Log.d(NetworkTaskMainActivity.class.getName(), "Database returned null for access type data. Creating new one.");
+                        Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned null for access type data. Creating new one.");
                         data = new AccessTypeData(context);
                         data.setNetworkTaskId(currentTask.getId());
                         accessTypeDataDAO.insertAccessTypeData(data);
                     }
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading resolve object for " + currentTask);
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading resolve object for " + currentTask);
                     ResolveDAO resolveDAO = new ResolveDAO(context);
                     Resolve resolve = resolveDAO.readResolveForNetworkTask(currentTask.getId());
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following resolve object: " + (resolve == null ? "null" : resolve.toString()));
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask);
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following resolve object: " + (resolve == null ? "null" : resolve.toString()));
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading most recent log for " + currentTask);
                     LogDAO logDAO = new LogDAO(context);
                     LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(currentTask.getId());
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
                     NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolve, logEntry);
                     wrapperList.add(currentWrapper);
                 }
