@@ -52,8 +52,8 @@ public class LoggingConsistencyTest {
         }
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder("Log classname mismatches found:\n");
-            for (String v : violations) {
-                sb.append(v).append("\n");
+            for (String violation : violations) {
+                sb.append(violation).append("\n");
             }
             fail(sb.toString());
         }
