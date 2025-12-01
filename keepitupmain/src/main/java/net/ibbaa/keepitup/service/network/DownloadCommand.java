@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -35,6 +36,7 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.ITimeService;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
+import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
 import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StreamUtil;
@@ -244,12 +246,23 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             disableSSLCheck(clientBuilder);
         }
         OkHttpClient client = clientBuilder.build();
-        Request.Builder requestBuilder = new Request.Builder().url(url.toString());
-        HTTPUtil.setUserAgent(getContext(), requestBuilder);
-        HTTPUtil.setAcceptHeader(getContext(), requestBuilder);
-        HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), requestBuilder);
+        Request.Builder requestBuilder = buildRequest(url);
         Request request = requestBuilder.build();
         return client.newCall(request).execute();
+    }
+
+    protected Request.Builder buildRequest(URL url) {
+        Log.d(DownloadCommand.class.getName(), "buildRequest with url " + url);
+        Request.Builder requestBuilder = new Request.Builder().url(url.toString());
+        HTTPUtil.setAcceptHeader(getContext(), requestBuilder);
+        HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), requestBuilder);
+        List<Header> headers = new GlobalHeaderHandler(getContext()).getGlobalHeaders();
+        if (headers != null) {
+            for (Header currentHeader : headers) {
+                requestBuilder.header(currentHeader.getName(), currentHeader.getValue());
+            }
+        }
+        return requestBuilder;
     }
 
     private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError) {

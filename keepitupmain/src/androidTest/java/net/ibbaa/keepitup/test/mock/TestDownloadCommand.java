@@ -32,11 +32,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Request;
 import okhttp3.Response;
 
 public class TestDownloadCommand extends DownloadCommand {
 
     private final Map<String, Response> responses;
+    private final Map<String, Request> requests;
     private FileOutputStream outputStream;
     private IFileManager fileManager;
     private IDocumentManager documentManager;
@@ -44,11 +46,13 @@ public class TestDownloadCommand extends DownloadCommand {
     public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress) {
         super(context, networkTask, data, url, folder, delete, connectToAddress);
         responses = new HashMap<>();
+        requests = new HashMap<>();
         reset();
     }
 
     public void reset() {
         responses.clear();
+        requests.clear();
         fileManager = null;
     }
 
@@ -68,11 +72,18 @@ public class TestDownloadCommand extends DownloadCommand {
         this.documentManager = documentManager;
     }
 
+    public Request getRequest(URL url) {
+        return requests.get(url.toString());
+    }
+
     @Override
     protected Response openResponse(URL url, boolean overrideConnectHost) {
         if (url == null) {
             return null;
         }
+        Request.Builder requestBuilder = buildRequest(url);
+        Request request = requestBuilder.build();
+        requests.put(url.toString(), request);
         return responses.get(url.toString());
     }
 

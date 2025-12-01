@@ -25,9 +25,11 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -40,6 +42,7 @@ import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestDownloadCommand;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestResponseBody;
+import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
 
 import org.junit.After;
 import org.junit.Before;
@@ -62,6 +65,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import okhttp3.Headers;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -73,6 +77,7 @@ import okhttp3.ResponseBody;
 public class DownloadCommandTest {
 
     private NetworkTaskDAO networkTaskDAO;
+    private HeaderDAO headerDAO;
     private SystemFileManager fileManager;
     private PreferenceManager preferenceManager;
 
@@ -83,6 +88,8 @@ public class DownloadCommandTest {
         preferenceManager.removeAllPreferences();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
+        headerDAO.deleteAllHeaders();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0));
     }
@@ -90,6 +97,7 @@ public class DownloadCommandTest {
     @After
     public void afterEachTestMethod() {
         networkTaskDAO.deleteAllNetworkTasks();
+        headerDAO.deleteAllHeaders();
         fileManager.delete(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0));
     }
 
@@ -1308,6 +1316,58 @@ public class DownloadCommandTest {
         assertEquals(56, result.connectResults().get(3).connectPort());
     }
 
+    @Test
+    public void testGlobalHeadersNoHeadersSet() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        headerDAO.deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
+        downloadCommand.call();
+        Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
+        Headers headers = request.headers();
+        assertEquals(2, headers.size());
+        assertEquals("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", headers.get("Accept"));
+        assertEquals("en-US,en;q=0.9", headers.get("Accept-Language"));
+        testResponse.close();
+    }
+
+    @Test
+    public void testGlobalHeadersWithHeadersSet() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        headerDAO.deleteAllHeaders();
+        headerDAO.insertHeader(getHeader(1));
+        headerDAO.insertHeader(getHeader(2));
+        headerDAO.insertHeader(getHeader(3));
+        Header acceptHeader = getHeader(4);
+        acceptHeader.setName("Accept");
+        Header acceptLanguageHeader = getHeader(5);
+        acceptLanguageHeader.setName("Accept-Language");
+        headerDAO.insertHeader(acceptHeader);
+        headerDAO.insertHeader(acceptLanguageHeader);
+        resetGlobalHeaderHandler();
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
+        downloadCommand.call();
+        Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
+        Headers headers = request.headers();
+        assertEquals(5, headers.size());
+        assertEquals("Value1", headers.get("Name1"));
+        assertEquals("Value2", headers.get("Name2"));
+        assertEquals("Value3", headers.get("Name3"));
+        assertEquals("Value4", headers.get("Accept"));
+        assertEquals("Value5", headers.get("Accept-Language"));
+        testResponse.close();
+    }
+
     private void setNegativeTime(TestDownloadCommand downloadCommand) {
         MockTimeService timeService = (MockTimeService) downloadCommand.getTimeService();
         timeService.setTimestamp(getTestTimestamp2());
@@ -1338,6 +1398,11 @@ public class DownloadCommandTest {
         return calendar.getTimeInMillis();
     }
 
+    private void resetGlobalHeaderHandler() {
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        handler.reset();
+    }
+
     private NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -1357,6 +1422,14 @@ public class DownloadCommandTest {
         task.setNotification(true);
         task.setHighPrio(true);
         return task;
+    }
+
+    private Header getHeader(int number) {
+        Header header = new Header();
+        header.setNetworkTaskId(-1);
+        header.setName("Name" + number);
+        header.setValue("Value" + number);
+        return header;
     }
 
     private NetworkTask getNetworkTaskWithId(NetworkTask otherTask) {
