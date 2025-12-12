@@ -27,8 +27,8 @@
     <string name="notification_foreground_channel_description">Keep it up foreground notifications</string>
     <string name="notification_title">Keep it up</string>
     <string name="notification_address">%s</string>
-    <string name="notification_error_text" tools:ignore="PluralsCandidate">Execution of %s failed. %s. Failures since last success: %d. Timestamp: %s. Message: %s</string>
-    <string name="notification_success_text" tools:ignore="PluralsCandidate">Execution of %s successful. %s. Timestamp: %s. Message: %s</string>
+    <string name="notification_error_text" tools:ignore="PluralsCandidate">Execution of %1$s failed. %2$s. Failures since last success: %3$d. Timestamp: %4$s. Message: %5$s</string>
+    <string name="notification_success_text" tools:ignore="PluralsCandidate">Execution of %1$s successful. %2$s. Timestamp: %3$s. Message: %4$s</string>
     <string name="notification_foreground_text" tools:ignore="TypographyEllipsis">Network task running...</string>
     <string name="notification_foreground_start_text">Please click here to open the app to start the foreground service for running network tasks</string>
     <string name="notification_log_permission_text">Missing write permission for configured log folder: %s. Please click here to grant the permission.</string>

@@ -20,7 +20,7 @@
     <string name="text_no_wifi_connection">Skipped. No active wifi connection.</string>
     <string name="text_timeout">No response within %d</string>
     <string name="text_interrupted">The task was stopped.</string>
-    <string name="text_dns_lookup_successful">DNS lookup for %s successful. Resolved address is %s.</string>
+    <string name="text_dns_lookup_successful">DNS lookup for %1$s successful. Resolved address is %2$s.</string>
     <string name="text_dns_lookup_error">DNS lookup for %s failed.</string>
     <string name="text_dns_lookup_no_address">No address for host.</string>
     <string name="text_ping_success">Pinged %s successfully.</string>
@@ -65,9 +65,9 @@
     <string name="text_download_error">The download from %s failed.</string>
     <string name="text_download_connect_success">Request to %s was successful.</string>
     <string name="text_download_connect_error">Request to %s failed.</string>
-    <string name="text_download_http_error_with_message">Server return code %d %s.</string>
+    <string name="text_download_http_error_with_message">Server return code %1$d %2$s.</string>
     <string name="text_download_http_error_without_message">Server return code %d.</string>
-    <string name="text_download_http_redirect_with_message">Server returned redirect %d %s.</string>
+    <string name="text_download_http_redirect_with_message">Server returned redirect %1$d %2$s.</string>
     <string name="text_download_http_redirect_without_message">Server returned redirect %d.</string>
     <string name="text_download_http_redirect_location_invalid">(invalid)</string>
     <string name="text_download_http_redirect_max_exceeded">(max number of redirects exceeded)</string>
