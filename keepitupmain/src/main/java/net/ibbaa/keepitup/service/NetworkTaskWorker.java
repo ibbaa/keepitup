@@ -332,19 +332,19 @@ public abstract class NetworkTaskWorker implements Runnable {
                 if (addresses == null || addresses.isEmpty()) {
                     Log.e(NetworkTaskWorker.class.getName(), "DNS lookup returned no addresses");
                     logEntry.setSuccess(false);
-                    logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_error, host) + " " + getResources().getString(R.string.text_dns_lookup_no_address));
+                    logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_error, dnsLookupResult.getHost()) + " " + getResources().getString(R.string.text_dns_lookup_no_address));
                 } else {
                     Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned the following addresses " + addresses);
                     InetAddress address = findAddress(addresses, preferIp4);
                     Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
                     logEntry.setSuccess(true);
-                    logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, host, address.getHostAddress()));
+                    logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), address.getHostAddress()));
                     return new DNSExecutionResult(false, logEntry, address);
                 }
             } else {
                 Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), dnsLookupResult.getException(), timeout));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, dnsLookupResult.getHost()), dnsLookupResult.getException(), timeout));
             }
         } catch (Throwable exc) {
             Log.e(NetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);

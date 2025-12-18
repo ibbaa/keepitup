@@ -26,20 +26,27 @@ import java.util.List;
 public class DNSLookupResult {
 
     private final List<InetAddress> addresses;
+    private final String host;
     private final Throwable exception;
 
-    public DNSLookupResult(InetAddress address, Throwable exception) {
+    public DNSLookupResult(InetAddress address, String host, Throwable exception) {
         this.addresses = Collections.singletonList(address);
+        this.host = host;
         this.exception = exception;
     }
 
-    public DNSLookupResult(List<InetAddress> addresses, Throwable exception) {
+    public DNSLookupResult(List<InetAddress> addresses, String host, Throwable exception) {
         this.addresses = addresses;
+        this.host = host;
         this.exception = exception;
     }
 
     public List<InetAddress> getAddresses() {
         return Collections.unmodifiableList(addresses);
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public Throwable getException() {
@@ -51,6 +58,7 @@ public class DNSLookupResult {
     public String toString() {
         return "DNSLookupResult{" +
                 "addresses=" + addresses +
+                ", host='" + host + '\'' +
                 ", exception=" + exception +
                 '}';
     }

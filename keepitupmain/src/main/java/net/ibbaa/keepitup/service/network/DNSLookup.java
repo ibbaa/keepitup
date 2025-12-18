@@ -35,19 +35,18 @@ public class DNSLookup implements Callable<DNSLookupResult> {
     @Override
     public DNSLookupResult call() {
         Log.d(DNSLookup.class.getName(), "call");
+        String asciiHost = host;
         try {
-            String asciiHost;
             try {
                 asciiHost = IDN.toASCII(host);
             } catch (Exception exc) {
                 Log.e(DNSLookup.class.getName(), "Exception using toASCII on " + host, exc);
-                asciiHost = host;
             }
             InetAddress[] addresses = InetAddress.getAllByName(IDN.toASCII(asciiHost));
-            return new DNSLookupResult(Arrays.asList(addresses), null);
+            return new DNSLookupResult(Arrays.asList(addresses), asciiHost, null);
         } catch (Exception exc) {
             Log.e(DNSLookup.class.getName(), "Error executing DNS lookup", exc);
-            return new DNSLookupResult(Collections.emptyList(), exc);
+            return new DNSLookupResult(Collections.emptyList(), asciiHost, exc);
         }
     }
 }
