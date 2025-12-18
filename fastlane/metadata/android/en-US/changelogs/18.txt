@@ -2,4 +2,5 @@
 * Added the possibility to use another host for the network connection than the one specified in the URL (similar to the connect-to option of curl)
 * It is now possible to set arbitrary HTTP headers which will be sent with requests
 * Defined suspension intervals are now deleted on global settings reset
+* Host name validation is more strict and consistent now
 * Some small bug fixes
