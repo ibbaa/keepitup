@@ -53,21 +53,21 @@ public class URLUtil {
     }
 
     public static boolean isValidIP6Address(String ipAddress) {
-        if (StringUtil.isEmpty(ipAddress) || !ipAddress.contains(":")) {
+        if (StringUtil.isTrimmedEmpty(ipAddress) || !ipAddress.contains(":")) {
             return false;
         }
         return InetAddresses.isInetAddress(ipAddress.trim());
     }
 
     public static boolean isValidIPAddress(String ipAddress) {
-        if (StringUtil.isEmpty(ipAddress)) {
+        if (StringUtil.isTrimmedEmpty(ipAddress)) {
             return false;
         }
         return InetAddresses.isInetAddress(ipAddress.trim());
     }
 
     public static boolean isValidHostName(String hostName) {
-        if (StringUtil.isEmpty(hostName)) {
+        if (StringUtil.isTrimmedEmpty(hostName)) {
             return false;
         }
         hostName = hostName.trim();
@@ -136,7 +136,7 @@ public class URLUtil {
 
     public static String prefixHTTPProtocol(String inputUrl) {
         Log.d(URLUtil.class.getName(), "prefixHTTPProtocol, inputUrl is " + inputUrl);
-        if (inputUrl == null || inputUrl.trim().isEmpty()) {
+        if (StringUtil.isTrimmedEmpty(inputUrl)) {
             return inputUrl;
         }
         String url = inputUrl.trim();
@@ -160,6 +160,9 @@ public class URLUtil {
 
     public static boolean isValidURL(String inputUrl) {
         Log.d(URLUtil.class.getName(), "isValidURL, inputUrl is " + inputUrl);
+        if (StringUtil.isTrimmedEmpty(inputUrl)) {
+            return false;
+        }
         return getURL(inputUrl) != null;
     }
 

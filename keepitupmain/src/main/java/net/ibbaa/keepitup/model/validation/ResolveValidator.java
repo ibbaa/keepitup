@@ -60,7 +60,7 @@ public class ResolveValidator {
 
     public boolean validateAddress(String address) {
         Log.d(ResolveValidator.class.getName(), "validateAddress, address is " + address);
-        if (StringUtil.isEmpty(address)) {
+        if (StringUtil.isTrimmedEmpty(address)) {
             Log.d(ResolveValidator.class.getName(), "address is null. Returning true.");
             return true;
         }

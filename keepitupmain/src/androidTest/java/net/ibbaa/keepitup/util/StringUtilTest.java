@@ -61,6 +61,14 @@ public class StringUtilTest {
     }
 
     @Test
+    public void testIsTrimmedEmpty() {
+        assertTrue(StringUtil.isTrimmedEmpty(null));
+        assertTrue(StringUtil.isTrimmedEmpty(""));
+        assertTrue(StringUtil.isTrimmedEmpty(" "));
+        assertFalse(StringUtil.isTrimmedEmpty("123"));
+    }
+
+    @Test
     public void testNotNull() {
         assertEquals("123", StringUtil.notNull("123"));
         assertEquals("", StringUtil.notNull(""));

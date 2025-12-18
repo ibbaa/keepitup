@@ -47,8 +47,8 @@ public abstract class BaseStringValidator {
         Log.d(BaseStringValidator.class.getName(), "trim is " + trim);
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
-        if (value != null && trim) {
-            value = value.trim();
+        if (trim) {
+            value = StringUtil.trim(value);
         }
         if (StringUtil.isEmpty(value)) {
             if (emptyIsValid) {

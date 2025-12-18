@@ -39,9 +39,7 @@ public abstract class BaseHostValidator {
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_host_format);
         String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
-        if (value != null) {
-            value = value.trim();
-        }
+        value = StringUtil.trim(value);
         if (StringUtil.isEmpty(value)) {
             if (emptyIsValid) {
                 Log.d(BaseHostValidator.class.getName(), "No value specified. Validation successful.");

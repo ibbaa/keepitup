@@ -79,6 +79,15 @@ public class NetworkTaskValidatorTest {
         NetworkTask task = getNetworkTask();
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));
+        task.setAddress("");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress(null);
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("   ");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
         task.setAddress("xyz.com");
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));
@@ -107,6 +116,15 @@ public class NetworkTaskValidatorTest {
         NetworkTask task = getNetworkTask();
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));
+        task.setAddress("");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress(null);
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("   ");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
         task.setAddress("xyz.com");
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));
@@ -134,6 +152,15 @@ public class NetworkTaskValidatorTest {
     public void testValidateAddressDownload() {
         NetworkTask task = getNetworkTask();
         task.setAccessType(AccessType.DOWNLOAD);
+        task.setAddress("");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress(null);
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("   ");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
         task.setAddress("http://xyz.com");
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));

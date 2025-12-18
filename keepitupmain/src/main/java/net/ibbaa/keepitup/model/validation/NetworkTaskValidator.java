@@ -64,8 +64,8 @@ public class NetworkTaskValidator {
     public boolean validateAddress(NetworkTask task) {
         Log.d(NetworkTaskValidator.class.getName(), "validateAddress of task " + task);
         String address = task.getAddress();
-        if (address == null) {
-            Log.d(NetworkTaskValidator.class.getName(), "address is null. Returning false.");
+        if (StringUtil.isTrimmedEmpty(address)) {
+            Log.d(NetworkTaskValidator.class.getName(), "address is empty. Returning false.");
             return false;
         }
         boolean isValidAddress;

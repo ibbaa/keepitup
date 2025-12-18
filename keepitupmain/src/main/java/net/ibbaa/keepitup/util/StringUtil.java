@@ -46,6 +46,10 @@ public class StringUtil {
         return isEmpty((CharSequence) value);
     }
 
+    public static boolean isTrimmedEmpty(String value) {
+        return isEmpty(trim(value));
+    }
+
     public static String notNull(String value) {
         return notNull((CharSequence) value);
     }

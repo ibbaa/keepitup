@@ -44,12 +44,18 @@ public class URLUtilTest {
         assertTrue(URLUtil.isValidIPAddress("123.123.123.123"));
         assertTrue(URLUtil.isValidIPAddress("   123.123.123.123   "));
         assertTrue(URLUtil.isValidIPAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf"));
+        assertFalse(URLUtil.isValidIPAddress(""));
+        assertFalse(URLUtil.isValidIPAddress("   "));
+        assertFalse(URLUtil.isValidIPAddress(null));
         assertTrue(URLUtil.isValidIP6Address("3ffe:1900:4545:3:200:f8ff:fe21:67cf"));
         assertTrue(URLUtil.isValidIP6Address("   3ffe:1900:4545:3:200:f8ff:fe21:67cf  "));
         assertFalse(URLUtil.isValidIPAddress("256.123.123.123"));
         assertFalse(URLUtil.isValidIP6Address("256.123.123.123"));
         assertFalse(URLUtil.isValidIPAddress("Test"));
         assertFalse(URLUtil.isValidIP6Address("Test"));
+        assertFalse(URLUtil.isValidIP6Address(""));
+        assertFalse(URLUtil.isValidIP6Address("   "));
+        assertFalse(URLUtil.isValidIP6Address(null));
         assertTrue(URLUtil.isValidHostName("www.host.com"));
         assertTrue(URLUtil.isValidHostName("  www.host.com"));
         assertTrue(URLUtil.isValidHostName("Test.co.uk"));
@@ -57,6 +63,9 @@ public class URLUtilTest {
         assertTrue(URLUtil.isValidHostName("Äpfel"));
         assertFalse(URLUtil.isValidHostName("\uD83D\uDE0AABC"));
         assertFalse(URLUtil.isValidHostName("http://www.host.com"));
+        assertFalse(URLUtil.isValidHostName(""));
+        assertFalse(URLUtil.isValidHostName("   "));
+        assertFalse(URLUtil.isValidHostName(null));
         assertTrue(URLUtil.isValidURL("http://www.host.com"));
         assertTrue(URLUtil.isValidURL("http://www.äpfel.com"));
         assertTrue(URLUtil.isValidURL("https://test"));
@@ -79,6 +88,9 @@ public class URLUtilTest {
         assertFalse(URLUtil.isValidURL("ftp://test.org"));
         assertFalse(URLUtil.isValidURL("file://abc"));
         assertFalse(URLUtil.isValidURL("ftp://127.0.0.1"));
+        assertFalse(URLUtil.isValidURL(""));
+        assertFalse(URLUtil.isValidURL("   "));
+        assertFalse(URLUtil.isValidURL(null));
     }
 
     @Test
