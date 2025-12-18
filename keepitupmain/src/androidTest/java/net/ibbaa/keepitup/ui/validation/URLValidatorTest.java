@@ -58,6 +58,10 @@ public class URLValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("URL", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        result = validator.validateAddress("https://äöü/t\uD83Dest");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
         result = validator.validateAddress("http://test/%E2%80%A5/test");
         assertTrue(result.isValidationSuccessful());
         assertEquals("URL", result.getFieldName());
@@ -75,6 +79,10 @@ public class URLValidatorTest {
         assertEquals("URL", result.getFieldName());
         assertEquals("No valid URL", result.getMessage());
         result = validator.validateAddress("test");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("No valid URL", result.getMessage());
+        result = validator.validateAddress("https://t\uD83Dest");
         assertFalse(result.isValidationSuccessful());
         assertEquals("URL", result.getFieldName());
         assertEquals("No valid URL", result.getMessage());

@@ -54,11 +54,15 @@ public class URLUtilTest {
         assertTrue(URLUtil.isValidHostName("  www.host.com"));
         assertTrue(URLUtil.isValidHostName("Test.co.uk"));
         assertTrue(URLUtil.isValidHostName("Test"));
+        assertTrue(URLUtil.isValidHostName("Äpfel"));
+        assertFalse(URLUtil.isValidHostName("\uD83D\uDE0AABC"));
         assertFalse(URLUtil.isValidHostName("http://www.host.com"));
         assertTrue(URLUtil.isValidURL("http://www.host.com"));
+        assertTrue(URLUtil.isValidURL("http://www.äpfel.com"));
         assertTrue(URLUtil.isValidURL("https://test"));
         assertTrue(URLUtil.isValidURL("https://test/test/test"));
         assertTrue(URLUtil.isValidURL("http://www.host.com/test"));
+        assertTrue(URLUtil.isValidURL("http://www.host.com/te\uDE0Ast"));
         assertTrue(URLUtil.isValidURL("http://www.host.com/test?x=1"));
         assertTrue(URLUtil.isValidURL("http://www.host.com/t%20est?x=1"));
         assertTrue(URLUtil.isValidURL("http://ftp://127.0.0.1"));
@@ -66,6 +70,7 @@ public class URLUtilTest {
         assertTrue(URLUtil.isValidURL("https://mailto:abc@example.com"));
         assertTrue(URLUtil.isValidURL("http://example.com/path?redirect=ftp://127.0.0.1"));
         assertFalse(URLUtil.isValidURL("www.host.com"));
+        assertFalse(URLUtil.isValidURL("http://www.ho\uD83Dst.com"));
         assertFalse(URLUtil.isValidURL("www.ho st.com/t est?x=1"));
         assertFalse(URLUtil.isValidURL("http:/www.host.com"));
         assertFalse(URLUtil.isValidURL("http:///www.host.com"));

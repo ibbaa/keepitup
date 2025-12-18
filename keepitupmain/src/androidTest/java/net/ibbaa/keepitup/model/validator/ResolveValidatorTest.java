@@ -49,12 +49,24 @@ public class ResolveValidatorTest {
         resolve.setSourceAddress("http://xyz.com");
         assertFalse(validator.validateSourceAddress(resolve));
         assertFalse(validator.validate(resolve));
+        resolve.setSourceAddress("xyz.com");
+        assertTrue(validator.validateSourceAddress(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress("grün.com");
+        assertTrue(validator.validateSourceAddress(resolve));
+        assertTrue(validator.validate(resolve));
         resolve.setSourceAddress("123.456.788.111");
         assertFalse(validator.validateSourceAddress(resolve));
         assertFalse(validator.validate(resolve));
         resolve.setSourceAddress("127.0.0.1");
         assertTrue(validator.validateSourceAddress(resolve));
         assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress(" 127.0.0.1 ");
+        assertTrue(validator.validateSourceAddress(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress("a\uD83Db.com");
+        assertFalse(validator.validateSourceAddress(resolve));
+        assertFalse(validator.validate(resolve));
     }
 
     @Test
@@ -76,17 +88,29 @@ public class ResolveValidatorTest {
     @Test
     public void testValidateTargetAddress() {
         Resolve resolve = getResolve();
-        assertTrue(validator.validateTargetAddress(resolve));
+        assertTrue(validator.validateSourceAddress(resolve));
         assertTrue(validator.validate(resolve));
-        resolve.setTargetAddress("http://xyz.com");
-        assertFalse(validator.validateTargetAddress(resolve));
+        resolve.setSourceAddress("http://xyz.com");
+        assertFalse(validator.validateSourceAddress(resolve));
         assertFalse(validator.validate(resolve));
-        resolve.setTargetAddress("123.456.788.111");
-        assertFalse(validator.validateTargetAddress(resolve));
-        assertFalse(validator.validate(resolve));
-        resolve.setTargetAddress("127.0.0.1");
-        assertTrue(validator.validateTargetAddress(resolve));
+        resolve.setSourceAddress("xyz.com");
+        assertTrue(validator.validateSourceAddress(resolve));
         assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress("grün.com");
+        assertTrue(validator.validateSourceAddress(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress("123.456.788.111");
+        assertFalse(validator.validateSourceAddress(resolve));
+        assertFalse(validator.validate(resolve));
+        resolve.setSourceAddress("127.0.0.1");
+        assertTrue(validator.validateSourceAddress(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress(" 127.0.0.1 ");
+        assertTrue(validator.validateSourceAddress(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setSourceAddress("a\uD83Db.com");
+        assertFalse(validator.validateSourceAddress(resolve));
+        assertFalse(validator.validate(resolve));
     }
 
     @Test

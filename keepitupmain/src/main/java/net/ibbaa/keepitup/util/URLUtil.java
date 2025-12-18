@@ -70,7 +70,17 @@ public class URLUtil {
         if (StringUtil.isEmpty(hostName)) {
             return false;
         }
-        return InternetDomainName.isValid(hostName.trim());
+        hostName = hostName.trim();
+        if (!InternetDomainName.isValid(hostName)) {
+            return false;
+        }
+        try {
+            IDN.toASCII(hostName);
+        } catch (Exception exc) {
+            Log.d(URLUtil.class.getName(), "Exception using toASCII on " + hostName, exc);
+            return false;
+        }
+        return true;
     }
 
     public static boolean isSameHostAndPort(URL url1, URL url2) {
@@ -246,8 +256,8 @@ public class URLUtil {
             try {
                 asciiHost = IDN.toASCII(host);
             } catch (Exception exc) {
-                Log.e(URLUtil.class.getName(), "Exception using toASCII on " + host, exc);
-                asciiHost = host;
+                Log.d(URLUtil.class.getName(), "Exception using toASCII on " + host, exc);
+                return null;
             }
             if (path != null) {
                 path = getEncodedPath(path);

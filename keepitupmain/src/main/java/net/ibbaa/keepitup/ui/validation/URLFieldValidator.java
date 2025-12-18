@@ -41,6 +41,9 @@ public class URLFieldValidator implements FieldValidator {
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_url_format);
         String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
+        if (value != null) {
+            value = value.trim();
+        }
         if (StringUtil.isEmpty(value)) {
             Log.d(URLFieldValidator.class.getName(), "No value specified. Validation failed.");
             return new ValidationResult(false, field, failedMessageNoValue);
