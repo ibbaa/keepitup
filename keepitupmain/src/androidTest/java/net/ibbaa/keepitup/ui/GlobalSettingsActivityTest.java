@@ -1391,11 +1391,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
-        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
         activityScenario.close();
     }
 
@@ -1409,13 +1409,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
-        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(1).getValue());
         activityScenario.close();
     }
 
@@ -1429,27 +1429,27 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
-        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(1).getValue());
         activityScenario.close();
     }
 
@@ -1472,7 +1472,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
         assertEquals(5, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
@@ -1484,7 +1484,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(4).getName());
-        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(4).getValue());
         activityScenario.close();
     }
 
@@ -1523,7 +1523,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(5).getName());
-        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(5).getValue());
         activityScenario.close();
     }
 
@@ -1574,7 +1574,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("Name9", handler.getGlobalHeaders().get(8).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(8).getValue());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(9).getName());
-        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(9).getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(9).getValue());
         activityScenario.close();
     }
 
@@ -1636,7 +1636,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Name6: "), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value6"), withFontSize(10), withGridLayoutRowColumnPosition(6, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(7, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(click());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
@@ -1692,7 +1692,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Name6: "), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value6"), withFontSize(10), withGridLayoutRowColumnPosition(6, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(7, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(click());
         rotateScreen(activityScenario);
@@ -2078,7 +2078,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -2094,7 +2094,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -2313,7 +2313,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_global_headers_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -2331,7 +2331,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -2939,6 +2939,27 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
         assertFalse(getTimeBasedSuspensionScheduler().isRunning());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testResetValuesGlobalHeaders() {
+        getHeaderDAO().deleteGlobalHeaders();
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Reset")).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(1, handler.getGlobalHeaders().size());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
         activityScenario.close();
     }
 

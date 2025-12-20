@@ -349,7 +349,7 @@ public class DBSetupTest {
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("User-Agent", header.getName());
         assertEquals("Test", header.getValue());
-        assertEquals("Mozilla/5.0", constantPreferenceManager.getPreferenceHTTPUserAgent());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", constantPreferenceManager.getPreferenceHTTPUserAgent());
     }
 
     @Test

@@ -43,6 +43,8 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
@@ -162,13 +164,31 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_activity_global_settings_reset triggered");
             PreferenceSetup preferenceSetup = new PreferenceSetup(this);
             preferenceSetup.removeGlobalSettings();
-            IntervalDAO intervalDAO = new IntervalDAO(this);
-            intervalDAO.deleteAllIntervals();
-            getTimeBasedSuspensionScheduler().restart();
+            resetIntervalsAndHeaders();
             recreateActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void resetIntervalsAndHeaders() {
+        try {
+            IntervalDAO intervalDAO = new IntervalDAO(this);
+            intervalDAO.deleteAllIntervals();
+        } catch (Exception exc) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error deleting intervals", exc);
+        }
+        try {
+            HeaderDAO headerDAO = new HeaderDAO(this);
+            headerDAO.deleteGlobalHeaders();
+            DBSetup setup = new DBSetup(this);
+            setup.initializeHeaderTable();
+        } catch (Exception exc) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error deleting headers", exc);
+        }
+        getTimeBasedSuspensionScheduler().restart();
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(this);
+        handler.reset();
     }
 
     @Override

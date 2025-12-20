@@ -46,10 +46,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -106,12 +108,16 @@ public class SystemActivityTest extends BaseUITest {
         storagePermissionManager = getMockStoragePermissionManager();
         ((SystemActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
         addFolderPermission();
+        DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
+        dbSetup.initializeHeaderTable();
+        resetGlobalHeaderHandler();
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
         activityScenario.close();
+        resetGlobalHeaderHandler();
     }
 
     @Test
@@ -122,12 +128,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -170,6 +179,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -207,12 +219,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -259,6 +274,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -296,12 +314,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -344,6 +365,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(1, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -382,12 +408,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -432,6 +461,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(1, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -472,12 +506,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -520,6 +557,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -559,12 +599,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -612,6 +655,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -649,12 +695,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -699,6 +748,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -736,12 +788,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -793,6 +848,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -843,12 +901,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -891,6 +952,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -922,6 +986,8 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        globalHeaderHandler.reset();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
@@ -978,6 +1044,12 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("Name1", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(1).getValue());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1029,12 +1101,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1085,6 +1160,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1116,6 +1194,8 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        globalHeaderHandler.reset();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
@@ -1171,6 +1251,12 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("Name1", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(1).getValue());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1221,12 +1307,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1279,6 +1368,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1329,12 +1421,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1394,6 +1489,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1444,12 +1542,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1499,6 +1600,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1532,6 +1636,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        globalHeaderHandler.reset();
         getPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
@@ -1587,6 +1693,12 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("Name1", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(1).getValue());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1637,12 +1749,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1700,6 +1815,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1733,6 +1851,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        globalHeaderHandler.reset();
         getPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
@@ -1786,6 +1906,12 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("Name1", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(1).getValue());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1824,12 +1950,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1874,6 +2003,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1912,11 +2044,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1965,6 +2101,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2075,12 +2214,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2123,6 +2265,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
@@ -2139,6 +2283,9 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertTrue(globalHeaderHandler.getGlobalHeaders().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2176,12 +2323,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2232,6 +2382,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -2239,6 +2391,9 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getLogDAO().readAllLogs().isEmpty());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
+        assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertTrue(globalHeaderHandler.getGlobalHeaders().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
@@ -2277,12 +2432,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2325,6 +2483,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
@@ -2342,6 +2502,9 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getLogDAO().readAllLogs().isEmpty());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertTrue(globalHeaderHandler.getGlobalHeaders().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
@@ -2380,12 +2543,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2439,6 +2605,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
@@ -2447,6 +2615,9 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getLogDAO().readAllLogs().isEmpty());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertTrue(globalHeaderHandler.getGlobalHeaders().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
@@ -2498,11 +2669,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2544,6 +2719,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
@@ -2603,6 +2780,13 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("Name1", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(1).getValue());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2654,11 +2838,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2699,6 +2887,8 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
@@ -2761,6 +2951,13 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals("Name1", globalHeaderHandler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(1).getValue());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2829,11 +3026,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2880,6 +3081,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2918,11 +3122,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2969,6 +3177,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -3007,11 +3218,15 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3059,6 +3274,9 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -3574,6 +3792,11 @@ public class SystemActivityTest extends BaseUITest {
         getNetworkTaskProcessServiceScheduler().reschedule(task2, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
     }
 
+    private void resetGlobalHeaderHandler() {
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        handler.reset();
+    }
+
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -3688,6 +3911,14 @@ public class SystemActivityTest extends BaseUITest {
         end.setMinute(12);
         interval.setEnd(end);
         return interval;
+    }
+
+    private Header getHeader(int number) {
+        Header header = new Header();
+        header.setNetworkTaskId(-1);
+        header.setName("Name" + number);
+        header.setValue("Value" + number);
+        return header;
     }
 
     private MockExportTask getMockExportTask(boolean success) {

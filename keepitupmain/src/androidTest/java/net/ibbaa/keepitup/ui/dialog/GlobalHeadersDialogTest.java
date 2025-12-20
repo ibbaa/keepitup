@@ -116,7 +116,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -132,19 +132,19 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         rotateScreen(activityScenario);
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         rotateScreen(activityScenario);
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -261,14 +261,14 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.imageview_list_item_global_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -284,14 +284,14 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withRecyclerView(R.id.listview_dialog_global_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -307,7 +307,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.imageview_list_item_global_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
         rotateScreen(activityScenario);
@@ -316,7 +316,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -332,7 +332,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withRecyclerView(R.id.listview_dialog_global_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         rotateScreen(activityScenario);
@@ -341,7 +341,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -357,7 +357,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.imageview_list_item_global_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -380,7 +380,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withRecyclerView(R.id.listview_dialog_global_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -403,7 +403,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.imageview_list_item_global_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
         rotateScreen(activityScenario);
@@ -428,7 +428,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withRecyclerView(R.id.listview_dialog_global_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         rotateScreen(activityScenario);
@@ -667,7 +667,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -687,7 +687,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -709,14 +709,14 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AName")));
         onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AValue")));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(2, getDialog().getAdapter().getAllItems().size());
         Header header1 = getDialog().getAdapter().getItem(0);
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
         assertEquals("User-Agent", header2.getName());
-        assertEquals("Mozilla/5.0", header2.getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -739,14 +739,14 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AName")));
         onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AValue")));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(2, getDialog().getAdapter().getAllItems().size());
         Header header1 = getDialog().getAdapter().getItem(0);
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
         assertEquals("User-Agent", header2.getName());
-        assertEquals("Mozilla/5.0", header2.getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1088,7 +1088,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
@@ -1110,7 +1110,7 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
-        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();

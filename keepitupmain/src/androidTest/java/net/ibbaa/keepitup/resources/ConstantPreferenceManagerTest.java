@@ -52,13 +52,13 @@ public class ConstantPreferenceManagerTest {
 
     @Test
     public void testGetRemovePreferenceHTTPUserAgent() {
-        assertEquals("Mozilla/5.0", constantPreferenceManager.getPreferenceHTTPUserAgent());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", constantPreferenceManager.getPreferenceHTTPUserAgent());
         preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "abc");
         assertEquals("abc", constantPreferenceManager.getPreferenceHTTPUserAgent());
         constantPreferenceManager.removeAllPreferences();
-        assertEquals("Mozilla/5.0", constantPreferenceManager.getPreferenceHTTPUserAgent());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", constantPreferenceManager.getPreferenceHTTPUserAgent());
         preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "abc");
         constantPreferenceManager.removePreferenceHTTPUserAgent();
-        assertEquals("Mozilla/5.0", constantPreferenceManager.getPreferenceHTTPUserAgent());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", constantPreferenceManager.getPreferenceHTTPUserAgent());
     }
 }

@@ -103,7 +103,7 @@ public class HTTPUtilTest {
         Request.Builder builder = new Request.Builder().url("http://test.com");
         HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
         Request request = builder.build();
-        assertEquals("Mozilla/5.0", request.header("User-Agent"));
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", request.header("User-Agent"));
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         ConstantPreferenceManager constantPreferenceManager = new ConstantPreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "abc");
@@ -115,7 +115,7 @@ public class HTTPUtilTest {
         builder = new Request.Builder().url("http://test.com");
         HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
         request = builder.build();
-        assertEquals("Mozilla/5.0", request.header("User-Agent"));
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", request.header("User-Agent"));
     }
 
     @Test

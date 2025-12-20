@@ -908,6 +908,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(this);
+        handler.reset();
         if (success) {
             NetworkTaskLog.clear();
             resetActivity();
@@ -921,6 +923,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "onPurgeDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(this);
+        handler.reset();
         if (success) {
             resetPreferences();
             resetFolderPermissions();

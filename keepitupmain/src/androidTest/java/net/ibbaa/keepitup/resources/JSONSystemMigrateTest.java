@@ -138,7 +138,7 @@ public class JSONSystemMigrateTest {
         assertEquals(1, headerDAO.readAllHeaders().size());
         Header header = headerDAO.readGlobalHeaders().get(0);
         assertEquals("User-Agent", header.getName());
-        assertEquals("Mozilla/5.0", header.getValue());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header.getValue());
     }
 
     private JSONObject createRoot(int pingCount, int connectCount) throws JSONException {

@@ -144,7 +144,7 @@ public class DBSetup {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getFailureCountColumnName(), 0);
-        db.update(dbConstants.getTableName(), values, null, null);
+        executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
     }
 
     public void createLogTable(SQLiteDatabase db) {
@@ -179,14 +179,14 @@ public class DBSetup {
 
     public void initializeAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeAccessTypeDataTable");
-        db.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement());
+        executeDBOperationInTransaction(db, database -> database.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement()));
         AccessTypeData accessTypeData = new AccessTypeData(getContext());
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
-        db.update(dbConstants.getTableName(), values, null, null);
+        executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
     }
 
     public void addStopOnSuccessColumnToAccessTypeDataTable(SQLiteDatabase db) {
@@ -212,15 +212,34 @@ public class DBSetup {
 
     public void initializeHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeHeaderTable");
-        db.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement());
         ContentValues values = new ContentValues();
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
         ConstantPreferenceManager preferenceManager = new ConstantPreferenceManager(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), (Long) null);
         values.put(dbConstants.getNameColumnName(), getContext().getResources().getString(R.string.http_header_user_agent));
         values.put(dbConstants.getValueColumnName(), preferenceManager.getPreferenceHTTPUserAgent());
-        db.insert(dbConstants.getTableName(), null, values);
+        executeDBOperationInTransaction(db, database -> database.insert(dbConstants.getTableName(), null, values));
         preferenceManager.removePreferenceHTTPUserAgent();
+    }
+
+    private void executeDBOperationInTransaction(SQLiteDatabase db, DBSetupOperation operation) {
+        Log.d(DBSetup.class.getName(), "executeDBOperationInTransaction");
+        try {
+            db.beginTransaction();
+            operation.execute(db);
+            db.setTransactionSuccessful();
+        } catch (Throwable exc) {
+            Log.e(DBSetup.class.getName(), "Error executing database operation", exc);
+            throw exc;
+        } finally {
+            if (db != null) {
+                try {
+                    db.endTransaction();
+                } catch (Throwable exc) {
+                    Log.e(DBSetup.class.getName(), "Error committing changes to database", exc);
+                }
+            }
+        }
     }
 
     public void dropTables(SQLiteDatabase db) {
