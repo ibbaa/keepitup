@@ -401,6 +401,13 @@ public class PreferenceSetup {
 
     public void removeGlobalSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeGlobalSettings");
+        removeGlobalSettingsWithoutArbitraryFolders();
+        preferenceManager.removePreferenceArbitraryDownloadFolder();
+        preferenceManager.removePreferenceArbitraryLogFolder();
+    }
+
+    public void removeGlobalSettingsWithoutArbitraryFolders() {
+        Log.d(PreferenceSetup.class.getName(), "removeGlobalSettingsWithoutArbitraryFolders");
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         preferenceManager.removePreferenceNotificationType();
         preferenceManager.removePreferenceNotificationAfterFailures();
@@ -408,12 +415,10 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceEnforceDefaultPingPackageSize();
         preferenceManager.removePreferenceDownloadExternalStorage();
         preferenceManager.removePreferenceDownloadFolder();
-        preferenceManager.removePreferenceArbitraryDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
         preferenceManager.removePreferenceDownloadFollowsRedirects();
         preferenceManager.removePreferenceLogFile();
         preferenceManager.removePreferenceLogFolder();
-        preferenceManager.removePreferenceArbitraryLogFolder();
     }
 
     public void removeDefaults() {

@@ -163,7 +163,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (id == R.id.menu_action_activity_global_settings_reset) {
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_activity_global_settings_reset triggered");
             PreferenceSetup preferenceSetup = new PreferenceSetup(this);
-            preferenceSetup.removeGlobalSettings();
+            preferenceSetup.removeGlobalSettingsWithoutArbitraryFolders();
             resetIntervalsAndHeaders();
             recreateActivity();
             return true;

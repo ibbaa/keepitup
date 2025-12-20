@@ -2866,6 +2866,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testResetValues() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
+        preferenceManager.setPreferenceArbitraryLogFolder("/456");
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
@@ -2905,19 +2908,18 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
-        PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
+        assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
+        assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
         activityScenario.close();
     }
 

@@ -377,7 +377,7 @@ public class SystemFileManager implements IFileManager {
             logFileName = logFileName + "_" + host;
         }
         logFileName = logFileName.toLowerCase() + "_id_" + String.format("%08X", id);
-        return logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_") + extension;
+        return logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_").replaceAll("[:*?\"<>|]", "_") + extension;
     }
 
     private String extractFileNameFromURL(URL url) {

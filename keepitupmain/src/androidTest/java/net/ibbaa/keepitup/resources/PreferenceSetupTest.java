@@ -786,6 +786,36 @@ public class PreferenceSetupTest {
     }
 
     @Test
+    public void testRemoveGlobalSettingsWithoutArbitraryFolders() {
+        preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(3);
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceLogFolder("folder");
+        preferenceManager.setPreferenceArbitraryLogFolder("/456");
+        setup.removeGlobalSettingsWithoutArbitraryFolders();
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
+        assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+        assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
+        assertFalse(preferenceManager.getPreferenceLogFile());
+        assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
+    }
+
+    @Test
     public void testRemoveDefaults() {
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
