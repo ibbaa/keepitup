@@ -347,15 +347,18 @@ public class SystemFileManager implements IFileManager {
         }
         if (!StringUtil.isEmpty(extension)) {
             String fileNameWithExtension = fileNameWithoutExtension + "." + extension;
+            fileNameWithExtension = fileNameWithExtension.toLowerCase().replaceAll("/", "_");
             Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithExtension);
-            return fileNameWithExtension.toLowerCase().replaceAll("/", "_");
+            return fileNameWithExtension;
         }
+        fileNameWithoutExtension = fileNameWithoutExtension.toLowerCase().replaceAll("/", "_");
         Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithoutExtension);
-        return fileNameWithoutExtension.toLowerCase().replaceAll("/", "_");
+        return fileNameWithoutExtension;
     }
 
     @Override
     public String getLogFileName(String baseFileName, String name, String extension, int id, int index, String address) {
+        Log.d(SystemFileManager.class.getName(), "getLogFileName, baseFileName is " + baseFileName + ", name is " + name + ", extension is " + extension + ", id is " + id + ", index is " + index + ", address is " + address);
         String logFileName = baseFileName + "_" + (index + 1);
         if (!StringUtil.isEmpty(name)) {
             logFileName = logFileName + "_" + name;
@@ -377,7 +380,9 @@ public class SystemFileManager implements IFileManager {
             logFileName = logFileName + "_" + host;
         }
         logFileName = logFileName.toLowerCase() + "_id_" + String.format("%08X", id);
-        return logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_").replaceAll("[:*?\"<>|]", "_") + extension;
+        logFileName = logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_").replaceAll("[:*?\"<>|]", "_") + extension;
+        Log.d(SystemFileManager.class.getName(), "Returning file name " + logFileName);
+        return logFileName;
     }
 
     private String extractFileNameFromURL(URL url) {
