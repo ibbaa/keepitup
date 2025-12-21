@@ -214,7 +214,8 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     private void prepareConnectError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
-        prepareError(downloadResult, timeout, folder, delete, logEntry, "");
+        String downloadError = getResources().getString(R.string.text_download_error, downloadResult.url().toExternalForm());
+        prepareError(downloadResult, timeout, folder, delete, logEntry, downloadError);
     }
 
     private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
@@ -432,7 +433,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private String getHostAndPortMessage(DownloadConnectResult connectResult) {
         String host;
         int port;
-        if (connectResult.connectAddress() == null || connectResult.port() < 0) {
+        if (connectResult.connectAddress() == null || connectResult.connectPort() < 0) {
             host = URLUtil.isValidIP6Address(connectResult.host()) ? "[" + connectResult.host() + "]" : connectResult.host();
             port = connectResult.port();
         } else {

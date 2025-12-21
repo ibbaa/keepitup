@@ -399,7 +399,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 failed.", logEntry.getMessage());
+        assertEquals("Request to host:123 failed. The download from http://127.0.0.1 failed.", logEntry.getMessage());
     }
 
     @Test
@@ -413,7 +413,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:22 was successful. Server returned redirect 301 test1. Request to 192.168.178.1:80 was successful. Server returned redirect 302 test2. Request to host:123 failed.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:22 was successful. Server returned redirect 301 test1. Request to 192.168.178.1:80 was successful. Server returned redirect 302 test2. Request to host:123 failed. The download from http://127.0.0.1 failed.", logEntry.getMessage());
     }
 
     @Test
@@ -1147,7 +1147,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
     }
 
     @Test
@@ -1161,7 +1161,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to testhost:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to testhost:443 failed. The download from http://127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
     }
 
     @Test
@@ -1175,7 +1175,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test
@@ -1189,7 +1189,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to host:80 failed. The download from https://127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test
@@ -1203,7 +1203,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to 127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
     }
 
     @Test
@@ -1217,7 +1217,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to testhost:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to testhost:80 failed. The download from https://127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test
