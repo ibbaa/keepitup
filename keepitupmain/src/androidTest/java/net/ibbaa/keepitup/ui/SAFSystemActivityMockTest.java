@@ -566,6 +566,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 

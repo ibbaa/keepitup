@@ -254,6 +254,9 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropResolveTable();
         setup.dropHeaderTable();
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
         migrate.doUpgrade(TestRegistry.getContext(), 5, 6);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
@@ -332,6 +335,7 @@ public class DBMigrateTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -352,6 +356,7 @@ public class DBMigrateTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -372,6 +377,7 @@ public class DBMigrateTest {
         task.setLastScheduled(0);
         task.setFailureCount(0);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 }

@@ -134,6 +134,11 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getAddHighPrioColumnStatement());
     }
 
+    public void addUseDefaultHeadersColumnToNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getUseDefaultHeadersColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getAddUseDefaultHeadersColumnStatement());
+    }
+
     public void addNameColumnToNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getNameColumnName() + " to table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getAddNameColumnStatement());
@@ -275,6 +280,11 @@ public class DBSetup {
     public void dropHighPrioColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getHighPrioColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropHighPrioColumnStatement());
+    }
+
+    public void dropUseDefaultHeadersColumnFromNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getUseDefaultHeadersColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getDropUseDefaultHeadersColumnStatement());
     }
 
     public void dropNameColumnFromNetworkTaskTable(SQLiteDatabase db) {
@@ -457,6 +467,10 @@ public class DBSetup {
         addHighPrioColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addUseDefaultHeadersColumnToNetworkTaskTable() {
+        addUseDefaultHeadersColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void addNameColumnToNetworkTaskTable() {
         addNameColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -526,6 +540,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropHighPrioColumnFromNetworkTaskTable() {
         dropHighPrioColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropUseDefaultHeadersColumnFromNetworkTaskTable() {
+        dropUseDefaultHeadersColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})

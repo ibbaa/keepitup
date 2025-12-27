@@ -1213,6 +1213,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(1);
         networkTask.setHighPrio(true);
+        networkTask.setUseDefaultHeaders(false);
         return networkTask;
     }
 
@@ -1233,6 +1234,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(1);
         networkTask.setHighPrio(false);
+        networkTask.setUseDefaultHeaders(true);
         return networkTask;
     }
 
@@ -1253,6 +1255,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(1);
         networkTask.setHighPrio(false);
+        networkTask.setUseDefaultHeaders(true);
         return networkTask;
     }
 

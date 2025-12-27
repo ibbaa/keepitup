@@ -527,6 +527,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -547,6 +548,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -567,6 +569,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(3);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 

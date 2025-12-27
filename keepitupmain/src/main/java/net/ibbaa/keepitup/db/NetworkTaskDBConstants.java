@@ -38,6 +38,7 @@ class NetworkTaskDBConstants {
     private final String lastScheduledColumnName;
     private final String failureCountColumnName;
     private final String highPrioColumnName;
+    private final String useDefaultHeadersColumnName;
 
     public NetworkTaskDBConstants(Context context) {
         tableName = context.getResources().getString(R.string.task_table_name);
@@ -56,6 +57,7 @@ class NetworkTaskDBConstants {
         lastScheduledColumnName = context.getResources().getString(R.string.task_lastscheduled_column_name);
         failureCountColumnName = context.getResources().getString(R.string.task_failurecount_column_name);
         highPrioColumnName = context.getResources().getString(R.string.task_highprio_column_name);
+        useDefaultHeadersColumnName = context.getResources().getString(R.string.task_usedefaultheaders_column_name);
     }
 
     public String getTableName() {
@@ -122,6 +124,10 @@ class NetworkTaskDBConstants {
         return highPrioColumnName;
     }
 
+    public String getUseDefaultHeadersColumnName() {
+        return useDefaultHeadersColumnName;
+    }
+
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
@@ -138,7 +144,8 @@ class NetworkTaskDBConstants {
                 getRunningColumnName() + " INTEGER, " +
                 getLastScheduledColumnName() + " INTEGER, " +
                 getFailureCountColumnName() + " INTEGER, " +
-                getHighPrioColumnName() + " INTEGER);";
+                getHighPrioColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
     }
 
     public String getCreateTableStatementWithoutFailureCount() {
@@ -156,7 +163,8 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + " INTEGER, " +
                 getRunningColumnName() + " INTEGER, " +
                 getLastScheduledColumnName() + " INTEGER, " +
-                getHighPrioColumnName() + " INTEGER);";
+                getHighPrioColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
     }
 
     public String getCreateTableStatementWithoutHighPrioAndName() {
@@ -173,7 +181,27 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + " INTEGER, " +
                 getRunningColumnName() + " INTEGER, " +
                 getLastScheduledColumnName() + " INTEGER, " +
-                getFailureCountColumnName() + " INTEGER);";
+                getFailureCountColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutUseDefaultHeaders() {
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
+                getNameColumnName() + " TEXT, " +
+                getInstancesColumnName() + " INTEGER, " +
+                getAddressColumnName() + " TEXT, " +
+                getPortColumnName() + " INTEGER, " +
+                getAccessTypeColumnName() + " INTEGER, " +
+                getIntervalColumnName() + " INTEGER, " +
+                getOnlyWifiColumnName() + " TEXT, " +
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER, " +
+                getLastScheduledColumnName() + " INTEGER, " +
+                getFailureCountColumnName() + " INTEGER, " +
+                getHighPrioColumnName() + " INTEGER);";
     }
 
     public String getCreateTableStatementWithoutAddedColumns() {
@@ -212,6 +240,14 @@ class NetworkTaskDBConstants {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getHighPrioColumnName() + ";";
     }
 
+    public String getAddUseDefaultHeadersColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getUseDefaultHeadersColumnName() + " INTEGER;";
+    }
+
+    public String getDropUseDefaultHeadersColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getUseDefaultHeadersColumnName() + " INTEGER;";
+    }
+
     public String getAddNameColumnStatement() {
         return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getNameColumnName() + " TEXT;";
     }
@@ -236,7 +272,8 @@ class NetworkTaskDBConstants {
                 getRunningColumnName() + ", " +
                 getLastScheduledColumnName() + ", " +
                 getFailureCountColumnName() + ", " +
-                getHighPrioColumnName() +
+                getHighPrioColumnName() + ", " +
+                getUseDefaultHeadersColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getIdColumnName() + " = ?;";
     }
@@ -258,7 +295,8 @@ class NetworkTaskDBConstants {
                 getRunningColumnName() + ", " +
                 getLastScheduledColumnName() + ", " +
                 getFailureCountColumnName() + ", " +
-                getHighPrioColumnName() +
+                getHighPrioColumnName() + ", " +
+                getUseDefaultHeadersColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }

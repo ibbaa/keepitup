@@ -220,6 +220,16 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddUseDefaultHeadersColumn() {
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
+        setup.addUseDefaultHeadersColumnToNetworkTaskTable();
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+    }
+
+    @Test
     public void testInitializeFailureCountColumn() {
         NetworkTask task1 = new NetworkTask();
         NetworkTask task2 = new NetworkTask();
@@ -1092,6 +1102,7 @@ public class DBSetupTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -1112,6 +1123,7 @@ public class DBSetupTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -1132,6 +1144,7 @@ public class DBSetupTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 

@@ -368,6 +368,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         task.setLastScheduled(1);
         task.setFailureCount(1);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -386,6 +387,8 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(2);
+        task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 }

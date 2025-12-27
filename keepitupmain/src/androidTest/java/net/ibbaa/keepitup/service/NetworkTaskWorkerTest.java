@@ -1111,6 +1111,7 @@ public class NetworkTaskWorkerTest {
         task.setLastScheduled(1);
         task.setFailureCount(0);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 

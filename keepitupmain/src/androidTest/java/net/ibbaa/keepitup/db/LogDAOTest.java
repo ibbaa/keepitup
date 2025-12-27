@@ -271,6 +271,7 @@ public class LogDAOTest {
         task.setLastScheduled(1);
         task.setFailureCount(2);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 

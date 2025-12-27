@@ -1048,6 +1048,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task.setLastScheduled(1);
         task.setFailureCount(1);
         task.setHighPrio(true);
+        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -1068,6 +1069,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task.setLastScheduled(1);
         task.setFailureCount(2);
         task.setHighPrio(false);
+        task.setUseDefaultHeaders(true);
         return task;
     }
 }

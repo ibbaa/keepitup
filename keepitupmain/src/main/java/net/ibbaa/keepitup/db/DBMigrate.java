@@ -177,12 +177,22 @@ public class DBMigrate {
         setup.createResolveTable(db);
         setup.tryDropHeaderTable(db);
         setup.createHeaderTable(db);
+        try {
+            setup.addUseDefaultHeadersColumnToNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addUseDefaultHeadersColumnToNetworkTaskTable failed ", exc);
+        }
     }
 
     private void version6DowngradeTo5(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version6DowngradeTo5");
         setup.tryDropResolveTable(db);
         setup.tryDropHeaderTable(db);
+        try {
+            setup.dropUseDefaultHeadersColumnFromNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
+        }
     }
 
     @FunctionalInterface
