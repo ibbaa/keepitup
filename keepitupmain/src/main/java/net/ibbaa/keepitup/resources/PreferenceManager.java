@@ -212,6 +212,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.task_highprio_key));
     }
 
+    public boolean getPreferenceUseDefaultHeaders() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceUseDefaultHeaders");
+        return getPreferenceBoolean(getResources().getString(R.string.task_usedefaultheaders_key), getResources().getBoolean(R.bool.task_usedefaultheaders_default));
+    }
+
+    public void setPreferenceUseDefaultHeaders(boolean useDefaultHeaders) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceUseDefaultHeaders, useDefaultHeaders is " + useDefaultHeaders);
+        setPreferenceBoolean(getResources().getString(R.string.task_usedefaultheaders_key), useDefaultHeaders);
+    }
+
+    public void removePreferenceUseDefaultHeaders() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceUseDefaultHeaders");
+        removePreferenceValue(getResources().getString(R.string.task_usedefaultheaders_key));
+    }
+
     public String getPreferenceResolveAddress() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceResolveAddress");
         return getPreferenceString(getResources().getString(R.string.resolve_address_key), "");

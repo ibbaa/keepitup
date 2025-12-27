@@ -184,6 +184,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceUseDefaultHeaders() {
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
+        assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
+        preferenceManager.removeAllPreferences();
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
+        preferenceManager.removePreferenceUseDefaultHeaders();
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceResolveAddress() {
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         preferenceManager.setPreferenceResolveAddress("www.host.com");

@@ -205,7 +205,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
-        preferenceManager.setPreferenceAlarmOnHighPrio(true);
+        preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(123);
@@ -222,6 +223,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
@@ -241,6 +243,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceOnlyWifi", true);
         defaults.put("preferenceNotification", true);
         defaults.put("preferenceHighPrio", true);
+        defaults.put("preferenceUseDefaultHeaders", false);
         defaults.put("preferencePingPackageSize", 1234);
         defaults.put("preferenceResolveAddress", "127.0.0.1");
         defaults.put("preferenceResolvePort", 123);
@@ -256,6 +259,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
+        assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(123, preferenceManager.getPreferenceResolvePort());
@@ -275,6 +279,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceOnlyWifi", "true");
         defaults.put("preferenceNotification", "true");
         defaults.put("preferenceHighPrio", "true");
+        defaults.put("preferenceUseDefaultHeaders", false);
         defaults.put("preferencePingPackageSize", "1234");
         defaults.put("preferenceResolveAddress", "127.0.0.1");
         defaults.put("preferenceResolvePort", "123");
@@ -290,6 +295,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
+        assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(123, preferenceManager.getPreferenceResolvePort());
@@ -309,6 +315,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceOnlyWifi", 1);
         defaults.put("preferenceNotification", 1);
         defaults.put("preferenceHighPrio", 1);
+        defaults.put("preferenceUseDefaultHeaders", 1);
         defaults.put("preferencePingPackageSize", 12345678);
         defaults.put("preferenceResolveAddress", "1.1.1.1.1.1");
         defaults.put("preferenceResolvePort", 12345678);
@@ -324,6 +331,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
@@ -520,6 +528,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
+        assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
@@ -538,6 +547,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(123);
@@ -553,6 +563,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
+        assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(123, preferenceManager.getPreferenceResolvePort());
@@ -567,6 +578,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
+        assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
@@ -683,6 +695,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(123);
         Map<String, ?> defaults = setup.exportDefaults();
@@ -699,6 +712,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
+        assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(123, preferenceManager.getPreferenceResolvePort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
@@ -713,6 +727,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
+        assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
     }
@@ -829,6 +844,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(123);
         setup.removeDefaults();
@@ -844,6 +860,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
@@ -905,6 +922,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
@@ -944,6 +962,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
+        assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
         assertEquals("", preferenceManager.getPreferenceLastArbitraryExportFile());

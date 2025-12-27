@@ -73,6 +73,7 @@ public class PreferenceSetup {
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
         defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
+        defaults.put("preferenceUseDefaultHeaders", preferenceManager.getPreferenceUseDefaultHeaders());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
         defaults.put("preferenceResolveAddress", preferenceManager.getPreferenceResolveAddress());
         defaults.put("preferenceResolvePort", preferenceManager.getPreferenceResolvePort());
@@ -243,6 +244,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceHighPrio(Boolean.parseBoolean(highPrio.toString()));
         } else {
             preferenceManager.removePreferenceHighPrio();
+        }
+        Object useDefaultHeaders = defaults.get("preferenceUseDefaultHeaders");
+        if (isValidBoolean(useDefaultHeaders)) {
+            preferenceManager.setPreferenceUseDefaultHeaders(Boolean.parseBoolean(useDefaultHeaders.toString()));
+        } else {
+            preferenceManager.removePreferenceUseDefaultHeaders();
         }
         Object pingPackageSize = defaults.get("preferencePingPackageSize");
         int pingPackageSizeMin = getResources().getInteger(R.integer.ping_package_size_minimum);
@@ -435,6 +442,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();
         preferenceManager.removePreferenceHighPrio();
+        preferenceManager.removePreferenceUseDefaultHeaders();
         preferenceManager.removePreferenceResolveAddress();
         preferenceManager.removePreferenceResolvePort();
     }

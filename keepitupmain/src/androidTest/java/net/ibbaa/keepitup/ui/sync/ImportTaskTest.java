@@ -120,6 +120,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceHighPrio(true);
+        getPreferenceManager().setPreferenceUseDefaultHeaders(false);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
@@ -226,6 +227,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertTrue(getPreferenceManager().getPreferenceHighPrio());
+        assertFalse(getPreferenceManager().getPreferenceUseDefaultHeaders());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
@@ -283,6 +285,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceHighPrio(true);
+        getPreferenceManager().setPreferenceUseDefaultHeaders(false);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
@@ -393,6 +396,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertTrue(getPreferenceManager().getPreferenceHighPrio());
+        assertFalse(getPreferenceManager().getPreferenceUseDefaultHeaders());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
@@ -437,6 +441,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceHighPrio(true);
+        getPreferenceManager().setPreferenceUseDefaultHeaders(false);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
@@ -485,6 +490,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertTrue(getPreferenceManager().getPreferenceHighPrio());
+        assertFalse(getPreferenceManager().getPreferenceUseDefaultHeaders());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());

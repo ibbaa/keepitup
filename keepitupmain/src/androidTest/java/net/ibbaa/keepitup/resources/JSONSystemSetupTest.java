@@ -277,6 +277,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(15);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(123);
@@ -318,6 +319,7 @@ public class JSONSystemSetupTest {
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
         assertTrue(defaultsData.getBoolean("preferenceHighPrio"));
+        assertFalse(defaultsData.getBoolean("preferenceUseDefaultHeaders"));
         assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
         assertEquals("127.0.0.1", defaultsData.getString("preferenceResolveAddress"));
         assertEquals(123, defaultsData.getInt("preferenceResolvePort"));
@@ -1020,6 +1022,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(123);
@@ -1059,6 +1062,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
+        assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(123, preferenceManager.getPreferenceResolvePort());

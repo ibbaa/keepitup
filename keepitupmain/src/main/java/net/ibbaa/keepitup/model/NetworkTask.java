@@ -95,7 +95,7 @@ public class NetworkTask {
         this.notification = preferenceManager.getPreferenceNotification();
         this.running = resources.getBoolean(R.bool.task_running_default);
         this.highPrio = preferenceManager.getPreferenceHighPrio();
-        this.useDefaultHeaders = resources.getBoolean(R.bool.task_use_default_headers_default);
+        this.useDefaultHeaders = resources.getBoolean(R.bool.task_usedefaultheaders_default);
     }
 
     public NetworkTask(PersistableBundle bundle) {
