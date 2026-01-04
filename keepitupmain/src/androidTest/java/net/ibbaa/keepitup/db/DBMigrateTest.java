@@ -254,9 +254,9 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropResolveTable();
         setup.dropHeaderTable();
-        setup.dropNetworkTaskTable();
-        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
         migrate.doUpgrade(TestRegistry.getContext(), 5, 6);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
@@ -289,10 +289,12 @@ public class DBMigrateTest {
     public void testUpgradeFrom0To6() {
         setup.createTables();
         setup.dropIntervalTable();
-        setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
+        setup.dropAccessTypeDataTable();
         setup.dropResolveTable();
         setup.dropHeaderTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAddedColumns());
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 6);
@@ -335,7 +337,6 @@ public class DBMigrateTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -356,7 +357,6 @@ public class DBMigrateTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -377,7 +377,6 @@ public class DBMigrateTest {
         task.setLastScheduled(0);
         task.setFailureCount(0);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 }

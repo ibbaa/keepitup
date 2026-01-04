@@ -134,11 +134,6 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getAddHighPrioColumnStatement());
     }
 
-    public void addUseDefaultHeadersColumnToNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getUseDefaultHeadersColumnName() + " to table " + networkTaskDBConstants.getTableName());
-        db.execSQL(networkTaskDBConstants.getAddUseDefaultHeadersColumnStatement());
-    }
-
     public void addNameColumnToNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getNameColumnName() + " to table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getAddNameColumnStatement());
@@ -182,6 +177,7 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getCreateTableStatement());
     }
 
+    @SuppressWarnings({"ExtractMethodRecommender"})
     public void initializeAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeAccessTypeDataTable");
         executeDBOperationInTransaction(db, database -> database.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement()));
@@ -191,6 +187,9 @@ public class DBSetup {
         values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
+        values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
+        values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
     }
 
@@ -202,6 +201,11 @@ public class DBSetup {
     public void addIgnoreSSLErrorColumnToAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddIgnoreSSLErrorColumnStatement());
+    }
+
+    public void addUseDefaultHeadersColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddUseDefaultHeadersColumnStatement());
     }
 
     public void createResolveTable(SQLiteDatabase db) {
@@ -282,11 +286,6 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getDropHighPrioColumnStatement());
     }
 
-    public void dropUseDefaultHeadersColumnFromNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getUseDefaultHeadersColumnName() + " from table " + networkTaskDBConstants.getTableName());
-        db.execSQL(networkTaskDBConstants.getDropUseDefaultHeadersColumnStatement());
-    }
-
     public void dropNameColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getNameColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropNameColumnStatement());
@@ -365,6 +364,11 @@ public class DBSetup {
     public void dropIgnoreSSLErrorColumnFromAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropIgnoreSSLErrorColumnStatement());
+    }
+
+    public void dropUseDefaultHeadersColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropUseDefaultHeadersColumnStatement());
     }
 
     public void dropResolveTable(SQLiteDatabase db) {
@@ -467,16 +471,20 @@ public class DBSetup {
         addHighPrioColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void addUseDefaultHeadersColumnToNetworkTaskTable() {
-        addUseDefaultHeadersColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
-    }
-
     public void addNameColumnToNetworkTaskTable() {
         addNameColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addStopOnSuccessColumnToAccessTypeDataTable() {
+        addStopOnSuccessColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void addIgnoreSSLErrorColumnToAccessTypeDataTable() {
         addIgnoreSSLErrorColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addUseDefaultHeadersColumnToAccessTypeDataTable() {
+        addUseDefaultHeadersColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void initializeFailureCountColumn() {
@@ -543,8 +551,18 @@ public class DBSetup {
     }
 
     @SuppressWarnings({"unused"})
-    public void dropUseDefaultHeadersColumnFromNetworkTaskTable() {
-        dropUseDefaultHeadersColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    public void dropStopOnSuccessColumnFromAccessTypeDataTable() {
+        dropStopOnSuccessColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropIgnoreSSLErrorColumnFromAccessTypeDataTable() {
+        dropIgnoreSSLErrorColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropUseDefaultHeadersColumnFromAccessTypeDataTable() {
+        dropUseDefaultHeadersColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})

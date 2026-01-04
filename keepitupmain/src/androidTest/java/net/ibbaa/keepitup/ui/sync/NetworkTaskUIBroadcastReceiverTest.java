@@ -98,7 +98,6 @@ public class NetworkTaskUIBroadcastReceiverTest extends BaseUITest {
         task.setLastScheduled(1);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 }

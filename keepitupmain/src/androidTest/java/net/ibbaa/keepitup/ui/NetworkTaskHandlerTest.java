@@ -412,7 +412,6 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(1);
         networkTask.setHighPrio(true);
-        networkTask.setUseDefaultHeaders(false);
         return networkTask;
     }
 
@@ -433,7 +432,6 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(2);
         networkTask.setHighPrio(false);
-        networkTask.setUseDefaultHeaders(true);
         return networkTask;
     }
 
@@ -454,7 +452,6 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(3);
         networkTask.setHighPrio(true);
-        networkTask.setUseDefaultHeaders(false);
         return networkTask;
     }
 
@@ -475,7 +472,6 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(4);
         networkTask.setHighPrio(false);
-        networkTask.setUseDefaultHeaders(true);
         return networkTask;
     }
 
@@ -488,6 +484,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 
@@ -500,6 +497,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(2);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setUseDefaultHeaders(true);
         return data;
     }
 
@@ -512,6 +510,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 
@@ -524,6 +523,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setUseDefaultHeaders(true);
         return data;
     }
 

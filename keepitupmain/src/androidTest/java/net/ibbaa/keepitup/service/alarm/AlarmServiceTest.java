@@ -121,7 +121,6 @@ public class AlarmServiceTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 }

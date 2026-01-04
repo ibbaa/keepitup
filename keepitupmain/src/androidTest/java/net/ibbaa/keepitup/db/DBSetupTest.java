@@ -220,13 +220,23 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddStopOnSuccessColumn() {
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutStopOnSuccess());
+        setup.addStopOnSuccessColumnToAccessTypeDataTable();
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+    }
+
+    @Test
     public void testAddUseDefaultHeadersColumn() {
-        setup.dropNetworkTaskTable();
-        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
-        setup.addUseDefaultHeadersColumnToNetworkTaskTable();
-        networkTaskDAO.insertNetworkTask(new NetworkTask());
-        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
+        setup.addUseDefaultHeadersColumnToAccessTypeDataTable();
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
     }
 
     @Test
@@ -1102,7 +1112,6 @@ public class DBSetupTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -1123,7 +1132,6 @@ public class DBSetupTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -1144,7 +1152,6 @@ public class DBSetupTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -1229,6 +1236,7 @@ public class DBSetupTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 

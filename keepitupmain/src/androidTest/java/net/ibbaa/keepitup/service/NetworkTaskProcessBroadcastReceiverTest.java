@@ -292,7 +292,6 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(1);
         networkTask.setHighPrio(true);
-        networkTask.setUseDefaultHeaders(false);
         return networkTask;
     }
 

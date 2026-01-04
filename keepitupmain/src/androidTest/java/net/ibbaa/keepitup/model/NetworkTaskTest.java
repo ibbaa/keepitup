@@ -74,7 +74,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
         task = new NetworkTask(persistableBundle);
@@ -93,7 +92,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
         task = new NetworkTask(bundle);
@@ -112,7 +110,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
         Map<String, ?> map = task.toMap();
         assertNotNull(map);
         task = new NetworkTask(map);
@@ -131,7 +128,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -153,7 +149,6 @@ public class NetworkTaskTest {
         task.setLastScheduled(timestamp);
         task.setFailureCount(12);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         NetworkTask copyTask = new NetworkTask(task);
         assertEquals(-1, copyTask.getId());
         assertEquals(-1, copyTask.getIndex());
@@ -170,7 +165,6 @@ public class NetworkTaskTest {
         assertEquals(-1, copyTask.getLastScheduled());
         assertEquals(0, copyTask.getFailureCount());
         assertTrue(copyTask.isHighPrio());
-        assertFalse(copyTask.isUseDefaultHeaders());
     }
 
     @Test
@@ -191,7 +185,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -212,7 +205,6 @@ public class NetworkTaskTest {
         map.put("lastScheduled", "xyz");
         map.put("failureCount", "zyx");
         map.put("highPrio", "zyx");
-        map.put("useDefaultHeaders", "zyx");
         NetworkTask task = new NetworkTask(map);
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
@@ -229,7 +221,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertFalse(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -250,7 +241,6 @@ public class NetworkTaskTest {
         map.put("lastScheduled", "7");
         map.put("failureCount", "3");
         map.put("highPrio", "true");
-        map.put("useDefaultHeaders", "false");
         NetworkTask task = new NetworkTask(map);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
@@ -267,7 +257,6 @@ public class NetworkTaskTest {
         assertEquals(7, task.getLastScheduled());
         assertEquals(3, task.getFailureCount());
         assertTrue(task.isHighPrio());
-        assertFalse(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -296,7 +285,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertTrue(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
         preferenceManager.removeAllPreferences();
         task = new NetworkTask(TestRegistry.getContext());
         assertEquals(-1, task.getId());
@@ -314,7 +302,6 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getLastScheduled());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
-        assertTrue(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -336,7 +323,6 @@ public class NetworkTaskTest {
         task.setLastScheduled(timestamp);
         task.setFailureCount(12);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
@@ -352,7 +338,6 @@ public class NetworkTaskTest {
         assertEquals(timestamp, task.getLastScheduled());
         assertEquals(12, task.getFailureCount());
         assertTrue(task.isHighPrio());
-        assertFalse(task.isUseDefaultHeaders());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
         task = new NetworkTask(persistableBundle);
@@ -371,7 +356,6 @@ public class NetworkTaskTest {
         assertEquals(timestamp, task.getLastScheduled());
         assertEquals(12, task.getFailureCount());
         assertTrue(task.isHighPrio());
-        assertFalse(task.isUseDefaultHeaders());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
         task = new NetworkTask(bundle);
@@ -390,7 +374,6 @@ public class NetworkTaskTest {
         assertEquals(timestamp, task.getLastScheduled());
         assertEquals(12, task.getFailureCount());
         assertTrue(task.isHighPrio());
-        assertFalse(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -412,7 +395,6 @@ public class NetworkTaskTest {
         task.setLastScheduled(timestamp);
         task.setFailureCount(25);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         Map<String, ?> map = task.toMap();
         assertNotNull(map);
         task = new NetworkTask(map);
@@ -431,7 +413,6 @@ public class NetworkTaskTest {
         assertEquals(timestamp, task.getLastScheduled());
         assertEquals(25, task.getFailureCount());
         assertTrue(task.isHighPrio());
-        assertFalse(task.isUseDefaultHeaders());
     }
 
     @Test
@@ -498,10 +479,6 @@ public class NetworkTaskTest {
         assertFalse(networkTask1.isEqual(networkTask2));
         networkTask2.setHighPrio(true);
         assertTrue(networkTask1.isEqual(networkTask2));
-        networkTask1.setUseDefaultHeaders(false);
-        assertFalse(networkTask1.isEqual(networkTask2));
-        networkTask2.setUseDefaultHeaders(false);
-        assertTrue(networkTask1.isEqual(networkTask2));
     }
 
     @Test
@@ -548,10 +525,6 @@ public class NetworkTaskTest {
         networkTask1.setHighPrio(true);
         assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
         networkTask2.setHighPrio(true);
-        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
-        networkTask1.setUseDefaultHeaders(false);
-        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
-        networkTask2.setUseDefaultHeaders(false);
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
     }
 }

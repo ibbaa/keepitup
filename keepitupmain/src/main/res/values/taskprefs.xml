@@ -31,8 +31,6 @@
     <string name="task_notification_key">task_notification_key</string>
     <bool name="task_highprio_default">false</bool>
     <string name="task_highprio_key">task_highprio_key</string>
-    <bool name="task_usedefaultheaders_default">true</bool>
-    <string name="task_usedefaultheaders_key">task_usedefaultheaders_key</string>
     <bool name="task_running_default">false</bool>
     <integer name="task_port_minimum">0</integer>
     <integer name="task_port_maximum">65535</integer>
@@ -40,5 +38,4 @@
     <integer name="task_interval_maximum">2147483647</integer>
     <string name="task_alarm_duration_key">task_alarm_duration_key</string>
     <integer name="task_alarm_duration">60</integer>
-
 </resources>

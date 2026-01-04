@@ -42,6 +42,7 @@ public class AccessTypeDataDBConstantsTest {
         assertEquals(getResourceString(R.string.accesstypedata_connectcount_column_name), dbConstants.getConnectCountColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_stoponsuccess_column_name), dbConstants.getStopOnSuccessColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_ignoresslerror_column_name), dbConstants.getIgnoreSSLErrorColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_usedefaultheaders_column_name), dbConstants.getUseDefaultHeadersColumnName());
     }
 
     private String getResourceString(int id) {

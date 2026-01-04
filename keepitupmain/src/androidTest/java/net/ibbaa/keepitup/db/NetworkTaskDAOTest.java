@@ -216,7 +216,6 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getName(), readTask1.getName());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertEquals(insertedTask1.isHighPrio(), readTask1.isHighPrio());
-        assertEquals(insertedTask1.isUseDefaultHeaders(), readTask1.isUseDefaultHeaders());
         assertFalse(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(1, readTask1.getFailureCount());
@@ -242,7 +241,6 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getName(), readTask1.getName());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertEquals(insertedTask1.isHighPrio(), readTask1.isHighPrio());
-        assertEquals(insertedTask1.isUseDefaultHeaders(), readTask1.isUseDefaultHeaders());
         assertTrue(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(0, readTask1.getFailureCount());
@@ -294,7 +292,6 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(task2.isNotification(), readTask1.isNotification());
         assertEquals(task2.isHighPrio(), readTask1.isHighPrio());
-        assertEquals(task2.isUseDefaultHeaders(), readTask1.isUseDefaultHeaders());
         assertEquals(task2.getName(), readTask1.getName());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
@@ -627,7 +624,6 @@ public class NetworkTaskDAOTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -648,7 +644,6 @@ public class NetworkTaskDAOTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -669,7 +664,6 @@ public class NetworkTaskDAOTest {
         task.setLastScheduled(0);
         task.setFailureCount(0);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 }

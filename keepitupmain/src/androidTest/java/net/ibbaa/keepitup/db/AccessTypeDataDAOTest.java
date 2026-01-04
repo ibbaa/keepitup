@@ -108,13 +108,17 @@ public class AccessTypeDataDAOTest {
         readData2.setPingCount(9);
         readData2.setStopOnSuccess(false);
         readData2.setIgnoreSSLError(false);
+        readData2.setUseDefaultHeaders(true);
         accessTypeDataDAO.updateAccessTypeData(readData2);
         readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         assertEquals(9, readData2.getPingCount());
         assertFalse(readData2.isStopOnSuccess());
+        assertFalse(readData2.isIgnoreSSLError());
+        assertTrue(readData2.isUseDefaultHeaders());
         readData2.setPingCount(data2.getPingCount());
         readData2.setStopOnSuccess(data2.isStopOnSuccess());
         readData2.setIgnoreSSLError(data2.isIgnoreSSLError());
+        readData2.setUseDefaultHeaders(data2.isUseDefaultHeaders());
         assertTrue(data2.isEqual(readData2));
         readData1.setPingPackageSize(12);
         readData1.setConnectCount(1);
@@ -173,7 +177,6 @@ public class AccessTypeDataDAOTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -186,6 +189,7 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 
@@ -198,6 +202,7 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(2);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 
@@ -210,6 +215,7 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setUseDefaultHeaders(true);
         return data;
     }
 }

@@ -48,7 +48,6 @@ public class NetworkTask {
     private long lastScheduled;
     private int failureCount;
     private boolean highPrio;
-    private boolean useDefaultHeaders;
 
     public NetworkTask() {
         this.id = -1;
@@ -66,7 +65,6 @@ public class NetworkTask {
         this.lastScheduled = -1;
         this.failureCount = 0;
         this.highPrio = false;
-        this.useDefaultHeaders = true;
     }
 
     public NetworkTask(NetworkTask otherTask) {
@@ -79,7 +77,6 @@ public class NetworkTask {
         this.onlyWifi = otherTask.isOnlyWifi();
         this.notification = otherTask.isNotification();
         this.highPrio = otherTask.isHighPrio();
-        this.useDefaultHeaders = otherTask.isUseDefaultHeaders();
     }
 
     public NetworkTask(Context context) {
@@ -95,7 +92,6 @@ public class NetworkTask {
         this.notification = preferenceManager.getPreferenceNotification();
         this.running = resources.getBoolean(R.bool.task_running_default);
         this.highPrio = preferenceManager.getPreferenceHighPrio();
-        this.useDefaultHeaders = resources.getBoolean(R.bool.task_usedefaultheaders_default);
     }
 
     public NetworkTask(PersistableBundle bundle) {
@@ -121,7 +117,6 @@ public class NetworkTask {
         this.lastScheduled = bundle.getLong("lastScheduled");
         this.failureCount = bundle.getInt("failureCount");
         this.highPrio = bundle.getInt("highPrio") >= 1;
-        this.useDefaultHeaders = bundle.getInt("useDefaultHeaders") >= 1;
     }
 
     public NetworkTask(Map<String, ?> map) {
@@ -170,9 +165,6 @@ public class NetworkTask {
         }
         if (map.get("highPrio") != null) {
             this.highPrio = Boolean.parseBoolean(Objects.requireNonNull(map.get("highPrio")).toString());
-        }
-        if (map.get("useDefaultHeaders") != null) {
-            this.useDefaultHeaders = Boolean.parseBoolean(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
         }
     }
 
@@ -296,14 +288,6 @@ public class NetworkTask {
         this.highPrio = highPrio;
     }
 
-    public boolean isUseDefaultHeaders() {
-        return useDefaultHeaders;
-    }
-
-    public void setUseDefaultHeaders(boolean useDefaultHeaders) {
-        this.useDefaultHeaders = useDefaultHeaders;
-    }
-
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -325,7 +309,6 @@ public class NetworkTask {
         bundle.putLong("lastScheduled", lastScheduled);
         bundle.putInt("failureCount", failureCount);
         bundle.putInt("highPrio", highPrio ? 1 : 0);
-        bundle.putInt("useDefaultHeaders", useDefaultHeaders ? 1 : 0);
         return bundle;
     }
 
@@ -354,7 +337,6 @@ public class NetworkTask {
         map.put("lastScheduled", lastScheduled);
         map.put("failureCount", failureCount);
         map.put("highPrio", highPrio);
-        map.put("useDefaultHeaders", useDefaultHeaders);
         return map;
     }
 
@@ -401,9 +383,6 @@ public class NetworkTask {
         if (highPrio != other.highPrio) {
             return false;
         }
-        if (useDefaultHeaders != other.useDefaultHeaders) {
-            return false;
-        }
         if (!Objects.equals(address, other.address)) {
             return false;
         }
@@ -427,9 +406,6 @@ public class NetworkTask {
             return false;
         }
         if (highPrio != other.highPrio) {
-            return false;
-        }
-        if (useDefaultHeaders != other.useDefaultHeaders) {
             return false;
         }
         if (!Objects.equals(address, other.address)) {
@@ -457,7 +433,6 @@ public class NetworkTask {
                 ", lastScheduled=" + lastScheduled +
                 ", failureCount=" + failureCount +
                 ", highPrio=" + highPrio +
-                ", useDefaultHeaders=" + useDefaultHeaders +
                 '}';
     }
 }

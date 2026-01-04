@@ -1421,7 +1421,6 @@ public class DownloadCommandTest {
         task.setFailureCount(1);
         task.setNotification(true);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 

@@ -94,7 +94,6 @@ public class NetworkTaskUIWrapperTest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -117,6 +116,7 @@ public class NetworkTaskUIWrapperTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 

@@ -103,6 +103,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
@@ -111,7 +112,6 @@ public class AccessTypeDataDAO extends BaseDAO {
         return accessTypeData;
     }
 
-    @SuppressWarnings({"ExtractMethodRecommender"})
     private AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
         Log.d(AccessTypeDataDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
@@ -124,6 +124,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return accessTypeData;
     }
@@ -214,6 +215,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexConnectCountColumn = cursor.getColumnIndex(dbConstants.getConnectCountColumnName());
         int indexStopOnSuccessColumn = cursor.getColumnIndex(dbConstants.getStopOnSuccessColumnName());
         int indexIgnoreSSLErrorColumn = cursor.getColumnIndex(dbConstants.getIgnoreSSLErrorColumnName());
+        int indexUseDefaultHeadersColumn = cursor.getColumnIndex(dbConstants.getUseDefaultHeadersColumnName());
         accessTypeData.setId(cursor.getLong(indexIdColumn));
         accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
@@ -221,6 +223,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         accessTypeData.setConnectCount(cursor.getInt(indexConnectCountColumn));
         accessTypeData.setStopOnSuccess(cursor.getInt(indexStopOnSuccessColumn) >= 1);
         accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
+        accessTypeData.setUseDefaultHeaders(cursor.getInt(indexUseDefaultHeadersColumn) >= 1);
         return accessTypeData;
     }
 }

@@ -31,4 +31,6 @@
     <bool name="stop_on_success_default">false</bool>
     <string name="ignore_ssl_error_key">ignore_ssl_error_key</string>
     <bool name="ignore_ssl_error_default">false</bool>
+    <string name="use_default_headers_key">use_default_headers_key</string>
+    <bool name="use_default_headers_default">true</bool>
 </resources>

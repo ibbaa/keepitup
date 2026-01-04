@@ -38,6 +38,7 @@ public class AccessTypeData {
     private int connectCount;
     private boolean stopOnSuccess;
     private boolean ignoreSSLError;
+    private boolean useDefaultHeaders;
 
     public AccessTypeData() {
         this.id = -1;
@@ -47,6 +48,7 @@ public class AccessTypeData {
         this.connectCount = 1;
         this.stopOnSuccess = false;
         this.ignoreSSLError = false;
+        this.useDefaultHeaders = true;
     }
 
     public AccessTypeData(AccessTypeData otherData) {
@@ -56,6 +58,7 @@ public class AccessTypeData {
         this.connectCount = otherData.getConnectCount();
         this.stopOnSuccess = otherData.isStopOnSuccess();
         this.ignoreSSLError = otherData.isIgnoreSSLError();
+        this.useDefaultHeaders = otherData.isUseDefaultHeaders();
     }
 
     public AccessTypeData(Context context) {
@@ -66,6 +69,7 @@ public class AccessTypeData {
         this.connectCount = preferenceManager.getPreferenceConnectCount();
         this.stopOnSuccess = preferenceManager.getPreferenceStopOnSuccess();
         this.ignoreSSLError = preferenceManager.getPreferenceIgnoreSSLError();
+        this.useDefaultHeaders = preferenceManager.getPreferenceUseDefaultHeaders();
     }
 
     public AccessTypeData(PersistableBundle bundle) {
@@ -81,6 +85,7 @@ public class AccessTypeData {
         this.connectCount = bundle.getInt("connectCount");
         this.stopOnSuccess = bundle.getInt("stopOnSuccess") >= 1;
         this.ignoreSSLError = bundle.getInt("ignoreSSLError") >= 1;
+        this.useDefaultHeaders = bundle.getInt("useDefaultHeaders") >= 1;
     }
 
     public AccessTypeData(Map<String, ?> map) {
@@ -105,6 +110,9 @@ public class AccessTypeData {
         }
         if (map.get("ignoreSSLError") != null) {
             this.ignoreSSLError = Boolean.parseBoolean(Objects.requireNonNull(map.get("ignoreSSLError")).toString());
+        }
+        if (map.get("useDefaultHeaders") != null) {
+            this.useDefaultHeaders = Boolean.parseBoolean(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
         }
     }
 
@@ -164,6 +172,14 @@ public class AccessTypeData {
         this.ignoreSSLError = ignoreSSLError;
     }
 
+    public boolean isUseDefaultHeaders() {
+        return useDefaultHeaders;
+    }
+
+    public void setUseDefaultHeaders(boolean useDefaultHeaders) {
+        this.useDefaultHeaders = useDefaultHeaders;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -173,6 +189,7 @@ public class AccessTypeData {
         bundle.putInt("connectCount", connectCount);
         bundle.putInt("stopOnSuccess", stopOnSuccess ? 1 : 0);
         bundle.putInt("ignoreSSLError", ignoreSSLError ? 1 : 0);
+        bundle.putInt("useDefaultHeaders", useDefaultHeaders ? 1 : 0);
         return bundle;
     }
 
@@ -189,6 +206,7 @@ public class AccessTypeData {
         map.put("connectCount", connectCount);
         map.put("stopOnSuccess", stopOnSuccess);
         map.put("ignoreSSLError", ignoreSSLError);
+        map.put("useDefaultHeaders", useDefaultHeaders);
         return map;
     }
 
@@ -214,6 +232,9 @@ public class AccessTypeData {
         if (stopOnSuccess != other.stopOnSuccess) {
             return false;
         }
+        if (useDefaultHeaders != other.useDefaultHeaders) {
+            return false;
+        }
         return Objects.equals(ignoreSSLError, other.ignoreSSLError);
     }
 
@@ -236,6 +257,9 @@ public class AccessTypeData {
         if (stopOnSuccess != other.stopOnSuccess) {
             return false;
         }
+        if (useDefaultHeaders != other.useDefaultHeaders) {
+            return false;
+        }
         return Objects.equals(ignoreSSLError, other.ignoreSSLError);
     }
 
@@ -250,6 +274,7 @@ public class AccessTypeData {
                 ", connectCount=" + connectCount +
                 ", stopOnSuccess=" + stopOnSuccess +
                 ", ignoreSSLError=" + ignoreSSLError +
+                ", useDefaultHeaders=" + useDefaultHeaders +
                 '}';
     }
 }

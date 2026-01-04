@@ -64,6 +64,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertTrue(data.isUseDefaultHeaders());
         PersistableBundle persistableBundle = data.toPersistableBundle();
         assertNotNull(persistableBundle);
         data = new AccessTypeData(persistableBundle);
@@ -74,6 +75,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertTrue(data.isUseDefaultHeaders());
         Bundle bundle = data.toBundle();
         assertNotNull(bundle);
         data = new AccessTypeData(bundle);
@@ -84,6 +86,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertTrue(data.isUseDefaultHeaders());
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
         data = new AccessTypeData(map);
@@ -94,6 +97,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertTrue(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -106,6 +110,7 @@ public class AccessTypeDataTest {
         data.setConnectCount(789);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         AccessTypeData copyData = new AccessTypeData(data);
         assertEquals(-1, copyData.getId());
         assertEquals(-1, copyData.getNetworkTaskId());
@@ -114,6 +119,7 @@ public class AccessTypeDataTest {
         assertEquals(789, copyData.getConnectCount());
         assertTrue(copyData.isStopOnSuccess());
         assertTrue(copyData.isIgnoreSSLError());
+        assertFalse(copyData.isUseDefaultHeaders());
     }
 
     @Test
@@ -126,6 +132,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertTrue(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -138,6 +145,7 @@ public class AccessTypeDataTest {
         map.put("connectCount", "connectCount");
         map.put("stopOnSuccess", "stopOnSuccess");
         map.put("ignoreSSLError", "isIgnoreSSLError");
+        map.put("useDefaultHeaders", "zyx");
         AccessTypeData data = new AccessTypeData(map);
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
@@ -146,6 +154,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -158,6 +167,7 @@ public class AccessTypeDataTest {
         map.put("connectCount", "789");
         map.put("stopOnSuccess", "true");
         map.put("ignoreSSLError", "true");
+        map.put("useDefaultHeaders", "false");
         AccessTypeData data = new AccessTypeData(map);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
@@ -166,6 +176,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -176,6 +187,7 @@ public class AccessTypeDataTest {
         preferenceManager.setPreferenceConnectCount(789);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceUseDefaultHeaders(false);
         AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
@@ -184,6 +196,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
         preferenceManager.removeAllPreferences();
         data = new AccessTypeData(TestRegistry.getContext());
         assertEquals(-1, data.getId());
@@ -193,6 +206,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertTrue(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -205,6 +219,7 @@ public class AccessTypeDataTest {
         data.setConnectCount(789);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());
@@ -212,6 +227,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
         PersistableBundle persistableBundle = data.toPersistableBundle();
         assertNotNull(persistableBundle);
         data = new AccessTypeData(persistableBundle);
@@ -222,6 +238,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
         Bundle bundle = data.toBundle();
         assertNotNull(bundle);
         data = new AccessTypeData(bundle);
@@ -232,6 +249,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -244,6 +262,7 @@ public class AccessTypeDataTest {
         data.setConnectCount(789);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
         data = new AccessTypeData(map);
@@ -254,6 +273,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertFalse(data.isUseDefaultHeaders());
     }
 
     @Test
@@ -289,6 +309,10 @@ public class AccessTypeDataTest {
         assertFalse(data1.isEqual(data2));
         data2.setIgnoreSSLError(true);
         assertTrue(data1.isEqual(data2));
+        data1.setUseDefaultHeaders(false);
+        assertFalse(data1.isEqual(data2));
+        data2.setUseDefaultHeaders(false);
+        assertTrue(data1.isEqual(data2));
     }
 
     @Test
@@ -323,6 +347,10 @@ public class AccessTypeDataTest {
         data1.setIgnoreSSLError(true);
         assertFalse(data1.isEqual(data2));
         data2.setIgnoreSSLError(true);
+        assertTrue(data1.isEqual(data2));
+        data1.setUseDefaultHeaders(false);
+        assertFalse(data1.isEqual(data2));
+        data2.setUseDefaultHeaders(false);
         assertTrue(data1.isEqual(data2));
     }
 }

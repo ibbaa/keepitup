@@ -1111,7 +1111,6 @@ public class NetworkTaskWorkerTest {
         task.setLastScheduled(1);
         task.setFailureCount(0);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -1124,6 +1123,7 @@ public class NetworkTaskWorkerTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 

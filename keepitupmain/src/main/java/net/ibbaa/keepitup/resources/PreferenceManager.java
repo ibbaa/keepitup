@@ -214,17 +214,17 @@ public class PreferenceManager {
 
     public boolean getPreferenceUseDefaultHeaders() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceUseDefaultHeaders");
-        return getPreferenceBoolean(getResources().getString(R.string.task_usedefaultheaders_key), getResources().getBoolean(R.bool.task_usedefaultheaders_default));
+        return getPreferenceBoolean(getResources().getString(R.string.use_default_headers_key), getResources().getBoolean(R.bool.use_default_headers_default));
     }
 
     public void setPreferenceUseDefaultHeaders(boolean useDefaultHeaders) {
         Log.d(PreferenceManager.class.getName(), "setPreferenceUseDefaultHeaders, useDefaultHeaders is " + useDefaultHeaders);
-        setPreferenceBoolean(getResources().getString(R.string.task_usedefaultheaders_key), useDefaultHeaders);
+        setPreferenceBoolean(getResources().getString(R.string.use_default_headers_key), useDefaultHeaders);
     }
 
     public void removePreferenceUseDefaultHeaders() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceUseDefaultHeaders");
-        removePreferenceValue(getResources().getString(R.string.task_usedefaultheaders_key));
+        removePreferenceValue(getResources().getString(R.string.use_default_headers_key));
     }
 
     public String getPreferenceResolveAddress() {

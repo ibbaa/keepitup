@@ -31,6 +31,7 @@ public class AccessTypeDataDBConstants {
     private final String connectCountColumnName;
     private final String stopOnSuccessColumnName;
     private final String ignoreSSLErrorColumnName;
+    private final String useDefaultHeadersColumnName;
 
     public AccessTypeDataDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
@@ -42,6 +43,7 @@ public class AccessTypeDataDBConstants {
         connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connectcount_column_name);
         stopOnSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stoponsuccess_column_name);
         ignoreSSLErrorColumnName = context.getResources().getString(R.string.accesstypedata_ignoresslerror_column_name);
+        useDefaultHeadersColumnName = context.getResources().getString(R.string.accesstypedata_usedefaultheaders_column_name);
     }
 
     public String getTableName() {
@@ -76,7 +78,45 @@ public class AccessTypeDataDBConstants {
         return ignoreSSLErrorColumnName;
     }
 
+    public String getUseDefaultHeadersColumnName() {
+        return useDefaultHeadersColumnName;
+    }
+
     public String getCreateTableStatement() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getPingCountColumnName() + " INTEGER, " +
+                getPingPackageSizeColumnName() + " INTEGER, " +
+                getConnectCountColumnName() + " INTEGER, " +
+                getStopOnSuccessColumnName() + " INTEGER, " +
+                getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutStopOnSuccess() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getPingCountColumnName() + " INTEGER, " +
+                getPingPackageSizeColumnName() + " INTEGER, " +
+                getConnectCountColumnName() + " INTEGER, " +
+                getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutIgnoreSSLError() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getPingCountColumnName() + " INTEGER, " +
+                getPingPackageSizeColumnName() + " INTEGER, " +
+                getConnectCountColumnName() + " INTEGER, " +
+                getStopOnSuccessColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutUseDefaultHeaders() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
@@ -87,24 +127,13 @@ public class AccessTypeDataDBConstants {
                 getIgnoreSSLErrorColumnName() + " INTEGER);";
     }
 
-    public String getCreateTableStatementWithoutStopOnSuccess() {
+    public String getCreateTableStatementWithoutAddedColumns() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
                 getPingCountColumnName() + " INTEGER, " +
                 getPingPackageSizeColumnName() + " INTEGER, " +
-                getConnectCountColumnName() + " INTEGER, " +
-                getIgnoreSSLErrorColumnName() + " INTEGER);";
-    }
-
-    public String getCreateTableStatementWithoutIgnoreSSLError() {
-        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
-                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
-                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
-                getPingCountColumnName() + " INTEGER, " +
-                getPingPackageSizeColumnName() + " INTEGER, " +
-                getConnectCountColumnName() + " INTEGER, " +
-                getStopOnSuccessColumnName() + " INTEGER);";
+                getConnectCountColumnName() + " INTEGER);";
     }
 
     public String getDropTableStatement() {
@@ -119,7 +148,8 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + ", " +
                 getConnectCountColumnName() + ", " +
                 getStopOnSuccessColumnName() + ", " +
-                getIgnoreSSLErrorColumnName() +
+                getIgnoreSSLErrorColumnName() + ", " +
+                getUseDefaultHeadersColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
@@ -132,7 +162,8 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + ", " +
                 getConnectCountColumnName() + ", " +
                 getStopOnSuccessColumnName() + ", " +
-                getIgnoreSSLErrorColumnName() +
+                getIgnoreSSLErrorColumnName() + ", " +
+                getUseDefaultHeadersColumnName() +
                 " FROM " + getTableName();
     }
 
@@ -161,5 +192,13 @@ public class AccessTypeDataDBConstants {
 
     public String getDropIgnoreSSLErrorColumnStatement() {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getIgnoreSSLErrorColumnName() + ";";
+    }
+
+    public String getAddUseDefaultHeadersColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getUseDefaultHeadersColumnName() + " INTEGER;";
+    }
+
+    public String getDropUseDefaultHeadersColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getUseDefaultHeadersColumnName() + " INTEGER;";
     }
 }

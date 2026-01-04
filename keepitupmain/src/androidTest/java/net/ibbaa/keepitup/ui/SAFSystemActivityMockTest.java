@@ -566,7 +566,6 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -588,6 +587,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 

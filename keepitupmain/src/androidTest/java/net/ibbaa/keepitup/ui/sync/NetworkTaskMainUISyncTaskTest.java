@@ -237,7 +237,6 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setLastScheduled(1);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -258,7 +257,6 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setLastScheduled(1);
         task.setFailureCount(2);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -279,7 +277,6 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setLastScheduled(1);
         task.setFailureCount(3);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -292,6 +289,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 
@@ -304,6 +302,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setConnectCount(6);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(true);
         return data;
     }
 

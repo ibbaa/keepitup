@@ -178,9 +178,9 @@ public class DBMigrate {
         setup.tryDropHeaderTable(db);
         setup.createHeaderTable(db);
         try {
-            setup.addUseDefaultHeadersColumnToNetworkTaskTable(db);
+            setup.addUseDefaultHeadersColumnToAccessTypeDataTable(db);
         } catch (Exception exc) {
-            Log.e(DBMigrate.class.getName(), "addUseDefaultHeadersColumnToNetworkTaskTable failed ", exc);
+            Log.e(DBMigrate.class.getName(), "addUseDefaultHeadersColumnToAccessTypeDataTable failed ", exc);
         }
     }
 
@@ -189,9 +189,9 @@ public class DBMigrate {
         setup.tryDropResolveTable(db);
         setup.tryDropHeaderTable(db);
         try {
-            setup.dropUseDefaultHeadersColumnFromNetworkTaskTable(db);
+            setup.dropUseDefaultHeadersColumnFromAccessTypeDataTable(db);
         } catch (Exception exc) {
-            Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
+            Log.e(DBMigrate.class.getName(), "dropUseDefaultHeadersColumnFromAccessTypeDataTable failed ", exc);
         }
     }
 

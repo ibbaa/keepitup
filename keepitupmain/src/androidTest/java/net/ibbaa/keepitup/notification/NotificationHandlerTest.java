@@ -402,7 +402,6 @@ public class NotificationHandlerTest {
         task.setLastScheduled(1);
         task.setFailureCount(1);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -422,7 +421,6 @@ public class NotificationHandlerTest {
         task.setLastScheduled(1);
         task.setFailureCount(2);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -443,7 +441,6 @@ public class NotificationHandlerTest {
         task.setLastScheduled(1);
         task.setFailureCount(3);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 

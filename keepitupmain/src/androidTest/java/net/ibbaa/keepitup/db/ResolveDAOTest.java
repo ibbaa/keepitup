@@ -159,7 +159,6 @@ public class ResolveDAOTest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 

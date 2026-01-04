@@ -1962,7 +1962,6 @@ public class DownloadNetworkTaskWorkerTest {
         task.setLastScheduled(1);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -1975,6 +1974,7 @@ public class DownloadNetworkTaskWorkerTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 

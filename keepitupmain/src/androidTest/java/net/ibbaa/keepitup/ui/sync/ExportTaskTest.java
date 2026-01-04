@@ -443,7 +443,6 @@ public class ExportTaskTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
-        task.setUseDefaultHeaders(false);
         return task;
     }
 
@@ -464,7 +463,6 @@ public class ExportTaskTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -485,7 +483,6 @@ public class ExportTaskTest extends BaseUITest {
         task.setLastScheduled(0);
         task.setFailureCount(3);
         task.setHighPrio(false);
-        task.setUseDefaultHeaders(true);
         return task;
     }
 
@@ -528,6 +525,7 @@ public class ExportTaskTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setUseDefaultHeaders(true);
         return data;
     }
 
@@ -540,6 +538,7 @@ public class ExportTaskTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setUseDefaultHeaders(false);
         return data;
     }
 
