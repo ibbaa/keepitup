@@ -668,7 +668,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private void requestConfigurationExportFilePermission(View view) {
         Log.d(SystemActivity.class.getName(), "requestConfigurationExportFilePermission");
-        String fileName = getResources().getString(R.string.export_file_prefix);
+        String fileName = getResources().getString(R.string.export_file_prefix) + getResources().getString(R.string.file_extension_json);
         getStoragePermissionManager().requestCreateFilePermission(exportFileLauncher, fileName);
     }
 
