@@ -43,7 +43,9 @@ import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.ProgressDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.support.BatteryOptimizationSupport;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
@@ -61,6 +63,11 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     private IPowerManager powerManager;
     private TimeBasedSuspensionScheduler timeBasedScheduler;
     private IStoragePermissionManager storagePermissionManager;
+    private IPermissionManager permissionManager;
+
+    public void injectPermissionManager(IPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
 
     public void injectResources(Resources resources) {
         this.resources = resources;
@@ -80,6 +87,13 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
 
     public void injectStoragePermissionManager(IStoragePermissionManager storagePermissionManager) {
         this.storagePermissionManager = storagePermissionManager;
+    }
+
+    public IPermissionManager getPermissionManager() {
+        if (permissionManager != null) {
+            return permissionManager;
+        }
+        return new PermissionManager();
     }
 
     @SuppressWarnings("ReplaceNullCheck")

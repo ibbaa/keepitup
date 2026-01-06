@@ -41,6 +41,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -64,6 +65,7 @@ import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockDBPurgeTask;
 import net.ibbaa.keepitup.test.mock.MockExportTask;
 import net.ibbaa.keepitup.test.mock.MockImportTask;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockPowerManager;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.MockThemeManager;
@@ -73,6 +75,7 @@ import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
 import net.ibbaa.keepitup.util.StreamUtil;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,6 +96,7 @@ public class SystemActivityTest extends BaseUITest {
     private MockAlarmManager alarmManager;
     private MockThemeManager themeManager;
     private MockStoragePermissionManager storagePermissionManager;
+    private MockPermissionManager permissionManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -107,6 +111,7 @@ public class SystemActivityTest extends BaseUITest {
         ((SystemActivity) getActivity(activityScenario)).injectThemeManager(themeManager);
         storagePermissionManager = getMockStoragePermissionManager();
         ((SystemActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
+        permissionManager = new MockPermissionManager();
         addFolderPermission();
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
@@ -169,6 +174,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
@@ -262,6 +268,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -355,6 +362,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -448,6 +456,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -546,6 +555,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -642,6 +652,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -3418,6 +3429,23 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testBatteryOptimizationIrrelevant() {
+        MockPowerManager powerManager = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        powerManager.setBatteryOptimizationIrrelevant(true);
+        powerManager.setSupportsBatteryOptimization(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(Matchers.not(isDisplayed())));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(Matchers.not(isDisplayed())));
+    }
+
+    @Test
     public void testBatteryOptimizationDialogScreenRotation() {
         final MockPowerManager powerManager1 = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager1));
@@ -3446,6 +3474,45 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
     }
 
+    @Test
+    public void testNotificationsAllowed() {
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasPostNotificationsPermission(true);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Allowed")));
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasPostNotificationsPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
+    }
+
+    @Test
+    public void testNotificationsAllowedScreenRotation() {
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasPostNotificationsPermission(true);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Allowed")));
+        rotateScreen(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasPostNotificationsPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        rotateScreen(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasPostNotificationsPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
+    }
 
     @Test
     public void testSwitchTheme() {

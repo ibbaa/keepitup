@@ -79,7 +79,7 @@ The app uses exact alarms to trigger network task execution. Power consumption d
 
 The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
 
-It is possible to define suspension intervals in the settings during which all background work is suspended. There is still one active alarm to wake up the app and resume task execution. Except for that alarm the app is idle during suspension. It is possible to define multiple suspension intervals but each interval must be at least 30 min. However, many short intervals do not make much sense for battery saving.
+For Android 15+, it is no longer possible (and no longer necessary) to directly disable battery optimization. Android 15+ provides a setting to allow background activity for an app, which is enabled by default. The app does not provide a setting for this and it is strongly recommended to leave it enabled. The app should work without it, but it can lead to unreliable behaviour.
 
 ## Build
 

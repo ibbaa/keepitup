@@ -23,15 +23,18 @@ public class MockPowerManager implements IPowerManager {
 
     private boolean supportsBatteryOptimization;
     private boolean batteryOptimized;
+    private boolean isBatteryOptimizationIrrelevant;
 
     public MockPowerManager() {
         this.supportsBatteryOptimization = true;
         this.batteryOptimized = true;
+        this.isBatteryOptimizationIrrelevant = false;
     }
 
     public void reset() {
         this.supportsBatteryOptimization = true;
         this.batteryOptimized = true;
+        this.isBatteryOptimizationIrrelevant = false;
     }
 
     public void setSupportsBatteryOptimization(boolean supportsBatteryOptimization) {
@@ -42,6 +45,10 @@ public class MockPowerManager implements IPowerManager {
         this.batteryOptimized = batteryOptimized;
     }
 
+    public void setBatteryOptimizationIrrelevant(boolean batteryOptimizationIrrelevant) {
+        isBatteryOptimizationIrrelevant = batteryOptimizationIrrelevant;
+    }
+
     @Override
     public boolean supportsBatteryOptimization() {
         return supportsBatteryOptimization;
@@ -50,5 +57,10 @@ public class MockPowerManager implements IPowerManager {
     @Override
     public boolean isBatteryOptimized() {
         return batteryOptimized;
+    }
+
+    @Override
+    public boolean isBatteryOptimizationIrrelevant() {
+        return isBatteryOptimizationIrrelevant;
     }
 }

@@ -21,4 +21,6 @@ public interface IPowerManager {
     boolean supportsBatteryOptimization();
 
     boolean isBatteryOptimized();
+
+    boolean isBatteryOptimizationIrrelevant();
 }

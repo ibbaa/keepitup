@@ -16,11 +16,13 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +56,7 @@ import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
@@ -97,6 +100,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private TextView fileDumpEnabledOnOffText;
     private TextView logFolderText;
     private TextView batteryOptimizationText;
+    private TextView notificationsEnabledText;
     private RadioGroup theme;
     private PermissionLauncher exportFileLauncher;
     private PermissionLauncher importFileLauncher;
@@ -155,6 +159,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareConfigurationImportFileLauncher();
         prepareExternalStorageTypeRadioGroup();
         prepareBatteryOptimizationField();
+        prepareNotificationsEnabledField();
         prepareThemeRadioGroup();
         prepareArbitraryFolderLauncher();
         prepareAllowArbitraryFileLocationSwitch();
@@ -164,6 +169,12 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
         prepareLogFolderField();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        prepareNotificationsEnabledField();
     }
 
     @Override
@@ -293,6 +304,16 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         CardView batteryOptimizationCardView = findViewById(R.id.cardview_activity_system_battery_optimization);
         batteryOptimizationText = findViewById(R.id.textview_activity_system_battery_optimization);
         IPowerManager powerManager = getPowerManager();
+        if (powerManager.isBatteryOptimizationIrrelevant()) {
+            Log.d(SystemActivity.class.getName(), "Battery optimization is irrelevant");
+            batteryOptimizationCardView.setEnabled(false);
+            batteryOptimizationCardView.setVisibility(View.GONE);
+            return;
+        } else {
+            Log.d(SystemActivity.class.getName(), "Battery optimization is relevant");
+            batteryOptimizationCardView.setEnabled(true);
+            batteryOptimizationCardView.setVisibility(View.VISIBLE);
+        }
         if (powerManager.isBatteryOptimized()) {
             Log.d(SystemActivity.class.getName(), "Battery optimization is active");
             batteryOptimizationText.setText(R.string.string_active);
@@ -308,6 +329,37 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             Log.d(SystemActivity.class.getName(), "Battery optimization is not supported");
             batteryOptimizationCardView.setOnClickListener(null);
             batteryOptimizationCardView.setEnabled(false);
+        }
+    }
+
+    private void prepareNotificationsEnabledField() {
+        Log.d(SystemActivity.class.getName(), "prepareNotificationsEnabledField");
+        CardView notificationsEnabledCardView = findViewById(R.id.cardview_activity_system_notifications_enabled);
+        notificationsEnabledText = findViewById(R.id.textview_activity_system_notifications_enabled);
+        IPermissionManager permissionManager = getPermissionManager();
+        if (permissionManager.hasPostNotificationsPermission(this)) {
+            notificationsEnabledText.setText(R.string.string_allowed);
+            notificationsEnabledCardView.setOnClickListener(null);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                String disallowedText = getResources().getString(R.string.string_disallowed) + " " + getResources().getString(R.string.label_activity_system_notifications_click_to_enable);
+                notificationsEnabledText.setText(disallowedText);
+                notificationsEnabledCardView.setOnClickListener(this::showNotificationsSettings);
+            } else {
+                String disallowedText = getResources().getString(R.string.string_disallowed);
+                notificationsEnabledText.setText(disallowedText);
+                notificationsEnabledCardView.setOnClickListener(null);
+            }
+        }
+    }
+
+    private void showNotificationsSettings(View view) {
+        Log.d(SystemActivity.class.getName(), "showNotificationsSettings");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            startActivity(intent);
         }
     }
 

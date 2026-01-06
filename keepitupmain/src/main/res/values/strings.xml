@@ -41,4 +41,6 @@
     <string name="string_active">Active</string>
     <string name="string_inactive">Inactive</string>
     <string name="string_default">default</string>
+    <string name="string_allowed">Allowed</string>
+    <string name="string_disallowed">Disallowed</string>
 </resources>

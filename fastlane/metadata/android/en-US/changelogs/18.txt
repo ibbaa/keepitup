@@ -3,4 +3,6 @@
 * It is now possible to set arbitrary HTTP headers which will be sent with requests
 * Defined suspension intervals are now deleted on global settings reset
 * Host name validation is more strict and consistent now
+* Removed the battery optimization dialog for Android 15+ (it is meaningless for newer Android versions)
+* It is now displayed if notifications are globally allowed for the app. If not, there is a link to the system settings to change it.
 * Some small bug fixes
