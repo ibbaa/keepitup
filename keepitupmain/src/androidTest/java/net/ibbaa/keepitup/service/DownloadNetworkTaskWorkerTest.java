@@ -1151,6 +1151,20 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadWithoutExceptionAndProtocolMismatchHTTPTo443() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(InetAddress.getByName("127.0.0.1"), 443, false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. (protocol mismatch http to port 443)", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadWithExceptionAndProtocolMismatchHTTPTo443FromURL() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
@@ -1176,6 +1190,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadWithoutExceptionAndProtocolMismatchHTTPSTo80() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("https://127.0.0.1"), List.of(getDownloadConnectResult(InetAddress.getByName("127.0.0.1"), 80, false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test

@@ -287,10 +287,10 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             connectMessage += " ";
         }
         Throwable exc = downloadResult.exception();
+        String mismatchMessage = getProtocolMismatchMessage(downloadResult);
         if (exc == null) {
-            logEntry.setMessage(redirectMessage + connectMessage + message);
+            logEntry.setMessage(redirectMessage + connectMessage + message + mismatchMessage);
         } else {
-            String mismatchMessage = getProtocolMismatchMessage(downloadResult);
             logEntry.setMessage(redirectMessage + connectMessage + getMessageFromException(message, exc, timeout) + mismatchMessage);
         }
     }
