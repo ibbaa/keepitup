@@ -30,6 +30,6 @@
     <string name="label_activity_defaults_ignore_ssl_error">Ignore SSL errors</string>
     <string name="label_activity_defaults_only_wifi">Only on WiFi</string>
     <string name="label_activity_defaults_notification">Notifications</string>
-    <string name="label_activity_defaults_high_prio">High prio</string>
+    <string name="label_activity_defaults_high_prio">High priority</string>
     <string name="label_activity_defaults_accesstype">Type</string>
 </resources>

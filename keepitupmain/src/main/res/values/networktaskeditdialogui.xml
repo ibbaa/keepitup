@@ -28,7 +28,7 @@
     <string name="label_dialog_network_task_edit_ignore_ssl_error">Ignore SSL errors:</string>
     <string name="label_dialog_network_task_edit_only_wifi">Only on WiFi:</string>
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>
-    <string name="label_dialog_network_task_edit_high_prio">High prio:</string>
+    <string name="label_dialog_network_task_edit_high_prio">High priority:</string>
     <integer name="edittext_dialog_network_task_edit_address_max_lines">5</integer>
     <integer name="edittext_dialog_network_task_edit_port_max_length">5</integer>
     <integer name="edittext_dialog_network_task_edit_ping_count_max_length">2</integer>

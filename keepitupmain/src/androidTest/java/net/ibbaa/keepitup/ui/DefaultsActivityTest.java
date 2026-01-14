@@ -104,7 +104,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High priority")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_high_prio_on_off)).check(matches(withText("no")));
         activityScenario.close();
@@ -162,7 +162,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High priority")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_high_prio_on_off)).check(matches(withText("yes")));
         activityScenario.close();
@@ -237,7 +237,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High priority")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_high_prio_on_off)).check(matches(withText("yes")));
         activityScenario.close();
@@ -1216,7 +1216,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High priority")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_high_prio_on_off)).check(matches(withText("no")));
         PreferenceManager preferenceManager = getPreferenceManager();
