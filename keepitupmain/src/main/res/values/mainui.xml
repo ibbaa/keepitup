@@ -36,7 +36,7 @@
     <string name="text_activity_main_list_item_network_task_connect_to">Connect to: %s</string>
     <string name="text_activity_main_list_item_network_task_interval">Interval: %1$d %2$s</string>
     <string name="text_activity_main_list_item_network_task_notification">Notifications: %s</string>
-    <string name="text_activity_main_list_item_network_task_notification_high_prio">Notifications (high prio): %s</string>
+    <string name="text_activity_main_list_item_network_task_notification_high_prio">Notifications (high priority): %s</string>
     <string name="text_activity_main_list_item_network_task_ignore_ssl_error">Ignore SSL errors: %s</string>
     <string name="text_activity_main_list_item_network_task_stop_on_success">Stop on success: %s</string>
     <string name="text_activity_main_list_item_network_task_only_wifi">Only on WiFi: %s</string>
