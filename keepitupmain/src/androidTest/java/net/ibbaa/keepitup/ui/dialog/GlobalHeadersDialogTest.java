@@ -26,6 +26,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
@@ -1398,6 +1399,116 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         assertEquals("Value1", header1.getValue());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderAdd() {
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("Value", header1.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderAddScreenRotation() {
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("Value", header1.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderOpen() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("Value", header1.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderOpenScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("Value", header1.getValue());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
     }

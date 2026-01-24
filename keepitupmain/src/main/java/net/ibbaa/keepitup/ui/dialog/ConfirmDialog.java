@@ -50,7 +50,8 @@ public class ConfirmDialog extends DialogFragmentBase {
         EXPORTCONFIGEXISTINGFILE,
         DISMISSALARM,
         DELETEHEADER,
-        DELETEHEADERSWIPE
+        DELETEHEADERSWIPE,
+        CONFIRMAUTHORIZATIONHEADER
     }
 
     @Override
@@ -167,6 +168,12 @@ public class ConfirmDialog extends DialogFragmentBase {
     private ConfirmSupport getConfirmSupport() {
         Log.d(ConfirmDialog.class.getName(), "getConfirmSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
+        for (int ii = fragments.size() - 1; ii >= 0; ii--) {
+            Fragment fragment = fragments.get(ii);
+            if (fragment instanceof ConfirmSupport) {
+                return (ConfirmSupport) fragment;
+            }
+        }
         for (Fragment fragment : fragments) {
             if (fragment instanceof ConfirmSupport) {
                 return (ConfirmSupport) fragment;

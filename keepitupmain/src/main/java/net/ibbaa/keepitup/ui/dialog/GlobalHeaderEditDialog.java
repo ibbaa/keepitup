@@ -17,7 +17,6 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +35,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
+import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
 import net.ibbaa.keepitup.ui.validation.HeaderValidator;
@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class GlobalHeaderEditDialog extends DialogFragmentBase implements ContextOptionsSupport {
+public class GlobalHeaderEditDialog extends DialogFragmentBase implements ContextOptionsSupport, ConfirmSupport {
 
     private View dialogView;
     private EditText nameEditText;
@@ -159,7 +159,8 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
             Log.d(GlobalHeaderEditDialog.class.getName(), "Validation was successful");
             if (HTTPUtil.isAuthorizationHeader(getContext(), getName())) {
                 Log.d(GlobalHeaderEditDialog.class.getName(), "Header is an authorization header");
-                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_authorization_header_title), getResources().getString(R.string.text_dialog_general_message_authorization_header));
+                showConfirmDialog(position);
+                return;
             }
             GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
             if (globalHeaderEditSupport != null) {
@@ -183,6 +184,28 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
             Log.e(GlobalHeaderEditDialog.class.getName(), "settingsInputSupport is null");
             dismiss();
         }
+    }
+
+    @Override
+    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
+        if (ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER.equals(type)) {
+            int position = confirmDialog.getPosition();
+            GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+            if (globalHeaderEditSupport != null) {
+                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
+            } else {
+                Log.e(GlobalHeaderEditDialog.class.getName(), "globalHeaderEditSupport is null");
+                dismiss();
+            }
+        }
+        confirmDialog.dismiss();
+    }
+
+    @Override
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onConfirmDialogCancelClicked for type " + type);
+        confirmDialog.dismiss();
     }
 
     public Header getHeader() {
@@ -258,14 +281,16 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
-    private void showMessageDialog(String title, String message) {
-        Log.d(GlobalHeaderEditDialog.class.getName(), "showMessageDialog with message " + message);
-        GeneralMessageDialog messageDialog = new GeneralMessageDialog();
-        Bundle bundle = BundleUtil.stringToBundle(messageDialog.getTitleKey(), title);
-        bundle.putString(messageDialog.getMessageKey(), message);
-        bundle.putInt(messageDialog.getTypefaceStyleKey(), Typeface.NORMAL);
-        messageDialog.setArguments(bundle);
-        messageDialog.show(getParentFragmentManager(), GeneralMessageDialog.class.getName());
+    protected void showConfirmDialog(int position) {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "showConfirmDialog for position " + position);
+        String message = getResources().getString(R.string.text_dialog_confirm_confirm_authorization_header);
+        String description = getResources().getString(R.string.text_dialog_confirm_add_authorization_header_description);
+        ConfirmDialog.Type type = ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER;
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{message, description, type.name()});
+        bundle.putInt(confirmDialog.getPositionKey(), position);
+        confirmDialog.setArguments(bundle);
+        confirmDialog.show(getParentFragmentManager(), ConfirmDialog.class.getName());
     }
 
     private boolean onNameEditTextLongClicked(View view) {

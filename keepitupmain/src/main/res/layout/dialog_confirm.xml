@@ -42,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/textview_dialog_confirm_description_margin_top"
             android:text="" />
 
         <LinearLayout

@@ -393,38 +393,74 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAuthorizationWarning() {
+    public void testAuthorizationHeaderAddOk() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openGlobalHeaderEditDialog(getHeader(1));
         onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Security warning")));
-        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText(containsString("Authorization headers often include credentials"))));
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
 
     @Test
-    public void testAuthorizationWarningScreenRotation() {
+    public void testAuthorizationHeaderAddOkScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openGlobalHeaderEditDialog(getHeader(1));
         onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
         onView(isRoot()).perform(waitFor(500));
-        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Security warning")));
-        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activityScenario);
         onView(isRoot()).perform(waitFor(500));
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderAddCancel() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderAddCancelScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
 

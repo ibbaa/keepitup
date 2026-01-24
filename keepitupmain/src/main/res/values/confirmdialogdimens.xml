@@ -17,4 +17,5 @@
 <resources>
     <dimen name="linearlayout_dialog_confirm_padding">40dp</dimen>
     <dimen name="linearlayout_dialog_confirm_ok_cancel_padding_top">20dp</dimen>
+    <dimen name="textview_dialog_confirm_description_margin_top">4dp</dimen>
 </resources>
