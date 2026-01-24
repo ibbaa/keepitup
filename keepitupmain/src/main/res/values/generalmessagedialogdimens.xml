@@ -17,4 +17,5 @@
 <resources>
     <dimen name="linearlayout_dialog_general_message_padding">30dp</dimen>
     <dimen name="imageview_dialog_general_message_ok_padding_top">15dp</dimen>
+    <dimen name="textview_dialog_general_message_title_margin_bottom">4dp</dimen>
 </resources>

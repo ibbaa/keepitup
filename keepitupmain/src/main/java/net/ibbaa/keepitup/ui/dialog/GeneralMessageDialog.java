@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 @SuppressWarnings({"unused"})
 public class GeneralMessageDialog extends DialogFragmentBase {
@@ -48,7 +49,9 @@ public class GeneralMessageDialog extends DialogFragmentBase {
         Log.d(GeneralMessageDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_general_message, container);
         initEdgeToEdgeInsets(view);
+        String title = BundleUtil.stringFromBundle(getTitleKey(), requireArguments());
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
+        prepareTitle(view, title);
         prepareErrorMessage(view, message);
         prepareOkImageButton(view);
         return view;
@@ -56,6 +59,10 @@ public class GeneralMessageDialog extends DialogFragmentBase {
 
     public String getMessageKey() {
         return GeneralMessageDialog.class.getSimpleName() + "Message";
+    }
+
+    public String getTitleKey() {
+        return GeneralMessageDialog.class.getSimpleName() + "Title";
     }
 
     public String getExtraDataKey() {
@@ -68,6 +75,18 @@ public class GeneralMessageDialog extends DialogFragmentBase {
 
     public String getTypefaceStyleKey() {
         return GeneralMessageDialog.class.getSimpleName() + "TypefaceStyle";
+    }
+
+    private void prepareTitle(View view, String title) {
+        Log.d(GeneralMessageDialog.class.getName(), "prepareTitle");
+        TextView titleText = view.findViewById(R.id.textview_dialog_general_message_title);
+        if (StringUtil.isTrimmedEmpty(title)) {
+            titleText.setVisibility(View.GONE);
+        } else {
+            titleText.setTypeface(null, Typeface.BOLD);
+            titleText.setText(title);
+            titleText.setVisibility(View.VISIBLE);
+        }
     }
 
     private void prepareErrorMessage(View view, String message) {

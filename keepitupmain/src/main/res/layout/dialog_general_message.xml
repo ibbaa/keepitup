@@ -28,6 +28,16 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textview_dialog_general_message_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/textview_dialog_general_message_title_margin_bottom"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:text="" />
+
+        <TextView
             android:id="@+id/textview_dialog_general_message_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

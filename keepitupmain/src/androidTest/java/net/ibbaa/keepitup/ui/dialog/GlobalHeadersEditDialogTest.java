@@ -25,6 +25,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -387,6 +388,42 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("success"));
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationWarning() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Security warning")));
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationWarningScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        onView(isRoot()).perform(waitFor(500));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Security warning")));
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }

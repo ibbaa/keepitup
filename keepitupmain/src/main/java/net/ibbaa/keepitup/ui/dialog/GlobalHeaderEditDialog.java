@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import net.ibbaa.keepitup.ui.validation.StandardHeaderValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.ArrayList;
@@ -155,6 +157,10 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
         List<ValidationResult> validationResult = validateInput(position);
         if (!hasErrors(validationResult)) {
             Log.d(GlobalHeaderEditDialog.class.getName(), "Validation was successful");
+            if (HTTPUtil.isAuthorizationHeader(getContext(), getName())) {
+                Log.d(GlobalHeaderEditDialog.class.getName(), "Header is an authorization header");
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_authorization_header_title), getResources().getString(R.string.text_dialog_general_message_authorization_header));
+            }
             GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
             if (globalHeaderEditSupport != null) {
                 globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
@@ -164,7 +170,7 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
             }
         } else {
             Log.d(GlobalHeaderEditDialog.class.getName(), "Validation failed");
-            showMessageDialog(validationResult);
+            showValidationMessageDialog(validationResult);
         }
     }
 
@@ -245,11 +251,21 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
         return false;
     }
 
-    private void showMessageDialog(List<ValidationResult> validationResult) {
+    private void showValidationMessageDialog(List<ValidationResult> validationResult) {
         Log.d(GlobalHeaderEditDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
+    }
+
+    private void showMessageDialog(String title, String message) {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "showMessageDialog with message " + message);
+        GeneralMessageDialog messageDialog = new GeneralMessageDialog();
+        Bundle bundle = BundleUtil.stringToBundle(messageDialog.getTitleKey(), title);
+        bundle.putString(messageDialog.getMessageKey(), message);
+        bundle.putInt(messageDialog.getTypefaceStyleKey(), Typeface.NORMAL);
+        messageDialog.setArguments(bundle);
+        messageDialog.show(getParentFragmentManager(), GeneralMessageDialog.class.getName());
     }
 
     private boolean onNameEditTextLongClicked(View view) {

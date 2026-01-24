@@ -101,6 +101,13 @@ public class HTTPUtil {
         builder.header(headerName, langValue.toString());
     }
 
+    public static boolean isAuthorizationHeader(Context context, String header) {
+        if (header == null) {
+            return false;
+        }
+        return context.getResources().getString(R.string.http_header_authorization).equals(header.trim());
+    }
+
     public static String getFileNameFromContentDisposition(String contentDisposition) {
         Log.d(HTTPUtil.class.getName(), "getFileNameFromContentDisposition, contentDisposition is " + contentDisposition);
         if (contentDisposition == null) {

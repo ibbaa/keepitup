@@ -158,6 +158,16 @@ public class HTTPUtilTest {
     }
 
     @Test
+    public void testIsAuthorizationHeader() {
+        assertFalse(HTTPUtil.isAuthorizationHeader(TestRegistry.getContext(), null));
+        assertFalse(HTTPUtil.isAuthorizationHeader(TestRegistry.getContext(), ""));
+        assertFalse(HTTPUtil.isAuthorizationHeader(TestRegistry.getContext(), "   "));
+        assertFalse(HTTPUtil.isAuthorizationHeader(TestRegistry.getContext(), "xyz"));
+        assertTrue(HTTPUtil.isAuthorizationHeader(TestRegistry.getContext(), "Authorization"));
+        assertTrue(HTTPUtil.isAuthorizationHeader(TestRegistry.getContext(), "  Authorization  "));
+    }
+
+    @Test
     public void testGetFileNameFromContentDisposition() {
         assertNull(HTTPUtil.getFileNameFromContentDisposition(null));
         assertNull(HTTPUtil.getFileNameFromContentDisposition("attachment"));

@@ -19,9 +19,11 @@ package net.ibbaa.keepitup.ui.dialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
 import android.os.Bundle;
@@ -59,29 +61,44 @@ public class GeneralMessageDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testMessage() {
-        GeneralMessageDialog errorDialog = openGeneralMessageDialog();
+    public void testWithTitle() {
+        GeneralMessageDialog errorDialog = openGeneralMessageDialog("Title");
         onView(isRoot()).perform(waitFor(500));
         assertEquals("ExtraData", errorDialog.getExtraData());
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+    }
+
+    @Test
+    public void testMessage() {
+        GeneralMessageDialog errorDialog = openGeneralMessageDialog("");
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals("ExtraData", errorDialog.getExtraData());
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
     }
 
     @Test
     public void testScreenRotation() {
-        openGeneralMessageDialog();
+        openGeneralMessageDialog("Title");
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
         rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
         rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
     }
 
-    private GeneralMessageDialog openGeneralMessageDialog() {
+    private GeneralMessageDialog openGeneralMessageDialog(String title) {
         GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), "Message");
         BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), "ExtraData", bundle);
+        BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
         errorDialog.setArguments(bundle);
         errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralMessageDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
