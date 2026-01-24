@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.util.JSONUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -89,17 +90,11 @@ public class JSONSystemMigrate {
         Log.d(JSONSystemMigrate.class.getName(), "version3AdaptAfterFrom0");
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
-            if (!root.has(settingsKey)) {
-                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, no key " + settingsKey + ", migration not possible");
+            JSONObject globalSettings = getGlobalSettings(root, settingsKey);
+            if (globalSettings == null) {
+                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, globalSettings is null, migration not possible.");
                 return;
             }
-            JSONObject settings = (JSONObject) root.get(settingsKey);
-            String globalSettingsKey = getResources().getString(R.string.preferences_global_json_key);
-            if (!settings.has(globalSettingsKey)) {
-                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, no key " + globalSettingsKey + ", migration not possible");
-                return;
-            }
-            JSONObject globalSettings = (JSONObject) settings.get(globalSettingsKey);
             PreferenceSetup setup = new PreferenceSetup(getContext());
             Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, importing ping and connect count from global settings");
             setup.importPingAndConnectCount(JSONUtil.toMap(globalSettings));
@@ -108,16 +103,41 @@ public class JSONSystemMigrate {
         }
     }
 
-    @SuppressWarnings("unused")
     private void version6AdaptAfterFrom3(JSONObject root) {
         Log.d(JSONSystemMigrate.class.getName(), "version6AdaptAfterFrom3");
+        String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
+            JSONObject globalSettings = getGlobalSettings(root, settingsKey);
+            if (globalSettings == null) {
+                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, globalSettings is null, migration not possible.");
+            } else {
+                Map<String, ?> globalSettingsMap = JSONUtil.toMap(globalSettings);
+                Object userAgent = globalSettingsMap.get("preferenceHTTPUserAgent");
+                if (userAgent != null && !userAgent.toString().isEmpty()) {
+                    PreferenceManager preferenceManager = new PreferenceManager(getContext());
+                    preferenceManager.setPreferenceString(getResources().getString(R.string.http_user_agent_key), userAgent.toString());
+                }
+            }
             DBSetup setup = new DBSetup(getContext());
             setup.deleteAllHeaders();
             setup.initializeHeaderTable();
         } catch (Exception exc) {
             Log.e(JSONSystemMigrate.class.getName(), "Error on migrating version3UpgradeFrom0", exc);
         }
+    }
+
+    private JSONObject getGlobalSettings(JSONObject root, String settingsKey) throws JSONException {
+        if (!root.has(settingsKey)) {
+            Log.e(JSONSystemMigrate.class.getName(), "getGlobalSettings, no key " + settingsKey + ", returning null");
+            return null;
+        }
+        JSONObject settings = (JSONObject) root.get(settingsKey);
+        String globalSettingsKey = getResources().getString(R.string.preferences_global_json_key);
+        if (!settings.has(globalSettingsKey)) {
+            Log.e(JSONSystemMigrate.class.getName(), "getGlobalSettings, no key " + globalSettingsKey + ", returning null");
+            return null;
+        }
+        return (JSONObject) settings.get(globalSettingsKey);
     }
 
     private Context getContext() {

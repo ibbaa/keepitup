@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.Header;
@@ -63,7 +62,7 @@ public class JSONSystemMigrateTest {
     public void testVersionAdaptAfter0to3() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        JSONObject root = createRoot(5, 5);
+        JSONObject root = createRoot(5, 5, "");
         migrate.adaptAfter(root, 0, 3);
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(5, preferenceManager.getPreferenceConnectCount());
@@ -73,7 +72,7 @@ public class JSONSystemMigrateTest {
     public void testVersionAdaptAfter2to3() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        JSONObject root = createRoot(5, 5);
+        JSONObject root = createRoot(5, 5, "");
         migrate.adaptAfter(root, 2, 3);
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(5, preferenceManager.getPreferenceConnectCount());
@@ -83,7 +82,7 @@ public class JSONSystemMigrateTest {
     public void testVersionAdaptAfter3to3() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        JSONObject root = createRoot(5, 5);
+        JSONObject root = createRoot(5, 5, "");
         migrate.adaptAfter(root, 3, 3);
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
@@ -95,7 +94,7 @@ public class JSONSystemMigrateTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(5);
-        JSONObject root = createRoot(11, 11);
+        JSONObject root = createRoot(11, 11, "");
         migrate.adaptAfter(root, 0, 3);
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
@@ -116,24 +115,22 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter3to6() {
-        preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "test");
-        migrate.adaptAfter(new JSONObject(), 3, 6);
+    public void testVersionAdaptAfter3to6() throws Exception {
+        JSONObject root = createRoot(1, 1, "MyHeader");
+        migrate.adaptAfter(root, 3, 6);
         assertEquals(1, headerDAO.readGlobalHeaders().size());
         assertEquals(1, headerDAO.readAllHeaders().size());
         Header header = headerDAO.readGlobalHeaders().get(0);
         assertEquals("User-Agent", header.getName());
-        assertEquals("test", header.getValue());
+        assertEquals("MyHeader", header.getValue());
     }
 
     @Test
-    public void testVersionAdaptAfter0to6() throws Exception {
-        assertEquals(3, preferenceManager.getPreferencePingCount());
-        assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        JSONObject root = createRoot(5, 5);
-        migrate.adaptAfter(root, 0, 6);
-        assertEquals(5, preferenceManager.getPreferencePingCount());
-        assertEquals(5, preferenceManager.getPreferenceConnectCount());
+    public void testVersionAdaptAfter3to6JSONInvalid() throws Exception {
+        JSONObject root = new JSONObject();
+        JSONObject settings = new JSONObject();
+        root.put("preferences", settings);
+        migrate.adaptAfter(root, 3, 6);
         assertEquals(1, headerDAO.readGlobalHeaders().size());
         assertEquals(1, headerDAO.readAllHeaders().size());
         Header header = headerDAO.readGlobalHeaders().get(0);
@@ -141,12 +138,28 @@ public class JSONSystemMigrateTest {
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header.getValue());
     }
 
-    private JSONObject createRoot(int pingCount, int connectCount) throws JSONException {
+    @Test
+    public void testVersionAdaptAfter0to6() throws Exception {
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        JSONObject root = createRoot(5, 5, "MyHeader");
+        migrate.adaptAfter(root, 0, 6);
+        assertEquals(5, preferenceManager.getPreferencePingCount());
+        assertEquals(5, preferenceManager.getPreferenceConnectCount());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        Header header = headerDAO.readGlobalHeaders().get(0);
+        assertEquals("User-Agent", header.getName());
+        assertEquals("MyHeader", header.getValue());
+    }
+
+    private JSONObject createRoot(int pingCount, int connectCount, String header) throws JSONException {
         JSONObject root = new JSONObject();
         JSONObject settings = new JSONObject();
         JSONObject globalSettings = new JSONObject();
         globalSettings.put("preferencePingCount", pingCount);
         globalSettings.put("preferenceConnectCount", connectCount);
+        globalSettings.put("preferenceHTTPUserAgent", header);
         settings.put("global", globalSettings);
         root.put("preferences", settings);
         return root;
