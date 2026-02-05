@@ -72,7 +72,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 @MediumTest
-@SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "resource"})
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class DownloadCommandTest {
 

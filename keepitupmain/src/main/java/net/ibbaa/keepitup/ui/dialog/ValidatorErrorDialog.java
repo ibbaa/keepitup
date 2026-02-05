@@ -36,7 +36,6 @@ import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.List;
 
-@SuppressWarnings({"unused"})
 public class ValidatorErrorDialog extends DialogFragmentBase {
 
     @Override
@@ -71,7 +70,6 @@ public class ValidatorErrorDialog extends DialogFragmentBase {
         }
         return GridLayout.LayoutParams.WRAP_CONTENT;
     }
-
 
     private void prepareErrorMessages(View view, List<ValidationResult> resultList) {
         Log.d(ValidatorErrorDialog.class.getName(), "prepareErrorMessages");
@@ -122,6 +120,7 @@ public class ValidatorErrorDialog extends DialogFragmentBase {
         okImage.setOnClickListener(this::onOkClicked);
     }
 
+    @SuppressWarnings({"unused"})
     private void onOkClicked(View view) {
         Log.d(ValidatorErrorDialog.class.getName(), "onOkClicked");
         dismiss();
