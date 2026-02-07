@@ -50,11 +50,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_settings_input_name"
+            android:id="@+id/linearlayout_dialog_global_header_edit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_name_margin_left"
-            android:layout_marginEnd="@dimen/linearlayout_dialog_global_header_edit_value_margin_end"
+            android:layout_marginEnd="@dimen/linearlayout_dialog_global_header_edit_name_margin_end"
             android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_name_margin_top"
             android:orientation="vertical">
 
@@ -74,7 +74,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_settings_input_value"
+            android:id="@+id/linearlayout_dialog_global_header_edit_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_value_margin_left"

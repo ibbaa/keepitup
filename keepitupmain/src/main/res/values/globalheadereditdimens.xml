@@ -20,6 +20,7 @@
     <dimen name="linearlayout_dialog_global_header_edit_title_margin_bottom">10dp</dimen>
     <dimen name="linearlayout_dialog_global_header_edit_title_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_global_header_edit_name_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_global_header_edit_name_margin_end">10dp</dimen>
     <dimen name="linearlayout_dialog_global_header_edit_name_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_global_header_edit_value_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_global_header_edit_value_margin_end">10dp</dimen>
