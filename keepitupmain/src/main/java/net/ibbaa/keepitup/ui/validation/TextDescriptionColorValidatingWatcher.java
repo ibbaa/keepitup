@@ -31,13 +31,17 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
     private final EditText editText;
     private final TextView textView;
     private final ValidatorPredicate<EditText> validator;
+    private final String okText;
+    private final String errorText;
     private final int okTextColor;
     private final int errorTextColor;
 
-    public TextDescriptionColorValidatingWatcher(EditText editText, TextView textView, ValidatorPredicate<EditText> validator, int okTextColor, int errorTextColor) {
+    public TextDescriptionColorValidatingWatcher(EditText editText, TextView textView, ValidatorPredicate<EditText> validator, String okText, String errorText, int okTextColor, int errorTextColor) {
         this.editText = editText;
         this.textView = textView;
         this.validator = validator;
+        this.okText = okText;
+        this.errorText = errorText;
         this.okTextColor = okTextColor;
         this.errorTextColor = errorTextColor;
     }
@@ -57,12 +61,15 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
         Log.d(TextDescriptionColorValidatingWatcher.class.getName(), "afterTextChanged");
         if (StringUtil.isEmpty(editText.getText())) {
             textView.setVisibility(View.GONE);
+            textView.setText("");
         } else if (validator.validate(editText)) {
-            textView.setVisibility(View.VISIBLE);
             textView.setTextColor(okTextColor);
-        } else {
+            textView.setText(okText);
             textView.setVisibility(View.VISIBLE);
+        } else {
             textView.setTextColor(errorTextColor);
+            textView.setText(errorText);
+            textView.setVisibility(View.VISIBLE);
         }
     }
 }

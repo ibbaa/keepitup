@@ -39,28 +39,32 @@ public class TextDescriptionColorValidatingWatcherTest {
     public void testValidateTrue() {
         EditText testEditText = new EditText(TestRegistry.getContext());
         TextView testTextView = new TextView(TestRegistry.getContext());
-        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateTrue, Color.GREEN, Color.RED);
+        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateTrue, "ok", "error", Color.GREEN, Color.RED);
         testEditText.setText("");
         watcher.afterTextChanged(null);
         assertEquals(View.GONE, testTextView.getVisibility());
+        assertEquals("", testTextView.getText());
         testEditText.setText("xyz");
         watcher.afterTextChanged(null);
         assertEquals(View.VISIBLE, testTextView.getVisibility());
         assertEquals(Color.GREEN, testTextView.getCurrentTextColor());
+        assertEquals("ok", testTextView.getText());
     }
 
     @Test
     public void testValidateFalse() {
         EditText testEditText = new EditText(TestRegistry.getContext());
         TextView testTextView = new TextView(TestRegistry.getContext());
-        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateFalse, Color.GREEN, Color.RED);
+        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateFalse, "ok", "error", Color.GREEN, Color.RED);
         testEditText.setText("");
         watcher.afterTextChanged(null);
         assertEquals(View.GONE, testTextView.getVisibility());
+        assertEquals("", testTextView.getText());
         testEditText.setText("xyz");
         watcher.afterTextChanged(null);
         assertEquals(View.VISIBLE, testTextView.getVisibility());
         assertEquals(Color.RED, testTextView.getCurrentTextColor());
+        assertEquals("error", testTextView.getText());
     }
 
     @SuppressWarnings({"SameReturnValue", "unused"})
