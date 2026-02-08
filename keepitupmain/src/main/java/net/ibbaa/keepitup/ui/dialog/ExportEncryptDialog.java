@@ -1,0 +1,321 @@
+/*
+ * Copyright (c) 2026 Alwin Ibba
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.ibbaa.keepitup.ui.dialog;
+
+@SuppressWarnings({"unused", "SameReturnValue"})
+public class ExportEncryptDialog extends DialogFragmentBase { // implements ContextOptionsSupport, ConfirmSupport {
+
+    /*private View dialogView;
+    private EditText passwordEditText;
+    private EditText confirmPasswordEditText;
+    private TextColorValidatingWatcher nameEditTextWatcher;
+    private TextColorValidatingWatcher valueEditTextWatcher;
+
+    private IClipboardManager clipboardManager;
+
+    public void injectClipboardManager(IClipboardManager clipboardManager) {
+        this.clipboardManager = clipboardManager;
+    }
+
+    public IClipboardManager getClipboardManager() {
+        if (clipboardManager != null) {
+            return clipboardManager;
+        }
+        return new SystemClipboardManager(requireContext());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Log.d(ExportEncryptDialog.class.getName(), "onCreate");
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(ExportEncryptDialog.class.getName(), "onCreateView");
+        dialogView = inflater.inflate(R.layout.dialog_global_header_edit, container);
+        initEdgeToEdgeInsets(dialogView);
+        Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
+        Header header = headerBundle != null ? new Header(headerBundle) : new Header();
+        prepareNameTextField(header);
+        prepareValueTextField(header);
+        prepareOkCancelImageButtons();
+        return dialogView;
+    }
+
+    private void prepareNameTextField(Header header) {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareNameTextField");
+        nameEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_name);
+        nameEditText.setOnLongClickListener(this::onNameEditTextLongClicked);
+        nameEditText.setText(StringUtil.notNull(header.getName()));
+        prepareNameEditTextListener();
+    }
+
+    private void prepareNameEditTextListener() {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareNameEditTextListener");
+        if (nameEditTextWatcher != null) {
+            nameEditText.removeTextChangedListener(nameEditTextWatcher);
+            nameEditTextWatcher = null;
+        }
+        nameEditTextWatcher = new TextColorValidatingWatcher(nameEditText, this::validateName, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        nameEditText.addTextChangedListener(nameEditTextWatcher);
+    }
+
+    private void prepareValueTextField(Header header) {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareValueTextField");
+        valueEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_value);
+        valueEditText.setOnLongClickListener(this::onValueEditTextLongClicked);
+        valueEditText.setText(StringUtil.notNull(header.getValue()));
+        prepareValueEditTextListener();
+    }
+
+    private void prepareValueEditTextListener() {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareValueEditTextListener");
+        if (valueEditTextWatcher != null) {
+            valueEditText.removeTextChangedListener(valueEditTextWatcher);
+            valueEditTextWatcher = null;
+        }
+        valueEditTextWatcher = new TextColorValidatingWatcher(valueEditText, this::validateValue, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        valueEditText.addTextChangedListener(valueEditTextWatcher);
+    }
+
+    private void prepareOkCancelImageButtons() {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_global_header_edit_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_global_header_edit_cancel);
+        okImage.setOnClickListener(this::onOkClicked);
+        cancelImage.setOnClickListener(this::onCancelClicked);
+    }
+
+    public String getHeaderKey() {
+        return ExportEncryptDialog.class.getName() + ".Header";
+    }
+
+    public String getPositionKey() {
+        return ExportEncryptDialog.class.getSimpleName() + ".Position";
+    }
+
+    public String getName() {
+        return StringUtil.notNull(nameEditText.getText()).trim();
+    }
+
+    public String getValue() {
+        return StringUtil.notNull(valueEditText.getText());
+    }
+
+    private void onOkClicked(View view) {
+        Log.d(ExportEncryptDialog.class.getName(), "onOkClicked");
+        int position = BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
+        List<ValidationResult> validationResult = validateInput(position);
+        if (!hasErrors(validationResult)) {
+            Log.d(ExportEncryptDialog.class.getName(), "Validation was successful");
+            if (HTTPUtil.isAuthorizationHeader(getContext(), getName())) {
+                Log.d(ExportEncryptDialog.class.getName(), "Header is an authorization header");
+                showConfirmDialog(position);
+                return;
+            }
+            GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+            if (globalHeaderEditSupport != null) {
+                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
+            } else {
+                Log.e(ExportEncryptDialog.class.getName(), "globalHeaderEditSupport is null");
+                dismiss();
+            }
+        } else {
+            Log.d(ExportEncryptDialog.class.getName(), "Validation failed");
+            showValidationMessageDialog(validationResult);
+        }
+    }
+
+    private void onCancelClicked(View view) {
+        Log.d(ExportEncryptDialog.class.getName(), "onCancelClicked");
+        GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+        if (globalHeaderEditSupport != null) {
+            globalHeaderEditSupport.onGlobalHeaderEditDialogCancelClicked(this);
+        } else {
+            Log.e(ExportEncryptDialog.class.getName(), "settingsInputSupport is null");
+            dismiss();
+        }
+    }
+
+    @Override
+    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(ExportEncryptDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
+        if (ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER.equals(type)) {
+            int position = confirmDialog.getPosition();
+            GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+            if (globalHeaderEditSupport != null) {
+                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
+            } else {
+                Log.e(ExportEncryptDialog.class.getName(), "globalHeaderEditSupport is null");
+                dismiss();
+            }
+        }
+        confirmDialog.dismiss();
+    }
+
+    @Override
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(ExportEncryptDialog.class.getName(), "onConfirmDialogCancelClicked for type " + type);
+        confirmDialog.dismiss();
+    }
+
+    public Header getHeader() {
+        Log.d(ExportEncryptDialog.class.getName(), "getHeader");
+        Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
+        Header header = headerBundle != null ? new Header(headerBundle) : new Header();
+        header.setName(getName());
+        header.setValue(getValue());
+        return header;
+    }
+
+    private boolean hasErrors(List<ValidationResult> validationResult) {
+        return !validationResult.isEmpty();
+    }
+
+    private boolean validateName(EditText editText) {
+        Log.d(ExportEncryptDialog.class.getName(), "validateName");
+        HeaderValidator validator = new StandardHeaderValidator(getContext());
+        ValidationResult result = validator.validateName(getName());
+        Log.d(ExportEncryptDialog.class.getName(), "Validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private boolean validateValue(EditText editText) {
+        Log.d(ExportEncryptDialog.class.getName(), "validateName");
+        HeaderValidator validator = new StandardHeaderValidator(getContext());
+        ValidationResult result = validator.validateValue(getValue());
+        Log.d(ExportEncryptDialog.class.getName(), "Validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private List<ValidationResult> validateInput(int position) {
+        Log.d(ExportEncryptDialog.class.getName(), "validateInput for position " + position);
+        List<ValidationResult> validationResults = new ArrayList<>();
+        HeaderValidator validator = new StandardHeaderValidator(getContext());
+        ValidationResult nameResult = validator.validateName(getName());
+        ValidationResult valueResult = validator.validateValue(getValue());
+        if (!nameResult.isValidationSuccessful()) {
+            validationResults.add(nameResult);
+        }
+        GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+        if (globalHeaderEditSupport != null) {
+            List<String> currentHeaderNames = globalHeaderEditSupport.getExistingHeaderNames();
+            if (position >= 0 && position < currentHeaderNames.size()) {
+                currentHeaderNames.remove(position);
+            }
+            ValidationResult nameExistsResult = validator.validateNameExists(currentHeaderNames, getName());
+            if (!nameExistsResult.isValidationSuccessful()) {
+                validationResults.add(nameExistsResult);
+            }
+        } else {
+            Log.e(ExportEncryptDialog.class.getName(), "globalHeaderEditSupport is null");
+        }
+        if (!valueResult.isValidationSuccessful()) {
+            validationResults.add(valueResult);
+        }
+        return validationResults;
+    }
+
+    private boolean containsValidationResult(List<ValidationResult> validationResults, ValidationResult result) {
+        for (ValidationResult currentResult : validationResults) {
+            if (currentResult.isEqual(result)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void showValidationMessageDialog(List<ValidationResult> validationResult) {
+        Log.d(ExportEncryptDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
+    }
+
+    protected void showConfirmDialog(int position) {
+        Log.d(ExportEncryptDialog.class.getName(), "showConfirmDialog for position " + position);
+        String message = getResources().getString(R.string.text_dialog_confirm_confirm_authorization_header);
+        String description = getResources().getString(R.string.text_dialog_confirm_add_authorization_header_description);
+        ConfirmDialog.Type type = ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER;
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{message, description, type.name()});
+        bundle.putInt(confirmDialog.getPositionKey(), position);
+        confirmDialog.setArguments(bundle);
+        confirmDialog.show(getParentFragmentManager(), ConfirmDialog.class.getName());
+    }
+
+    private boolean onNameEditTextLongClicked(View view) {
+        Log.d(ExportEncryptDialog.class.getName(), "onNameEditTextLongClicked");
+        showContextOptionsDialog((EditText) view);
+        return true;
+    }
+
+    private boolean onValueEditTextLongClicked(View view) {
+        Log.d(ExportEncryptDialog.class.getName(), "onValueEditTextLongClicked");
+        showContextOptionsDialog((EditText) view);
+        return true;
+    }
+
+    private void showContextOptionsDialog(EditText editText) {
+        Log.d(ExportEncryptDialog.class.getName(), "showContextOptionsDialog");
+        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+    }
+
+    @Override
+    public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
+        Log.d(ExportEncryptDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
+        if (nameEditText.getId() == sourceResourceId) {
+            Log.e(ExportEncryptDialog.class.getName(), "Source field is the name input field.");
+            contextOptionsSupportManager.handleContextOption(nameEditText, option);
+            nameEditText.setSelection(nameEditText.getText().length());
+        } else if (valueEditText.getId() == sourceResourceId) {
+            Log.e(ExportEncryptDialog.class.getName(), "Source field is the value input field.");
+            contextOptionsSupportManager.handleContextOption(valueEditText, option);
+            valueEditText.setSelection(valueEditText.getText().length());
+        } else {
+            Log.e(ExportEncryptDialog.class.getName(), "Source field is undefined.");
+        }
+        contextOptionsDialog.dismiss();
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(requireContext(), colorid);
+    }
+
+    private GlobalHeaderEditSupport getGlobalHeaderEditSupport() {
+        Log.d(ExportEncryptDialog.class.getName(), "getGlobalHeaderEditSupport");
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof GlobalHeaderEditSupport) {
+                return (GlobalHeaderEditSupport) fragment;
+            }
+        }
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(ExportEncryptDialog.class.getName(), "getGlobalHeaderEditSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof GlobalHeaderEditSupport)) {
+            Log.e(ExportEncryptDialog.class.getName(), "getGlobalHeaderEditSupport, activity is not an instance of " + GlobalHeaderEditSupport.class.getSimpleName());
+            return null;
+        }
+        return (GlobalHeaderEditSupport) activity;
+    }*/
+}

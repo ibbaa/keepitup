@@ -115,6 +115,7 @@ import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardIntervalValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardResolveValidatorTest;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcherTest;
+import net.ibbaa.keepitup.ui.validation.TextDescriptionColorValidatingWatcherTest;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.URLValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ValidationResultTest;
@@ -251,6 +252,7 @@ import org.junit.runners.Suite;
         StandardIntervalValidatorTest.class,
         StandardResolveValidatorTest.class,
         TextColorValidatingWatcherTest.class,
+        TextDescriptionColorValidatingWatcherTest.class,
         URLFieldValidatorTest.class,
         URLValidatorTest.class,
         ValidationResultTest.class,
