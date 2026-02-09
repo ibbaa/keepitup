@@ -29,19 +29,25 @@ public abstract class BaseStringValidator {
 
     private final String field;
     private final Context context;
+    private final boolean confidential;
 
     public BaseStringValidator(String field, Context context) {
+        this(field, context, false);
+    }
+
+    public BaseStringValidator(String field, Context context, boolean confidential) {
         this.field = field;
         this.context = context;
+        this.confidential = confidential;
     }
 
     protected ValidationResult validateString(String value, int maximum) {
-        return validateString(value, maximum, true, false);
+        return validateString(value, -1, maximum, true, false);
     }
 
-    protected ValidationResult validateString(String value, int maximum, boolean emptyIsValid, boolean trim) {
+    protected ValidationResult validateString(String value, int minimum, int maximum, boolean emptyIsValid, boolean trim) {
         Log.d(BaseStringValidator.class.getName(), "validateString for field " + field);
-        Log.d(BaseStringValidator.class.getName(), "value is " + value);
+        Log.d(BaseStringValidator.class.getName(), "value is " + StringUtil.maskSecret(value, confidential));
         Log.d(BaseStringValidator.class.getName(), "maximum is " + maximum);
         Log.d(BaseStringValidator.class.getName(), "emptyIsValid is " + emptyIsValid);
         Log.d(BaseStringValidator.class.getName(), "trim is " + trim);
@@ -58,6 +64,11 @@ public abstract class BaseStringValidator {
                 Log.d(BaseStringValidator.class.getName(), "No value specified. Validation failed.");
                 return new ValidationResult(false, field, failedMessageNoValue);
             }
+        }
+        if (minimum > 0 && Objects.requireNonNull(value).length() < minimum) {
+            Log.d(BaseStringValidator.class.getName(), "Value below minimum. Validation failed.");
+            String formattedFailedMessage = getResources().getString(R.string.invalid_length_minimum, minimum);
+            return new ValidationResult(false, getField(), formattedFailedMessage);
         }
         if (Objects.requireNonNull(value).length() > maximum) {
             Log.d(BaseStringValidator.class.getName(), "Value too long. Validation failed.");

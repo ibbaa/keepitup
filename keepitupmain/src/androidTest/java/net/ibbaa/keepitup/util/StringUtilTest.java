@@ -76,6 +76,23 @@ public class StringUtilTest {
     }
 
     @Test
+    public void testMaskSecret() {
+        assertEquals("123", StringUtil.maskSecret("123", false));
+        assertEquals("************", StringUtil.maskSecret("123", true));
+    }
+
+    @Test
+    @SuppressWarnings("UnnecessaryUnicodeEscape")
+    public void testNormalizeString() {
+        assertEquals("", StringUtil.normalizeString(null));
+        assertEquals("abc", StringUtil.normalizeString("abc"));
+        assertEquals("Hello \uD83D\uDE0A", StringUtil.normalizeString("Hello \uD83D\uDE0A"));
+        assertEquals("\u00E9", StringUtil.normalizeString("\u0065\u0301"));
+        assertEquals("\u0031", StringUtil.normalizeString("\u2460"));
+        assertEquals("\u00C5", StringUtil.normalizeString("\u212B"));
+    }
+
+    @Test
     public void testFormatTimeRange() {
         InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(Locale.US);
         assertEquals("123 msec", StringUtil.formatTimeRange(123, TestRegistry.getContext()));

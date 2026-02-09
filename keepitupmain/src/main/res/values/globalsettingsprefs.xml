@@ -25,14 +25,6 @@
     <integer name="notification_after_failures_maximum">20</integer>
     <string name="suspension_enabled_key">suspension_enabled_key</string>
     <bool name="suspension_enabled_default">true</bool>
-    <integer name="suspension_intervals_text_size_normal">14</integer>
-    <integer name="suspension_intervals_text_size_smaller">12</integer>
-    <integer name="suspension_intervals_text_size_small">10</integer>
-    <integer name="global_headers_text_size_normal">14</integer>
-    <integer name="global_headers_text_size_smaller">12</integer>
-    <integer name="global_headers_text_size_small">10</integer>
-    <integer name="global_headers_max_value_lines">5</integer>
-    <integer name="global_headers_max_value_visible_headers">5</integer>
     <string name="enforce_default_ping_package_size_key">enforce_default_ping_package_size_key</string>
     <bool name="enforce_default_ping_package_size_default">false</bool>
     <string name="download_external_storage_key">download_external_storage_key</string>

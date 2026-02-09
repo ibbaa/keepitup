@@ -28,6 +28,9 @@
     <string name="resolve_port_field_name">Connect-to port</string>
     <string name="header_name_field_name">Header name</string>
     <string name="header_value_field_name">Header value</string>
+    <string name="password_field_name">Password</string>
+    <string name="password_confirm_field_name">Confirm password</string>
+    <string name="invalid_no_match">Values do not match</string>
     <string name="invalid_no_value">No value specified</string>
     <string name="invalid_number_format">Invalid format</string>
     <string name="invalid_host_format">No valid host or IP address</string>
@@ -35,9 +38,10 @@
     <string name="invalid_file_name">No valid filename</string>
     <string name="invalid_characters">Value contains invalid characters</string>
     <string name="invalid_exists">Value already exists</string>
-    <string name="invalid_range_minimim">Minimum: %d</string>
+    <string name="invalid_range_minimum">Minimum: %d</string>
     <string name="invalid_range_maximum">Maximum: %d</string>
     <string name="invalid_length_maximum">Maximum length: %d</string>
+    <string name="invalid_length_minimum">Minimum length: %d</string>
     <string name="suspension_interval_field_name">Interval</string>
     <string name="suspension_interval_overlap" tools:ignore="PluralsCandidate">Intervals must not overlap and must have a distance of at least %d minutes from each other.</string>
     <string name="suspension_interval_duration" tools:ignore="PluralsCandidate">Interval length minimum is %d minutes.</string>

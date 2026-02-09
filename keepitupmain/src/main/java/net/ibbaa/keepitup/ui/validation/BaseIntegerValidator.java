@@ -58,7 +58,7 @@ public abstract class BaseIntegerValidator {
         Log.d(BaseIntegerValidator.class.getName(), "validateIntNumber, parsed numeric value is " + numberValue);
         if (numberValue < minimum) {
             Log.d(BaseIntegerValidator.class.getName(), "Out of range. Value less than minimum of " + minimum);
-            String formattedMessage = getResources().getString(R.string.invalid_range_minimim, minimum);
+            String formattedMessage = getResources().getString(R.string.invalid_range_minimum, minimum);
             return new ValidationResult(false, field, formattedMessage);
         }
         if (numberValue > maximum) {

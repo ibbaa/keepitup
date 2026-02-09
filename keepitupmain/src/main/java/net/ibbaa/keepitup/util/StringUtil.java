@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 
+import java.text.Normalizer;
 import java.text.NumberFormat;
 
 public class StringUtil {
@@ -56,6 +57,14 @@ public class StringUtil {
 
     public static String notNull(CharSequence value) {
         return value == null ? "" : value.toString();
+    }
+
+    public static String maskSecret(String value, boolean confidential) {
+        return confidential ? "************" : value;
+    }
+
+    public static String normalizeString(String value) {
+        return Normalizer.normalize(notNull(value), Normalizer.Form.NFKC);
     }
 
     public static String formatTimeRange(double timeRange, Context context) {

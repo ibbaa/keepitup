@@ -21,4 +21,7 @@
     <string name="label_dialog_global_headers_ok">@android:string/ok</string>
     <string name="label_dialog_global_headers_cancel">@android:string/cancel</string>
     <string name="label_dialog_global_headers_edit_header">Add global header</string>
+    <integer name="list_item_global_header_max_value_lines">3</integer>
+    <dimen name="list_item_global_header_text_size_name">14sp</dimen>
+    <dimen name="list_item_global_header_text_size_value">12sp</dimen>
 </resources>

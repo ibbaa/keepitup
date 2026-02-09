@@ -32,7 +32,7 @@ public class HeaderNameFieldValidator extends BaseStringValidator implements Fie
     public ValidationResult validate(String value) {
         Log.d(HeaderNameFieldValidator.class.getName(), "validate, value is " + value);
         int maximum = getResources().getInteger(R.integer.http_header_name_max_length);
-        ValidationResult result = validateString(value, maximum, false, true);
+        ValidationResult result = validateString(value, -1, maximum, false, true);
         if (!result.isValidationSuccessful()) {
             return result;
         }

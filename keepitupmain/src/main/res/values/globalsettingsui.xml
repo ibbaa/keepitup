@@ -40,4 +40,12 @@
     <string name="text_activity_global_settings_global_headers_less">less…</string>
     <string name="text_activity_global_settings_download_folder_internal">Internal storage folder</string>
     <string name="text_activity_global_settings_log_folder_none">None</string>
+    <integer name="suspension_intervals_text_size_normal">14</integer>
+    <integer name="suspension_intervals_text_size_smaller">12</integer>
+    <integer name="suspension_intervals_text_size_small">10</integer>
+    <integer name="global_headers_text_size_normal">14</integer>
+    <integer name="global_headers_text_size_smaller">12</integer>
+    <integer name="global_headers_text_size_small">10</integer>
+    <integer name="global_headers_max_value_lines">5</integer>
+    <integer name="global_headers_max_value_visible_headers">5</integer>
 </resources>
