@@ -48,6 +48,7 @@ public abstract class BaseStringValidator {
     protected ValidationResult validateString(String value, int minimum, int maximum, boolean emptyIsValid, boolean trim) {
         Log.d(BaseStringValidator.class.getName(), "validateString for field " + field);
         Log.d(BaseStringValidator.class.getName(), "value is " + StringUtil.maskSecret(value, confidential));
+        Log.d(BaseStringValidator.class.getName(), "minimum is " + minimum);
         Log.d(BaseStringValidator.class.getName(), "maximum is " + maximum);
         Log.d(BaseStringValidator.class.getName(), "emptyIsValid is " + emptyIsValid);
         Log.d(BaseStringValidator.class.getName(), "trim is " + trim);

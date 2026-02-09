@@ -29,7 +29,7 @@ public class PasswordFieldValidator extends BaseStringValidator implements Field
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(PasswordFieldValidator.class.getName(), "validate, value is " + value);
+        Log.d(PasswordFieldValidator.class.getName(), "validate");
         int maximum = getResources().getInteger(R.integer.password_max_length);
         int minimum = getResources().getInteger(R.integer.password_min_length);
         return validateString(value, minimum, maximum, false, false);
