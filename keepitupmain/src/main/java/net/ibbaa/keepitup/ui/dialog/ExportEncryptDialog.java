@@ -16,27 +16,47 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
+import net.ibbaa.keepitup.ui.validation.PasswordConfirmFieldValidator;
+import net.ibbaa.keepitup.ui.validation.PasswordFieldValidator;
+import net.ibbaa.keepitup.ui.validation.TextDescriptionColorValidatingWatcher;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
+import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings({"unused", "SameReturnValue"})
 public class ExportEncryptDialog extends DialogFragmentBase { // implements ContextOptionsSupport, ConfirmSupport {
 
-    /*private View dialogView;
+    private View dialogView;
+    private CheckBox encryptCheckBox;
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
-    private TextColorValidatingWatcher nameEditTextWatcher;
-    private TextColorValidatingWatcher valueEditTextWatcher;
-
-    private IClipboardManager clipboardManager;
-
-    public void injectClipboardManager(IClipboardManager clipboardManager) {
-        this.clipboardManager = clipboardManager;
-    }
-
-    public IClipboardManager getClipboardManager() {
-        if (clipboardManager != null) {
-            return clipboardManager;
-        }
-        return new SystemClipboardManager(requireContext());
-    }
+    private TextView passwordTextView;
+    private TextView confirmPasswordTextView;
+    private TextDescriptionColorValidatingWatcher passwordEditTextWatcher;
+    private TextDescriptionColorValidatingWatcher confirmPasswordEditTextWatcher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,92 +68,102 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ExportEncryptDialog.class.getName(), "onCreateView");
-        dialogView = inflater.inflate(R.layout.dialog_global_header_edit, container);
+        dialogView = inflater.inflate(R.layout.dialog_export_encrypt, container);
         initEdgeToEdgeInsets(dialogView);
-        Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
-        Header header = headerBundle != null ? new Header(headerBundle) : new Header();
-        prepareNameTextField(header);
-        prepareValueTextField(header);
+        prepareEncryptCheckBox();
+        preparePasswordTextField();
+        prepareConfirmPasswordTextField();
         prepareOkCancelImageButtons();
         return dialogView;
     }
 
-    private void prepareNameTextField(Header header) {
-        Log.d(ExportEncryptDialog.class.getName(), "prepareNameTextField");
-        nameEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_name);
-        nameEditText.setOnLongClickListener(this::onNameEditTextLongClicked);
-        nameEditText.setText(StringUtil.notNull(header.getName()));
-        prepareNameEditTextListener();
+    private void prepareEncryptCheckBox() {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareEncryptCheckBox");
+        encryptCheckBox = dialogView.findViewById(R.id.checkbox_dialog_export_encrypt_encrypt);
+        encryptCheckBox.setOnCheckedChangeListener(this::onEncryptCheckboxCheckedChanged);
     }
 
-    private void prepareNameEditTextListener() {
+    private void onEncryptCheckboxCheckedChanged(@NonNull CompoundButton checkBox, boolean checked) {
+        Log.d(ExportEncryptDialog.class.getName(), "onEncryptCheckboxCheckedChanged, checked is " + checked);
+        LinearLayout passwordLayout = dialogView.findViewById(R.id.linearlayout_dialog_export_encrypt_password);
+        LinearLayout confirmPasswordLayout = dialogView.findViewById(R.id.linearlayout_dialog_export_encrypt_password_confirm);
+        int visibility = checked ? View.VISIBLE : View.GONE;
+        passwordLayout.setVisibility(visibility);
+        confirmPasswordLayout.setVisibility(visibility);
+    }
+
+    private void preparePasswordTextField() {
+        Log.d(ExportEncryptDialog.class.getName(), "preparePasswordTextField");
+        passwordEditText = dialogView.findViewById(R.id.edittext_dialog_export_encrypt_password);
+        passwordTextView = dialogView.findViewById(R.id.textview_dialog_export_encrypt_password);
+        preparePasswordEditTextListener();
+    }
+
+    private void preparePasswordEditTextListener() {
         Log.d(ExportEncryptDialog.class.getName(), "prepareNameEditTextListener");
-        if (nameEditTextWatcher != null) {
-            nameEditText.removeTextChangedListener(nameEditTextWatcher);
-            nameEditTextWatcher = null;
+        if (passwordEditTextWatcher != null) {
+            passwordEditText.removeTextChangedListener(passwordEditTextWatcher);
+            passwordEditTextWatcher = null;
         }
-        nameEditTextWatcher = new TextColorValidatingWatcher(nameEditText, this::validateName, getColor(R.color.textColor), getColor(R.color.textErrorColor));
-        nameEditText.addTextChangedListener(nameEditTextWatcher);
+        String okText = getResources().getString(R.string.text_dialog_export_password_ok);
+        String errorText = getResources().getString(R.string.text_dialog_export_password_min_length);
+        int okColor = getColor(R.color.textOkColor);
+        int errorColor = getColor(R.color.textErrorColor);
+        passwordEditTextWatcher = new TextDescriptionColorValidatingWatcher(passwordEditText, passwordTextView, this::validatePassword, okText, errorText, okColor, errorColor);
+        passwordEditText.addTextChangedListener(passwordEditTextWatcher);
     }
 
-    private void prepareValueTextField(Header header) {
-        Log.d(ExportEncryptDialog.class.getName(), "prepareValueTextField");
-        valueEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_value);
-        valueEditText.setOnLongClickListener(this::onValueEditTextLongClicked);
-        valueEditText.setText(StringUtil.notNull(header.getValue()));
-        prepareValueEditTextListener();
+    private void prepareConfirmPasswordTextField() {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareConfirmPasswordTextField");
+        confirmPasswordEditText = dialogView.findViewById(R.id.edittext_dialog_export_encrypt_password_confirm);
+        confirmPasswordTextView = dialogView.findViewById(R.id.textview_dialog_export_encrypt_password_confirm);
+        prepareConfirmPasswordEditTextListener();
     }
 
-    private void prepareValueEditTextListener() {
-        Log.d(ExportEncryptDialog.class.getName(), "prepareValueEditTextListener");
-        if (valueEditTextWatcher != null) {
-            valueEditText.removeTextChangedListener(valueEditTextWatcher);
-            valueEditTextWatcher = null;
+    private void prepareConfirmPasswordEditTextListener() {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareConfirmPasswordEditTextListener");
+        if (confirmPasswordEditTextWatcher != null) {
+            confirmPasswordEditText.removeTextChangedListener(confirmPasswordEditTextWatcher);
+            confirmPasswordEditTextWatcher = null;
         }
-        valueEditTextWatcher = new TextColorValidatingWatcher(valueEditText, this::validateValue, getColor(R.color.textColor), getColor(R.color.textErrorColor));
-        valueEditText.addTextChangedListener(valueEditTextWatcher);
+        String okText = getResources().getString(R.string.text_dialog_export_confirm_password_match);
+        String errorText = getResources().getString(R.string.text_dialog_export_confirm_password_no_match);
+        int okColor = getColor(R.color.textOkColor);
+        int errorColor = getColor(R.color.textErrorColor);
+        confirmPasswordEditTextWatcher = new TextDescriptionColorValidatingWatcher(confirmPasswordEditText, confirmPasswordTextView, this::validateConfirmPassword, okText, errorText, okColor, errorColor);
+        confirmPasswordEditText.addTextChangedListener(confirmPasswordEditTextWatcher);
     }
 
     private void prepareOkCancelImageButtons() {
         Log.d(ExportEncryptDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_global_header_edit_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_global_header_edit_cancel);
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_export_encrypt_edit_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_export_encrypt_edit_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
-    public String getHeaderKey() {
-        return ExportEncryptDialog.class.getName() + ".Header";
+    public boolean isEncrypt() {
+        return encryptCheckBox.isChecked();
     }
 
-    public String getPositionKey() {
-        return ExportEncryptDialog.class.getSimpleName() + ".Position";
+    public String getPassword() {
+        return StringUtil.notNull(passwordEditText.getText());
     }
 
-    public String getName() {
-        return StringUtil.notNull(nameEditText.getText()).trim();
-    }
-
-    public String getValue() {
-        return StringUtil.notNull(valueEditText.getText());
+    public String getConfirmPassword() {
+        return StringUtil.notNull(confirmPasswordEditText.getText());
     }
 
     private void onOkClicked(View view) {
         Log.d(ExportEncryptDialog.class.getName(), "onOkClicked");
-        int position = BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
-        List<ValidationResult> validationResult = validateInput(position);
+        List<ValidationResult> validationResult = validateInput();
         if (!hasErrors(validationResult)) {
             Log.d(ExportEncryptDialog.class.getName(), "Validation was successful");
-            if (HTTPUtil.isAuthorizationHeader(getContext(), getName())) {
-                Log.d(ExportEncryptDialog.class.getName(), "Header is an authorization header");
-                showConfirmDialog(position);
-                return;
-            }
-            GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
-            if (globalHeaderEditSupport != null) {
-                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
+            ExportEncryptSupport exportEncryptSupport = getExportEncryptSupport();
+            if (exportEncryptSupport != null) {
+                exportEncryptSupport.onExportEncryptDialogOkClicked(this);
             } else {
-                Log.e(ExportEncryptDialog.class.getName(), "globalHeaderEditSupport is null");
+                Log.e(ExportEncryptDialog.class.getName(), "exportEncryptSupport is null");
                 dismiss();
             }
         } else {
@@ -144,101 +174,51 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
 
     private void onCancelClicked(View view) {
         Log.d(ExportEncryptDialog.class.getName(), "onCancelClicked");
-        GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
-        if (globalHeaderEditSupport != null) {
-            globalHeaderEditSupport.onGlobalHeaderEditDialogCancelClicked(this);
+        ExportEncryptSupport exportEncryptSupport = getExportEncryptSupport();
+        if (exportEncryptSupport != null) {
+            exportEncryptSupport.onExportEncryptDialogCancelClicked(this);
         } else {
-            Log.e(ExportEncryptDialog.class.getName(), "settingsInputSupport is null");
+            Log.e(ExportEncryptDialog.class.getName(), "exportEncryptSupport is null");
             dismiss();
         }
-    }
-
-    @Override
-    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
-        Log.d(ExportEncryptDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
-        if (ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER.equals(type)) {
-            int position = confirmDialog.getPosition();
-            GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
-            if (globalHeaderEditSupport != null) {
-                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
-            } else {
-                Log.e(ExportEncryptDialog.class.getName(), "globalHeaderEditSupport is null");
-                dismiss();
-            }
-        }
-        confirmDialog.dismiss();
-    }
-
-    @Override
-    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
-        Log.d(ExportEncryptDialog.class.getName(), "onConfirmDialogCancelClicked for type " + type);
-        confirmDialog.dismiss();
-    }
-
-    public Header getHeader() {
-        Log.d(ExportEncryptDialog.class.getName(), "getHeader");
-        Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
-        Header header = headerBundle != null ? new Header(headerBundle) : new Header();
-        header.setName(getName());
-        header.setValue(getValue());
-        return header;
     }
 
     private boolean hasErrors(List<ValidationResult> validationResult) {
         return !validationResult.isEmpty();
     }
 
-    private boolean validateName(EditText editText) {
-        Log.d(ExportEncryptDialog.class.getName(), "validateName");
-        HeaderValidator validator = new StandardHeaderValidator(getContext());
-        ValidationResult result = validator.validateName(getName());
+    private boolean validatePassword(EditText editText) {
+        Log.d(ExportEncryptDialog.class.getName(), "validatePassword");
+        PasswordFieldValidator validator = new PasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
+        ValidationResult result = validator.validate(getPassword());
         Log.d(ExportEncryptDialog.class.getName(), "Validation result: " + result);
         return result.isValidationSuccessful();
     }
 
-    private boolean validateValue(EditText editText) {
-        Log.d(ExportEncryptDialog.class.getName(), "validateName");
-        HeaderValidator validator = new StandardHeaderValidator(getContext());
-        ValidationResult result = validator.validateValue(getValue());
+    private boolean validateConfirmPassword(EditText editText) {
+        Log.d(ExportEncryptDialog.class.getName(), "validateConfirmPassword");
+        PasswordConfirmFieldValidator validator = new PasswordConfirmFieldValidator(getResources().getString(R.string.password_confirm_field_name), getPassword(), getContext());
+        ValidationResult result = validator.validate(getConfirmPassword());
         Log.d(ExportEncryptDialog.class.getName(), "Validation result: " + result);
         return result.isValidationSuccessful();
     }
 
-    private List<ValidationResult> validateInput(int position) {
-        Log.d(ExportEncryptDialog.class.getName(), "validateInput for position " + position);
+    private List<ValidationResult> validateInput() {
+        Log.d(ExportEncryptDialog.class.getName(), "validateInput");
         List<ValidationResult> validationResults = new ArrayList<>();
-        HeaderValidator validator = new StandardHeaderValidator(getContext());
-        ValidationResult nameResult = validator.validateName(getName());
-        ValidationResult valueResult = validator.validateValue(getValue());
-        if (!nameResult.isValidationSuccessful()) {
-            validationResults.add(nameResult);
+        PasswordFieldValidator passwordValidator = new PasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
+        ValidationResult passwordResult = passwordValidator.validate(getPassword());
+        if (!passwordResult.isValidationSuccessful()) {
+            validationResults.add(passwordResult);
         }
-        GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
-        if (globalHeaderEditSupport != null) {
-            List<String> currentHeaderNames = globalHeaderEditSupport.getExistingHeaderNames();
-            if (position >= 0 && position < currentHeaderNames.size()) {
-                currentHeaderNames.remove(position);
+        if (passwordResult.isValidationSuccessful() || !StringUtil.isEmpty(getConfirmPassword())) {
+            PasswordConfirmFieldValidator passwordConfirmValidator = new PasswordConfirmFieldValidator(getResources().getString(R.string.password_confirm_field_name), getPassword(), getContext());
+            ValidationResult passwordConfirmResult = passwordConfirmValidator.validate(getConfirmPassword());
+            if (!passwordConfirmResult.isValidationSuccessful()) {
+                validationResults.add(passwordConfirmResult);
             }
-            ValidationResult nameExistsResult = validator.validateNameExists(currentHeaderNames, getName());
-            if (!nameExistsResult.isValidationSuccessful()) {
-                validationResults.add(nameExistsResult);
-            }
-        } else {
-            Log.e(ExportEncryptDialog.class.getName(), "globalHeaderEditSupport is null");
-        }
-        if (!valueResult.isValidationSuccessful()) {
-            validationResults.add(valueResult);
         }
         return validationResults;
-    }
-
-    private boolean containsValidationResult(List<ValidationResult> validationResults, ValidationResult result) {
-        for (ValidationResult currentResult : validationResults) {
-            if (currentResult.isEqual(result)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void showValidationMessageDialog(List<ValidationResult> validationResult) {
@@ -248,74 +228,27 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
-    protected void showConfirmDialog(int position) {
-        Log.d(ExportEncryptDialog.class.getName(), "showConfirmDialog for position " + position);
-        String message = getResources().getString(R.string.text_dialog_confirm_confirm_authorization_header);
-        String description = getResources().getString(R.string.text_dialog_confirm_add_authorization_header_description);
-        ConfirmDialog.Type type = ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER;
-        ConfirmDialog confirmDialog = new ConfirmDialog();
-        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{message, description, type.name()});
-        bundle.putInt(confirmDialog.getPositionKey(), position);
-        confirmDialog.setArguments(bundle);
-        confirmDialog.show(getParentFragmentManager(), ConfirmDialog.class.getName());
-    }
-
-    private boolean onNameEditTextLongClicked(View view) {
-        Log.d(ExportEncryptDialog.class.getName(), "onNameEditTextLongClicked");
-        showContextOptionsDialog((EditText) view);
-        return true;
-    }
-
-    private boolean onValueEditTextLongClicked(View view) {
-        Log.d(ExportEncryptDialog.class.getName(), "onValueEditTextLongClicked");
-        showContextOptionsDialog((EditText) view);
-        return true;
-    }
-
-    private void showContextOptionsDialog(EditText editText) {
-        Log.d(ExportEncryptDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
-    }
-
-    @Override
-    public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(ExportEncryptDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
-        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
-        if (nameEditText.getId() == sourceResourceId) {
-            Log.e(ExportEncryptDialog.class.getName(), "Source field is the name input field.");
-            contextOptionsSupportManager.handleContextOption(nameEditText, option);
-            nameEditText.setSelection(nameEditText.getText().length());
-        } else if (valueEditText.getId() == sourceResourceId) {
-            Log.e(ExportEncryptDialog.class.getName(), "Source field is the value input field.");
-            contextOptionsSupportManager.handleContextOption(valueEditText, option);
-            valueEditText.setSelection(valueEditText.getText().length());
-        } else {
-            Log.e(ExportEncryptDialog.class.getName(), "Source field is undefined.");
-        }
-        contextOptionsDialog.dismiss();
-    }
-
     private int getColor(int colorid) {
         return ContextCompat.getColor(requireContext(), colorid);
     }
 
-    private GlobalHeaderEditSupport getGlobalHeaderEditSupport() {
-        Log.d(ExportEncryptDialog.class.getName(), "getGlobalHeaderEditSupport");
+    private ExportEncryptSupport getExportEncryptSupport() {
+        Log.d(ExportEncryptDialog.class.getName(), "GlobalHeaderEditSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof GlobalHeaderEditSupport) {
-                return (GlobalHeaderEditSupport) fragment;
+            if (fragment instanceof ExportEncryptSupport) {
+                return (ExportEncryptSupport) fragment;
             }
         }
         Activity activity = getActivity();
         if (activity == null) {
-            Log.e(ExportEncryptDialog.class.getName(), "getGlobalHeaderEditSupport, activity is null");
+            Log.e(ExportEncryptDialog.class.getName(), "getExportEncryptSupport, activity is null");
             return null;
         }
-        if (!(activity instanceof GlobalHeaderEditSupport)) {
-            Log.e(ExportEncryptDialog.class.getName(), "getGlobalHeaderEditSupport, activity is not an instance of " + GlobalHeaderEditSupport.class.getSimpleName());
+        if (!(activity instanceof ExportEncryptSupport)) {
+            Log.e(ExportEncryptDialog.class.getName(), "getExportEncryptSupport, activity is not an instance of " + ExportEncryptSupport.class.getSimpleName());
             return null;
         }
-        return (GlobalHeaderEditSupport) activity;
-    }*/
+        return (ExportEncryptSupport) activity;
+    }
 }

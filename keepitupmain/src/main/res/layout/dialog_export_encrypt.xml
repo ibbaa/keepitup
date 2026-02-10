@@ -62,16 +62,12 @@
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkbox_dialog_export_encrypt_encrypt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonTint="@drawable/checkbox_selector"
-                android:checked="true" />
-
-            <TextView
-                android:id="@+id/textview_dialog_export_encrypt_encrypt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_dialog_export_encrypt_encrypt" />
+                app:buttonTint="@drawable/checkbox_selector"
+                android:text="@string/label_dialog_export_encrypt_encrypt"
+                android:textColor="@color/textColor"
+                android:checked="true" />
 
         </LinearLayout>
 
@@ -93,7 +89,7 @@
                 android:inputType="textPassword|textMultiLine|textNoSuggestions"
                 android:scrollHorizontally="false"
                 android:maxLines="@integer/edittext_dialog_export_encrypt_name_max_lines"
-                android:hint="@string/label_dialog_export_encrypt_name"
+                android:hint="@string/label_dialog_export_encrypt_password"
                 android:text=""
                 tools:ignore="LabelFor" />
 
@@ -125,7 +121,7 @@
                 android:inputType="textPassword|textMultiLine|textNoSuggestions"
                 android:scrollHorizontally="false"
                 android:maxLines="@integer/edittext_dialog_export_encrypt_value_max_lines"
-                android:hint="@string/label_dialog_export_encrypt_value"
+                android:hint="@string/label_dialog_export_encrypt_confirm_password"
                 android:text=""
                 tools:ignore="LabelFor" />
 

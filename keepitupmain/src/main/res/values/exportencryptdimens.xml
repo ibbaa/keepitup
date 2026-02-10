@@ -17,20 +17,20 @@
 <resources>
     <dimen name="linearlayout_dialog_export_encrypt_padding">20dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_title_margin_top">0dp</dimen>
-    <dimen name="linearlayout_dialog_export_encrypt_title_margin_bottom">10dp</dimen>
+    <dimen name="linearlayout_dialog_export_encrypt_title_margin_bottom">0dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_title_margin_left">10dp</dimen>
-    <dimen name="linearlayout_dialog_export_encrypt_encrypt_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_export_encrypt_encrypt_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_encrypt_margin_end">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_encrypt_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_password_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_password_margin_end">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_password_margin_left">10dp</dimen>
     <dimen name="textview_dialog_export_encrypt_password_margin_top">1dp</dimen>
-    <dimen name="textview_dialog_export_encrypt_password_text_size">6sp</dimen>
+    <dimen name="textview_dialog_export_encrypt_password_text_size">7sp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_password_confirm_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_password_confirm_margin_end">10dp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_password_confirm_margin_left">10dp</dimen>
     <dimen name="textview_dialog_export_encrypt_password_confirm_margin_top">1dp</dimen>
-    <dimen name="textview_dialog_export_encrypt_password_confirm_text_size">6sp</dimen>
+    <dimen name="textview_dialog_export_encrypt_password_confirm_text_size">7sp</dimen>
     <dimen name="linearlayout_dialog_export_encrypt_ok_cancel_padding_top">10dp</dimen>
 </resources>
