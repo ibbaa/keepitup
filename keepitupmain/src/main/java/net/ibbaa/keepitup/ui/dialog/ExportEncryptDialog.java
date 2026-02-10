@@ -105,8 +105,9 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
             passwordEditText.removeTextChangedListener(passwordEditTextWatcher);
             passwordEditTextWatcher = null;
         }
+        int minLength = getResources().getInteger(R.integer.password_min_length);
         String okText = getResources().getString(R.string.text_dialog_export_password_ok);
-        String errorText = getResources().getString(R.string.text_dialog_export_password_min_length);
+        String errorText = getResources().getString(R.string.text_dialog_export_password_min_length, minLength);
         int okColor = getColor(R.color.textOkColor);
         int errorColor = getColor(R.color.textErrorColor);
         passwordEditTextWatcher = new TextDescriptionColorValidatingWatcher(passwordEditText, passwordTextView, this::validatePassword, okText, errorText, okColor, errorColor);
