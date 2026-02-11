@@ -471,6 +471,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
     }
 
+    @SuppressWarnings("ClassCanBeRecord")
     public static class ExecutionResult {
 
         private final boolean interrupted;

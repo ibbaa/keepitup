@@ -78,6 +78,7 @@
             android:layout_marginStart="@dimen/linearlayout_dialog_export_encrypt_password_margin_left"
             android:layout_marginEnd="@dimen/linearlayout_dialog_export_encrypt_password_margin_end"
             android:layout_marginTop="@dimen/linearlayout_dialog_export_encrypt_password_margin_top"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <EditText
@@ -85,13 +86,15 @@
                 style="@style/EditTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/edittext_dialog_export_encrypt_password_padding_end"
+                android:drawablePadding="@dimen/edittext_dialog_export_encrypt_password_drawable_padding"
                 android:importantForAutofill="no"
-                android:inputType="textPassword|textMultiLine|textNoSuggestions"
-                android:scrollHorizontally="false"
-                android:maxLines="@integer/edittext_dialog_export_encrypt_name_max_lines"
+                android:inputType="textPassword|textNoSuggestions"
                 android:hint="@string/label_dialog_export_encrypt_password"
-                android:text=""
-                tools:ignore="LabelFor" />
+                android:textColorHint="@color/textColorHint"
+                android:drawableTint="@color/textColorPrimary"
+                android:drawableEnd="@drawable/ic_visibility_off"
+                tools:ignore="RtlSymmetry,UnusedAttribute" />
 
             <TextView
                 android:id="@+id/textview_dialog_export_encrypt_password"
@@ -99,7 +102,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_export_encrypt_password_margin_top"
                 android:textSize="@dimen/textview_dialog_export_encrypt_password_text_size"
-                android:text="" />
+                android:text=""
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -110,6 +114,7 @@
             android:layout_marginStart="@dimen/linearlayout_dialog_export_encrypt_password_confirm_margin_left"
             android:layout_marginEnd="@dimen/linearlayout_dialog_export_encrypt_password_confirm_margin_end"
             android:layout_marginTop="@dimen/linearlayout_dialog_export_encrypt_password_confirm_margin_top"
+            android:animateLayoutChanges="true"
             android:orientation="vertical">
 
             <EditText
@@ -117,13 +122,15 @@
                 style="@style/EditTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/edittext_dialog_export_encrypt_password_confirm_padding_end"
+                android:drawablePadding="@dimen/edittext_dialog_export_encrypt_password_confirm_drawable_padding"
                 android:importantForAutofill="no"
-                android:inputType="textPassword|textMultiLine|textNoSuggestions"
-                android:scrollHorizontally="false"
-                android:maxLines="@integer/edittext_dialog_export_encrypt_value_max_lines"
+                android:inputType="textPassword|textNoSuggestions"
                 android:hint="@string/label_dialog_export_encrypt_confirm_password"
-                android:text=""
-                tools:ignore="LabelFor" />
+                android:textColorHint="@color/textColorHint"
+                android:drawableTint="@color/textColorPrimary"
+                android:drawableEnd="@drawable/ic_visibility_off"
+                tools:ignore="RtlSymmetry,UnusedAttribute" />
 
             <TextView
                 android:id="@+id/textview_dialog_export_encrypt_password_confirm"
@@ -131,7 +138,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_export_encrypt_password_confirm_margin_top"
                 android:textSize="@dimen/textview_dialog_export_encrypt_password_confirm_text_size"
-                android:text="" />
+                android:text=""
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -143,7 +151,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageview_dialog_export_encrypt_edit_ok"
+                android:id="@+id/imageview_dialog_export_encrypt_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -153,7 +161,7 @@
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
-                android:id="@+id/imageview_dialog_export_encrypt_edit_cancel"
+                android:id="@+id/imageview_dialog_export_encrypt_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

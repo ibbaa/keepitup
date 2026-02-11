@@ -25,6 +25,4 @@
     <string name="text_dialog_export_confirm_password_no_match">Password does not match</string>
     <string name="text_dialog_export_password_ok">Password OK</string>
     <string name="text_dialog_export_confirm_password_match">Password does match</string>
-    <integer name="edittext_dialog_export_encrypt_name_max_lines">2</integer>
-    <integer name="edittext_dialog_export_encrypt_value_max_lines">2</integer>
 </resources>

@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.validation;
 
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +25,9 @@ import android.widget.TextView;
 
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TextDescriptionColorValidatingWatcher implements TextWatcher {
 
@@ -34,6 +38,7 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
     private final String errorText;
     private final int okTextColor;
     private final int errorTextColor;
+    private final List<TextDescriptionColorValidatingWatcher> dependentWatchers;
 
     public TextDescriptionColorValidatingWatcher(EditText editText, TextView textView, ValidatorPredicate<EditText> validator, String okText, String errorText, int okTextColor, int errorTextColor) {
         this.editText = editText;
@@ -43,6 +48,16 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
         this.errorText = errorText;
         this.okTextColor = okTextColor;
         this.errorTextColor = errorTextColor;
+        this.dependentWatchers = new ArrayList<>();
+    }
+
+    public void addDependentWatcher(TextDescriptionColorValidatingWatcher watcher) {
+        dependentWatchers.add(watcher);
+    }
+
+    public void validateCurrentText() {
+        Editable editable = editText.getText();
+        afterTextChanged(editable != null ? editable : new SpannableStringBuilder());
     }
 
     @Override
@@ -69,6 +84,9 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
             textView.setTextColor(errorTextColor);
             textView.setText(errorText);
             textView.setVisibility(View.VISIBLE);
+        }
+        for (TextDescriptionColorValidatingWatcher watchers : dependentWatchers) {
+            watchers.validateCurrentText();
         }
     }
 }

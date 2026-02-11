@@ -67,6 +67,31 @@ public class TextDescriptionColorValidatingWatcherTest {
         assertEquals("error", testTextView.getText());
     }
 
+    @Test
+    public void testDependentWatcher() {
+        EditText parentEditText = new EditText(TestRegistry.getContext());
+        TextView parentTextView = new TextView(TestRegistry.getContext());
+        TextDescriptionColorValidatingWatcher parentWatcher = new TextDescriptionColorValidatingWatcher(parentEditText, parentTextView, this::validateTrue, "okParent", "errorParent", Color.GREEN, Color.RED);
+        EditText dependentEditText = new EditText(TestRegistry.getContext());
+        TextView dependentTextView = new TextView(TestRegistry.getContext());
+        TextDescriptionColorValidatingWatcher dependentWatcher = new TextDescriptionColorValidatingWatcher(dependentEditText, dependentTextView, this::validateFalse, "okDependent", "errorDependent", Color.GREEN, Color.RED);
+        parentWatcher.addDependentWatcher(dependentWatcher);
+        parentEditText.setText("");
+        dependentEditText.setText("");
+        parentWatcher.afterTextChanged(null);
+        assertEquals(View.GONE, parentTextView.getVisibility());
+        assertEquals(View.GONE, dependentTextView.getVisibility());
+        parentEditText.setText("something");
+        dependentEditText.setText("abc");
+        parentWatcher.afterTextChanged(null);
+        assertEquals(View.VISIBLE, parentTextView.getVisibility());
+        assertEquals(Color.GREEN, parentTextView.getCurrentTextColor());
+        assertEquals("okParent", parentTextView.getText());
+        assertEquals(View.VISIBLE, dependentTextView.getVisibility());
+        assertEquals(Color.RED, dependentTextView.getCurrentTextColor());
+        assertEquals("errorDependent", dependentTextView.getText());
+    }
+
     @SuppressWarnings({"SameReturnValue", "unused"})
     private boolean validateTrue(EditText editText) {
         return true;

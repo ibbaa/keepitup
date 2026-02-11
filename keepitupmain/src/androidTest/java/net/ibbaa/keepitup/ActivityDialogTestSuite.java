@@ -33,6 +33,7 @@ import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialogTest;
+import net.ibbaa.keepitup.ui.dialog.ExportEncryptDialogTest;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialogFileModeTest;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialogFolderModeTest;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialogMockTest;
@@ -76,6 +77,7 @@ import org.junit.runners.Suite;
         ConfirmDialogTest.class,
         ContextOptionsDialogTest.class,
         ContextOptionTest.class,
+        ExportEncryptDialogTest.class,
         FileChooseDialogFileModeTest.class,
         FileChooseDialogFolderModeTest.class,
         FileChooseDialogMockTest.class,

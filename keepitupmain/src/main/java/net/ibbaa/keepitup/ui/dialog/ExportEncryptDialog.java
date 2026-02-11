@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -92,10 +93,12 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         confirmPasswordLayout.setVisibility(visibility);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void preparePasswordTextField() {
         Log.d(ExportEncryptDialog.class.getName(), "preparePasswordTextField");
         passwordEditText = dialogView.findViewById(R.id.edittext_dialog_export_encrypt_password);
         passwordTextView = dialogView.findViewById(R.id.textview_dialog_export_encrypt_password);
+        passwordEditText.setOnTouchListener(new PasswordToggleTouchListener(passwordEditText));
         preparePasswordEditTextListener();
     }
 
@@ -114,10 +117,12 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         passwordEditText.addTextChangedListener(passwordEditTextWatcher);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void prepareConfirmPasswordTextField() {
         Log.d(ExportEncryptDialog.class.getName(), "prepareConfirmPasswordTextField");
         confirmPasswordEditText = dialogView.findViewById(R.id.edittext_dialog_export_encrypt_password_confirm);
         confirmPasswordTextView = dialogView.findViewById(R.id.textview_dialog_export_encrypt_password_confirm);
+        confirmPasswordEditText.setOnTouchListener(new PasswordToggleTouchListener(confirmPasswordEditText));
         prepareConfirmPasswordEditTextListener();
     }
 
@@ -133,12 +138,13 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         int errorColor = getColor(R.color.textErrorColor);
         confirmPasswordEditTextWatcher = new TextDescriptionColorValidatingWatcher(confirmPasswordEditText, confirmPasswordTextView, this::validateConfirmPassword, okText, errorText, okColor, errorColor);
         confirmPasswordEditText.addTextChangedListener(confirmPasswordEditTextWatcher);
+        passwordEditTextWatcher.addDependentWatcher(confirmPasswordEditTextWatcher);
     }
 
     private void prepareOkCancelImageButtons() {
         Log.d(ExportEncryptDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_export_encrypt_edit_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_export_encrypt_edit_cancel);
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_export_encrypt_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_export_encrypt_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
