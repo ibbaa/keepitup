@@ -31,7 +31,6 @@ import net.ibbaa.keepitup.util.StringUtil;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class StoragePermissionManager implements IStoragePermissionManager {
 
     private final String mimeType;

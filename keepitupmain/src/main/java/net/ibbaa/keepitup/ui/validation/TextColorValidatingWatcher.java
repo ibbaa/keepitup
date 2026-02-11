@@ -22,7 +22,6 @@ import android.widget.EditText;
 
 import net.ibbaa.keepitup.logging.Log;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class TextColorValidatingWatcher implements TextWatcher {
 
     private final EditText editText;

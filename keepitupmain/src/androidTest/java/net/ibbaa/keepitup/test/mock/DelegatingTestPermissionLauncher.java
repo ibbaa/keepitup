@@ -21,7 +21,6 @@ import android.net.Uri;
 
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class DelegatingTestPermissionLauncher implements PermissionLauncher {
 
     final private Consumer<Uri> callback;

@@ -22,7 +22,6 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.logging.Log;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class SystemNotificationManager implements INotificationManager {
 
     private final NotificationManager notificationManager;

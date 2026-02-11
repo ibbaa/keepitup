@@ -22,7 +22,6 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class AccessTypeDataValidator {
 
     private final Context context;

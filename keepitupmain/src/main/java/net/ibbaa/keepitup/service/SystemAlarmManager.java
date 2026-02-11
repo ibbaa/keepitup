@@ -24,7 +24,6 @@ import android.os.SystemClock;
 
 import net.ibbaa.keepitup.logging.Log;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class SystemAlarmManager implements IAlarmManager {
 
     private final AlarmManager alarmManager;

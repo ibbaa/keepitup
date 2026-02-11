@@ -21,7 +21,6 @@ import android.widget.EditText;
 
 import net.ibbaa.keepitup.util.StringUtil;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class PlaceholderFocusChangeListener implements View.OnFocusChangeListener {
 
     private final String placeholder;

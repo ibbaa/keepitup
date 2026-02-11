@@ -26,7 +26,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.util.FileUtil;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class SystemDocumentManager implements IDocumentManager {
 
     private final Context context;

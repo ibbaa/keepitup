@@ -26,7 +26,6 @@ import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class HeaderValidator {
 
     private final Context context;

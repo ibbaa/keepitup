@@ -25,7 +25,7 @@ import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.List;
 
-@SuppressWarnings({"SequencedCollectionMethodCanBeUsed", "ClassCanBeRecord"})
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class IntervalValidator {
 
     private final Context context;

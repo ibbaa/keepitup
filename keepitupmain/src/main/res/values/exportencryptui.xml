@@ -14,14 +14,14 @@
   ~ limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="label_dialog_export_encrypt_ok">@android:string/ok</string>
     <string name="label_dialog_export_encrypt_cancel">@android:string/cancel</string>
     <string name="label_dialog_export_encrypt_title">Encryption</string>
     <string name="label_dialog_export_encrypt_encrypt">Encrypt file (recommended)</string>
     <string name="label_dialog_export_encrypt_password">Password</string>
     <string name="label_dialog_export_encrypt_confirm_password">Confirm password</string>
-    <string name="text_dialog_export_password_min_length">Password minimum length %d characters</string>
+    <string name="text_dialog_export_password_min_length" tools:ignore="PluralsCandidate">Password minimum length %d characters</string>
     <string name="text_dialog_export_confirm_password_no_match">Password does not match</string>
     <string name="text_dialog_export_password_ok">Password OK</string>
     <string name="text_dialog_export_confirm_password_match">Password does match</string>

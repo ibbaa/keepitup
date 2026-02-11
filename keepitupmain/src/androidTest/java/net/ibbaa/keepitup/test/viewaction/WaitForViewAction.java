@@ -25,7 +25,6 @@ import androidx.test.espresso.ViewAction;
 
 import org.hamcrest.Matcher;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class WaitForViewAction implements ViewAction {
 
     private final long time;

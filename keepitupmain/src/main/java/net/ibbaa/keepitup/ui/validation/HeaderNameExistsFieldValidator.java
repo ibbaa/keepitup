@@ -25,7 +25,6 @@ import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class HeaderNameExistsFieldValidator implements FieldValidator {
 
     private final String field;

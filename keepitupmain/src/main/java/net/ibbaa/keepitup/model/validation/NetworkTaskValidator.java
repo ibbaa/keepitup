@@ -24,7 +24,6 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class NetworkTaskValidator {
 
     private final Context context;

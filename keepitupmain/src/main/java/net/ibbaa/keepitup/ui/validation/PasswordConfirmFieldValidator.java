@@ -22,7 +22,6 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StringUtil;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class PasswordConfirmFieldValidator implements FieldValidator {
 
     private final String field;

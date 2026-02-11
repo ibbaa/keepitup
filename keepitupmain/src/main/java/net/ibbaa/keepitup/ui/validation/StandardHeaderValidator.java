@@ -24,7 +24,6 @@ import net.ibbaa.keepitup.logging.Log;
 
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class StandardHeaderValidator implements HeaderValidator {
 
     private final Context context;

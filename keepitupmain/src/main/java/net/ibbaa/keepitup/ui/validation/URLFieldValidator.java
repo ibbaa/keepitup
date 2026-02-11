@@ -24,7 +24,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class URLFieldValidator implements FieldValidator {
 
     private final String field;

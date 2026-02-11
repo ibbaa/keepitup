@@ -22,7 +22,6 @@ import android.text.TextWatcher;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.service.SystemFileManager;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class FolderChooseWatcher implements TextWatcher {
 
     private final FileChooseDialog dialog;
