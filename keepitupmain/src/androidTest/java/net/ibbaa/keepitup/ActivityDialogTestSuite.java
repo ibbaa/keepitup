@@ -42,6 +42,7 @@ import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialogTest;
 import net.ibbaa.keepitup.ui.dialog.GlobalHeadersEditDialogTest;
 import net.ibbaa.keepitup.ui.dialog.InfoDialogTest;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialogTest;
+import net.ibbaa.keepitup.ui.dialog.PasswordInputDialogTest;
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialogTest;
 import net.ibbaa.keepitup.ui.dialog.PlaceholderFocusChangeListenerTest;
 import net.ibbaa.keepitup.ui.dialog.ProgressDialogTest;
@@ -86,6 +87,7 @@ import org.junit.runners.Suite;
         GlobalHeadersEditDialogTest.class,
         InfoDialogTest.class,
         NetworkTaskEditDialogTest.class,
+        PasswordInputDialogTest.class,
         PermissionExplainDialogTest.class,
         PlaceholderFocusChangeListenerTest.class,
         ProgressDialogTest.class,

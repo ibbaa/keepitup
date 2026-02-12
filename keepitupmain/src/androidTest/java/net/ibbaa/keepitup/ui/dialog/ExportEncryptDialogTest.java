@@ -540,7 +540,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testPasswordEyeToggle() {
+    public void testPasswordToggle() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));
@@ -553,7 +553,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testPasswordEyeToggleScreenRotation() {
+    public void testPasswordToggleScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));

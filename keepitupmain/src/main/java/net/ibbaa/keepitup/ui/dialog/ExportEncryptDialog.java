@@ -284,7 +284,7 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
     }
 
     private ExportEncryptSupport getExportEncryptSupport() {
-        Log.d(ExportEncryptDialog.class.getName(), "GlobalHeaderEditSupport");
+        Log.d(ExportEncryptDialog.class.getName(), "getExportEncryptSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof ExportEncryptSupport) {
