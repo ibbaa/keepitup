@@ -64,6 +64,7 @@ import net.ibbaa.keepitup.test.matcher.GridLayoutRowColumnPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerColorMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerValueMatcher;
+import net.ibbaa.keepitup.test.matcher.PasswordVisibilityMatcher;
 import net.ibbaa.keepitup.test.matcher.RecyclerViewMatcher;
 import net.ibbaa.keepitup.test.matcher.TextColorMatcher;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
@@ -71,6 +72,7 @@ import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.test.mock.TestUtil;
+import net.ibbaa.keepitup.test.viewaction.TogglePasswordViewAction;
 import net.ibbaa.keepitup.test.viewaction.WaitForViewAction;
 import net.ibbaa.keepitup.util.BundleUtil;
 
@@ -331,8 +333,16 @@ public abstract class BaseUITest {
         return new NumberPickerColorMatcher(expectedId);
     }
 
+    public static Matcher<View> withPasswordVisibility(boolean visible) {
+        return new PasswordVisibilityMatcher(visible);
+    }
+
     public static ViewAction waitFor(long time) {
         return new WaitForViewAction(time);
+    }
+
+    public static ViewAction togglePassword() {
+        return new TogglePasswordViewAction();
     }
 
     public static Matcher<View> withValue(int value) {

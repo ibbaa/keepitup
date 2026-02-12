@@ -35,6 +35,25 @@ public class PasswordToggleTouchListener implements View.OnTouchListener {
         this.visible = false;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+        applyVisibility();
+    }
+
+    private void applyVisibility() {
+        if (visible) {
+            editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility, 0);
+        } else {
+            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off, 0);
+        }
+    }
+
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {

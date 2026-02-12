@@ -56,6 +56,8 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
     private EditText confirmPasswordEditText;
     private TextView passwordTextView;
     private TextView confirmPasswordTextView;
+    private PasswordToggleTouchListener passwordToggleTouchListener;
+    private PasswordToggleTouchListener confirmPasswordToggleTouchListener;
     private TextDescriptionColorValidatingWatcher passwordEditTextWatcher;
     private TextDescriptionColorValidatingWatcher confirmPasswordEditTextWatcher;
 
@@ -72,10 +74,28 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         dialogView = inflater.inflate(R.layout.dialog_export_encrypt, container);
         initEdgeToEdgeInsets(dialogView);
         prepareEncryptCheckBox();
-        preparePasswordTextField();
-        prepareConfirmPasswordTextField();
+        preparePasswordTextField(savedInstanceState);
+        prepareConfirmPasswordTextField(savedInstanceState);
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (passwordToggleTouchListener != null) {
+            outState.putBoolean(getPasswordVisibleKey(), passwordToggleTouchListener.isVisible());
+        }
+        if (confirmPasswordToggleTouchListener != null) {
+            outState.putBoolean(getConfirmPasswordVisibleKey(), confirmPasswordToggleTouchListener.isVisible());
+        }
+    }
+
+    public String getPasswordVisibleKey() {
+        return GeneralMessageDialog.class.getSimpleName() + "PasswordVisible";
+    }
+
+    public String getConfirmPasswordVisibleKey() {
+        return GeneralMessageDialog.class.getSimpleName() + "ConfirmPasswordVisible";
     }
 
     private void prepareEncryptCheckBox() {
@@ -93,13 +113,23 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         confirmPasswordLayout.setVisibility(visibility);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void preparePasswordTextField() {
+    private void preparePasswordTextField(Bundle savedInstanceState) {
         Log.d(ExportEncryptDialog.class.getName(), "preparePasswordTextField");
         passwordEditText = dialogView.findViewById(R.id.edittext_dialog_export_encrypt_password);
         passwordTextView = dialogView.findViewById(R.id.textview_dialog_export_encrypt_password);
-        passwordEditText.setOnTouchListener(new PasswordToggleTouchListener(passwordEditText));
+        preparePasswordToggleTouchListener(savedInstanceState);
         preparePasswordEditTextListener();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void preparePasswordToggleTouchListener(Bundle savedInstanceState) {
+        Log.d(ExportEncryptDialog.class.getName(), "preparePasswordToggleTouchListener");
+        passwordToggleTouchListener = new PasswordToggleTouchListener(passwordEditText);
+        if (savedInstanceState != null) {
+            boolean wasVisible = savedInstanceState.getBoolean(getPasswordVisibleKey(), false);
+            passwordToggleTouchListener.setVisible(wasVisible);
+        }
+        passwordEditText.setOnTouchListener(passwordToggleTouchListener);
     }
 
     private void preparePasswordEditTextListener() {
@@ -118,12 +148,23 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void prepareConfirmPasswordTextField() {
+    private void prepareConfirmPasswordTextField(Bundle savedInstanceState) {
         Log.d(ExportEncryptDialog.class.getName(), "prepareConfirmPasswordTextField");
         confirmPasswordEditText = dialogView.findViewById(R.id.edittext_dialog_export_encrypt_password_confirm);
         confirmPasswordTextView = dialogView.findViewById(R.id.textview_dialog_export_encrypt_password_confirm);
-        confirmPasswordEditText.setOnTouchListener(new PasswordToggleTouchListener(confirmPasswordEditText));
+        prepareConfirmPasswordToggleTouchListener(savedInstanceState);
         prepareConfirmPasswordEditTextListener();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void prepareConfirmPasswordToggleTouchListener(Bundle savedInstanceState) {
+        Log.d(ExportEncryptDialog.class.getName(), "prepareConfirmPasswordToggleTouchListener");
+        confirmPasswordToggleTouchListener = new PasswordToggleTouchListener(confirmPasswordEditText);
+        if (savedInstanceState != null) {
+            boolean wasVisible = savedInstanceState.getBoolean(getConfirmPasswordVisibleKey(), false);
+            confirmPasswordToggleTouchListener.setVisible(wasVisible);
+        }
+        confirmPasswordEditText.setOnTouchListener(confirmPasswordToggleTouchListener);
     }
 
     private void prepareConfirmPasswordEditTextListener() {
@@ -213,6 +254,9 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
     private List<ValidationResult> validateInput() {
         Log.d(ExportEncryptDialog.class.getName(), "validateInput");
         List<ValidationResult> validationResults = new ArrayList<>();
+        if (!isEncrypt()) {
+            return validationResults;
+        }
         PasswordFieldValidator passwordValidator = new PasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
         ValidationResult passwordResult = passwordValidator.validate(getPassword());
         if (!passwordResult.isValidationSuccessful()) {
