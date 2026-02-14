@@ -85,7 +85,7 @@ dependencies {
     implementation "androidx.documentfile:documentfile:1.1.0"
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'com.google.guava:guava:33.5.0-android'
-    implementation 'net.ibbaa.phonelog:phonelog:2.1.1'
+    implementation 'net.ibbaa.phonelog:phonelog:2.1.2'
     implementation('com.squareup.okhttp3:okhttp:5.3.2')
     testImplementation 'androidx.annotation:annotation:1.9.1'
     testImplementation 'junit:junit:4.13.2'
