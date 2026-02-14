@@ -31,6 +31,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
@@ -43,6 +44,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -53,17 +55,21 @@ import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
+import net.ibbaa.keepitup.ui.dialog.ExportEncryptDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
+import net.ibbaa.keepitup.ui.dialog.PasswordInputDialog;
 import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.support.DBPurgeSupport;
+import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
 import net.ibbaa.keepitup.ui.support.ExportSupport;
 import net.ibbaa.keepitup.ui.support.ImportSupport;
 import net.ibbaa.keepitup.ui.support.MessageSupport;
+import net.ibbaa.keepitup.ui.support.PasswordInputSupport;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
@@ -80,7 +86,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, MessageSupport {
+public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, MessageSupport, ExportEncryptSupport, PasswordInputSupport {
 
     private enum Error {
         IMPORTERROR,
@@ -210,12 +216,11 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
             setExportFolder(getResources().getString(R.string.text_activity_system_import_export_choose_file));
-            configurationExportView.setOnClickListener(this::requestConfigurationExportFilePermission);
         } else {
             String exportFolder = getExternalImportExportFolder(preferenceManager.getPreferenceExportFolder());
             setExportFolder(exportFolder);
-            configurationExportView.setOnClickListener(this::showExportFolderChooseDialog);
         }
+        configurationExportView.setOnClickListener(this::showExportEncryptDialog);
     }
 
     private void prepareConfigurationImportField() {
@@ -496,8 +501,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
-    public void grantArbitraryFolderPermissions(Uri uri) {
-        Log.d(SystemActivity.class.getName(), "grantArbitraryFolderPermissions for uri " + uri);
+    public void grantArbitraryFolderPermissions(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "grantArbitraryFolderPermissions for uri " + uri + " and encryptionInfo " + encryptionInfo);
         if (uri == null) {
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
@@ -687,18 +692,21 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     private void showImportConfirmDialog(String file) {
-        Log.d(SystemActivity.class.getName(), "showImportConfirmDialog");
+        Log.d(SystemActivity.class.getName(), "showImportConfirmDialog with file " + file);
         String message = getResources().getString(R.string.text_dialog_confirm_config_import);
         String description = getResources().getString(R.string.text_dialog_confirm_config_import_description);
         Bundle extraData = getFileExtraDataBundle(file);
         showConfirmDialog(message, description, ConfirmDialog.Type.IMPORTCONFIG, extraData);
     }
 
-    private void showExportConfirmDialog(String file) {
-        Log.d(SystemActivity.class.getName(), "showExportConfirmDialog");
+    private void showExportConfirmDialog(String file, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "showExportConfirmDialog with file " + file + " and encryptionInfo " + encryptionInfo);
         String message = getResources().getString(R.string.text_dialog_confirm_config_export_existing_file);
         String description = getResources().getString(R.string.text_dialog_confirm_config_export_existing_file_description);
         Bundle extraData = getFileExtraDataBundle(file);
+        if (encryptionInfo != null) {
+            extraData = getEncryptionInfoExtraDataBundle(encryptionInfo, extraData);
+        }
         showConfirmDialog(message, description, ConfirmDialog.Type.EXPORTCONFIGEXISTINGFILE, extraData);
     }
 
@@ -712,16 +720,46 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private String getFileExtraData(ConfirmDialog confirmDialog) {
         Bundle bundle = confirmDialog.getExtraData();
+        return getFileExtraData(bundle);
+    }
+
+    private String getFileExtraData(PasswordInputDialog passwordInputDialog) {
+        Bundle bundle = passwordInputDialog.getExtraData();
+        return getFileExtraData(bundle);
+    }
+
+    @Nullable
+    private String getFileExtraData(Bundle bundle) {
         if (bundle == null) {
             return null;
         }
         return BundleUtil.stringFromBundle(getFileExtraDataKey(), bundle);
     }
 
-    private void requestConfigurationExportFilePermission(View view) {
-        Log.d(SystemActivity.class.getName(), "requestConfigurationExportFilePermission");
+    private Bundle getEncryptionInfoExtraDataBundle(EncryptionInfo encryptionInfo, Bundle extraData) {
+        return BundleUtil.bundleToBundle(getEncryptionInfoExtraDataKey(), encryptionInfo.toBundle(), extraData);
+    }
+
+    private String getEncryptionInfoExtraDataKey() {
+        return SystemActivity.class.getSimpleName() + "EncryptionInfo";
+    }
+
+    private EncryptionInfo getEncryptionInfoExtraData(ConfirmDialog confirmDialog) {
+        Bundle bundle = confirmDialog.getExtraData();
+        if (bundle == null) {
+            return null;
+        }
+        bundle = BundleUtil.bundleFromBundle(getEncryptionInfoExtraDataKey(), bundle);
+        if (bundle != null) {
+            return new EncryptionInfo(bundle);
+        }
+        return null;
+    }
+
+    private void requestConfigurationExportFilePermission(EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "requestConfigurationExportFilePermission with encryptionInfo " + encryptionInfo);
         String fileName = getResources().getString(R.string.export_file_prefix) + getResources().getString(R.string.file_extension_json);
-        getStoragePermissionManager().requestCreateFilePermission(exportFileLauncher, fileName);
+        getStoragePermissionManager().requestCreateFilePermission(exportFileLauncher, fileName, encryptionInfo);
     }
 
     private void requestConfigurationImportFilePermission(View view) {
@@ -730,19 +768,19 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         getStoragePermissionManager().requestOpenFilePermission(importFileLauncher, preferenceManager.getPreferenceLastArbitraryExportFile());
     }
 
-    public void grantConfigurationExportFilePermission(Uri uri) {
-        Log.d(SystemActivity.class.getName(), "grantConfigurationExportFilePermission for uri " + uri);
+    public void grantConfigurationExportFilePermission(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "grantConfigurationExportFilePermission for uri " + uri + " and encryptionInfo " + encryptionInfo);
         if (uri == null) {
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceLastArbitraryExportFile(uri.toString());
-        doConfigurationExport(null, uri.toString());
+        doConfigurationExport(null, uri.toString(), encryptionInfo);
     }
 
-    public void grantConfigurationImportFilePermission(Uri uri) {
-        Log.d(SystemActivity.class.getName(), "grantConfigurationImportFilePermission for uri " + uri);
+    public void grantConfigurationImportFilePermission(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "grantConfigurationImportFilePermission for uri " + uri + " and encryptionInfo " + encryptionInfo);
         if (uri == null) {
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
@@ -750,8 +788,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         showImportConfirmDialog(uri.toString());
     }
 
-    private void showExportFolderChooseDialog(View view) {
-        Log.d(SystemActivity.class.getName(), "showExportFolderChooseDialog");
+    private void showExportFolderChooseDialog(EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "showExportFolderChooseDialog with encryptionInfo " + encryptionInfo);
         String root = getExternalRootFolder();
         Log.d(SystemActivity.class.getName(), "External root folder is " + root);
         String exportFolder = getPreferenceExportFolder();
@@ -766,7 +804,22 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             }
         }
         Log.d(SystemActivity.class.getName(), "Preference export folder is " + exportFolder);
-        showImportExportFolderChooseDialog(root, exportFolder, file, FileChooseDialog.Type.EXPORTFOLDER);
+        showImportExportFolderChooseDialog(root, exportFolder, file, FileChooseDialog.Type.EXPORTFOLDER, encryptionInfo);
+    }
+
+    private void showExportEncryptDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showExportEncryptDialog");
+        ExportEncryptDialog exportEncryptDialog = new ExportEncryptDialog();
+        exportEncryptDialog.show(getSupportFragmentManager(), SystemActivity.class.getName());
+    }
+
+    private void showPasswordInputDialog(String file) {
+        Log.d(SystemActivity.class.getName(), "showPasswordInputDialog, file is " + file);
+        PasswordInputDialog passwordInputDialog = new PasswordInputDialog();
+        Bundle extraData = getFileExtraDataBundle(file);
+        Bundle bundle = BundleUtil.bundleToBundle(passwordInputDialog.getExtraDataKey(), extraData);
+        passwordInputDialog.setArguments(bundle);
+        passwordInputDialog.show(getSupportFragmentManager(), SystemActivity.class.getName());
     }
 
     private void showImportFolderChooseDialog(View view) {
@@ -775,10 +828,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "External root folder is " + root);
         String importFolder = getPreferenceImportFolder();
         Log.d(SystemActivity.class.getName(), "Preference import folder is " + importFolder);
-        showImportExportFolderChooseDialog(root, importFolder, "", FileChooseDialog.Type.IMPORTFOLDER);
+        showImportExportFolderChooseDialog(root, importFolder, "", FileChooseDialog.Type.IMPORTFOLDER, null);
     }
 
-    private void showImportExportFolderChooseDialog(String root, String folder, String file, FileChooseDialog.Type type) {
+    private void showImportExportFolderChooseDialog(String root, String folder, String file, FileChooseDialog.Type type, EncryptionInfo encryptionInfo) {
         Log.d(SystemActivity.class.getName(), "showImportExportFolderChooseDialog, root is " + root + ", folder is " + folder);
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         if (root == null || folder == null) {
@@ -788,8 +841,51 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return;
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, file, FileChooseDialog.Mode.FILE.name(), type.name()});
+        if (encryptionInfo != null) {
+            bundle = BundleUtil.bundleToBundle(fileChooseDialog.getEncryptionInfoKey(), encryptionInfo.toBundle(), bundle);
+        }
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getSupportFragmentManager(), SystemActivity.class.getName());
+    }
+
+    @Override
+    public void onExportEncryptDialogOkClicked(ExportEncryptDialog exportEncryptDialog) {
+        Log.d(SystemActivity.class.getName(), "onExportEncryptDialogOkClicked");
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(exportEncryptDialog.isEncrypt());
+        if (encryptionInfo.isEncrypt()) {
+            encryptionInfo.setPassword(exportEncryptDialog.getPassword());
+        }
+        exportEncryptDialog.dismiss();
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            requestConfigurationExportFilePermission(encryptionInfo);
+        } else {
+            showExportFolderChooseDialog(encryptionInfo);
+        }
+    }
+
+    @Override
+    public void onExportEncryptDialogCancelClicked(ExportEncryptDialog exportEncryptDialog) {
+        Log.d(SystemActivity.class.getName(), "onExportEncryptDialogCancelClicked");
+        exportEncryptDialog.dismiss();
+    }
+
+    @Override
+    public void onPasswordInputDialogOkClicked(PasswordInputDialog passwordInputDialog) {
+        Log.d(SystemActivity.class.getName(), "onPasswordInputDialogOkClicked");
+        String file = getFileExtraData(passwordInputDialog);
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(true);
+        encryptionInfo.setPassword(passwordInputDialog.getPassword());
+        prepareAndPerformImport(file, encryptionInfo);
+        passwordInputDialog.dismiss();
+    }
+
+    @Override
+    public void onPasswordInputDialogCancelClicked(PasswordInputDialog passwordInputDialog) {
+        Log.d(SystemActivity.class.getName(), "onExportEncryptDialogCancelClicked");
+        passwordInputDialog.dismiss();
     }
 
     @Override
@@ -816,11 +912,12 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             } else {
                 preferenceManager.setPreferenceExportFolder(folder);
                 setExportFolder(importExportFolder.getAbsolutePath());
+                EncryptionInfo encryptionInfo = fileChooseDialog.getEncryptionInfo();
                 if (fileManager.doesFileExist(importExportFolder, file)) {
-                    showExportConfirmDialog(file);
+                    showExportConfirmDialog(file, encryptionInfo);
                 } else {
                     fileChooseDialog.dismiss();
-                    doConfigurationExport(importExportFolder, file);
+                    doConfigurationExport(importExportFolder, file, encryptionInfo);
                 }
             }
         } else {
@@ -829,17 +926,18 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
-    private void doConfigurationExport(File exportFolder, String file) {
+    private void doConfigurationExport(File exportFolder, String file, EncryptionInfo encryptionInfo) {
         Log.d(SystemActivity.class.getName(), "doConfigurationExport");
         Log.d(SystemActivity.class.getName(), "Export folder is " + exportFolder);
         Log.d(SystemActivity.class.getName(), "File name is " + file);
+        Log.d(SystemActivity.class.getName(), "EncryptionInfo name is " + encryptionInfo);
         if (StringUtil.isEmpty(file)) {
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_config_export));
             return;
         }
         showProgressDialog();
-        ExportTask exportTask = getExportTask(exportFolder, file);
+        ExportTask exportTask = getExportTask(exportFolder, file, encryptionInfo);
         Future<Boolean> exportFuture = ThreadUtil.execute(exportTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
@@ -853,17 +951,18 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
-    private void doConfigurationImport(File importFolder, String file) {
+    private void doConfigurationImport(File importFolder, String file, EncryptionInfo encryptionInfo) {
         Log.d(SystemActivity.class.getName(), "doConfigurationImport");
         Log.d(SystemActivity.class.getName(), "Import folder is " + importFolder);
         Log.d(SystemActivity.class.getName(), "File name is " + file);
+        Log.d(SystemActivity.class.getName(), "EncryptionInfo name is " + encryptionInfo);
         if (StringUtil.isEmpty(file)) {
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_config_import));
             return;
         }
         showProgressDialog();
-        ImportTask importTask = getImportTask(importFolder, file);
+        ImportTask importTask = getImportTask(importFolder, file, encryptionInfo);
         Future<SystemSetupResult> importFuture = ThreadUtil.execute(importTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
@@ -895,22 +994,39 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
             String file = getFileExtraData(confirmDialog);
+            EncryptionInfo encryptionInfo = getEncryptionInfoExtraData(confirmDialog);
             dismissConfirmDialog(confirmDialog);
-            doConfigurationExport(exportFolder, file);
+            doConfigurationExport(exportFolder, file, encryptionInfo);
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File importFolder = null;
             String file = getFileExtraData(confirmDialog);
-            if (!preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
-                importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
-            }
-            stopSchedulers();
+            // TODO check if encrypted
+            boolean encrypted = true;
             dismissConfirmDialog(confirmDialog);
-            doConfigurationImport(importFolder, file);
+            if (encrypted) {
+                showPasswordInputDialog(file);
+            } else {
+                prepareAndPerformImport(file, new EncryptionInfo());
+            }
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
         }
+    }
+
+    private void prepareAndPerformImport(String file, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "prepareAndPerformImport");
+        Log.d(SystemActivity.class.getName(), "File name is " + file);
+        Log.d(SystemActivity.class.getName(), "EncryptionInfo name is " + encryptionInfo);
+        IFileManager fileManager = getFileManager();
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        File importFolder = null;
+        if (!preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
+        }
+        stopSchedulers();
+        doConfigurationImport(importFolder, file, encryptionInfo);
     }
 
     private void dismissConfirmDialog(ConfirmDialog confirmDialog) {
@@ -1106,20 +1222,20 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         return importExportFolder.getAbsolutePath();
     }
 
-    private ExportTask getExportTask(File folder, String file) {
+    private ExportTask getExportTask(File folder, String file, EncryptionInfo encryptionInfo) {
         if (exportTask != null) {
             return exportTask;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        return new ExportTask(this, folder, file, preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        return new ExportTask(this, folder, file, encryptionInfo, preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
-    private ImportTask getImportTask(File folder, String file) {
+    private ImportTask getImportTask(File folder, String file, EncryptionInfo encryptionInfo) {
         if (importTask != null) {
             return importTask;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        return new ImportTask(this, folder, file, preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        return new ImportTask(this, folder, file, encryptionInfo, preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     private DBPurgeTask getPurgeTask() {

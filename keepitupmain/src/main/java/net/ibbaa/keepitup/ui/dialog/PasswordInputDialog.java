@@ -71,7 +71,15 @@ public class PasswordInputDialog extends DialogFragmentBase { // implements Cont
     }
 
     public String getPasswordVisibleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "PasswordVisible";
+        return PasswordInputDialog.class.getSimpleName() + "PasswordVisible";
+    }
+
+    public String getExtraDataKey() {
+        return PasswordInputDialog.class.getSimpleName() + "ExtraData";
+    }
+
+    public Bundle getExtraData() {
+        return BundleUtil.bundleFromBundle(getExtraDataKey(), requireArguments());
     }
 
     private void preparePasswordTextField(Bundle savedInstanceState) {

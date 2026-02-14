@@ -37,6 +37,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -337,7 +338,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         injectMocks(activityScenario);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
-        TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", true);
+        TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), true);
         task.setOutputStream(new FileOutputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -494,7 +495,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         storagePermissionManager.setGrantedFolder("/Test");
         injectImportFileLauncher(activityScenario, "/Test/test.json");
         storagePermissionManager.setGrantedOpenFile("/Test/test.json");
-        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", true);
+        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), true);
         task.setInputStream(new FileInputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -547,6 +548,17 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         activityScenario.close();
+    }
+
+    private EncryptionInfo getEncryptionInfo() {
+        return getEncryptionInfo(false, "");
+    }
+
+    private EncryptionInfo getEncryptionInfo(boolean encrypt, String password) {
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(encrypt);
+        encryptionInfo.setPassword(password);
+        return encryptionInfo;
     }
 
     private NetworkTask getNetworkTask() {

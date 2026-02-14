@@ -26,6 +26,7 @@ import android.provider.DocumentsContract;
 import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.List;
@@ -74,16 +75,16 @@ public class StoragePermissionManager implements IStoragePermissionManager {
         launcher.launch(intent);
     }
 
-    public void requestCreateFilePermission(PermissionLauncher launcher, String fileName) {
-        requestFilePermission(launcher, Intent.ACTION_CREATE_DOCUMENT, fileName, null);
+    public void requestCreateFilePermission(PermissionLauncher launcher, String fileName, EncryptionInfo encryptionInfo) {
+        requestFilePermission(launcher, Intent.ACTION_CREATE_DOCUMENT, fileName, null, encryptionInfo);
     }
 
     public void requestOpenFilePermission(PermissionLauncher launcher, String fullFilePath) {
-        requestFilePermission(launcher, Intent.ACTION_OPEN_DOCUMENT, null, fullFilePath);
+        requestFilePermission(launcher, Intent.ACTION_OPEN_DOCUMENT, null, fullFilePath, null);
     }
 
-    private void requestFilePermission(PermissionLauncher launcher, String action, String fileName, String fullFilePath) {
-        Log.d(StoragePermissionManager.class.getName(), "requestFilePermission for fileName " + fileName + " and fullFilePath " + fullFilePath);
+    private void requestFilePermission(PermissionLauncher launcher, String action, String fileName, String fullFilePath, EncryptionInfo encryptionInfo) {
+        Log.d(StoragePermissionManager.class.getName(), "requestFilePermission for fileName " + fileName + " and fullFilePath " + fullFilePath + " and encryptionInfo " + encryptionInfo);
         Intent intent = new Intent(action);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType(mimeType);
@@ -93,7 +94,7 @@ public class StoragePermissionManager implements IStoragePermissionManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !StringUtil.isEmpty(fullFilePath)) {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, fullFilePath);
         }
-        launcher.launch(intent);
+        launcher.launch(intent, encryptionInfo);
     }
 
     public void revokePersistentPermission(FragmentActivity activity, String folder) {

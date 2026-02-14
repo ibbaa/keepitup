@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.app.Activity;
 
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 
 import java.io.File;
@@ -27,7 +28,7 @@ public class MockExportTask extends ExportTask {
     private final boolean result;
 
     public MockExportTask(Activity activity, boolean result) {
-        super(activity, new File(""), "", false);
+        super(activity, new File(""), "", new EncryptionInfo(), false);
         this.result = result;
     }
 

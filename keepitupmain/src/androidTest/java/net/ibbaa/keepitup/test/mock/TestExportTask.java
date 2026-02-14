@@ -21,6 +21,7 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 
@@ -32,8 +33,8 @@ public class TestExportTask extends ExportTask {
     private FileOutputStream outputStream;
     private IDocumentManager documentManager;
 
-    public TestExportTask(Activity activity, File exportFolder, String file, boolean useDocumentApi) {
-        super(activity, exportFolder, file, useDocumentApi);
+    public TestExportTask(Activity activity, File exportFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
+        super(activity, exportFolder, file, encryptionInfo, useDocumentApi);
     }
 
     @Override

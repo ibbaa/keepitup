@@ -25,6 +25,7 @@ import androidx.documentfile.provider.DocumentFile;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -43,12 +44,14 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
 
     private final File importFolder;
     private final String file;
+    private final EncryptionInfo encryptionInfo;
     private final boolean useDocumentApi;
 
-    public ImportTask(Activity activity, File importFolder, String file, boolean useDocumentApi) {
+    public ImportTask(Activity activity, File importFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
         super(activity);
         this.importFolder = importFolder;
         this.file = file;
+        this.encryptionInfo = encryptionInfo;
         this.useDocumentApi = useDocumentApi;
     }
 

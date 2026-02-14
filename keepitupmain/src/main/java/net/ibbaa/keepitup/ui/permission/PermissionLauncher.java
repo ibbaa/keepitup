@@ -18,13 +18,17 @@ package net.ibbaa.keepitup.ui.permission;
 
 import android.content.Intent;
 
+import net.ibbaa.keepitup.model.EncryptionInfo;
+
 public interface PermissionLauncher {
 
     void launch(Intent intent);
 
+    void launch(Intent intent, EncryptionInfo encryptionInfo);
+
     @FunctionalInterface
-    interface Consumer<S> {
+    interface Consumer<S, T> {
         @SuppressWarnings({"unused"})
-        void accept(S result);
+        void accept(S result, T context);
     }
 }

@@ -22,6 +22,7 @@ import android.net.Uri;
 
 import androidx.fragment.app.FragmentActivity;
 
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 
@@ -96,13 +97,13 @@ public class MockStoragePermissionManager implements IStoragePermissionManager {
     }
 
     @Override
-    public void requestCreateFilePermission(PermissionLauncher launcher, String fileName) {
+    public void requestCreateFilePermission(PermissionLauncher launcher, String fileName, EncryptionInfo encryptionInfo) {
         String actualGrantedCreateFile = grantedCreateFile != null ? grantedCreateFile : fileName;
         createFilePermissions.add(actualGrantedCreateFile);
         Intent intent = new Intent();
         intent.setData(Uri.parse(actualGrantedCreateFile));
         if (launcher != null) {
-            launcher.launch(intent);
+            launcher.launch(intent, encryptionInfo);
         }
     }
 

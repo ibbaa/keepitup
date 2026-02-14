@@ -26,23 +26,27 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 
 public class GenericPermissionLauncher implements PermissionLauncher {
 
     private final ComponentActivity activity;
-    private final Consumer<Uri> callback;
+    private final Consumer<Uri, EncryptionInfo> callback;
     private final boolean persistent;
+
+    private EncryptionInfo encryptionInfo;
 
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
-    public GenericPermissionLauncher(ComponentActivity activity, Consumer<Uri> callback) {
+    public GenericPermissionLauncher(ComponentActivity activity, Consumer<Uri, EncryptionInfo> callback) {
         this(activity, callback, true);
     }
 
-    public GenericPermissionLauncher(ComponentActivity activity, Consumer<Uri> callback, boolean persistent) {
+    public GenericPermissionLauncher(ComponentActivity activity, Consumer<Uri, EncryptionInfo> callback, boolean persistent) {
         this.activity = activity;
         this.callback = callback;
         this.persistent = persistent;
+        this.encryptionInfo = null;
         init();
     }
 
@@ -52,7 +56,12 @@ public class GenericPermissionLauncher implements PermissionLauncher {
     }
 
     public void launch(Intent intent) {
-        Log.d(GenericPermissionLauncher.class.getName(), "launch");
+        activityResultLauncher.launch(intent, null);
+    }
+
+    public void launch(Intent intent, EncryptionInfo encryptionInfo) {
+        Log.d(GenericPermissionLauncher.class.getName(), "launch, encryptionInfo is " + encryptionInfo);
+        this.encryptionInfo = encryptionInfo;
         activityResultLauncher.launch(intent);
     }
 
@@ -68,7 +77,7 @@ public class GenericPermissionLauncher implements PermissionLauncher {
                         activity.grantUriPermission(activity.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         activity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     }
-                    callback.accept(uri);
+                    callback.accept(uri, encryptionInfo);
                 } else {
                     Log.d(GenericPermissionLauncher.class.getName(), "Uri is null");
                 }

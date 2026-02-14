@@ -34,6 +34,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.ui.BaseUITest;
@@ -380,6 +381,30 @@ public class FileChooseDialogMockTest extends BaseUITest {
         assertEquals(0, adapter.getItemCount());
     }
 
+    @Test
+    public void testEncryptionInfo() {
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(true);
+        encryptionInfo.setPassword("123");
+        FileChooseDialog dialog = openFileChooseDialog(encryptionInfo);
+        EncryptionInfo encryptionInfoFormDialog = dialog.getEncryptionInfo();
+        assertTrue(encryptionInfo.isEqual(encryptionInfoFormDialog));
+    }
+
+    @Test
+    public void testEncryptionInfoScreenRotation() {
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(true);
+        encryptionInfo.setPassword("123");
+        FileChooseDialog dialog = openFileChooseDialog(encryptionInfo);
+        rotateScreen(activityScenario);
+        EncryptionInfo encryptionInfoFormDialog = dialog.getEncryptionInfo();
+        assertTrue(encryptionInfo.isEqual(encryptionInfoFormDialog));
+        rotateScreen(activityScenario);
+        encryptionInfoFormDialog = dialog.getEncryptionInfo();
+        assertTrue(encryptionInfo.isEqual(encryptionInfoFormDialog));
+    }
+
     private FileChooseDialog openFileChooseDialog(String folder) {
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{"root", folder});
@@ -394,6 +419,18 @@ public class FileChooseDialogMockTest extends BaseUITest {
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{"root", folder});
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FILE.name(), bundle);
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), file, bundle);
+        fileChooseDialog.setArguments(bundle);
+        fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        onView(isRoot()).perform(waitFor(1000));
+        return fileChooseDialog;
+    }
+
+    private FileChooseDialog openFileChooseDialog(EncryptionInfo encryptionInfo) {
+        FileChooseDialog fileChooseDialog = new FileChooseDialog();
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{"root", "folder"});
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FILE.name(), bundle);
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), "file", bundle);
+        bundle = BundleUtil.bundleToBundle(fileChooseDialog.getEncryptionInfoKey(), encryptionInfo.toBundle(), bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
         onView(isRoot()).perform(waitFor(1000));

@@ -19,10 +19,16 @@ package net.ibbaa.keepitup.ui.permission;
 import android.content.Intent;
 
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 
 public class NullPermissionLauncher implements PermissionLauncher {
 
     public void launch(Intent intent) {
         Log.d(NullPermissionLauncher.class.getName(), "launch");
+    }
+
+    @Override
+    public void launch(Intent intent, EncryptionInfo encryptionInfo) {
+        Log.d(GenericPermissionLauncher.class.getName(), "launch, encryptionInfo is " + encryptionInfo);
     }
 }

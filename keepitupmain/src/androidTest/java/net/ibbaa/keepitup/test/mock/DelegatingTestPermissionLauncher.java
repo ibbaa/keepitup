@@ -19,23 +19,29 @@ package net.ibbaa.keepitup.test.mock;
 import android.content.Intent;
 import android.net.Uri;
 
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 
 public class DelegatingTestPermissionLauncher implements PermissionLauncher {
 
-    final private Consumer<Uri> callback;
+    final private Consumer<Uri, EncryptionInfo> callback;
     final private String uri;
 
-    public DelegatingTestPermissionLauncher(Consumer<Uri> callback) {
+    public DelegatingTestPermissionLauncher(Consumer<Uri, EncryptionInfo> callback) {
         this(callback, "/Documents");
     }
 
-    public DelegatingTestPermissionLauncher(Consumer<Uri> callback, String uri) {
+    public DelegatingTestPermissionLauncher(Consumer<Uri, EncryptionInfo> callback, String uri) {
         this.callback = callback;
         this.uri = uri;
     }
 
     public void launch(Intent intent) {
-        callback.accept(Uri.parse(uri));
+        callback.accept(Uri.parse(uri), null);
+    }
+
+    @Override
+    public void launch(Intent intent, EncryptionInfo encryptionInfo) {
+        callback.accept(Uri.parse(uri), encryptionInfo);
     }
 }

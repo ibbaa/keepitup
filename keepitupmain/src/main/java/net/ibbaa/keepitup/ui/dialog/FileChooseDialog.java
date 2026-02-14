@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
@@ -211,6 +212,10 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         return FileChooseDialog.class.getSimpleName() + "FileEntryAdapter";
     }
 
+    public String getEncryptionInfoKey() {
+        return FileChooseDialog.class.getSimpleName() + "EncryptionInfo";
+    }
+
     public boolean isFileMode() {
         return Mode.FILE.equals(mode) || Mode.FILE_ALLOW_EMPTY.equals(mode);
     }
@@ -241,6 +246,14 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
 
     private String getSelectionFolder() {
         return selectionFolder;
+    }
+
+    public EncryptionInfo getEncryptionInfo() {
+        Bundle encryptionInfo = BundleUtil.bundleFromBundle(getEncryptionInfoKey(), requireArguments());
+        if (encryptionInfo == null) {
+            return null;
+        }
+        return new EncryptionInfo(encryptionInfo);
     }
 
     private void prepareFolderAbsolute(String folder, String file) {

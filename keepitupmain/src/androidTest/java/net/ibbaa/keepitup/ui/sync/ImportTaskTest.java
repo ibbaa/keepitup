@@ -28,6 +28,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -144,7 +145,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
         stream.close();
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", false);
+        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
         task.runInBackground();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -309,7 +310,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(file);
         StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
         stream.close();
-        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", true);
+        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), true);
         task.setInputStream(new FileInputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -455,7 +456,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream("Failure", stream, StandardCharsets.UTF_8);
         stream.close();
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", false);
+        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
         task.runInBackground();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -500,6 +501,17 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
+    }
+
+    private EncryptionInfo getEncryptionInfo() {
+        return getEncryptionInfo(false, "");
+    }
+
+    private EncryptionInfo getEncryptionInfo(boolean encrypt, String password) {
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(encrypt);
+        encryptionInfo.setPassword(password);
+        return encryptionInfo;
     }
 
     private Interval getInterval() {

@@ -20,6 +20,8 @@ import android.content.Context;
 
 import androidx.fragment.app.FragmentActivity;
 
+import net.ibbaa.keepitup.model.EncryptionInfo;
+
 import java.util.Set;
 
 @SuppressWarnings({"unused"})
@@ -31,7 +33,7 @@ public interface IStoragePermissionManager {
 
     void requestPersistentFolderPermission(PermissionLauncher launcher, String folder);
 
-    void requestCreateFilePermission(PermissionLauncher launcher, String fileName);
+    void requestCreateFilePermission(PermissionLauncher launcher, String fileName, EncryptionInfo encryptionInfo);
 
     void requestOpenFilePermission(PermissionLauncher launcher, String fullFilePath);
 

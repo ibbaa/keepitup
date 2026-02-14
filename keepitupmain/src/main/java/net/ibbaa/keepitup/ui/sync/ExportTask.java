@@ -23,6 +23,7 @@ import android.os.ParcelFileDescriptor;
 import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.service.IDocumentManager;
@@ -39,12 +40,14 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
 
     private final File exportFolder;
     private final String file;
+    private final EncryptionInfo encryptionInfo;
     private final boolean useDocumentApi;
 
-    public ExportTask(Activity activity, File exportFolder, String file, boolean useDocumentApi) {
+    public ExportTask(Activity activity, File exportFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
         super(activity);
         this.exportFolder = exportFolder;
         this.file = file;
+        this.encryptionInfo = encryptionInfo;
         this.useDocumentApi = useDocumentApi;
     }
 

@@ -48,6 +48,7 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NotificationType;
@@ -887,8 +888,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         storagePermissionManager.requestPersistentFolderPermission(downloadFolderLauncher, arbitraryDownloadFolder);
     }
 
-    public void grantArbitraryDownloadFolderPermission(Uri uri) {
-        Log.d(GlobalSettingsActivity.class.getName(), "grantArbitraryDownloadFolderPermission for uri " + uri);
+    public void grantArbitraryDownloadFolderPermission(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(GlobalSettingsActivity.class.getName(), "grantArbitraryDownloadFolderPermission for uri " + uri + " and encryptionInfo " + encryptionInfo);
         if (uri == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "uri is null");
             return;
@@ -939,8 +940,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         storagePermissionManager.requestPersistentFolderPermission(logFolderLauncher, arbitraryLogFolder);
     }
 
-    public void grantArbitraryLogFolderPermission(Uri uri) {
-        Log.d(GlobalSettingsActivity.class.getName(), "grantArbitraryLogFolderPermission for uri " + uri);
+    public void grantArbitraryLogFolderPermission(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(GlobalSettingsActivity.class.getName(), "grantArbitraryLogFolderPermission for uri " + uri + " and encryptionInfo " + encryptionInfo);
         if (uri == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "uri is null");
             return;

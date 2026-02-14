@@ -27,6 +27,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -130,7 +131,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
-        ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", false);
+        ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
         task.runInBackground();
         File writtenFile = new File(folder, "test.json");
         assertTrue(writtenFile.exists());
@@ -299,7 +300,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
-        TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", true);
+        TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), true);
         task.setOutputStream(new FileOutputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -410,6 +411,17 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
+    }
+
+    private EncryptionInfo getEncryptionInfo() {
+        return getEncryptionInfo(false, "");
+    }
+
+    private EncryptionInfo getEncryptionInfo(boolean encrypt, String password) {
+        EncryptionInfo encryptionInfo = new EncryptionInfo();
+        encryptionInfo.setEncrypt(encrypt);
+        encryptionInfo.setPassword(password);
+        return encryptionInfo;
     }
 
     private Interval getInterval() {
