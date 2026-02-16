@@ -285,6 +285,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_system_config_export_folder)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         assertTrue(storagePermissionManager.getCreateFilePermissions().contains("/Test/test.json"));
         assertEquals("/Test/test.json", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         activityScenario.close();
@@ -306,6 +308,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
         assertTrue(storagePermissionManager.getFolderPermissions().contains("/Test"));
         activityScenario.close();
@@ -387,6 +391,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_system_config_export_folder)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -506,6 +512,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());

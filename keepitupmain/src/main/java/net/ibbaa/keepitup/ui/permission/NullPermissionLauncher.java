@@ -29,6 +29,6 @@ public class NullPermissionLauncher implements PermissionLauncher {
 
     @Override
     public void launch(Intent intent, EncryptionInfo encryptionInfo) {
-        Log.d(GenericPermissionLauncher.class.getName(), "launch, encryptionInfo is " + encryptionInfo);
+        Log.d(NullPermissionLauncher.class.getName(), "launch, encryptionInfo is " + encryptionInfo);
     }
 }

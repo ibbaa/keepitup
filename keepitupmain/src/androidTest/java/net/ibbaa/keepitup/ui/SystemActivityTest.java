@@ -699,6 +699,189 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testExportConfigurationEncryptCancel() {
+        insertAndScheduleNetworkTask();
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
+        getTimeBasedSuspensionScheduler().reset();
+        getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
+        getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
+        getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
+        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
+        getPreferenceManager().setPreferenceAddress("address");
+        getPreferenceManager().setPreferencePort(123);
+        getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferenceOnlyWifi(true);
+        getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceHighPrio(true);
+        getPreferenceManager().setPreferenceImportFolder("folderImport");
+        getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
+        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
+        getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals(5, getPreferenceManager().getPreferencePingCount());
+        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
+        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
+        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
+        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
+        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("address", getPreferenceManager().getPreferenceAddress());
+        assertEquals(123, getPreferenceManager().getPreferencePort());
+        assertEquals(456, getPreferenceManager().getPreferenceInterval());
+        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
+        assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertTrue(getPreferenceManager().getPreferenceHighPrio());
+        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
+        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+    }
+
+    @Test
+    public void testExportConfigurationEncryptCancelScreenRotation() {
+        insertAndScheduleNetworkTask();
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
+        getTimeBasedSuspensionScheduler().reset();
+        getTimeBasedSuspensionScheduler().getIntervals();
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
+        getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
+        getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
+        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
+        getPreferenceManager().setPreferenceAddress("address");
+        getPreferenceManager().setPreferencePort(123);
+        getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferenceOnlyWifi(true);
+        getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceHighPrio(true);
+        getPreferenceManager().setPreferenceImportFolder("folderImport");
+        getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
+        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
+        getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
+        assertEquals(5, getPreferenceManager().getPreferencePingCount());
+        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
+        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
+        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
+        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
+        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("address", getPreferenceManager().getPreferenceAddress());
+        assertEquals(123, getPreferenceManager().getPreferencePort());
+        assertEquals(456, getPreferenceManager().getPreferenceInterval());
+        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
+        assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertTrue(getPreferenceManager().getPreferenceHighPrio());
+        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
+        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+    }
+
+    @Test
     public void testExportConfigurationCancel() {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -747,6 +930,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
@@ -841,6 +1026,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         rotateScreen(activityScenario);
@@ -953,6 +1140,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
@@ -1154,6 +1343,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         rotateScreen(activityScenario);
@@ -1359,6 +1550,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
@@ -1474,6 +1667,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
@@ -1594,6 +1789,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
@@ -1802,6 +1999,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
@@ -2002,6 +2201,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
@@ -2097,6 +2298,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
@@ -2149,6 +2352,8 @@ public class SystemActivityTest extends BaseUITest {
         File folder = getFileManager().getExternalDirectory("config", 0);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         String fileText = getText(withId(R.id.edittext_dialog_file_choose_file));
         assertNotEquals("keepitup_config.json", fileText);
@@ -2159,6 +2364,8 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfigurationFileEmpty() {
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
@@ -2173,14 +2380,20 @@ public class SystemActivityTest extends BaseUITest {
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         getPreferenceManager().setPreferenceExternalStorageType(1);
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         getPreferenceManager().setPreferenceExternalStorageType(0);
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
     }
@@ -2743,6 +2956,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
@@ -2914,6 +3129,8 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
@@ -3021,6 +3238,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getTimeBasedSuspensionScheduler().isRunning());
         assertEquals(1, getIntervalDAO().readAllIntervals().size());
         assertEquals(1, getTimeBasedSuspensionScheduler().getIntervals().size());
@@ -3083,6 +3302,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("An error occurred importing the configuration. Some settings may have been imported.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
@@ -3179,6 +3400,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Version mismatch. The imported file has been created with a newer version. Import not possible.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
@@ -3275,6 +3498,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -3340,6 +3565,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
     }
 

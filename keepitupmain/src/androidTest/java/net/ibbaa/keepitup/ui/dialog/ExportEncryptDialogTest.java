@@ -190,6 +190,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         assertTrue(dialog.isEncrypt());
@@ -210,6 +211,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
@@ -234,6 +236,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Minimum length: 8"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         assertTrue(dialog.isEncrypt());
@@ -351,6 +354,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         onView(allOf(withText("Minimum length: 8"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Confirm password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Values do not match"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         rotateScreen(activityScenario);
         assertTrue(getDialog().isEncrypt());
