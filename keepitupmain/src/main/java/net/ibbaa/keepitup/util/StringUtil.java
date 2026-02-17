@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.util;
 
 import android.content.Context;
+import android.util.Base64;
 
 import net.ibbaa.keepitup.R;
 
@@ -83,5 +84,19 @@ public class StringUtil {
             return false;
         }
         return selectionStart <= text.length() && selectionEnd <= text.length() && selectionStart != selectionEnd;
+    }
+
+    public static String toBase64(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        return Base64.encodeToString(data, Base64.NO_WRAP);
+    }
+
+    public static byte[] toByteArray(String data) {
+        if (data == null) {
+            return null;
+        }
+        return Base64.decode(data, Base64.NO_WRAP);
     }
 }

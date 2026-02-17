@@ -59,6 +59,7 @@ import net.ibbaa.keepitup.resources.JSONSystemSetupTest;
 import net.ibbaa.keepitup.resources.PreferenceManagerTest;
 import net.ibbaa.keepitup.resources.PreferenceSetupTest;
 import net.ibbaa.keepitup.resources.SystemWorkerFactoryTest;
+import net.ibbaa.keepitup.resources.encryption.AlgorithmDataTest;
 import net.ibbaa.keepitup.service.ConnectNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.NetworkTaskProcessBroadcastReceiverTest;
@@ -191,6 +192,8 @@ import org.junit.runners.Suite;
         PreferenceManagerTest.class,
         PreferenceSetupTest.class,
         SystemWorkerFactoryTest.class,
+        //net.ibbaa.keepitup.resources.encryption
+        AlgorithmDataTest.class,
         //net.ibbaa.keepitup.service
         ConnectNetworkTaskWorkerTest.class,
         DownloadNetworkTaskWorkerTest.class,

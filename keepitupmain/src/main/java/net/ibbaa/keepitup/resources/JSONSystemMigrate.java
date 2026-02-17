@@ -36,80 +36,80 @@ public class JSONSystemMigrate {
 
     private final Context context;
     @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection"})
-    private final SortedMap<Integer, JSONSystemMigrate.Migration> versionAdaptBefore;
+    private final SortedMap<Integer, JSONSystemMigrate.Migration> dbVersionAdaptBefore;
     @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection"})
-    private final SortedMap<Integer, JSONSystemMigrate.Migration> versionAdaptAfterDatabase;
-    private final SortedMap<Integer, JSONSystemMigrate.Migration> versionAdaptAfter;
+    private final SortedMap<Integer, JSONSystemMigrate.Migration> dbVersionAdaptAfterDatabase;
+    private final SortedMap<Integer, JSONSystemMigrate.Migration> dbVersionAdaptAfter;
 
     public JSONSystemMigrate(Context context) {
         this.context = context;
-        this.versionAdaptBefore = new TreeMap<>();
-        this.versionAdaptAfterDatabase = new TreeMap<>();
-        this.versionAdaptAfter = new TreeMap<>();
-        versionAdaptAfter.put(3, this::version3AdaptAfterFrom0);
-        versionAdaptAfter.put(6, this::version6AdaptAfterFrom3);
+        this.dbVersionAdaptBefore = new TreeMap<>();
+        this.dbVersionAdaptAfterDatabase = new TreeMap<>();
+        this.dbVersionAdaptAfter = new TreeMap<>();
+        dbVersionAdaptAfter.put(3, this::dbVersion3AdaptAfterFrom0);
+        dbVersionAdaptAfter.put(6, this::dbVersion6AdaptAfterFrom3);
     }
 
-    public void adaptBefore(JSONObject root, int oldVersion, int newVersion) {
-        Log.d(JSONSystemMigrate.class.getName(), "adaptBefore with oldVersion = " + oldVersion + " and newVersion = " + newVersion);
-        int version = oldVersion + 1;
-        while (version <= newVersion) {
-            if (versionAdaptBefore.containsKey(version)) {
-                JSONSystemMigrate.Migration upgrade = versionAdaptBefore.get(version);
+    public void adaptBefore(JSONObject root, int oldDbVersion, int newDbVersion) {
+        Log.d(JSONSystemMigrate.class.getName(), "adaptBefore with oldDbVersion = " + oldDbVersion + " and newDbVersion = " + newDbVersion);
+        int dbVersion = oldDbVersion + 1;
+        while (dbVersion <= newDbVersion) {
+            if (dbVersionAdaptBefore.containsKey(dbVersion)) {
+                JSONSystemMigrate.Migration upgrade = dbVersionAdaptBefore.get(dbVersion);
                 Objects.requireNonNull(upgrade).migrate(root);
             }
-            version++;
+            dbVersion++;
         }
     }
 
-    public void adaptAfterDatabase(JSONObject root, int oldVersion, int newVersion) {
-        Log.d(JSONSystemMigrate.class.getName(), "adaptAfterDatabase with oldVersion = " + oldVersion + " and newVersion = " + newVersion);
-        int version = oldVersion + 1;
-        while (version <= newVersion) {
-            if (versionAdaptAfterDatabase.containsKey(version)) {
-                JSONSystemMigrate.Migration upgrade = versionAdaptAfterDatabase.get(version);
+    public void adaptAfterDatabase(JSONObject root, int oldDbVersion, int newDbVersion) {
+        Log.d(JSONSystemMigrate.class.getName(), "adaptAfterDatabase with oldDbVersion = " + oldDbVersion + " and newDbVersion = " + newDbVersion);
+        int dbVersion = oldDbVersion + 1;
+        while (dbVersion <= newDbVersion) {
+            if (dbVersionAdaptAfterDatabase.containsKey(dbVersion)) {
+                JSONSystemMigrate.Migration upgrade = dbVersionAdaptAfterDatabase.get(dbVersion);
                 Objects.requireNonNull(upgrade).migrate(root);
             }
-            version++;
+            dbVersion++;
         }
     }
 
-    public void adaptAfter(JSONObject root, int oldVersion, int newVersion) {
-        Log.d(JSONSystemMigrate.class.getName(), "adaptAfter with oldVersion = " + oldVersion + " and newVersion = " + newVersion);
-        int version = oldVersion + 1;
-        while (version <= newVersion) {
-            if (versionAdaptAfter.containsKey(version)) {
-                JSONSystemMigrate.Migration upgrade = versionAdaptAfter.get(version);
+    public void adaptAfter(JSONObject root, int oldDbVersion, int newDbVersion) {
+        Log.d(JSONSystemMigrate.class.getName(), "adaptAfter with oldDbVersion = " + oldDbVersion + " and newDbVersion = " + newDbVersion);
+        int dbVersion = oldDbVersion + 1;
+        while (dbVersion <= newDbVersion) {
+            if (dbVersionAdaptAfter.containsKey(dbVersion)) {
+                JSONSystemMigrate.Migration upgrade = dbVersionAdaptAfter.get(dbVersion);
                 Objects.requireNonNull(upgrade).migrate(root);
             }
-            version++;
+            dbVersion++;
         }
     }
 
-    private void version3AdaptAfterFrom0(JSONObject root) {
-        Log.d(JSONSystemMigrate.class.getName(), "version3AdaptAfterFrom0");
+    private void dbVersion3AdaptAfterFrom0(JSONObject root) {
+        Log.d(JSONSystemMigrate.class.getName(), "dbVersion3AdaptAfterFrom0");
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
             JSONObject globalSettings = getGlobalSettings(root, settingsKey);
             if (globalSettings == null) {
-                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, globalSettings is null, migration not possible.");
+                Log.e(JSONSystemMigrate.class.getName(), "dbVersion3AdaptAfterFrom0, globalSettings is null, migration not possible.");
                 return;
             }
             PreferenceSetup setup = new PreferenceSetup(getContext());
-            Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, importing ping and connect count from global settings");
+            Log.d(JSONSystemMigrate.class.getName(), "dbVersion3AdaptAfterFrom0, importing ping and connect count from global settings");
             setup.importPingAndConnectCount(JSONUtil.toMap(globalSettings));
         } catch (JSONException exc) {
-            Log.e(JSONSystemMigrate.class.getName(), "Error on migrating version3UpgradeFrom0", exc);
+            Log.e(JSONSystemMigrate.class.getName(), "Error on migrating dbVersion3AdaptAfterFrom0", exc);
         }
     }
 
-    private void version6AdaptAfterFrom3(JSONObject root) {
-        Log.d(JSONSystemMigrate.class.getName(), "version6AdaptAfterFrom3");
+    private void dbVersion6AdaptAfterFrom3(JSONObject root) {
+        Log.d(JSONSystemMigrate.class.getName(), "dbVersion6AdaptAfterFrom3");
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
             JSONObject globalSettings = getGlobalSettings(root, settingsKey);
             if (globalSettings == null) {
-                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, globalSettings is null, migration not possible.");
+                Log.e(JSONSystemMigrate.class.getName(), "dbVersion6AdaptAfterFrom3, globalSettings is null, migration not possible.");
             } else {
                 Map<String, ?> globalSettingsMap = JSONUtil.toMap(globalSettings);
                 Object userAgent = globalSettingsMap.get("preferenceHTTPUserAgent");

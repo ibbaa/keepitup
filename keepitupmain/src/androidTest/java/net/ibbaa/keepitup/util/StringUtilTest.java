@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.util;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -30,6 +31,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 @SmallTest
@@ -123,5 +125,17 @@ public class StringUtilTest {
         assertFalse(StringUtil.isTextSelected("Test", 1, 0));
         assertFalse(StringUtil.isTextSelected("Test", 0, 5));
         assertFalse(StringUtil.isTextSelected("TestTest", 5, 5));
+    }
+
+    @Test
+    public void testBase64() {
+        assertNull(StringUtil.toBase64(null));
+        assertNull(StringUtil.toByteArray(null));
+        assertEquals("SmF2YQ==", StringUtil.toBase64(new byte[] {74, 97, 118, 97}));
+        assertArrayEquals(new byte[] {74, 97, 118, 97}, StringUtil.toByteArray("SmF2YQ=="));
+        byte[] original = "This is a Test".getBytes(StandardCharsets.UTF_8);
+        String base64 = StringUtil.toBase64(original);
+        byte[] result = StringUtil.toByteArray(base64);
+        assertArrayEquals(result, original);
     }
 }

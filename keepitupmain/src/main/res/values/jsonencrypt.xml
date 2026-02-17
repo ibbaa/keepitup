@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2026 Alwin Ibba
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="algorithm_json_key">algorithm</string>
+    <string name="salt_json_key">salt</string>
+    <string name="memorycost_json_key">memorycost</string>
+    <string name="iterations_json_key">iterations</string>
+    <string name="parallelism_json_key">parallelism</string>
+    <string name="key_size_json_key">keysize</string>
+    <string name="iv_json_key">iv</string>
+    <string name="taglength_json_key">taglength</string>
+    <string name="ciphertext_json_key">ciphertext</string>
+</resources>

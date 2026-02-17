@@ -16,6 +16,10 @@
 
 <resources>
     <string name="file_extension_json">.json</string>
+    <string name="app_json_key">app</string>
+    <string name="format_json_key">format</string>
+    <string name="format_unencrypted">plain-json</string>
+    <string name="format_encrypted">encrypted-json</string>
     <string name="version_json_key">version</string>
     <string name="dbversion_json_key">dbversion</string>
     <string name="database_json_key">database</string>

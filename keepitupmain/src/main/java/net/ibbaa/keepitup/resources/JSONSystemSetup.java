@@ -53,11 +53,15 @@ public class JSONSystemSetup {
     public SystemSetupResult exportData() {
         Log.d(JSONSystemSetup.class.getName(), "exportData");
         JSONObject root = new JSONObject();
+        String appKey = getResources().getString(R.string.app_json_key);
+        String formatKey = getResources().getString(R.string.format_json_key);
         String versionKey = getResources().getString(R.string.version_json_key);
         String dbVersionKey = getResources().getString(R.string.dbversion_json_key);
         String dbKey = getResources().getString(R.string.database_json_key);
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
+            root.put(appKey, BuildConfig.APPLICATION_ID);
+            root.put(formatKey, getResources().getString(R.string.format_unencrypted));
             root.put(versionKey, BuildConfig.VERSION_CODE);
             root.put(dbVersionKey, getResources().getInteger(R.integer.db_version));
             JSONObject dbData = exportDatabase();
@@ -94,21 +98,21 @@ public class JSONSystemSetup {
         String dbKey = getResources().getString(R.string.database_json_key);
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
-            int versionInFile = getJSONVersion(root);
+            int dbVersionInFile = getJSONDbVersion(root);
             int dbVersion = getDbVersion();
-            jsonMigrate.adaptBefore(root, versionInFile, dbVersion);
+            jsonMigrate.adaptBefore(root, dbVersionInFile, dbVersion);
             importDatabase((JSONObject) root.get(dbKey));
-            jsonMigrate.adaptAfterDatabase(root, versionInFile, dbVersion);
+            jsonMigrate.adaptAfterDatabase(root, dbVersionInFile, dbVersion);
             Log.d(JSONSystemSetup.class.getName(), "Successfully imported database.");
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing database", exc);
             return new SystemSetupResult(false, false, exc.getMessage(), data);
         }
         try {
-            int versionInFile = getJSONVersion(root);
+            int dbVersionInFile = getJSONDbVersion(root);
             int dbVersion = getDbVersion();
             importSettings((JSONObject) root.get(settingsKey));
-            jsonMigrate.adaptAfter(root, versionInFile, dbVersion);
+            jsonMigrate.adaptAfter(root, dbVersionInFile, dbVersion);
             Log.d(JSONSystemSetup.class.getName(), "Successfully imported settings.");
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing settings", exc);
@@ -136,9 +140,11 @@ public class JSONSystemSetup {
     private boolean isFileVersionHigherThanCurrentVersion(JSONObject root) {
         Log.d(JSONSystemSetup.class.getName(), "isVersionValid");
         try {
-            int versionInFile = getJSONVersion(root);
+            int dbVersionInFile = getJSONDbVersion(root);
             int dbVersion = getDbVersion();
-            return versionInFile > dbVersion;
+            int versionInFile = getJSONVersion(root);
+            int version = BuildConfig.VERSION_CODE;
+            return dbVersionInFile > dbVersion || versionInFile > version;
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error checking version on import", exc);
             return true;
@@ -269,7 +275,7 @@ public class JSONSystemSetup {
         return task;
     }
 
-    private int getJSONVersion(JSONObject root) throws JSONException {
+    private int getJSONDbVersion(JSONObject root) throws JSONException {
         String dbVersionKey = getResources().getString(R.string.dbversion_json_key);
         if (root.has(dbVersionKey)) {
             return root.getInt(dbVersionKey);
@@ -281,6 +287,13 @@ public class JSONSystemSetup {
         return getResources().getInteger(R.integer.db_version);
     }
 
+    private int getJSONVersion(JSONObject root) throws JSONException {
+        String versionKey = getResources().getString(R.string.version_json_key);
+        if (root.has(versionKey)) {
+            return root.getInt(versionKey);
+        }
+        return 0;
+    }
 
     private Context getContext() {
         return context;

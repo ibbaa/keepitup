@@ -59,7 +59,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter0to3() throws Exception {
+    public void testDbVersionAdaptAfter0to3() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         JSONObject root = createRoot(5, 5, "");
@@ -69,7 +69,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter2to3() throws Exception {
+    public void testDbVersionAdaptAfter2to3() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         JSONObject root = createRoot(5, 5, "");
@@ -79,7 +79,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter3to3() throws Exception {
+    public void testDbVersionAdaptAfter3to3() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         JSONObject root = createRoot(5, 5, "");
@@ -89,7 +89,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter0to3ValuesInvalid() throws Exception {
+    public void testDbVersionAdaptAfter0to3ValuesInvalid() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         preferenceManager.setPreferencePingCount(5);
@@ -101,7 +101,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter0to3JSONInvalid() throws Exception {
+    public void testDbVersionAdaptAfter0to3JSONInvalid() throws Exception {
         JSONObject root = new JSONObject();
         JSONObject settings = new JSONObject();
         root.put("preferences", settings);
@@ -115,7 +115,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter3to6() throws Exception {
+    public void testDbVersionAdaptAfter3to6() throws Exception {
         JSONObject root = createRoot(1, 1, "MyHeader");
         migrate.adaptAfter(root, 3, 6);
         assertEquals(1, headerDAO.readGlobalHeaders().size());
@@ -126,7 +126,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter3to6JSONInvalid() throws Exception {
+    public void testDbVersionAdaptAfter3to6JSONInvalid() throws Exception {
         JSONObject root = new JSONObject();
         JSONObject settings = new JSONObject();
         root.put("preferences", settings);
@@ -139,7 +139,7 @@ public class JSONSystemMigrateTest {
     }
 
     @Test
-    public void testVersionAdaptAfter0to6() throws Exception {
+    public void testDbVersionAdaptAfter0to6() throws Exception {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         JSONObject root = createRoot(5, 5, "MyHeader");

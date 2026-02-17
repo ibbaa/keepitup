@@ -100,10 +100,12 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testVersion() throws Exception {
+    public void testMetadata() throws Exception {
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
+        assertEquals(BuildConfig.APPLICATION_ID, jsonData.getString("app"));
+        assertEquals("plain-json", jsonData.getString("format"));
         assertEquals(BuildConfig.VERSION_CODE, jsonData.getInt("version"));
         assertEquals(TestRegistry.getContext().getResources().getInteger(R.integer.db_version), jsonData.getInt("dbversion"));
     }
@@ -365,12 +367,24 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testImportVersionMismatch() throws Exception {
+    public void testImportDbVersionMismatch() throws Exception {
         networkTaskDAO.insertNetworkTask(getNetworkTask1());
         SystemSetupResult exportResult = setup.exportData();
         JSONObject jsonData = new JSONObject(exportResult.data());
         int version = jsonData.getInt("dbversion");
         jsonData.put("dbversion", version + 1);
+        SystemSetupResult importResult = setup.importData(jsonData.toString());
+        assertFalse(importResult.success());
+        assertTrue(importResult.versionMismatch());
+    }
+
+    @Test
+    public void testImportVersionMismatch() throws Exception {
+        networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SystemSetupResult exportResult = setup.exportData();
+        JSONObject jsonData = new JSONObject(exportResult.data());
+        int version = jsonData.getInt("version");
+        jsonData.put("version", version + 1);
         SystemSetupResult importResult = setup.importData(jsonData.toString());
         assertFalse(importResult.success());
         assertTrue(importResult.versionMismatch());
