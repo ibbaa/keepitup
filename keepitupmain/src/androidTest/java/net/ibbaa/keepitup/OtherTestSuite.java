@@ -60,6 +60,7 @@ import net.ibbaa.keepitup.resources.PreferenceManagerTest;
 import net.ibbaa.keepitup.resources.PreferenceSetupTest;
 import net.ibbaa.keepitup.resources.SystemWorkerFactoryTest;
 import net.ibbaa.keepitup.resources.encryption.AlgorithmDataTest;
+import net.ibbaa.keepitup.resources.encryption.CipherManagerTest;
 import net.ibbaa.keepitup.service.ConnectNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.NetworkTaskProcessBroadcastReceiverTest;
@@ -124,6 +125,7 @@ import net.ibbaa.keepitup.ui.validation.URLFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.URLValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ValidationResultTest;
 import net.ibbaa.keepitup.util.BundleUtilTest;
+import net.ibbaa.keepitup.util.CollectionUtilTest;
 import net.ibbaa.keepitup.util.DebugUtilTest;
 import net.ibbaa.keepitup.util.ExceptionUtilTest;
 import net.ibbaa.keepitup.util.FileUtilTest;
@@ -194,6 +196,7 @@ import org.junit.runners.Suite;
         SystemWorkerFactoryTest.class,
         //net.ibbaa.keepitup.resources.encryption
         AlgorithmDataTest.class,
+        CipherManagerTest.class,
         //net.ibbaa.keepitup.service
         ConnectNetworkTaskWorkerTest.class,
         DownloadNetworkTaskWorkerTest.class,
@@ -267,6 +270,7 @@ import org.junit.runners.Suite;
         ValidationResultTest.class,
         //net.ibbaa.keepitup.util
         BundleUtilTest.class,
+        CollectionUtilTest.class,
         DebugUtilTest.class,
         ExceptionUtilTest.class,
         FileUtilTest.class,

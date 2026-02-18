@@ -35,26 +35,16 @@ public class AlgorithmData {
 
     public enum Algorithm {
         ARGON2ID("Argon2id"),
-        AES256GCM("AES-256-GCM", "AES/GCM/NoPadding");
+        AES256GCM("AES-256-GCM");
 
         private final String name;
-        private final String cipherTransformation;
 
         Algorithm(String name) {
-            this(name, name);
-        }
-
-        Algorithm(String name, String cipherTransformation) {
             this.name = name;
-            this.cipherTransformation = cipherTransformation;
         }
 
         public String getName() {
             return name;
-        }
-
-        public String getCipherTransformation() {
-            return cipherTransformation;
         }
 
         public static Algorithm forName(String name) {
@@ -72,10 +62,12 @@ public class AlgorithmData {
         this.context = context;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public Algorithm getDefaultKDF() {
         return Algorithm.ARGON2ID;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public Algorithm getDefaultCipher() {
         return Algorithm.AES256GCM;
     }
@@ -101,13 +93,13 @@ public class AlgorithmData {
     private String createArgon2Salt() {
         byte[] salt = new byte[16];
         randomGenerator.nextBytes(salt);
-        return StringUtil.toBase64(salt);
+        return StringUtil.byteArrayToBase64(salt);
     }
 
     private String createIV() {
         byte[] salt = new byte[12];
         randomGenerator.nextBytes(salt);
-        return StringUtil.toBase64(salt);
+        return StringUtil.byteArrayToBase64(salt);
     }
 
     private Resources getResources() {

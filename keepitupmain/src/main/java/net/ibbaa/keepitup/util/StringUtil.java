@@ -86,14 +86,14 @@ public class StringUtil {
         return selectionStart <= text.length() && selectionEnd <= text.length() && selectionStart != selectionEnd;
     }
 
-    public static String toBase64(byte[] data) {
+    public static String byteArrayToBase64(byte[] data) {
         if (data == null) {
             return null;
         }
         return Base64.encodeToString(data, Base64.NO_WRAP);
     }
 
-    public static byte[] toByteArray(String data) {
+    public static byte[] base64ToByteArray(String data) {
         if (data == null) {
             return null;
         }

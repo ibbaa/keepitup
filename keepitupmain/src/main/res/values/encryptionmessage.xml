@@ -16,6 +16,8 @@
 
 <resources>
     <string name="unsupported_algorithm_message">Unsupported %1$s algorithm: %2$s.</string>
+    <string name="argon2_key_derivation_failed">Key derivation with Argon2id failed.</string>
+    <string name="aes_encryption_failed">Encryption with AES256 failed.</string>
     <string name="encryption_success">Encryption successful</string>
     <string name="decryption_success">Decryption successful</string>
 </resources>

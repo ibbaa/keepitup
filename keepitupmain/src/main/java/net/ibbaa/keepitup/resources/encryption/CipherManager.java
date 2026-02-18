@@ -21,10 +21,19 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
+import org.bouncycastle.crypto.modes.GCMBlockCipher;
+import org.bouncycastle.crypto.params.AEADParameters;
+import org.bouncycastle.crypto.params.Argon2Parameters;
+import org.bouncycastle.crypto.params.KeyParameter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 
 public class CipherManager {
 
@@ -34,23 +43,97 @@ public class CipherManager {
         this.context = context;
     }
 
-    public EncryptionResult encrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad) {
-        Log.d(CipherManager.class.getName(), "encrypt for KDF algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad);
+    public EncryptionResult encrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad, String plainText) {
+        Log.d(CipherManager.class.getName(), "encrypt for kdf algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad);
         String kdfAlgorithmName = kdfAlgorithmParam.get(getResources().getString(R.string.algorithm_json_key));
         AlgorithmData.Algorithm kdfAlgorithm = AlgorithmData.Algorithm.forName(kdfAlgorithmName);
         if (!AlgorithmData.Algorithm.ARGON2ID.equals(kdfAlgorithm)) {
-            String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "KDF", kdfAlgorithmName);
+            Log.e(CipherManager.class.getName(), "encrypt, unsupported kdf algorithm: " + kdfAlgorithmName);
+            String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "kdf", kdfAlgorithmName);
             return new EncryptionResult(false, failureMessage, "");
         }
-        String successMessage = getResources().getString(R.string.encryption_success);
-        return new EncryptionResult(true, successMessage, "");
+        byte[] key = createKeyWithArgon2(kdfAlgorithmParam, password);
+        if (key == null) {
+            String failureMessage = getResources().getString(R.string.argon2_key_derivation_failed);
+            return new EncryptionResult(false, failureMessage, "");
+        }
+        String cipherAlgorithmName = cipherAlgorithmParam.get(getResources().getString(R.string.algorithm_json_key));
+        AlgorithmData.Algorithm cipherAlgorithm = AlgorithmData.Algorithm.forName(cipherAlgorithmName);
+        if (!AlgorithmData.Algorithm.AES256GCM.equals(cipherAlgorithm)) {
+            Log.e(CipherManager.class.getName(), "encrypt, unsupported cipher algorithm: " + cipherAlgorithmName);
+            String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "cipher", cipherAlgorithmName);
+            return new EncryptionResult(false, failureMessage, "");
+        }
+        try {
+            String cipherText = encryptWithAES256(cipherAlgorithmParam, key, aad, plainText);
+            if (cipherText == null) {
+                String failureMessage = getResources().getString(R.string.aes_encryption_failed);
+                return new EncryptionResult(false, failureMessage, "");
+            }
+            String successMessage = getResources().getString(R.string.encryption_success);
+            return new EncryptionResult(true, successMessage, cipherText);
+        } catch (Exception exc) {
+            Log.e(CipherManager.class.getName(), "Exception during aes encryption", exc);
+            String failureMessage = exc.getMessage();
+            return new EncryptionResult(false, failureMessage, "");
+        }
+    }
+
+    public DecryptionResult decrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad, String cipherText) {
+        Log.d(CipherManager.class.getName(), "decrypt for kdf algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad);
+        String successMessage = getResources().getString(R.string.decryption_success);
+        return new DecryptionResult(true, successMessage, "");
     }
 
     private byte[] createKeyWithArgon2(Map<String, String> kdfAlgorithm, String password) {
-        Log.d(CipherManager.class.getName(),  "createKeyWithArgon2 for KDF algorithm " + kdfAlgorithm.toString());
+        Log.d(CipherManager.class.getName(), "createKeyWithArgon2 for kdf algorithm " + kdfAlgorithm.toString());
         String normalizedPassword = StringUtil.normalizeString(password);
         byte[] normalizedPasswordBytes = normalizedPassword.getBytes(StandardCharsets.UTF_8);
-        return new byte[0];
+        int memoryCost = NumberUtil.getIntValue(kdfAlgorithm.get(getResources().getString(R.string.memorycost_json_key)), -1);
+        int iterations = NumberUtil.getIntValue(kdfAlgorithm.get(getResources().getString(R.string.iterations_json_key)), -1);
+        int parallelism = NumberUtil.getIntValue(kdfAlgorithm.get(getResources().getString(R.string.parallelism_json_key)), -1);
+        int keySize = NumberUtil.getIntValue(kdfAlgorithm.get(getResources().getString(R.string.key_size_json_key)), -1);
+        String salt = kdfAlgorithm.get(getResources().getString(R.string.salt_json_key));
+        if (memoryCost < 0 || iterations < 0 || parallelism < 0 || keySize < 0 || StringUtil.isEmpty(salt)) {
+            Log.e(CipherManager.class.getName(), "createKeyWithArgon2 invalid argon2id parameter. Cannot proceed.");
+            return null;
+        }
+        byte[] saltBytes = StringUtil.base64ToByteArray(salt);
+        Argon2Parameters argon2Params = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_id).withSalt(saltBytes).withParallelism(parallelism).withMemoryAsKB(memoryCost).withIterations(iterations).build();
+        Argon2BytesGenerator argon2Generator = new Argon2BytesGenerator();
+        argon2Generator.init(argon2Params);
+        byte[] key = new byte[keySize / 8];
+        argon2Generator.generateBytes(normalizedPasswordBytes, key);
+        return key;
+    }
+
+    @SuppressWarnings("deprecation")
+    private String encryptWithAES256(Map<String, String> cipherAlgorithm, byte[] key, String aad, String plainText) throws Exception {
+        Log.d(CipherManager.class.getName(), "encryptWithAES256 for cipher algorithm " + cipherAlgorithm.toString() + ", aad is " + aad);
+        int tagLength = NumberUtil.getIntValue(cipherAlgorithm.get(getResources().getString(R.string.taglength_json_key)), -1);
+        String iv = cipherAlgorithm.get(getResources().getString(R.string.iv_json_key));
+        if (tagLength < 0 || StringUtil.isEmpty(iv)) {
+            Log.e(CipherManager.class.getName(), "encryptWithAES256 invalid aes256 parameter. Cannot proceed.");
+            return null;
+        }
+        byte[] ivBytes = StringUtil.base64ToByteArray(iv);
+        byte[] aadBytes = StringUtil.notNull(aad).getBytes(StandardCharsets.UTF_8);
+        byte[] plainTextBytes = StringUtil.notNull(plainText).getBytes(StandardCharsets.UTF_8);
+        GCMBlockCipher gcmCipher = new GCMBlockCipher(new AESEngine());
+        AEADParameters aeadParams = new AEADParameters(new KeyParameter(key), tagLength, ivBytes, aadBytes);
+        gcmCipher.init(true, aeadParams);
+        byte[] ciphertextBytes = new byte[gcmCipher.getOutputSize(plainTextBytes.length)];
+        int offset = gcmCipher.processBytes(plainTextBytes, 0, plainTextBytes.length, ciphertextBytes, 0);
+        gcmCipher.doFinal(ciphertextBytes, offset);
+        byte[] result = new byte[Objects.requireNonNull(ivBytes).length + ciphertextBytes.length];
+        System.arraycopy(ivBytes, 0, result, 0, ivBytes.length);
+        System.arraycopy(ciphertextBytes, 0, result, ivBytes.length, ciphertextBytes.length);
+        return StringUtil.byteArrayToBase64(result);
+    }
+
+    private String decryptWithAES256(Map<String, String> cipherAlgorithm, byte[] key, String aad, String cipherText) throws Exception {
+        Log.d(CipherManager.class.getName(), "decryptWithAES256 for cipher algorithm " + cipherAlgorithm.toString() + ", aad is " + aad);
+        return "";
     }
 
     private Resources getResources() {

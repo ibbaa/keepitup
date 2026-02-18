@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.resources.encryption;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -55,8 +56,10 @@ public class AlgorithmDataTest {
         assertEquals("3", kdfParam.get("iterations"));
         assertEquals("2", kdfParam.get("parallelism"));
         assertEquals("256", kdfParam.get("keysize"));
+        assertTrue(kdfParam.containsKey("salt"));
         Map<String, String> cipherParam = data.getAlgorithmDefaultParam(AlgorithmData.Algorithm.AES256GCM);
         assertEquals("AES-256-GCM", cipherParam.get("algorithm"));
         assertEquals("128", cipherParam.get("taglength"));
+        assertTrue(cipherParam.containsKey("iv"));
     }
 }

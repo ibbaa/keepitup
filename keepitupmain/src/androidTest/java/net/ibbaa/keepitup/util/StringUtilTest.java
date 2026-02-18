@@ -129,13 +129,13 @@ public class StringUtilTest {
 
     @Test
     public void testBase64() {
-        assertNull(StringUtil.toBase64(null));
-        assertNull(StringUtil.toByteArray(null));
-        assertEquals("SmF2YQ==", StringUtil.toBase64(new byte[] {74, 97, 118, 97}));
-        assertArrayEquals(new byte[] {74, 97, 118, 97}, StringUtil.toByteArray("SmF2YQ=="));
+        assertNull(StringUtil.byteArrayToBase64(null));
+        assertNull(StringUtil.base64ToByteArray(null));
+        assertEquals("SmF2YQ==", StringUtil.byteArrayToBase64(new byte[]{74, 97, 118, 97}));
+        assertArrayEquals(new byte[]{74, 97, 118, 97}, StringUtil.base64ToByteArray("SmF2YQ=="));
         byte[] original = "This is a Test".getBytes(StandardCharsets.UTF_8);
-        String base64 = StringUtil.toBase64(original);
-        byte[] result = StringUtil.toByteArray(base64);
+        String base64 = StringUtil.byteArrayToBase64(original);
+        byte[] result = StringUtil.base64ToByteArray(base64);
         assertArrayEquals(result, original);
     }
 }
