@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +98,72 @@ public class CipherManagerTest {
 
     @Test
     public void testEncrypt() {
+        argon2Param.put("salt", createTestArgon2Salt());
+        aesParam.put("iv", createTestAESIV());
         CipherManager.EncryptionResult result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertTrue(result.success());
+        assertEquals("Encryption successful", result.message());
+        assertEquals("OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==", result.ciphertext());
+    }
+
+    @Test
+    public void testDecrypt() {
+        argon2Param.put("salt", createTestArgon2Salt());
+        aesParam.put("iv", createTestAESIV());
+        CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "password", "aad", "OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==");
+        assertTrue(result.success());
+        assertEquals("Decryption successful", result.message());
+        assertEquals("plaintext", result.plaintext());
+    }
+
+    @Test
+    public void testDecryptWrongPassword() {
+        argon2Param.put("salt", createTestArgon2Salt());
+        aesParam.put("iv", createTestAESIV());
+        CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "wrong", "aad", "OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==");
+        assertFalse(result.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", result.message());
+    }
+
+    @Test
+    public void testDecryptWrongAad() {
+        argon2Param.put("salt", createTestArgon2Salt());
+        aesParam.put("iv", createTestAESIV());
+        CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "password", "wrong", "OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==");
+        assertFalse(result.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", result.message());
+    }
+
+    @Test
+    public void testEncryptDecrypt() {
+        String plainText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        CipherManager.EncryptionResult encryptResult = cipherManager.encrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", plainText);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", encryptResult.ciphertext());
+        assertTrue(decryptResult.success());
+        assertEquals("Decryption successful", decryptResult.message());
+        assertEquals(plainText, decryptResult.plaintext());
+    }
+
+    @Test
+    public void testEncryptDecryptFailure() {
+        String plainText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+        CipherManager.EncryptionResult encryptResult = cipherManager.encrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", plainText);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "xyz", "123", encryptResult.ciphertext());
+        assertFalse(decryptResult.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
+    }
+
+    private String createTestArgon2Salt() {
+        byte[] salt = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+        return StringUtil.byteArrayToBase64(salt);
+    }
+
+    private String createTestAESIV() {
+        byte[] salt = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        return StringUtil.byteArrayToBase64(salt);
     }
 }

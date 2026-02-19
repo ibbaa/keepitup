@@ -65,4 +65,15 @@ public class CollectionUtilTest {
         CollectionUtil.copyMap(source, null, null);
         CollectionUtil.copyMap(null, null, null);
     }
+
+    @Test
+    public void testMapToStableString() {
+        assertEquals("[]", CollectionUtil.mapToStableString(null));
+        assertEquals("[]", CollectionUtil.mapToStableString(new HashMap<>()));
+        Map<String, String> map = new HashMap<>();
+        map.put("key2", "value2");
+        map.put("key1", "value1");
+        map.put("key3", null);
+        assertEquals("[key1=value1:key2=value2:key3=null]", CollectionUtil.mapToStableString(map));
+    }
 }

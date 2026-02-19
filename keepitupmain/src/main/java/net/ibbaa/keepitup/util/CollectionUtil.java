@@ -16,7 +16,9 @@
 
 package net.ibbaa.keepitup.util;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class CollectionUtil {
 
@@ -32,5 +34,27 @@ public class CollectionUtil {
             String newKey = prefix + entry.getKey();
             target.put(newKey, entry.getValue());
         }
+    }
+
+    public static <V> String mapToStableString(Map<String, V> map) {
+        if (map == null) {
+            return "[]";
+        }
+        TreeMap<String, V> sortedMap = new TreeMap<>(map);
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        Iterator<Map.Entry<String, V>> iterator = sortedMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, V> entry = iterator.next();
+            builder.append(entry.getKey());
+            builder.append("=");
+            V value = entry.getValue();
+            builder.append(value != null ? value.toString() : "null");
+            if (iterator.hasNext()) {
+                builder.append(":");
+            }
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }

@@ -23,5 +23,8 @@
     <string name="key_size_json_key">keysize</string>
     <string name="iv_json_key">iv</string>
     <string name="taglength_json_key">taglength</string>
+    <string name="global_json_key">kdf</string>
+    <string name="kdf_json_key">kdf</string>
+    <string name="cipher_json_key">cipher</string>
     <string name="ciphertext_json_key">ciphertext</string>
 </resources>

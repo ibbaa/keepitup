@@ -97,9 +97,9 @@ public class AlgorithmData {
     }
 
     private String createIV() {
-        byte[] salt = new byte[12];
-        randomGenerator.nextBytes(salt);
-        return StringUtil.byteArrayToBase64(salt);
+        byte[] iv = new byte[12];
+        randomGenerator.nextBytes(iv);
+        return StringUtil.byteArrayToBase64(iv);
     }
 
     private Resources getResources() {

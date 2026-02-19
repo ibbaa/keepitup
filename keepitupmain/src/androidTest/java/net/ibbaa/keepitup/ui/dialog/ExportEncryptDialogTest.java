@@ -232,11 +232,11 @@ public class ExportEncryptDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(withText("")));
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Minimum length: 8"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         assertTrue(dialog.isEncrypt());
