@@ -228,7 +228,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ExportEncryptDialog dialog = openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("123"));
-        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Password minimum length 8 characters")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Minimum length: 8")));
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(withText("")));
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
@@ -249,7 +249,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("123"));
-        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Password minimum length 8 characters")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Minimum length: 8")));
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(withText("")));
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
@@ -272,7 +272,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ExportEncryptDialog dialog = openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("123"));
-        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Password minimum length 8 characters")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Minimum length: 8")));
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("123"));
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does match")));
@@ -294,7 +294,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("123"));
-        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Password minimum length 8 characters")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Minimum length: 8")));
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("123"));
@@ -318,7 +318,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ExportEncryptDialog dialog = openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("123"));
-        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Password minimum length 8 characters")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Minimum length: 8")));
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("456"));
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does not match")));
@@ -342,7 +342,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("123"));
-        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Password minimum length 8 characters")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Minimum length: 8")));
         onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("456"));
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does not match")));
@@ -359,6 +359,146 @@ public class ExportEncryptDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         assertTrue(getDialog().isEncrypt());
         assertEquals("123", getDialog().getPassword());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPasswordMaxLength() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ExportEncryptDialog dialog = openExportEncryptDialog();
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Maximum length: 128")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(withText("")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        assertTrue(dialog.isEncrypt());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", dialog.getPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPasswordMaxLengthScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openExportEncryptDialog();
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Maximum length: 128")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(withText("")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertTrue(getDialog().isEncrypt());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", getDialog().getPassword());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPasswordMaxLengthMatch() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ExportEncryptDialog dialog = openExportEncryptDialog();
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Maximum length: 128")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does match")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withTextColor(R.color.textOkColor)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        assertTrue(dialog.isEncrypt());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", dialog.getPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPasswordMaxLengthMatchScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openExportEncryptDialog();
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Maximum length: 128")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does match")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withTextColor(R.color.textOkColor)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        assertTrue(getDialog().isEncrypt());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", getDialog().getPassword());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPasswordMaxLengthNoMatch() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ExportEncryptDialog dialog = openExportEncryptDialog();
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Maximum length: 128")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("123"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does not match")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Confirm password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Values do not match"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        assertTrue(dialog.isEncrypt());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", dialog.getPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPasswordMaxLengthNoMatchScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openExportEncryptDialog();
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withText("Maximum length: 128")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("456"));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withText("Password does not match")));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Confirm password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Values do not match"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertTrue(getDialog().isEncrypt());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", getDialog().getPassword());
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         activityScenario.close();
     }

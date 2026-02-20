@@ -20,9 +20,11 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 
 import androidx.test.core.app.ActivityScenario;
@@ -87,6 +89,74 @@ public class PasswordInputDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         assertEquals("12345678", getDialog().getPassword());
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEnterPasswordNoValue() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_password_input_cancel)).perform(click());
+        assertEquals("", dialog.getPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEnterPasswordNoValueScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText(""));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_password_input_cancel)).perform(click());
+        assertEquals("", dialog.getPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEnterPasswordMaxLength() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_password_input_cancel)).perform(click());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", dialog.getPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEnterPasswordMaxLengthScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_password_input_cancel)).perform(click());
+        assertEquals("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890", dialog.getPassword());
         activityScenario.close();
     }
 

@@ -2956,7 +2956,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -3129,7 +3129,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -3238,7 +3238,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getTimeBasedSuspensionScheduler().isRunning());
         assertEquals(1, getIntervalDAO().readAllIntervals().size());
@@ -3302,7 +3302,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("An error occurred importing the configuration. Some settings may have been imported.")));
@@ -3400,7 +3400,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Version mismatch. The imported file has been created with a newer version. Import not possible.")));
@@ -3498,7 +3498,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
@@ -3565,7 +3565,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
     }

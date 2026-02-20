@@ -33,6 +33,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
 import net.ibbaa.keepitup.ui.support.PasswordInputSupport;
+import net.ibbaa.keepitup.ui.validation.PasswordInputFieldValidator;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -113,13 +114,25 @@ public class PasswordInputDialog extends DialogFragmentBase { // implements Cont
 
     private void onOkClicked(View view) {
         Log.d(PasswordInputDialog.class.getName(), "onOkClicked");
-        PasswordInputSupport passwordInputSupport = getPasswordInputSupport();
-        if (passwordInputSupport != null) {
-            passwordInputSupport.onPasswordInputDialogOkClicked(this);
+        ValidationResult validationResult = validateInput();
+        if (validationResult.isValidationSuccessful()) {
+            Log.d(PasswordInputDialog.class.getName(), "Validation was successful");
+            PasswordInputSupport passwordInputSupport = getPasswordInputSupport();
+            if (passwordInputSupport != null) {
+                passwordInputSupport.onPasswordInputDialogOkClicked(this);
+            } else {
+                Log.e(PasswordInputDialog.class.getName(), "passwordInputSupport is null");
+                dismiss();
+            }
         } else {
-            Log.e(PasswordInputDialog.class.getName(), "passwordInputSupport is null");
-            dismiss();
+            Log.d(PasswordInputDialog.class.getName(), "Validation failed");
+            showValidationMessageDialog(validationResult);
         }
+
+    }
+
+    private boolean hasErrors(List<ValidationResult> validationResult) {
+        return !validationResult.isEmpty();
     }
 
     private void onCancelClicked(View view) {
@@ -133,10 +146,16 @@ public class PasswordInputDialog extends DialogFragmentBase { // implements Cont
         }
     }
 
-    private void showValidationMessageDialog(List<ValidationResult> validationResult) {
+    private ValidationResult validateInput() {
+        Log.d(PasswordInputDialog.class.getName(), "validateInput");
+        PasswordInputFieldValidator passwordValidator = new PasswordInputFieldValidator(getResources().getString(R.string.password_field_name), getContext());
+        return passwordValidator.validate(getPassword());
+    }
+
+    private void showValidationMessageDialog(ValidationResult validationResult) {
         Log.d(PasswordInputDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
-        errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
+        errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), List.of(validationResult)));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 

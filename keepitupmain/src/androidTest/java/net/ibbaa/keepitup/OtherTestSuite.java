@@ -110,6 +110,7 @@ import net.ibbaa.keepitup.ui.validation.NullResolveValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NumberPickerColorListenerTest;
 import net.ibbaa.keepitup.ui.validation.PasswordConfirmFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PasswordFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.PasswordInputFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidatorTest;
@@ -255,6 +256,7 @@ import org.junit.runners.Suite;
         NumberPickerColorListenerTest.class,
         PasswordConfirmFieldValidatorTest.class,
         PasswordFieldValidatorTest.class,
+        PasswordInputFieldValidatorTest.class,
         PingCountFieldValidatorTest.class,
         PingPackageSizeFieldValidatorTest.class,
         PortFieldValidatorTest.class,

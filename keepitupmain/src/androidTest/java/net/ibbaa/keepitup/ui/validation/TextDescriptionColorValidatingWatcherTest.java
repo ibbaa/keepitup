@@ -36,10 +36,10 @@ import org.junit.runner.RunWith;
 public class TextDescriptionColorValidatingWatcherTest {
 
     @Test
-    public void testValidateTrue() {
+    public void testValidateOk() {
         EditText testEditText = new EditText(TestRegistry.getContext());
         TextView testTextView = new TextView(TestRegistry.getContext());
-        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateTrue, "ok", "error", Color.GREEN, Color.RED);
+        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateOk, "ok", "error", Color.GREEN, Color.RED);
         testEditText.setText("");
         watcher.afterTextChanged(null);
         assertEquals(View.GONE, testTextView.getVisibility());
@@ -52,10 +52,10 @@ public class TextDescriptionColorValidatingWatcherTest {
     }
 
     @Test
-    public void testValidateFalse() {
+    public void testValidateFailure() {
         EditText testEditText = new EditText(TestRegistry.getContext());
         TextView testTextView = new TextView(TestRegistry.getContext());
-        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateFalse, "ok", "error", Color.GREEN, Color.RED);
+        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateFailure, "ok", "error", Color.GREEN, Color.RED);
         testEditText.setText("");
         watcher.afterTextChanged(null);
         assertEquals(View.GONE, testTextView.getVisibility());
@@ -68,13 +68,29 @@ public class TextDescriptionColorValidatingWatcherTest {
     }
 
     @Test
+    public void testValidateFailureWithoutErrorText() {
+        EditText testEditText = new EditText(TestRegistry.getContext());
+        TextView testTextView = new TextView(TestRegistry.getContext());
+        TextDescriptionColorValidatingWatcher watcher = new TextDescriptionColorValidatingWatcher(testEditText, testTextView, this::validateFailure, "ok", Color.GREEN, Color.RED);
+        testEditText.setText("");
+        watcher.afterTextChanged(null);
+        assertEquals(View.GONE, testTextView.getVisibility());
+        assertEquals("", testTextView.getText());
+        testEditText.setText("xyz");
+        watcher.afterTextChanged(null);
+        assertEquals(View.VISIBLE, testTextView.getVisibility());
+        assertEquals(Color.RED, testTextView.getCurrentTextColor());
+        assertEquals("Failure", testTextView.getText());
+    }
+
+    @Test
     public void testDependentWatcher() {
         EditText parentEditText = new EditText(TestRegistry.getContext());
         TextView parentTextView = new TextView(TestRegistry.getContext());
-        TextDescriptionColorValidatingWatcher parentWatcher = new TextDescriptionColorValidatingWatcher(parentEditText, parentTextView, this::validateTrue, "okParent", "errorParent", Color.GREEN, Color.RED);
+        TextDescriptionColorValidatingWatcher parentWatcher = new TextDescriptionColorValidatingWatcher(parentEditText, parentTextView, this::validateOk, "okParent", "errorParent", Color.GREEN, Color.RED);
         EditText dependentEditText = new EditText(TestRegistry.getContext());
         TextView dependentTextView = new TextView(TestRegistry.getContext());
-        TextDescriptionColorValidatingWatcher dependentWatcher = new TextDescriptionColorValidatingWatcher(dependentEditText, dependentTextView, this::validateFalse, "okDependent", "errorDependent", Color.GREEN, Color.RED);
+        TextDescriptionColorValidatingWatcher dependentWatcher = new TextDescriptionColorValidatingWatcher(dependentEditText, dependentTextView, this::validateFailure, "okDependent", "errorDependent", Color.GREEN, Color.RED);
         parentWatcher.addDependentWatcher(dependentWatcher);
         parentEditText.setText("");
         dependentEditText.setText("");
@@ -93,12 +109,12 @@ public class TextDescriptionColorValidatingWatcherTest {
     }
 
     @SuppressWarnings({"SameReturnValue", "unused"})
-    private boolean validateTrue(EditText editText) {
-        return true;
+    private String validateOk(EditText editText) {
+        return "";
     }
 
     @SuppressWarnings({"SameReturnValue", "unused"})
-    private boolean validateFalse(EditText editText) {
-        return false;
+    private String validateFailure(EditText editText) {
+        return "Failure";
     }
 }

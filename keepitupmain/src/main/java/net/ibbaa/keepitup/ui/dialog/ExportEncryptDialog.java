@@ -140,10 +140,9 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         }
         int minLength = getResources().getInteger(R.integer.password_min_length);
         String okText = getResources().getString(R.string.text_dialog_export_password_ok);
-        String errorText = getResources().getString(R.string.text_dialog_export_password_min_length, minLength);
         int okColor = getColor(R.color.textOkColor);
         int errorColor = getColor(R.color.textErrorColor);
-        passwordEditTextWatcher = new TextDescriptionColorValidatingWatcher(passwordEditText, passwordTextView, this::validatePassword, okText, errorText, okColor, errorColor);
+        passwordEditTextWatcher = new TextDescriptionColorValidatingWatcher(passwordEditText, passwordTextView, this::validatePassword, okText, okColor, errorColor);
         passwordEditText.addTextChangedListener(passwordEditTextWatcher);
     }
 
@@ -235,20 +234,26 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         return !validationResult.isEmpty();
     }
 
-    private boolean validatePassword(EditText editText) {
+    private String validatePassword(EditText editText) {
         Log.d(ExportEncryptDialog.class.getName(), "validatePassword");
         PasswordFieldValidator validator = new PasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
         ValidationResult result = validator.validate(getPassword());
         Log.d(ExportEncryptDialog.class.getName(), "Validation result: " + result);
-        return result.isValidationSuccessful();
+        if (result.isValidationSuccessful()) {
+            return "";
+        }
+        return result.getMessage();
     }
 
-    private boolean validateConfirmPassword(EditText editText) {
+    private String validateConfirmPassword(EditText editText) {
         Log.d(ExportEncryptDialog.class.getName(), "validateConfirmPassword");
         PasswordConfirmFieldValidator validator = new PasswordConfirmFieldValidator(getResources().getString(R.string.password_confirm_field_name), getPassword(), getContext());
         ValidationResult result = validator.validate(getConfirmPassword());
         Log.d(ExportEncryptDialog.class.getName(), "Validation result: " + result);
-        return result.isValidationSuccessful();
+        if (result.isValidationSuccessful()) {
+            return "";
+        }
+        return result.getMessage();
     }
 
     private List<ValidationResult> validateInput() {

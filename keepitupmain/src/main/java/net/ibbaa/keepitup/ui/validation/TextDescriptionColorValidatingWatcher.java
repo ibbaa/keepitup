@@ -33,14 +33,18 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
 
     private final EditText editText;
     private final TextView textView;
-    private final ValidatorPredicate<EditText> validator;
+    private final ValidatorMessagePredicate<EditText> validator;
     private final String okText;
     private final String errorText;
     private final int okTextColor;
     private final int errorTextColor;
     private final List<TextDescriptionColorValidatingWatcher> dependentWatchers;
 
-    public TextDescriptionColorValidatingWatcher(EditText editText, TextView textView, ValidatorPredicate<EditText> validator, String okText, String errorText, int okTextColor, int errorTextColor) {
+    public TextDescriptionColorValidatingWatcher(EditText editText, TextView textView, ValidatorMessagePredicate<EditText> validator, String okText, int okTextColor, int errorTextColor) {
+        this(editText, textView, validator, okText, null, okTextColor, errorTextColor);
+    }
+
+    public TextDescriptionColorValidatingWatcher(EditText editText, TextView textView, ValidatorMessagePredicate<EditText> validator, String okText, String errorText, int okTextColor, int errorTextColor) {
         this.editText = editText;
         this.textView = textView;
         this.validator = validator;
@@ -76,14 +80,17 @@ public class TextDescriptionColorValidatingWatcher implements TextWatcher {
         if (StringUtil.isEmpty(editText.getText())) {
             textView.setVisibility(View.GONE);
             textView.setText("");
-        } else if (validator.validate(editText)) {
-            textView.setTextColor(okTextColor);
-            textView.setText(okText);
-            textView.setVisibility(View.VISIBLE);
         } else {
-            textView.setTextColor(errorTextColor);
-            textView.setText(errorText);
-            textView.setVisibility(View.VISIBLE);
+            String validationResult = validator.validate(editText);
+            if (StringUtil.isEmpty(validationResult)) {
+                textView.setTextColor(okTextColor);
+                textView.setText(okText);
+                textView.setVisibility(View.VISIBLE);
+            } else {
+                textView.setTextColor(errorTextColor);
+                textView.setText(StringUtil.isEmpty(errorText) ? validationResult : errorText);
+                textView.setVisibility(View.VISIBLE);
+            }
         }
         for (TextDescriptionColorValidatingWatcher watchers : dependentWatchers) {
             watchers.validateCurrentText();
