@@ -29,6 +29,8 @@ import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
+import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
+import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.ui.support.ImportSupport;
@@ -61,7 +63,11 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         try {
             Context context = getActivity();
             if (context != null) {
-                SystemSetupResult checkResult = doImportCheck(context);
+                SystemSetupResult decryptResult = doDecrypt(context);
+                if (!decryptResult.success()) {
+                    return new SystemSetupResult(false, false, decryptResult.message(), "");
+                }
+                SystemSetupResult checkResult = doImportCheck(context, decryptResult.data());
                 if (!checkResult.success()) {
                     return checkResult;
                 }
@@ -94,12 +100,11 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         return false;
     }
 
-    private SystemSetupResult doImportCheck(Context context) throws Exception {
-        Log.d(ImportTask.class.getName(), "doImportCheck");
+    private SystemSetupResult doDecrypt(Context context) throws Exception {
+        Log.d(ImportTask.class.getName(), "doDecrypt");
         ParcelFileDescriptor fileDescriptor = null;
         FileInputStream stream = null;
         try {
-            JSONSystemSetup setup = new JSONSystemSetup(context);
             if (useDocumentApi) {
                 DocumentFile documentFile = getDocumentManager().getFile(file);
                 if (documentFile == null) {
@@ -113,8 +118,15 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 stream = new FileInputStream(importFile);
             }
             String data = StreamUtil.inputStreamToString(stream, StandardCharsets.UTF_8);
-            SystemSetupResult result = setup.checkImportPossible(data);
-            return new SystemSetupResult(result.success(), result.versionMismatch(), result.message(), data);
+            if (encryptionInfo.isEncrypt()) {
+                JSONEncryptSetup encryptSetup = new JSONEncryptSetup(context);
+                EncryptionSetupResult encryptionResult = encryptSetup.decrypt(encryptionInfo.getPassword(), data);
+                if (!encryptionResult.success()) {
+                    return new SystemSetupResult(false, false, encryptionResult.message(), "");
+                }
+                data = encryptionResult.data();
+            }
+            return new SystemSetupResult(true, false, "", data);
         } finally {
             if (stream != null) {
                 try {
@@ -131,6 +143,13 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 }
             }
         }
+    }
+
+    private SystemSetupResult doImportCheck(Context context, String data) throws Exception {
+        Log.d(ImportTask.class.getName(), "doImportCheck");
+        JSONSystemSetup setup = new JSONSystemSetup(context);
+        SystemSetupResult result = setup.checkImportPossible(data);
+        return new SystemSetupResult(result.success(), result.versionMismatch(), result.message(), data);
     }
 
     private boolean purgeTables(Context context) {

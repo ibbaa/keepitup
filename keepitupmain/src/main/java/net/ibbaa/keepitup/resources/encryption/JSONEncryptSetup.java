@@ -23,9 +23,12 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.CollectionUtil;
+import net.ibbaa.keepitup.util.JSONUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,8 +75,32 @@ public class JSONEncryptSetup {
             return new EncryptionSetupResult(true, result.message(), root.toString());
 
         } catch (Exception exc) {
-            Log.e(JSONEncryptSetup.class.getName(), "Error exporting database", exc);
-            Log.d(JSONEncryptSetup.class.getName(), "Encryption failed");
+            Log.e(JSONEncryptSetup.class.getName(), "Encryption failed", exc);
+            return new EncryptionSetupResult(false, exc.getMessage(), "");
+        }
+    }
+
+    public EncryptionSetupResult decrypt(String password, String cipherWithHeaderJson) {
+        Log.d(JSONEncryptSetup.class.getName(), "decrypt");
+        try {
+            JSONObject root = new JSONObject(cipherWithHeaderJson);
+            Map<String, String> kdfParams = extractKDFParams(root);
+            Map<String, String> cipherParams = extractCipherParams(root);
+            String cipherText = extractCipherText(root);
+            Map<String, String> globalParams = JSONUtil.toFlatStringMap(root);
+            String aad = getAad(globalParams, kdfParams, cipherParams);
+            Log.d(JSONEncryptSetup.class.getName(), "aad is " + aad);
+            CipherManager cipherManager = new CipherManager(getContext());
+            CipherManager.DecryptionResult result = cipherManager.decrypt(kdfParams, cipherParams, password, aad, cipherText);
+            if (!result.success()) {
+                Log.d(JSONEncryptSetup.class.getName(), "Decryption failed");
+                return new EncryptionSetupResult(false, result.message(), result.plaintext());
+            }
+            Log.d(JSONEncryptSetup.class.getName(), "Decryption successful");
+            return new EncryptionSetupResult(true, result.message(), result.plaintext());
+
+        } catch (Exception exc) {
+            Log.e(JSONEncryptSetup.class.getName(), "Decryption failed", exc);
             return new EncryptionSetupResult(false, exc.getMessage(), "");
         }
     }
@@ -87,6 +114,42 @@ public class JSONEncryptSetup {
         CollectionUtil.copyMap(kdfParams, aadMap, kdfPrefix);
         CollectionUtil.copyMap(cipherParams, aadMap, cipherPrefix);
         return CollectionUtil.mapToStableString(aadMap);
+    }
+
+    private Map<String, String> extractKDFParams(JSONObject root) throws JSONException {
+        String kdfKey = getResources().getString(R.string.kdf_json_key);
+        if (!root.has(kdfKey)) {
+            return Collections.emptyMap();
+        }
+        Object kdfData = root.get(kdfKey);
+        if (!(kdfData instanceof JSONObject)) {
+            return Collections.emptyMap();
+        }
+        root.remove(kdfKey);
+        return JSONUtil.toFlatStringMap((JSONObject) kdfData);
+    }
+
+    private Map<String, String> extractCipherParams(JSONObject root) throws JSONException {
+        String cipherKey = getResources().getString(R.string.cipher_json_key);
+        if (!root.has(cipherKey)) {
+            return Collections.emptyMap();
+        }
+        Object cipherData = root.get(cipherKey);
+        if (!(cipherData instanceof JSONObject)) {
+            return Collections.emptyMap();
+        }
+        root.remove(cipherKey);
+        return JSONUtil.toFlatStringMap((JSONObject) cipherData);
+    }
+
+    private String extractCipherText(JSONObject root) throws JSONException {
+        String cipherTextKey = getResources().getString(R.string.ciphertext_json_key);
+        if (!root.has(cipherTextKey)) {
+            return "";
+        }
+        Object cipherText = root.get(cipherTextKey);
+        root.remove(cipherTextKey);
+        return cipherText.toString();
     }
 
     private Context getContext() {

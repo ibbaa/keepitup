@@ -24,8 +24,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class JSONUtil {
+
+    public static Map<String, String> toFlatStringMap(JSONObject jsonObject) {
+        Map<String, String> map = new HashMap<>();
+        Iterator<String> keys = jsonObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            Object value;
+            if (jsonObject.isNull(key)) {
+                value = "null";
+            } else {
+                value = jsonObject.opt(key);
+            }
+            map.put(key, Objects.requireNonNull(value).toString());
+        }
+        return map;
+    }
 
     public static Map<String, ?> toMap(JSONObject jsonObject) {
         Map<String, Object> map = new HashMap<>();

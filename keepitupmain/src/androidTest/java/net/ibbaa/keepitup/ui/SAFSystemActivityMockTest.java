@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -309,8 +308,6 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
-        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
         assertTrue(storagePermissionManager.getFolderPermissions().contains("/Test"));
         activityScenario.close();
@@ -513,8 +510,6 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
-        onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
@@ -652,7 +647,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
     }
 
     private MockExportTask getMockExportTask(ActivityScenario<?> activityScenario, boolean success) {
-        return new MockExportTask(getActivity(activityScenario), success);
+        return new MockExportTask(getActivity(activityScenario), new SystemSetupResult(success, false, "", ""));
     }
 
     private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success) {

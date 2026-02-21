@@ -18,5 +18,5 @@ package net.ibbaa.keepitup.ui.support;
 
 public interface ExportSupport {
 
-    void onExportDone(boolean success);
+    void onExportDone(boolean success, String message);
 }

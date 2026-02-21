@@ -26,6 +26,8 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
+import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
+import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.ui.support.ExportSupport;
@@ -36,7 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class ExportTask extends UIBackgroundTask<Boolean> {
+public class ExportTask extends UIBackgroundTask<SystemSetupResult> {
 
     private final File exportFolder;
     private final String file;
@@ -52,7 +54,7 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
     }
 
     @Override
-    protected Boolean runInBackground() {
+    protected SystemSetupResult runInBackground() {
         Log.d(ExportTask.class.getName(), "runInBackground");
         ParcelFileDescriptor fileDescriptor = null;
         FileOutputStream stream = null;
@@ -60,15 +62,25 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
             Context context = getActivity();
             if (context != null) {
                 JSONSystemSetup setup = new JSONSystemSetup(context);
-                SystemSetupResult result = setup.exportData();
-                Log.d(ExportTask.class.getName(), "Export returned " + result);
-                if (result.success()) {
-                    Log.d(ExportTask.class.getName(), "Export was successful: " + result.message());
+                SystemSetupResult setupResult = setup.exportData();
+                Log.d(ExportTask.class.getName(), "Export returned " + setupResult);
+                if (setupResult.success()) {
+                    Log.d(ExportTask.class.getName(), "Export was successful: " + setupResult.message());
+                    String fileData = setupResult.data();
+                    if (encryptionInfo.isEncrypt()) {
+                        Log.d(ExportTask.class.getName(), "Encrypting data...");
+                        JSONEncryptSetup encryptSetup = new JSONEncryptSetup(context);
+                        EncryptionSetupResult encryptionResult = encryptSetup.encrypt(encryptionInfo.getPassword(), fileData);
+                        if (!encryptionResult.success()) {
+                            return new SystemSetupResult(false, false, encryptionResult.message(), "");
+                        }
+                        fileData = encryptionResult.data();
+                    }
                     if (useDocumentApi) {
                         DocumentFile documentFile = getDocumentManager().getFile(file);
                         if (documentFile == null) {
                             Log.e(ExportTask.class.getName(), "Error accessing file uri " + file);
-                            return false;
+                            return new SystemSetupResult(false, false, "", "");
                         }
                         fileDescriptor = getExportFileDescriptor(documentFile);
                         stream = getExportFileOutputStream(fileDescriptor);
@@ -76,10 +88,10 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
                         File exportFile = new File(exportFolder, file);
                         stream = new FileOutputStream(exportFile);
                     }
-                    StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
-                    return true;
+                    StreamUtil.stringToOutputStream(fileData, stream, StandardCharsets.UTF_8);
+                    return setupResult;
                 } else {
-                    Log.d(ExportTask.class.getName(), "Export was not successful: " + result.message());
+                    Log.d(ExportTask.class.getName(), "Export was not successful: " + setupResult.message());
                 }
             }
         } catch (Exception exc) {
@@ -100,19 +112,19 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
                 }
             }
         }
-        return false;
+        return new SystemSetupResult(false, false, "", "");
     }
 
     @Override
-    protected void runOnUIThread(Boolean success) {
-        Log.d(ExportTask.class.getName(), "runOnUIThread, success is " + success);
-        if (success == null) {
-            success = false;
+    protected void runOnUIThread(SystemSetupResult result) {
+        Log.d(ExportTask.class.getName(), "runOnUIThread, result is " + result);
+        if (result == null) {
+            result = new SystemSetupResult(false, false, "", "");
         }
         Activity activity = getActivity();
         if (activity != null && !activity.isDestroyed()) {
             if (activity instanceof ExportSupport) {
-                ((ExportSupport) activity).onExportDone(success);
+                ((ExportSupport) activity).onExportDone(result.success(), result.message());
             }
         }
     }

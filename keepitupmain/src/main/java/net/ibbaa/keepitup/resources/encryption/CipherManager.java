@@ -62,7 +62,7 @@ public class CipherManager {
             return new EncryptionResult(true, successMessage, cipherText);
         } catch (Exception exc) {
             Log.e(CipherManager.class.getName(), "Exception during aes encryption", exc);
-            String failureMessage = exc.getMessage();
+            String failureMessage = getResources().getString(R.string.aes_encryption_failed);
             return new EncryptionResult(false, failureMessage, "");
         }
     }
@@ -89,7 +89,7 @@ public class CipherManager {
             return new DecryptionResult(false, failureMessage, "");
         } catch (Exception exc) {
             Log.e(CipherManager.class.getName(), "Exception during aes encryption", exc);
-            String failureMessage = exc.getMessage();
+            String failureMessage = getResources().getString(R.string.aes_decryption_wrong_password_or_file_corrupt);
             return new DecryptionResult(false, failureMessage, "");
         }
     }

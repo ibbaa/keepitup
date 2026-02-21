@@ -938,7 +938,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
         showProgressDialog();
         ExportTask exportTask = getExportTask(exportFolder, file, encryptionInfo);
-        Future<Boolean> exportFuture = ThreadUtil.execute(exportTask);
+        Future<SystemSetupResult> exportFuture = ThreadUtil.execute(exportTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
             try {
@@ -1003,7 +1003,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             File importFolder = null;
             String file = getFileExtraData(confirmDialog);
             // TODO check if encrypted
-            boolean encrypted = true;
+            boolean encrypted = false;
             dismissConfirmDialog(confirmDialog);
             if (encrypted) {
                 showPasswordInputDialog(file);
@@ -1063,11 +1063,11 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     @Override
-    public void onExportDone(boolean success) {
+    public void onExportDone(boolean success, String message) {
         Log.d(SystemActivity.class.getName(), "onExportDone, success is " + success);
         closeProgressDialog();
         if (!success) {
-            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_config_export));
+            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_export));
         }
     }
 
@@ -1082,7 +1082,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             NetworkTaskLog.clear();
             resetActivity();
         } else {
-            showMessageDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
+            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
         }
     }
 

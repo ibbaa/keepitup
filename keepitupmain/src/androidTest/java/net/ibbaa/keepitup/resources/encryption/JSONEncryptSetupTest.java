@@ -17,10 +17,13 @@
 package net.ibbaa.keepitup.resources.encryption;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,9 +37,112 @@ public class JSONEncryptSetupTest {
     }
 
     @Test
-    public void testEncryptDecrypt() {
-        EncryptionSetupResult encryptResult = encryptSetup.encrypt("pass123topsecret", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.");
+    public void testEncryptDecryptSuccessful() {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
         assertTrue(encryptResult.success());
         assertEquals("Encryption successful", encryptResult.message());
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, encryptResult.data());
+        assertTrue(decryptResult.success());
+        assertEquals("Decryption successful", decryptResult.message());
+        assertEquals(plaintext, decryptResult.data());
+    }
+
+    @Test
+    public void testEncryptDecryptWrongPassword() {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password + "Wrong", encryptResult.data());
+        assertFalse(decryptResult.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
+    }
+
+    @Test
+    public void testEncryptDecryptJSONMalformed() throws Exception {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, encryptResult.data().replaceFirst("\\{", "}"));
+        assertFalse(decryptResult.success());
+        assertNotEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
+    }
+
+    @Test
+    public void testEncryptDecryptCiphertextManipulated() throws Exception {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        JSONObject jsonObject = new JSONObject(encryptResult.data());
+        jsonObject.put("ciphertext", "abc");
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
+        assertFalse(decryptResult.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
+    }
+
+    @Test
+    public void testEncryptDecryptHeaderManipulated() throws Exception {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        JSONObject jsonObject = new JSONObject(encryptResult.data());
+        JSONObject kdfObject = (JSONObject) jsonObject.get("kdf");
+        kdfObject.put("iterations", "4");
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
+        assertFalse(decryptResult.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
+    }
+
+    @Test
+    public void testEncryptDecryptKDFHeaderRemoved() throws Exception {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        JSONObject jsonObject = new JSONObject(encryptResult.data());
+        JSONObject kdfObject = (JSONObject) jsonObject.get("kdf");
+        kdfObject.remove("memorycost");
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
+        assertFalse(decryptResult.success());
+        assertEquals("Key derivation with Argon2id failed.", decryptResult.message());
+    }
+
+    @Test
+    public void testEncryptDecryptCipherHeaderRemoved() throws Exception {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        JSONObject jsonObject = new JSONObject(encryptResult.data());
+        JSONObject cipherObject = (JSONObject) jsonObject.get("cipher");
+        cipherObject.remove("taglength");
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
+        assertFalse(decryptResult.success());
+        assertEquals("Decryption with AES256 failed.", decryptResult.message());
+    }
+
+    @Test
+    public void testEncryptDecryptHeaderAdded() throws Exception {
+        String plaintext = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+        String password = "pass123topsecret";
+        EncryptionSetupResult encryptResult = encryptSetup.encrypt(password, plaintext);
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        JSONObject jsonObject = new JSONObject(encryptResult.data());
+        jsonObject.put("another", "header");
+        EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
+        assertFalse(decryptResult.success());
+        assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
     }
 }

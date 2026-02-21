@@ -157,6 +157,27 @@ public class JSONUtilTest {
         assertTrue((Boolean) map.get("booleanKey"));
     }
 
+    @Test
+    public void testToFlatStringMap() {
+        JSONObject jsonObj = new JSONObject(getTestFlatMap());
+        Map<String, String> map = JSONUtil.toFlatStringMap(jsonObj);
+        assertEquals("null", map.get("nullKey"));
+        assertEquals("value", map.get("stringKey"));
+        assertEquals("5", map.get("intKey"));
+        assertEquals("8", map.get("longKey"));
+        assertEquals("true", map.get("booleanKey"));
+    }
+
+    private Map<String, ?> getTestFlatMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("nullKey", null);
+        map.put("stringKey", "value");
+        map.put("intKey", 5);
+        map.put("longKey", 8L);
+        map.put("booleanKey", Boolean.TRUE);
+        return map;
+    }
+
     private Map<String, ?> getTestMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("nullKey", null);

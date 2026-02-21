@@ -19,21 +19,22 @@ package net.ibbaa.keepitup.test.mock;
 import android.app.Activity;
 
 import net.ibbaa.keepitup.model.EncryptionInfo;
+import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 
 import java.io.File;
 
 public class MockExportTask extends ExportTask {
 
-    private final boolean result;
+    private final SystemSetupResult result;
 
-    public MockExportTask(Activity activity, boolean result) {
+    public MockExportTask(Activity activity, SystemSetupResult result) {
         super(activity, new File(""), "", new EncryptionInfo(), false);
         this.result = result;
     }
 
     @Override
-    protected Boolean runInBackground() {
+    protected SystemSetupResult runInBackground() {
         return result;
     }
 }
