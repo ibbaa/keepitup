@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -158,15 +159,17 @@ public class CipherManager {
         byte[] ivBytes = StringUtil.base64ToByteArray(iv);
         byte[] aadBytes = StringUtil.notNull(aad).getBytes(StandardCharsets.UTF_8);
         byte[] plainTextBytes = StringUtil.notNull(plainText).getBytes(StandardCharsets.UTF_8);
+        byte[] compressedPlainTextBytes = StreamUtil.compressByteArray(plainTextBytes);
         Log.d(CipherManager.class.getName(), "ivBytes length: " + Objects.requireNonNull(ivBytes).length);
         Log.d(CipherManager.class.getName(), "aadBytes length: " + Objects.requireNonNull(aadBytes).length);
         Log.d(CipherManager.class.getName(), "plainTextBytes length: " + Objects.requireNonNull(plainTextBytes).length);
+        Log.d(CipherManager.class.getName(), "compressedPlainTextBytes length: " + Objects.requireNonNull(compressedPlainTextBytes).length);
         GCMBlockCipher gcmCipher = new GCMBlockCipher(new AESEngine());
         AEADParameters aeadParams = new AEADParameters(new KeyParameter(key), tagLength, ivBytes, aadBytes);
         gcmCipher.init(true, aeadParams);
-        byte[] ciphertextBytes = new byte[gcmCipher.getOutputSize(plainTextBytes.length)];
+        byte[] ciphertextBytes = new byte[gcmCipher.getOutputSize(compressedPlainTextBytes.length)];
         Log.d(CipherManager.class.getName(), "ciphertextBytes length: " + Objects.requireNonNull(ciphertextBytes).length);
-        int offset = gcmCipher.processBytes(plainTextBytes, 0, plainTextBytes.length, ciphertextBytes, 0);
+        int offset = gcmCipher.processBytes(compressedPlainTextBytes, 0, compressedPlainTextBytes.length, ciphertextBytes, 0);
         gcmCipher.doFinal(ciphertextBytes, offset);
         return StringUtil.byteArrayToBase64(ciphertextBytes);
     }
@@ -194,7 +197,9 @@ public class CipherManager {
         Log.d(CipherManager.class.getName(), "plainTextBytes length: " + Objects.requireNonNull(plainTextBytes).length);
         int offset = gcmCipher.processBytes(cipherTextBytes, 0, cipherTextBytes.length, plainTextBytes, 0);
         gcmCipher.doFinal(plainTextBytes, offset);
-        return new String(plainTextBytes, StandardCharsets.UTF_8);
+        byte[] decompressedPlainTextBytes = StreamUtil.decompressByteArray(plainTextBytes);
+        Log.d(CipherManager.class.getName(), "decompressedPlainTextBytes length: " + Objects.requireNonNull(decompressedPlainTextBytes).length);
+        return new String(decompressedPlainTextBytes, StandardCharsets.UTF_8);
     }
 
     private Resources getResources() {

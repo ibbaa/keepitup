@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -34,6 +36,30 @@ import java.util.Arrays;
 @SuppressWarnings({"CharsetObjectCanBeUsed", "StringOperationCanBeSimplified"})
 @RunWith(AndroidJUnit4.class)
 public class StreamUtilTest {
+
+    @Test
+    public void testCompressByteArray() throws Exception {
+        assertArrayEquals(new byte[0], StreamUtil.compressByteArray(null));
+        assertArrayEquals(new byte[0], StreamUtil.compressByteArray(new byte[0]));
+        String originalString = "This is a test string. ".repeat(200);
+        byte[] original = originalString.getBytes(StandardCharsets.UTF_8);
+        byte[] compressed = StreamUtil.compressByteArray(original);
+        assertNotNull(compressed);
+        assertTrue(compressed.length > 0);
+        assertTrue(compressed.length < original.length);
+    }
+
+    @Test
+    public void testDecompressByteArray() throws Exception {
+        assertArrayEquals(new byte[0], StreamUtil.decompressByteArray(null));
+        assertArrayEquals(new byte[0], StreamUtil.decompressByteArray(new byte[0]));
+        String originalString = "Another compression test string. ".repeat(200);
+        byte[] original = originalString.getBytes(StandardCharsets.UTF_8);
+        byte[] compressed = StreamUtil.compressByteArray(original);
+        byte[] decompressed = StreamUtil.decompressByteArray(compressed);
+        assertNotNull(decompressed);
+        assertArrayEquals(original, decompressed);
+    }
 
     @Test
     public void testInputStreamToString() throws Exception {

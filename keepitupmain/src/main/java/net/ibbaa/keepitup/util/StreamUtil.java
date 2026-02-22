@@ -18,17 +18,48 @@ package net.ibbaa.keepitup.util;
 
 import net.ibbaa.keepitup.logging.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class StreamUtil {
 
     private static final int BUFFER_SIZE_1024 = 1024;
     private static final int BUFFER_SIZE_4096 = 4096;
     private static final int PART_SIZE = 1024 * 1024 * 10;
+
+    public static byte[] compressByteArray(byte[] input) throws Exception {
+        if (input == null || input.length == 0) {
+            return new byte[0];
+        }
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzipStream = new GZIPOutputStream(byteStream)) {
+            gzipStream.write(input);
+        }
+        return byteStream.toByteArray();
+    }
+
+    public static byte[] decompressByteArray(byte[] input) throws Exception {
+        if (input == null || input.length == 0) {
+            return new byte[0];
+        }
+        ByteArrayInputStream byteInput = new ByteArrayInputStream(input);
+        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+        try (GZIPInputStream gzipInput = new GZIPInputStream(byteInput)) {
+            byte[] buffer = new byte[BUFFER_SIZE_4096];
+            int len;
+            while ((len = gzipInput.read(buffer)) > 0) {
+                byteOutput.write(buffer, 0, len);
+            }
+        }
+        return byteOutput.toByteArray();
+    }
 
     public static String inputStreamToString(InputStream stream, Charset charset) throws Exception {
         Log.d(StreamUtil.class.getName(), "inputStreamToString");

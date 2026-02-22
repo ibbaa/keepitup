@@ -103,14 +103,14 @@ public class CipherManagerTest {
         CipherManager.EncryptionResult result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertTrue(result.success());
         assertEquals("Encryption successful", result.message());
-        assertEquals("OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==", result.ciphertext());
+        assertEquals("Vgc+SaNGsEwvRGKmbjEsHWN9YKHfPMHpgEwwNt6uyyruN7gzS4s0Cy0EqdUi", result.ciphertext());
     }
 
     @Test
     public void testDecrypt() {
         argon2Param.put("salt", createTestArgon2Salt());
         aesParam.put("iv", createTestAESIV());
-        CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "password", "aad", "OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==");
+        CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "password", "aad", "Vgc+SaNGsEwvRGKmbjEsHWN9YKHfPMHpgEwwNt6uyyruN7gzS4s0Cy0EqdUi");
         assertTrue(result.success());
         assertEquals("Decryption successful", result.message());
         assertEquals("plaintext", result.plaintext());
