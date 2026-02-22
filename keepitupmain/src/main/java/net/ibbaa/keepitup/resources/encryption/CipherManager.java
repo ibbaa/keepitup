@@ -89,7 +89,7 @@ public class CipherManager {
             return new DecryptionResult(false, failureMessage, "");
         } catch (Exception exc) {
             Log.e(CipherManager.class.getName(), "Exception during aes encryption", exc);
-            String failureMessage = getResources().getString(R.string.aes_decryption_wrong_password_or_file_corrupt);
+            String failureMessage = getResources().getString(R.string.aes_decryption_failed);
             return new DecryptionResult(false, failureMessage, "");
         }
     }

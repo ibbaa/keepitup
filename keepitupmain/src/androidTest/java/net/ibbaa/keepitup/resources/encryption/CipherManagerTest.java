@@ -68,19 +68,19 @@ public class CipherManagerTest {
         argon2Param.put("algorithm", algorithmData.getDefaultKDF().getName());
         CipherManager.EncryptionResult result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertFalse(result.success());
-        assertEquals("Key derivation with Argon2id failed.", result.message());
+        assertEquals("Key derivation failed.", result.message());
         argon2Param.put("memorycost", "65536");
         result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertFalse(result.success());
-        assertEquals("Key derivation with Argon2id failed.", result.message());
+        assertEquals("Key derivation failed.", result.message());
         argon2Param.put("iterations", "3");
         result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertFalse(result.success());
-        assertEquals("Key derivation with Argon2id failed.", result.message());
+        assertEquals("Key derivation failed.", result.message());
         argon2Param.put("parallelism", "2");
         result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertFalse(result.success());
-        assertEquals("Key derivation with Argon2id failed.", result.message());
+        assertEquals("Key derivation failed.", result.message());
     }
 
     @Test
@@ -89,11 +89,11 @@ public class CipherManagerTest {
         aesParam.put("algorithm", algorithmData.getDefaultCipher().getName());
         CipherManager.EncryptionResult result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertFalse(result.success());
-        assertEquals("Encryption with AES256 failed.", result.message());
+        assertEquals("Encryption failed.", result.message());
         aesParam.put("taglength", "128");
         result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
         assertFalse(result.success());
-        assertEquals("Encryption with AES256 failed.", result.message());
+        assertEquals("Encryption failed.", result.message());
     }
 
     @Test

@@ -69,7 +69,7 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully exported database: " + dbData);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error exporting database", exc);
-            return new SystemSetupResult(false, false, exc.getMessage(), root.toString());
+            return new SystemSetupResult(false, "", root.toString());
         }
         try {
             JSONObject settings = exportSettings();
@@ -77,9 +77,9 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully exported settings: " + settings);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error exporting settings", exc);
-            return new SystemSetupResult(false, false, exc.getMessage(), root.toString());
+            return new SystemSetupResult(false, "", root.toString());
         }
-        return new SystemSetupResult(true, false, "Successful export", root.toString());
+        return new SystemSetupResult(true, "Successful export", root.toString());
     }
 
     public SystemSetupResult importData(String data) {
@@ -89,11 +89,11 @@ public class JSONSystemSetup {
             root = new JSONObject(data);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing data", exc);
-            return new SystemSetupResult(false, false, exc.getMessage(), data);
+            return new SystemSetupResult(false, "", data);
         }
         if (isFileVersionHigherThanCurrentVersion(root)) {
             Log.e(JSONSystemSetup.class.getName(), "Version mismatch on import");
-            return new SystemSetupResult(false, true, "Version mismatch on import", data);
+            return new SystemSetupResult(false, getResources().getString(R.string.text_dialog_general_message_config_import_version_mismatch), data);
         }
         String dbKey = getResources().getString(R.string.database_json_key);
         String settingsKey = getResources().getString(R.string.preferences_json_key);
@@ -106,7 +106,7 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully imported database.");
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing database", exc);
-            return new SystemSetupResult(false, false, exc.getMessage(), data);
+            return new SystemSetupResult(false, "", data);
         }
         try {
             int dbVersionInFile = getJSONDbVersion(root);
@@ -116,9 +116,9 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully imported settings.");
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing settings", exc);
-            return new SystemSetupResult(false, false, exc.getMessage(), data);
+            return new SystemSetupResult(false, "", data);
         }
-        return new SystemSetupResult(true, false, "Successful import", data);
+        return new SystemSetupResult(true, "Successful import", data);
     }
 
     public SystemSetupResult checkImportPossible(String data) {
@@ -126,15 +126,18 @@ public class JSONSystemSetup {
         JSONObject root;
         try {
             root = new JSONObject(data);
+        } catch (JSONException exc) {
+            Log.e(JSONSystemSetup.class.getName(), "Error on checking import data", exc);
+            return new SystemSetupResult(false, getResources().getString(R.string.text_dialog_general_message_config_import_json_invalid), data);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error on checking import data", exc);
-            return new SystemSetupResult(false, false, exc.getMessage(), data);
+            return new SystemSetupResult(false, getResources().getString(R.string.text_dialog_general_message_config_import_check), data);
         }
         if (isFileVersionHigherThanCurrentVersion(root)) {
             Log.e(JSONSystemSetup.class.getName(), "Version mismatch on import");
-            return new SystemSetupResult(false, true, "Version mismatch on import", data);
+            return new SystemSetupResult(false, getResources().getString(R.string.text_dialog_general_message_config_import_version_mismatch), data);
         }
-        return new SystemSetupResult(true, false, "Import possible", data);
+        return new SystemSetupResult(true, "Import possible", data);
     }
 
     private boolean isFileVersionHigherThanCurrentVersion(JSONObject root) {

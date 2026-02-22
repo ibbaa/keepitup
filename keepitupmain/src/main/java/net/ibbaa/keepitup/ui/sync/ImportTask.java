@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.util.StreamUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
@@ -65,21 +66,21 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
             if (context != null) {
                 SystemSetupResult decryptResult = doDecrypt(context);
                 if (!decryptResult.success()) {
-                    return new SystemSetupResult(false, false, decryptResult.message(), "");
+                    return decryptResult;
                 }
                 SystemSetupResult checkResult = doImportCheck(context, decryptResult.data());
                 if (!checkResult.success()) {
                     return checkResult;
                 }
                 if (!doPurge(context)) {
-                    return new SystemSetupResult(false, false, "", "");
+                    return new SystemSetupResult(false, "", "");
                 }
                 return doImport(context, checkResult.data());
             }
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error exporting database", exc);
         }
-        return new SystemSetupResult(false, false, "", "");
+        return new SystemSetupResult(false, "", "");
     }
 
     private boolean doPurge(Context context) throws Exception {
@@ -109,7 +110,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 DocumentFile documentFile = getDocumentManager().getFile(file);
                 if (documentFile == null) {
                     Log.e(ImportTask.class.getName(), "Error accessing file uri " + file);
-                    return new SystemSetupResult(false, false, "", "");
+                    return new SystemSetupResult(false, "", "");
                 }
                 fileDescriptor = getImportFileDescriptor(documentFile);
                 stream = getImportFileInputStream(fileDescriptor);
@@ -122,11 +123,19 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 JSONEncryptSetup encryptSetup = new JSONEncryptSetup(context);
                 EncryptionSetupResult encryptionResult = encryptSetup.decrypt(encryptionInfo.getPassword(), data);
                 if (!encryptionResult.success()) {
-                    return new SystemSetupResult(false, false, encryptionResult.message(), "");
+                    return new SystemSetupResult(false, encryptionResult.message(), "");
                 }
                 data = encryptionResult.data();
             }
-            return new SystemSetupResult(true, false, "", data);
+            return new SystemSetupResult(true, "", data);
+        } catch (FileNotFoundException exc) {
+            Log.d(ImportTask.class.getName(), "File does not exist " + file, exc);
+            String failureMessage = context.getResources().getString(R.string.text_dialog_general_message_config_import_file_not_found);
+            return new SystemSetupResult(false, failureMessage, "");
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error opening " + file, exc);
+            String failureMessage = context.getResources().getString(R.string.text_dialog_general_message_config_import_check);
+            return new SystemSetupResult(false, failureMessage, "");
         } finally {
             if (stream != null) {
                 try {
@@ -149,7 +158,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         Log.d(ImportTask.class.getName(), "doImportCheck");
         JSONSystemSetup setup = new JSONSystemSetup(context);
         SystemSetupResult result = setup.checkImportPossible(data);
-        return new SystemSetupResult(result.success(), result.versionMismatch(), result.message(), data);
+        return new SystemSetupResult(result.success(), result.message(), data);
     }
 
     private boolean purgeTables(Context context) {
@@ -239,13 +248,12 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
     protected void runOnUIThread(SystemSetupResult result) {
         Log.d(ImportTask.class.getName(), "runOnUIThread, result is " + result);
         if (result == null) {
-            result = new SystemSetupResult(false, false, "", "");
+            result = new SystemSetupResult(false, "", "");
         }
         Activity activity = getActivity();
         if (activity != null && !activity.isDestroyed()) {
             if (activity instanceof ImportSupport) {
-                String message = result.versionMismatch() ? getActivity().getResources().getString(R.string.text_dialog_general_message_config_import_version_mismatch) : null;
-                ((ImportSupport) activity).onImportDone(result.success(), message);
+                ((ImportSupport) activity).onImportDone(result.success(), result.message());
             }
         }
     }

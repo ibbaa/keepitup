@@ -4204,7 +4204,7 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     private MockExportTask getMockExportTask(boolean success) {
-        return new MockExportTask(getActivity(activityScenario),  new SystemSetupResult(success, false, "", ""));
+        return new MockExportTask(getActivity(activityScenario), new SystemSetupResult(success, "", ""));
     }
 
     private MockImportTask getMockImportTask(boolean success) {
@@ -4212,7 +4212,11 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     private MockImportTask getMockImportTask(boolean success, boolean mismatch) {
-        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, mismatch, "", ""));
+        String message = "";
+        if (mismatch) {
+            message = TestRegistry.getContext().getResources().getString(R.string.text_dialog_general_message_config_import_version_mismatch);
+        }
+        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, message, ""));
     }
 
     private MockDBPurgeTask getMockDBPurgeTask(boolean success) {

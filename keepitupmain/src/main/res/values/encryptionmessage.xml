@@ -16,9 +16,9 @@
 
 <resources>
     <string name="unsupported_algorithm_message">Unsupported %1$s algorithm: %2$s.</string>
-    <string name="argon2_key_derivation_failed">Key derivation with Argon2id failed.</string>
-    <string name="aes_encryption_failed">Encryption with AES256 failed.</string>
-    <string name="aes_decryption_failed">Decryption with AES256 failed.</string>
+    <string name="argon2_key_derivation_failed">Key derivation failed.</string>
+    <string name="aes_encryption_failed">Encryption failed.</string>
+    <string name="aes_decryption_failed">Decryption failed.</string>
     <string name="aes_decryption_wrong_password_or_file_corrupt">Decryption failed. The password is incorrect or the file has been modified or damaged.</string>
     <string name="encryption_success">Encryption successful</string>
     <string name="decryption_success">Decryption successful</string>

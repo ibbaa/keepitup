@@ -647,11 +647,11 @@ public class SAFSystemActivityMockTest extends BaseUITest {
     }
 
     private MockExportTask getMockExportTask(ActivityScenario<?> activityScenario, boolean success) {
-        return new MockExportTask(getActivity(activityScenario), new SystemSetupResult(success, false, "", ""));
+        return new MockExportTask(getActivity(activityScenario), new SystemSetupResult(success, "", ""));
     }
 
     private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success) {
-        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, false, "", ""));
+        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, "", ""));
     }
 
     private void injectImportTask(ActivityScenario<?> activityScenario, ImportTask importTask) {

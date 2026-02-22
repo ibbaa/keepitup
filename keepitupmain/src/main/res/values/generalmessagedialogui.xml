@@ -32,6 +32,9 @@
     <string name="text_dialog_general_message_file_access">Fatal file error.</string>
     <string name="text_dialog_general_message_db_purge">An error occurred resetting the configuration. Please try to delete the app data from the Android settings.</string>
     <string name="text_dialog_general_message_config_import">An error occurred importing the configuration. Some settings may have been imported.</string>
+    <string name="text_dialog_general_message_config_import_check">An error occurred importing the configuration. Import not possible.</string>
+    <string name="text_dialog_general_message_config_import_json_invalid">The requested file is invalid.</string>
+    <string name="text_dialog_general_message_config_import_file_not_found">The requested file does not exist.</string>
     <string name="text_dialog_general_message_config_import_version_mismatch">Version mismatch. The imported file has been created with a newer version. Import not possible.</string>
     <string name="text_dialog_general_message_config_export">An error occurred exporting the configuration.</string>
     <string name="text_dialog_general_message_synchronize_intervals">Fatal error synchronizing suspension intervals with database.</string>

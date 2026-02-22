@@ -375,7 +375,7 @@ public class JSONSystemSetupTest {
         jsonData.put("dbversion", version + 1);
         SystemSetupResult importResult = setup.importData(jsonData.toString());
         assertFalse(importResult.success());
-        assertTrue(importResult.versionMismatch());
+        assertEquals("Version mismatch. The imported file has been created with a newer version. Import not possible.", importResult.message());
     }
 
     @Test
@@ -387,22 +387,15 @@ public class JSONSystemSetupTest {
         jsonData.put("version", version + 1);
         SystemSetupResult importResult = setup.importData(jsonData.toString());
         assertFalse(importResult.success());
-        assertTrue(importResult.versionMismatch());
+        assertEquals("Version mismatch. The imported file has been created with a newer version. Import not possible.", importResult.message());
     }
 
     @Test
-    public void testCheckImportPossible() throws Exception {
+    public void testInvalidJSON() {
         networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        SystemSetupResult exportResult = setup.exportData();
-        JSONObject jsonData = new JSONObject(exportResult.data());
-        int version = jsonData.getInt("dbversion");
-        jsonData.put("dbversion", version + 1);
-        SystemSetupResult importResult = setup.checkImportPossible(jsonData.toString());
+        SystemSetupResult importResult = setup.checkImportPossible("wrong");
         assertFalse(importResult.success());
-        assertTrue(importResult.versionMismatch());
-        importResult = setup.checkImportPossible("wrong");
-        assertFalse(importResult.success());
-        assertFalse(importResult.versionMismatch());
+        assertEquals("The requested file is invalid.", importResult.message());
     }
 
     @Test

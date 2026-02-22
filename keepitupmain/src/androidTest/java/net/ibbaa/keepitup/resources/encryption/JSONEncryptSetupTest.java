@@ -114,7 +114,7 @@ public class JSONEncryptSetupTest {
         kdfObject.remove("memorycost");
         EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
         assertFalse(decryptResult.success());
-        assertEquals("Key derivation with Argon2id failed.", decryptResult.message());
+        assertEquals("Key derivation failed.", decryptResult.message());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class JSONEncryptSetupTest {
         cipherObject.remove("taglength");
         EncryptionSetupResult decryptResult = encryptSetup.decrypt(password, jsonObject.toString());
         assertFalse(decryptResult.success());
-        assertEquals("Decryption with AES256 failed.", decryptResult.message());
+        assertEquals("Decryption failed.", decryptResult.message());
     }
 
     @Test

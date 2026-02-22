@@ -72,7 +72,7 @@ public class ExportTask extends UIBackgroundTask<SystemSetupResult> {
                         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(context);
                         EncryptionSetupResult encryptionResult = encryptSetup.encrypt(encryptionInfo.getPassword(), fileData);
                         if (!encryptionResult.success()) {
-                            return new SystemSetupResult(false, false, encryptionResult.message(), "");
+                            return new SystemSetupResult(false, encryptionResult.message(), "");
                         }
                         fileData = encryptionResult.data();
                     }
@@ -80,7 +80,7 @@ public class ExportTask extends UIBackgroundTask<SystemSetupResult> {
                         DocumentFile documentFile = getDocumentManager().getFile(file);
                         if (documentFile == null) {
                             Log.e(ExportTask.class.getName(), "Error accessing file uri " + file);
-                            return new SystemSetupResult(false, false, "", "");
+                            return new SystemSetupResult(false, "", "");
                         }
                         fileDescriptor = getExportFileDescriptor(documentFile);
                         stream = getExportFileOutputStream(fileDescriptor);
@@ -112,14 +112,14 @@ public class ExportTask extends UIBackgroundTask<SystemSetupResult> {
                 }
             }
         }
-        return new SystemSetupResult(false, false, "", "");
+        return new SystemSetupResult(false, "", "");
     }
 
     @Override
     protected void runOnUIThread(SystemSetupResult result) {
         Log.d(ExportTask.class.getName(), "runOnUIThread, result is " + result);
         if (result == null) {
-            result = new SystemSetupResult(false, false, "", "");
+            result = new SystemSetupResult(false, "", "");
         }
         Activity activity = getActivity();
         if (activity != null && !activity.isDestroyed()) {

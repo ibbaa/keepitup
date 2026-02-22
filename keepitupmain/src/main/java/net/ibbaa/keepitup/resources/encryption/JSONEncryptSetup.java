@@ -76,7 +76,8 @@ public class JSONEncryptSetup {
 
         } catch (Exception exc) {
             Log.e(JSONEncryptSetup.class.getName(), "Encryption failed", exc);
-            return new EncryptionSetupResult(false, exc.getMessage(), "");
+            String failureMessage = getResources().getString(R.string.aes_encryption_failed);
+            return new EncryptionSetupResult(false, failureMessage, "");
         }
     }
 
@@ -101,7 +102,8 @@ public class JSONEncryptSetup {
 
         } catch (Exception exc) {
             Log.e(JSONEncryptSetup.class.getName(), "Decryption failed", exc);
-            return new EncryptionSetupResult(false, exc.getMessage(), "");
+            String failureMessage = getResources().getString(R.string.aes_decryption_failed);
+            return new EncryptionSetupResult(false, failureMessage, "");
         }
     }
 
