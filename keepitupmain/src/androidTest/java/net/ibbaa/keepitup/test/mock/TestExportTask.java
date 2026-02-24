@@ -16,14 +16,16 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.model.EncryptionInfo;
+import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
+import net.ibbaa.keepitup.ui.sync.UITaskResultDispatcher;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,8 +35,8 @@ public class TestExportTask extends ExportTask {
     private FileOutputStream outputStream;
     private IDocumentManager documentManager;
 
-    public TestExportTask(Activity activity, File exportFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
-        super(activity, exportFolder, file, encryptionInfo, useDocumentApi);
+    public TestExportTask(UITaskResultDispatcher<SystemSetupResult> dispatcher, Context context, File exportFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
+        super(dispatcher, context, exportFolder, file, encryptionInfo, useDocumentApi);
     }
 
     @Override

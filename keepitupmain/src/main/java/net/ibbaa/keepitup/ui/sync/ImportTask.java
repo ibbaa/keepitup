@@ -16,8 +16,8 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
@@ -33,7 +33,6 @@ import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
 import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
-import net.ibbaa.keepitup.ui.support.ImportSupport;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import java.io.File;
@@ -43,15 +42,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
-public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
+public class ImportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
 
+    private final Context context;
     private final File importFolder;
     private final String file;
     private final EncryptionInfo encryptionInfo;
     private final boolean useDocumentApi;
 
-    public ImportTask(Activity activity, File importFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
-        super(activity);
+    public ImportTask(UITaskResultDispatcher<SystemSetupResult> dispatcher, Context context, File importFolder, String file, EncryptionInfo encryptionInfo, boolean useDocumentApi) {
+        super(dispatcher);
+        this.context = context;
         this.importFolder = importFolder;
         this.file = file;
         this.encryptionInfo = encryptionInfo;
@@ -62,21 +63,18 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
     protected SystemSetupResult runInBackground() {
         Log.d(ImportTask.class.getName(), "runInBackground");
         try {
-            Context context = getActivity();
-            if (context != null) {
-                SystemSetupResult decryptResult = doDecrypt(context);
-                if (!decryptResult.success()) {
-                    return decryptResult;
-                }
-                SystemSetupResult checkResult = doImportCheck(context, decryptResult.data());
-                if (!checkResult.success()) {
-                    return checkResult;
-                }
-                if (!doPurge(context)) {
-                    return new SystemSetupResult(false, "", "");
-                }
-                return doImport(context, checkResult.data());
+            SystemSetupResult decryptResult = doDecrypt(getContext());
+            if (!decryptResult.success()) {
+                return decryptResult;
             }
+            SystemSetupResult checkResult = doImportCheck(decryptResult.data());
+            if (!checkResult.success()) {
+                return checkResult;
+            }
+            if (!doPurge(getContext())) {
+                return new SystemSetupResult(false, "", "");
+            }
+            return doImport(getContext(), checkResult.data());
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error exporting database", exc);
         }
@@ -85,8 +83,8 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
 
     private boolean doPurge(Context context) throws Exception {
         Log.d(ImportTask.class.getName(), "doPurge");
-        int deleteTableRetry = context.getResources().getInteger(R.integer.delete_table_retry_count);
-        int deleteTableTimeout = context.getResources().getInteger(R.integer.delete_table_timeout);
+        int deleteTableRetry = getResources().getInteger(R.integer.delete_table_retry_count);
+        int deleteTableTimeout = getResources().getInteger(R.integer.delete_table_timeout);
         while (deleteTableRetry > 0) {
             boolean deleteSuccess = purgeTables(context);
             if (!deleteSuccess) {
@@ -130,11 +128,11 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
             return new SystemSetupResult(true, "", data);
         } catch (FileNotFoundException exc) {
             Log.d(ImportTask.class.getName(), "File does not exist " + file, exc);
-            String failureMessage = context.getResources().getString(R.string.text_dialog_general_message_config_import_file_not_found);
+            String failureMessage = getResources().getString(R.string.text_dialog_general_message_config_import_file_not_found);
             return new SystemSetupResult(false, failureMessage, "");
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error opening " + file, exc);
-            String failureMessage = context.getResources().getString(R.string.text_dialog_general_message_config_import_check);
+            String failureMessage = getResources().getString(R.string.text_dialog_general_message_config_import_check);
             return new SystemSetupResult(false, failureMessage, "");
         } finally {
             if (stream != null) {
@@ -154,9 +152,9 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         }
     }
 
-    private SystemSetupResult doImportCheck(Context context, String data) throws Exception {
+    private SystemSetupResult doImportCheck(String data) throws Exception {
         Log.d(ImportTask.class.getName(), "doImportCheck");
-        JSONSystemSetup setup = new JSONSystemSetup(context);
+        JSONSystemSetup setup = new JSONSystemSetup(getContext());
         SystemSetupResult result = setup.checkImportPossible(data);
         return new SystemSetupResult(result.success(), result.message(), data);
     }
@@ -244,29 +242,23 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         return result;
     }
 
-    @Override
-    protected void runOnUIThread(SystemSetupResult result) {
-        Log.d(ImportTask.class.getName(), "runOnUIThread, result is " + result);
-        if (result == null) {
-            result = new SystemSetupResult(false, "", "");
-        }
-        Activity activity = getActivity();
-        if (activity != null && !activity.isDestroyed()) {
-            if (activity instanceof ImportSupport) {
-                ((ImportSupport) activity).onImportDone(result.success(), result.message());
-            }
-        }
-    }
-
     protected IDocumentManager getDocumentManager() {
-        return new SystemDocumentManager(getActivity());
+        return new SystemDocumentManager(getContext());
     }
 
     protected ParcelFileDescriptor getImportFileDescriptor(DocumentFile documentFile) throws IOException {
-        return getActivity().getContentResolver().openFileDescriptor(documentFile.getUri(), "r");
+        return getContext().getContentResolver().openFileDescriptor(documentFile.getUri(), "r");
     }
 
     protected FileInputStream getImportFileInputStream(ParcelFileDescriptor documentFileDescriptor) {
         return new FileInputStream(documentFileDescriptor.getFileDescriptor());
+    }
+
+    private Context getContext() {
+        return context;
+    }
+
+    private Resources getResources() {
+        return getContext().getResources();
     }
 }

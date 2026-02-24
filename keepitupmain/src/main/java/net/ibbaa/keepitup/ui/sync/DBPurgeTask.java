@@ -16,54 +16,54 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.support.DBPurgeSupport;
 
 import java.util.concurrent.TimeUnit;
 
-public class DBPurgeTask extends UIBackgroundTask<Boolean> {
+public class DBPurgeTask extends UIDispatchBackgroundTask<Boolean> {
 
-    public DBPurgeTask(Activity activity) {
-        super(activity);
+    private final Context context;
+
+    public DBPurgeTask(UITaskResultDispatcher<Boolean> dispatcher, Context context) {
+        super(dispatcher);
+        this.context = context;
     }
 
     @Override
     protected Boolean runInBackground() {
         Log.d(DBPurgeTask.class.getName(), "runInBackground");
         try {
-            Context context = getActivity();
-            if (context != null) {
-                DBSetup setup = new DBSetup(context);
-                int dropTableRetry = context.getResources().getInteger(R.integer.drop_table_retry_count);
-                int dropTableTimeout = context.getResources().getInteger(R.integer.drop_table_timeout);
-                while (dropTableRetry > 0) {
-                    boolean dropSuccess = purgeTables(setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable, setup::recreateIntervalTable, setup::recreateSchedulerStateTable, setup::recreateAccessTypeDataTable, setup::recreateResolveTable, setup::recreateHeaderTable);
-                    if (!dropSuccess) {
-                        TimeUnit.MILLISECONDS.sleep(dropTableTimeout);
-                    } else {
-                        return true;
-                    }
-                    dropTableRetry--;
+            DBSetup setup = new DBSetup(getContext());
+            int dropTableRetry = getResources().getInteger(R.integer.drop_table_retry_count);
+            int dropTableTimeout = getResources().getInteger(R.integer.drop_table_timeout);
+            while (dropTableRetry > 0) {
+                boolean dropSuccess = purgeTables(setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable, setup::recreateIntervalTable, setup::recreateSchedulerStateTable, setup::recreateAccessTypeDataTable, setup::recreateResolveTable, setup::recreateHeaderTable);
+                if (!dropSuccess) {
+                    TimeUnit.MILLISECONDS.sleep(dropTableTimeout);
+                } else {
+                    return true;
                 }
-                Log.d(DBPurgeTask.class.getName(), "Dropping the tables was not successful");
-                int deleteTableRetry = context.getResources().getInteger(R.integer.delete_table_retry_count);
-                int deleteTableTimeout = context.getResources().getInteger(R.integer.delete_table_timeout);
-                while (deleteTableRetry > 0) {
-                    boolean deleteSuccess = purgeTables(setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds, setup::deleteAllIntervals, setup::recreateSchedulerStateTable, setup::deleteAllAccessTypeData, setup::deleteAllResolve, setup::recreateHeaderTable);
-                    if (!deleteSuccess) {
-                        TimeUnit.MILLISECONDS.sleep(deleteTableTimeout);
-                    } else {
-                        return true;
-                    }
-                    deleteTableRetry--;
-                }
-                Log.d(DBPurgeTask.class.getName(), "Deleting the tables was not successful");
+                dropTableRetry--;
             }
+            Log.d(DBPurgeTask.class.getName(), "Dropping the tables was not successful");
+            int deleteTableRetry = getResources().getInteger(R.integer.delete_table_retry_count);
+            int deleteTableTimeout = getResources().getInteger(R.integer.delete_table_timeout);
+            while (deleteTableRetry > 0) {
+                boolean deleteSuccess = purgeTables(setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds, setup::deleteAllIntervals, setup::recreateSchedulerStateTable, setup::deleteAllAccessTypeData, setup::deleteAllResolve, setup::recreateHeaderTable);
+                if (!deleteSuccess) {
+                    TimeUnit.MILLISECONDS.sleep(deleteTableTimeout);
+                } else {
+                    return true;
+                }
+                deleteTableRetry--;
+            }
+            Log.d(DBPurgeTask.class.getName(), "Deleting the tables was not successful");
+
         } catch (Exception exc) {
             Log.e(DBPurgeTask.class.getName(), "Error purging database", exc);
         }
@@ -145,18 +145,12 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess && headerTableSuccess;
     }
 
-    @Override
-    protected void runOnUIThread(Boolean success) {
-        Log.d(DBPurgeTask.class.getName(), "runOnUIThread, success is " + success);
-        if (success == null) {
-            success = false;
-        }
-        Activity activity = getActivity();
-        if (activity != null && !activity.isDestroyed()) {
-            if (activity instanceof DBPurgeSupport) {
-                ((DBPurgeSupport) activity).onPurgeDone(success);
-            }
-        }
+    private Context getContext() {
+        return context;
+    }
+
+    private Resources getResources() {
+        return getContext().getResources();
     }
 
     @FunctionalInterface

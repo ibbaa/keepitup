@@ -340,7 +340,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         injectMocks(activityScenario);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
-        TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), true);
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        TestExportTask task = new TestExportTask(activity.getTaskViewModel().getExportDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), true);
         task.setOutputStream(new FileOutputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -499,7 +500,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         storagePermissionManager.setGrantedFolder("/Test");
         injectImportFileLauncher(activityScenario, "/Test/test.json");
         storagePermissionManager.setGrantedOpenFile("/Test/test.json");
-        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), true);
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        TestImportTask task = new TestImportTask(activity.getTaskViewModel().getImportDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), true);
         task.setInputStream(new FileInputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -647,11 +649,13 @@ public class SAFSystemActivityMockTest extends BaseUITest {
     }
 
     private MockExportTask getMockExportTask(ActivityScenario<?> activityScenario, boolean success) {
-        return new MockExportTask(getActivity(activityScenario), new SystemSetupResult(success, "", ""));
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        return new MockExportTask(activity.getTaskViewModel().getImportDispatcher(), TestRegistry.getContext(), new SystemSetupResult(success, "", ""));
     }
 
     private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success) {
-        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, "", ""));
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        return new MockImportTask(activity.getTaskViewModel().getImportDispatcher(), TestRegistry.getContext(), new SystemSetupResult(success, "", ""));
     }
 
     private void injectImportTask(ActivityScenario<?> activityScenario, ImportTask importTask) {

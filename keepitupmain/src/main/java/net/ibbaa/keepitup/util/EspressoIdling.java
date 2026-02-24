@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui.support;
+package net.ibbaa.keepitup.util;
 
-public interface DBPurgeSupport {
-
-    void onPurgeDone(boolean success);
+public class EspressoIdling {
 }

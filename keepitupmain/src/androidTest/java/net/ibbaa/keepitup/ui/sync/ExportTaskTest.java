@@ -43,7 +43,7 @@ import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.TestExportTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+import net.ibbaa.keepitup.ui.SystemActivity;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import org.junit.After;
@@ -67,7 +67,7 @@ public class ExportTaskTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        activityScenario = launchSettingsInputActivity(SystemActivity.class);
     }
 
     @After
@@ -133,7 +133,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
-        ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
+        ExportTask task = new ExportTask(getExportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), false);
         SystemSetupResult result = task.runInBackground();
         assertTrue(result.success());
         File writtenFile = new File(folder, "test.json");
@@ -302,7 +302,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
-        ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(true, "password123"), false);
+        ExportTask task = new ExportTask(getExportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(true, "password123"), false);
         SystemSetupResult result = task.runInBackground();
         assertTrue(result.success());
         File writtenFile = new File(folder, "test.json");
@@ -474,7 +474,8 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
-        TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(true, "password123"), true);
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        TestExportTask task = new TestExportTask(activity.getTaskViewModel().getExportDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(true, "password123"), true);
         task.setOutputStream(new FileOutputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -770,5 +771,10 @@ public class ExportTaskTest extends BaseUITest {
         header.setName("aname");
         header.setValue("value");
         return header;
+    }
+
+    private UITaskResultDispatcher<SystemSetupResult> getExportResultDispatcher() {
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        return activity.getTaskViewModel().getExportDispatcher();
     }
 }

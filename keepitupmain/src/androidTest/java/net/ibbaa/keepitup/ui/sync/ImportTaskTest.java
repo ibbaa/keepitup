@@ -44,7 +44,7 @@ import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.TestImportTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+import net.ibbaa.keepitup.ui.SystemActivity;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import org.junit.After;
@@ -68,7 +68,7 @@ public class ImportTaskTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        activityScenario = launchSettingsInputActivity(SystemActivity.class);
     }
 
     @After
@@ -147,7 +147,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
         stream.close();
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
+        ImportTask task = new ImportTask(getImportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), false);
         result = task.runInBackground();
         assertTrue(result.success());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -315,7 +315,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptResult.data(), stream, StandardCharsets.UTF_8);
         stream.close();
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(true, "password123"), false);
+        ImportTask task = new ImportTask(getImportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(true, "password123"), false);
         result = task.runInBackground();
         assertTrue(result.success());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -483,7 +483,8 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(file);
         StreamUtil.stringToOutputStream(encryptResult.data(), stream, StandardCharsets.UTF_8);
         stream.close();
-        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(true, "password123"), true);
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        TestImportTask task = new TestImportTask(activity.getTaskViewModel().getImportDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(true, "password123"), true);
         task.setInputStream(new FileInputStream(file));
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
@@ -630,7 +631,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream("Failure", stream, StandardCharsets.UTF_8);
         stream.close();
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
+        ImportTask task = new ImportTask(getImportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), false);
         SystemSetupResult result = task.runInBackground();
         assertFalse(result.success());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -681,7 +682,7 @@ public class ImportTaskTest extends BaseUITest {
     @Test
     public void testFileError() throws Exception {
         File folder = getFileManager().getExternalRootDirectory(0);
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(), false);
+        ImportTask task = new ImportTask(getImportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), false);
         SystemSetupResult result = task.runInBackground();
         assertFalse(result.success());
         assertEquals("The requested file does not exist.", result.message());
@@ -704,7 +705,7 @@ public class ImportTaskTest extends BaseUITest {
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptResult.data(), stream, StandardCharsets.UTF_8);
         stream.close();
-        ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", getEncryptionInfo(true, "passwordwrong"), false);
+        ImportTask task = new ImportTask(getImportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(true, "passwordwrong"), false);
         result = task.runInBackground();
         assertFalse(result.success());
         assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", result.message());
@@ -890,5 +891,10 @@ public class ImportTaskTest extends BaseUITest {
         header.setName("aname");
         header.setValue("value");
         return header;
+    }
+
+    private UITaskResultDispatcher<SystemSetupResult> getImportResultDispatcher() {
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        return activity.getTaskViewModel().getImportDispatcher();
     }
 }

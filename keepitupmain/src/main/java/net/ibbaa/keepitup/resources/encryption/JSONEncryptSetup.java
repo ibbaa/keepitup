@@ -99,12 +99,25 @@ public class JSONEncryptSetup {
             }
             Log.d(JSONEncryptSetup.class.getName(), "Decryption successful");
             return new EncryptionSetupResult(true, result.message(), result.plaintext());
-
         } catch (Exception exc) {
             Log.e(JSONEncryptSetup.class.getName(), "Decryption failed", exc);
             String failureMessage = getResources().getString(R.string.aes_decryption_failed);
             return new EncryptionSetupResult(false, failureMessage, "");
         }
+    }
+
+    public boolean isEncryptedFormat(String data) {
+        Log.d(JSONEncryptSetup.class.getName(), "isEncryptedFormat");
+        try {
+            JSONObject root = new JSONObject(data);
+            String formatKey = getResources().getString(R.string.format_json_key);
+            String encryptedFormat = getResources().getString(R.string.format_encrypted);
+            Object formatValue = root.opt(formatKey);
+            return formatValue != null && formatValue.toString().equals(encryptedFormat);
+        } catch (Exception exc) {
+            Log.e(JSONEncryptSetup.class.getName(), "Encryption check failed", exc);
+        }
+        return false;
     }
 
     private String getAad(Map<String, String> globalParams, Map<String, String> kdfParams, Map<String, String> cipherParams) {

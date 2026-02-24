@@ -16,11 +16,12 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import android.app.Activity;
+import android.content.Context;
 
 import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
+import net.ibbaa.keepitup.ui.sync.UITaskResultDispatcher;
 
 import java.io.File;
 
@@ -28,8 +29,8 @@ public class MockImportTask extends ImportTask {
 
     private final SystemSetupResult result;
 
-    public MockImportTask(Activity activity, SystemSetupResult result) {
-        super(activity, new File(""), "", new EncryptionInfo(), false);
+    public MockImportTask(UITaskResultDispatcher<SystemSetupResult> dispatcher, Context context, SystemSetupResult result) {
+        super(dispatcher, context, new File(""), "", new EncryptionInfo(), false);
         this.result = result;
     }
 

@@ -145,4 +145,14 @@ public class JSONEncryptSetupTest {
         assertFalse(decryptResult.success());
         assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
     }
+
+    @Test
+    public void testIsEncryptedFormat() throws Exception {
+        JSONObject root = new JSONObject();
+        assertFalse(encryptSetup.isEncryptedFormat(root.toString()));
+        root.put("format", "xyz");
+        assertFalse(encryptSetup.isEncryptedFormat(root.toString()));
+        root.put("format", "encrypted-json");
+        assertTrue(encryptSetup.isEncryptedFormat(root.toString()));
+    }
 }

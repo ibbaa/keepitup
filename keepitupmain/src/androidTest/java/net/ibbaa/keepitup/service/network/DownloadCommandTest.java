@@ -1452,10 +1452,10 @@ public class DownloadCommandTest {
         return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
     }
 
-    private DownloadCommand.ConnectToAddress getConnectToAddress(String address, int port, InetAddress inetAddress) {
+    private net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress getConnectToAddress(String address, int port, InetAddress inetAddress) {
         Resolve resolve = new Resolve();
         resolve.setTargetAddress(address);
         resolve.setTargetPort(port);
-        return new DownloadCommand.ConnectToAddress(resolve, inetAddress);
+        return new net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress(resolve, inetAddress);
     }
 }

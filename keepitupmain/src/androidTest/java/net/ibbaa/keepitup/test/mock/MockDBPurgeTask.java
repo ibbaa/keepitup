@@ -16,16 +16,17 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import android.app.Activity;
+import android.content.Context;
 
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
+import net.ibbaa.keepitup.ui.sync.UITaskResultDispatcher;
 
 public class MockDBPurgeTask extends DBPurgeTask {
 
     private final boolean result;
 
-    public MockDBPurgeTask(Activity activity, boolean result) {
-        super(activity);
+    public MockDBPurgeTask(UITaskResultDispatcher<Boolean> dispatcher, Context context, boolean result) {
+        super(dispatcher, context);
         this.result = result;
     }
 

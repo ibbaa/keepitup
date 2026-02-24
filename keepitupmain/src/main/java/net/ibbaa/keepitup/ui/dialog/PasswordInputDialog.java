@@ -18,14 +18,18 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -37,6 +41,8 @@ import net.ibbaa.keepitup.ui.validation.PasswordInputFieldValidator;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -62,6 +68,24 @@ public class PasswordInputDialog extends DialogFragmentBase { // implements Cont
         preparePasswordTextField(savedInstanceState);
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        passwordEditText.requestFocus();
+        Window window = getWindow();
+        if (window != null) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private Window getWindow() {
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            return dialog.getWindow();
+        }
+        return null;
     }
 
     @Override

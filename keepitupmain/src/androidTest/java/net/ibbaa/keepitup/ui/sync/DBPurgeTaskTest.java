@@ -31,8 +31,9 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+import net.ibbaa.keepitup.ui.SystemActivity;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,7 +50,7 @@ public class DBPurgeTaskTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        activityScenario = launchSettingsInputActivity(SystemActivity.class);
     }
 
     @After
@@ -77,7 +78,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
         Header header = getHeaderDAO().readAllHeaders().get(0);
         assertEquals("name", header.getName());
-        DBPurgeTask task = new DBPurgeTask(getActivity(activityScenario));
+        DBPurgeTask task = new DBPurgeTask(getPurgeResultDispatcher(), TestRegistry.getContext());
         assertTrue(task.runInBackground());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -98,5 +99,10 @@ public class DBPurgeTaskTest extends BaseUITest {
         resolve.setName("name");
         resolve.setValue("value");
         return resolve;
+    }
+
+    private UITaskResultDispatcher<Boolean> getPurgeResultDispatcher() {
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        return activity.getTaskViewModel().getPurgeDispatcher();
     }
 }

@@ -22,6 +22,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -48,10 +51,13 @@ import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
+import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
+import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.IThemeManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
@@ -64,35 +70,38 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
-import net.ibbaa.keepitup.ui.support.DBPurgeSupport;
 import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
-import net.ibbaa.keepitup.ui.support.ExportSupport;
-import net.ibbaa.keepitup.ui.support.ImportSupport;
 import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.ui.support.PasswordInputSupport;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
+import net.ibbaa.keepitup.ui.sync.UITaskViewModel;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.DebugUtil;
 import net.ibbaa.keepitup.util.FileUtil;
+import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, MessageSupport, ExportEncryptSupport, PasswordInputSupport {
+public class SystemActivity extends SettingsInputActivity implements MessageSupport, ExportEncryptSupport, PasswordInputSupport {
 
     private enum Error {
         IMPORTERROR,
         PURGERROR
     }
 
+    private UITaskViewModel taskViewModel;
     private TextView exportFolderText;
     private TextView importFolderText;
     private RadioGroup externalStorageType;
@@ -150,6 +159,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         this.importFileLauncher = importFileLauncher;
     }
 
+    public UITaskViewModel getTaskViewModel() {
+        return taskViewModel;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +188,14 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
         prepareLogFolderField();
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        taskViewModel = new ViewModelProvider(this).get(UITaskViewModel.class);
+        taskViewModel.getExportDispatcher().observe(this, result -> onExportDone(result.success(), result.message()));
+        taskViewModel.getImportDispatcher().observe(this, result -> onImportDone(result.success(), result.message()));
+        taskViewModel.getPurgeDispatcher().observe(this, this::onPurgeDone);
     }
 
     @Override
@@ -526,7 +547,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         alarmOnHighPrioSwitch.setChecked(preferenceManager.getPreferenceAlarmOnHighPrio());
         alarmOnHighPrioSwitch.setOnCheckedChangeListener(this::onAlarmOnHighPrioCheckedChanged);
         prepareAlarmOnHighPrioOnOffText();
-
     }
 
     private void prepareAlarmOnHighPrioOnOffText() {
@@ -1002,10 +1022,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File importFolder = null;
             String file = getFileExtraData(confirmDialog);
-            // TODO check if encrypted
             boolean encrypted = false;
             dismissConfirmDialog(confirmDialog);
-            if (encrypted) {
+            if (isFileEncrypted(file)) {
                 showPasswordInputDialog(file);
             } else {
                 prepareAndPerformImport(file, new EncryptionInfo());
@@ -1013,6 +1032,68 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
         }
+    }
+
+    private boolean isFileEncrypted(String file) {
+        Log.d(SystemActivity.class.getName(), "isFileEncrypted for file " + file);
+        String data = getFileData(file);
+        if (StringUtil.isEmpty(data)) {
+            Log.e(SystemActivity.class.getName(), "Unable to read file content. Returning false.");
+            return false;
+        }
+        JSONEncryptSetup encryptSetup = new JSONEncryptSetup(this);
+        boolean isEncrypted = encryptSetup.isEncryptedFormat(data);
+        Log.d(SystemActivity.class.getName(), "isEncrypted: " + isEncrypted);
+        return isEncrypted;
+    }
+
+    private String getFileData(String file) {
+        ParcelFileDescriptor fileDescriptor = null;
+        FileInputStream stream = null;
+        try {
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                DocumentFile documentFile = getDocumentManager().getFile(file);
+                if (documentFile == null) {
+                    Log.e(ImportTask.class.getName(), "Error accessing file uri " + file);
+                    return null;
+                }
+                fileDescriptor = getImportFileDescriptor(documentFile);
+                stream = getImportFileInputStream(fileDescriptor);
+            } else {
+                IFileManager fileManager = getFileManager();
+                File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
+                File importFile = new File(importFolder, file);
+                stream = new FileInputStream(importFile);
+            }
+            return StreamUtil.inputStreamToString(stream, StandardCharsets.UTF_8);
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error opening " + file, exc);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (Exception exc) {
+                    Log.e(ImportTask.class.getName(), "Error closing file", exc);
+                }
+            }
+            if (fileDescriptor != null) {
+                try {
+                    fileDescriptor.close();
+                } catch (Exception exc) {
+                    Log.e(ImportTask.class.getName(), "Error closing file descriptor", exc);
+                }
+            }
+        }
+        return null;
+    }
+
+    private ParcelFileDescriptor getImportFileDescriptor(DocumentFile documentFile) throws IOException {
+        return getContentResolver().openFileDescriptor(documentFile.getUri(), "r");
+    }
+
+    private FileInputStream getImportFileInputStream(ParcelFileDescriptor documentFileDescriptor) {
+        return new FileInputStream(documentFileDescriptor.getFileDescriptor());
     }
 
     private void prepareAndPerformImport(String file, EncryptionInfo encryptionInfo) {
@@ -1062,16 +1143,14 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
-    @Override
     public void onExportDone(boolean success, String message) {
         Log.d(SystemActivity.class.getName(), "onExportDone, success is " + success);
         closeProgressDialog();
         if (!success) {
-            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_export));
+            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_export), Typeface.NORMAL);
         }
     }
 
-    @Override
     public void onImportDone(boolean success, String message) {
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
@@ -1082,11 +1161,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             NetworkTaskLog.clear();
             resetActivity();
         } else {
-            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
+            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.NORMAL);
         }
     }
 
-    @Override
     public void onPurgeDone(boolean success) {
         Log.d(SystemActivity.class.getName(), "onPurgeDone, success is " + success);
         closeProgressDialog();
@@ -1227,7 +1305,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return exportTask;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        return new ExportTask(this, folder, file, encryptionInfo, preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        return new ExportTask(taskViewModel.getExportDispatcher(), this, folder, file, encryptionInfo, preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     private ImportTask getImportTask(File folder, String file, EncryptionInfo encryptionInfo) {
@@ -1235,14 +1313,14 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return importTask;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        return new ImportTask(this, folder, file, encryptionInfo, preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        return new ImportTask(taskViewModel.getImportDispatcher(), this, folder, file, encryptionInfo, preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     private DBPurgeTask getPurgeTask() {
         if (purgeTask != null) {
             return purgeTask;
         }
-        return new DBPurgeTask(this);
+        return new DBPurgeTask(taskViewModel.getPurgeDispatcher(), this);
     }
 
     @SuppressWarnings({"ReplaceNullCheck"})
@@ -1258,5 +1336,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return themeManager;
         }
         return new SystemThemeManager();
+    }
+
+    private IDocumentManager getDocumentManager() {
+        return new SystemDocumentManager(this);
     }
 }

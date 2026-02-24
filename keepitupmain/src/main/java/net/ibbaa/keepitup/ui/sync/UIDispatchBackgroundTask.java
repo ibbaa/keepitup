@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui.support;
+package net.ibbaa.keepitup.ui.sync;
 
-public interface ExportSupport {
+import java.util.concurrent.Callable;
 
-    void onExportDone(boolean success, String message);
+public abstract class UIDispatchBackgroundTask<T> implements Callable<T> {
+
+    private final UITaskResultDispatcher<T> dispatcher;
+
+    public UIDispatchBackgroundTask(UITaskResultDispatcher<T> dispatcher) {
+        this.dispatcher = dispatcher;
+    }
+
+    @Override
+    public T call() {
+        T result = runInBackground();
+        dispatcher.dispatch(result);
+        return result;
+    }
+
+    protected abstract T runInBackground();
 }
