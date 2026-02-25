@@ -14,7 +14,26 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.util;
+package net.ibbaa.keepitup.ui.sync;
 
-public class EspressoIdling {
+public class UIEvent<T> {
+
+    private final T content;
+    private boolean handled = false;
+
+    public UIEvent(T content) {
+        this.content = content;
+    }
+
+    public T getIfNotHandled() {
+        if (handled) {
+            return null;
+        }
+        handled = true;
+        return content;
+    }
+
+    public T peek() {
+        return content;
+    }
 }

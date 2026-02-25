@@ -23,16 +23,9 @@ import java.util.concurrent.Future;
 
 public class ThreadUtil {
 
-    @SuppressWarnings("resource")
+    private final static ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+
     public static <T> Future<T> execute(Callable<T> callable) {
-        ExecutorService executorService = null;
-        try {
-            executorService = Executors.newSingleThreadExecutor();
-            return executorService.submit(callable);
-        } finally {
-            if (executorService != null) {
-                executorService.shutdown();
-            }
-        }
+        return EXECUTOR.submit(callable);
     }
 }

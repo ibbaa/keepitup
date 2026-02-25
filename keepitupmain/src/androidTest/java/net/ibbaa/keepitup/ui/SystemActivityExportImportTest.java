@@ -17,14 +17,10 @@
 package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -32,18 +28,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.startsWith;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -51,8 +41,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
-import net.ibbaa.keepitup.logging.Dump;
-import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
@@ -61,7 +49,6 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
-import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
 import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
@@ -71,7 +58,6 @@ import net.ibbaa.keepitup.test.mock.MockDBPurgeTask;
 import net.ibbaa.keepitup.test.mock.MockExportTask;
 import net.ibbaa.keepitup.test.mock.MockImportTask;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
-import net.ibbaa.keepitup.test.mock.MockPowerManager;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.MockThemeManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -80,7 +66,6 @@ import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
 import net.ibbaa.keepitup.util.StreamUtil;
 
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,7 +80,7 @@ import java.util.List;
 @MediumTest
 @SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
-public class SystemActivityTest extends BaseUITest {
+public class SystemActivityExportImportTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
     private MockAlarmManager alarmManager;
@@ -128,579 +113,6 @@ public class SystemActivityTest extends BaseUITest {
         super.afterEachTestMethod();
         activityScenario.close();
         resetGlobalHeaderHandler();
-    }
-
-    @Test
-    public void testResetConfigurationCancel() {
-        insertAndScheduleNetworkTask();
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getIntervalDAO().insertInterval(getInterval1());
-        getTimeBasedSuspensionScheduler().reset();
-        getTimeBasedSuspensionScheduler().getIntervals();
-        getHeaderDAO().insertHeader(getHeader(1));
-        resetGlobalHeaderHandler();
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
-        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
-        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(30);
-        getPreferenceManager().setPreferenceTheme(5);
-        getPreferenceManager().setPreferenceDownloadFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
-        getPreferenceManager().setPreferenceDownloadKeep(true);
-        getPreferenceManager().setPreferenceLogFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
-        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
-        getPreferenceManager().setPreferenceAddress("address");
-        getPreferenceManager().setPreferencePort(123);
-        getPreferenceManager().setPreferenceInterval(456);
-        getPreferenceManager().setPreferenceOnlyWifi(true);
-        getPreferenceManager().setPreferenceNotification(true);
-        getPreferenceManager().setPreferenceHighPrio(true);
-        getPreferenceManager().setPreferenceImportFolder("folderImport");
-        getPreferenceManager().setPreferenceExportFolder("folderExport");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
-        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
-        getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-        assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
-        assertFalse(alarmManager.wasCancelAlarmCalled());
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
-        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
-        assertEquals(5, getPreferenceManager().getPreferencePingCount());
-        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
-        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals(5, getPreferenceManager().getPreferenceTheme());
-        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
-        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
-        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("address", getPreferenceManager().getPreferenceAddress());
-        assertEquals(123, getPreferenceManager().getPreferencePort());
-        assertEquals(456, getPreferenceManager().getPreferenceInterval());
-        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
-        assertTrue(getPreferenceManager().getPreferenceNotification());
-        assertTrue(getPreferenceManager().getPreferenceHighPrio());
-        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
-        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
-        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
-        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
-    }
-
-    @Test
-    public void testResetConfigurationCancelScreenRotation() {
-        insertAndScheduleNetworkTask();
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getIntervalDAO().insertInterval(getInterval1());
-        getTimeBasedSuspensionScheduler().reset();
-        getTimeBasedSuspensionScheduler().getIntervals();
-        getHeaderDAO().insertHeader(getHeader(1));
-        resetGlobalHeaderHandler();
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
-        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
-        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(1);
-        getPreferenceManager().setPreferenceTheme(1);
-        getPreferenceManager().setPreferenceDownloadFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
-        getPreferenceManager().setPreferenceDownloadKeep(true);
-        getPreferenceManager().setPreferenceLogFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
-        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
-        getPreferenceManager().setPreferenceAddress("address");
-        getPreferenceManager().setPreferencePort(123);
-        getPreferenceManager().setPreferenceInterval(456);
-        getPreferenceManager().setPreferenceOnlyWifi(true);
-        getPreferenceManager().setPreferenceNotification(true);
-        getPreferenceManager().setPreferenceHighPrio(true);
-        getPreferenceManager().setPreferenceImportFolder("folderImport");
-        getPreferenceManager().setPreferenceExportFolder("folderExport");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
-        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
-        getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        rotateScreen(activityScenario);
-        rotateScreen(activityScenario);
-        ((SystemActivity) getActivity(activityScenario)).injectNetworkTaskProcessServiceScheduler(getNetworkTaskProcessServiceScheduler());
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-        assertFalse(alarmManager.wasCancelAlarmCalled());
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
-        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
-        assertEquals(5, getPreferenceManager().getPreferencePingCount());
-        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
-        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals(1, getPreferenceManager().getPreferenceTheme());
-        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
-        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
-        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("address", getPreferenceManager().getPreferenceAddress());
-        assertEquals(123, getPreferenceManager().getPreferencePort());
-        assertEquals(456, getPreferenceManager().getPreferenceInterval());
-        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
-        assertTrue(getPreferenceManager().getPreferenceNotification());
-        assertTrue(getPreferenceManager().getPreferenceHighPrio());
-        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
-        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
-        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
-        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
-    }
-
-    @Test
-    public void testResetConfiguration() {
-        insertAndScheduleNetworkTask();
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getIntervalDAO().insertInterval(getInterval1());
-        getTimeBasedSuspensionScheduler().reset();
-        getTimeBasedSuspensionScheduler().getIntervals();
-        getHeaderDAO().insertHeader(getHeader(1));
-        resetGlobalHeaderHandler();
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
-        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
-        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(30);
-        getPreferenceManager().setPreferenceTheme(5);
-        getPreferenceManager().setPreferenceDownloadFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
-        getPreferenceManager().setPreferenceDownloadKeep(true);
-        getPreferenceManager().setPreferenceLogFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
-        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
-        getPreferenceManager().setPreferenceAddress("address");
-        getPreferenceManager().setPreferencePort(123);
-        getPreferenceManager().setPreferenceInterval(456);
-        getPreferenceManager().setPreferenceOnlyWifi(true);
-        getPreferenceManager().setPreferenceNotification(true);
-        getPreferenceManager().setPreferenceHighPrio(true);
-        getPreferenceManager().setPreferenceImportFolder("folderImport");
-        getPreferenceManager().setPreferenceExportFolder("folderExport");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
-        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
-        getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertTrue(alarmManager.wasCancelAlarmCalled());
-        assertFalse(storagePermissionManager.hasAnyPersistentPermission(null));
-        assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertTrue(getLogDAO().readAllLogs().isEmpty());
-        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
-        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(1, getHeaderDAO().readAllHeaders().size());
-        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
-        assertEquals(1, globalHeaderHandler.getGlobalHeaders().size());
-        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(0).getName());
-        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
-        assertEquals(3, getPreferenceManager().getPreferencePingCount());
-        assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
-        assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
-        assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
-        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
-        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
-        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
-        assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
-        assertEquals(22, getPreferenceManager().getPreferencePort());
-        assertEquals(15, getPreferenceManager().getPreferenceInterval());
-        assertFalse(getPreferenceManager().getPreferenceOnlyWifi());
-        assertFalse(getPreferenceManager().getPreferenceNotification());
-        assertFalse(getPreferenceManager().getPreferenceHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
-        assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
-        assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
-        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
-        assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-    }
-
-    @Test
-    public void testResetConfigurationScreenRotation() {
-        insertAndScheduleNetworkTask();
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getIntervalDAO().insertInterval(getInterval1());
-        getTimeBasedSuspensionScheduler().reset();
-        getTimeBasedSuspensionScheduler().getIntervals();
-        getHeaderDAO().insertHeader(getHeader(1));
-        resetGlobalHeaderHandler();
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
-        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
-        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(30);
-        getPreferenceManager().setPreferenceTheme(5);
-        getPreferenceManager().setPreferenceDownloadFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
-        getPreferenceManager().setPreferenceDownloadKeep(true);
-        getPreferenceManager().setPreferenceLogFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
-        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
-        getPreferenceManager().setPreferenceAddress("address");
-        getPreferenceManager().setPreferencePort(123);
-        getPreferenceManager().setPreferenceInterval(456);
-        getPreferenceManager().setPreferenceOnlyWifi(true);
-        getPreferenceManager().setPreferenceNotification(true);
-        getPreferenceManager().setPreferenceHighPrio(true);
-        getPreferenceManager().setPreferenceImportFolder("folderImport");
-        getPreferenceManager().setPreferenceExportFolder("folderExport");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
-        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
-        getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        rotateScreen(activityScenario);
-        rotateScreen(activityScenario);
-        ((SystemActivity) getActivity(activityScenario)).injectNetworkTaskProcessServiceScheduler(getNetworkTaskProcessServiceScheduler());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertTrue(alarmManager.wasCancelAlarmCalled());
-        assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertTrue(getLogDAO().readAllLogs().isEmpty());
-        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
-        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(1, getHeaderDAO().readAllHeaders().size());
-        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
-        assertEquals(1, globalHeaderHandler.getGlobalHeaders().size());
-        assertEquals("User-Agent", globalHeaderHandler.getGlobalHeaders().get(0).getName());
-        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaderHandler.getGlobalHeaders().get(0).getValue());
-        assertEquals(3, getPreferenceManager().getPreferencePingCount());
-        assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
-        assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
-        assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
-        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
-        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
-        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
-        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
-        assertEquals(22, getPreferenceManager().getPreferencePort());
-        assertEquals(15, getPreferenceManager().getPreferenceInterval());
-        assertFalse(getPreferenceManager().getPreferenceOnlyWifi());
-        assertFalse(getPreferenceManager().getPreferenceNotification());
-        assertFalse(getPreferenceManager().getPreferenceHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
-        assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
-        assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
-        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
-        assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-    }
-
-    @Test
-    public void testResetConfigurationError() {
-        injectPurgeTask(getMockDBPurgeTask(false));
-        insertAndScheduleNetworkTask();
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getIntervalDAO().insertInterval(getInterval1());
-        getTimeBasedSuspensionScheduler().reset();
-        getTimeBasedSuspensionScheduler().getIntervals();
-        getHeaderDAO().insertHeader(getHeader(1));
-        resetGlobalHeaderHandler();
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
-        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
-        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(30);
-        getPreferenceManager().setPreferenceTheme(1);
-        getPreferenceManager().setPreferenceDownloadFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
-        getPreferenceManager().setPreferenceDownloadKeep(true);
-        getPreferenceManager().setPreferenceLogFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
-        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
-        getPreferenceManager().setPreferenceAddress("address");
-        getPreferenceManager().setPreferencePort(123);
-        getPreferenceManager().setPreferenceInterval(456);
-        getPreferenceManager().setPreferenceOnlyWifi(true);
-        getPreferenceManager().setPreferenceNotification(true);
-        getPreferenceManager().setPreferenceHighPrio(true);
-        getPreferenceManager().setPreferenceImportFolder("folderImport");
-        getPreferenceManager().setPreferenceExportFolder("folderExport");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
-        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
-        getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertTrue(alarmManager.wasCancelAlarmCalled());
-        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
-        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
-        assertEquals(5, getPreferenceManager().getPreferencePingCount());
-        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
-        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals(1, getPreferenceManager().getPreferenceTheme());
-        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
-        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
-        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("address", getPreferenceManager().getPreferenceAddress());
-        assertEquals(123, getPreferenceManager().getPreferencePort());
-        assertEquals(456, getPreferenceManager().getPreferenceInterval());
-        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
-        assertTrue(getPreferenceManager().getPreferenceNotification());
-        assertTrue(getPreferenceManager().getPreferenceHighPrio());
-        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
-        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
-        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
-        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
-    }
-
-    @Test
-    public void testResetConfigurationErrorScreenRotation() {
-        injectPurgeTask(getMockDBPurgeTask(false));
-        insertAndScheduleNetworkTask();
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getLogDAO().insertAndDeleteLog(new LogEntry());
-        getIntervalDAO().insertInterval(getInterval1());
-        getTimeBasedSuspensionScheduler().reset();
-        getTimeBasedSuspensionScheduler().getIntervals();
-        getHeaderDAO().insertHeader(getHeader(1));
-        resetGlobalHeaderHandler();
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
-        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
-        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(1);
-        getPreferenceManager().setPreferenceTheme(1);
-        getPreferenceManager().setPreferenceDownloadFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
-        getPreferenceManager().setPreferenceDownloadKeep(true);
-        getPreferenceManager().setPreferenceLogFolder("folder");
-        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
-        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
-        getPreferenceManager().setPreferenceAddress("address");
-        getPreferenceManager().setPreferencePort(123);
-        getPreferenceManager().setPreferenceInterval(456);
-        getPreferenceManager().setPreferenceOnlyWifi(true);
-        getPreferenceManager().setPreferenceNotification(true);
-        getPreferenceManager().setPreferenceHighPrio(true);
-        getPreferenceManager().setPreferenceImportFolder("folderImport");
-        getPreferenceManager().setPreferenceExportFolder("folderExport");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
-        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
-        getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertTrue(alarmManager.wasCancelAlarmCalled());
-        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
-        rotateScreen(activityScenario);
-        rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
-        assertFalse(getLogDAO().readAllLogs().isEmpty());
-        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
-        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
-        GlobalHeaderHandler globalHeaderHandler = new GlobalHeaderHandler(TestRegistry.getContext());
-        assertEquals(2, globalHeaderHandler.getGlobalHeaders().size());
-        assertEquals(5, getPreferenceManager().getPreferencePingCount());
-        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
-        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals(1, getPreferenceManager().getPreferenceTheme());
-        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
-        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
-        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
-        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("address", getPreferenceManager().getPreferenceAddress());
-        assertEquals(123, getPreferenceManager().getPreferencePort());
-        assertEquals(456, getPreferenceManager().getPreferenceInterval());
-        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
-        assertTrue(getPreferenceManager().getPreferenceNotification());
-        assertTrue(getPreferenceManager().getPreferenceHighPrio());
-        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
-        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
-        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
-        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1558,8 +970,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678"));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1765,8 +1177,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678"));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
@@ -1971,8 +1383,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678"));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -2421,8 +1833,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(replaceText("12345678"));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(replaceText("12345678"));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
@@ -3726,7 +3138,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).perform(typeText("password"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("password"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -3903,7 +3315,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_password_input_password)).perform(typeText("password"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("password"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -4396,451 +3808,6 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
         String text = getText(withId(R.id.textview_activity_system_config_import_folder));
         assertEquals(exportFolderPrimary, text);
-    }
-
-
-    @Test
-    public void testBatteryOptimizationDialog() {
-        MockPowerManager powerManager = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
-        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager.setBatteryOptimized(false);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Inactive")));
-        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
-        powerManager.setBatteryOptimized(true);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
-    }
-
-    @Test
-    public void testBatteryOptimizationIrrelevant() {
-        MockPowerManager powerManager = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
-        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager.setBatteryOptimizationIrrelevant(true);
-        powerManager.setSupportsBatteryOptimization(false);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(Matchers.not(isDisplayed())));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(Matchers.not(isDisplayed())));
-    }
-
-    @Test
-    public void testBatteryOptimizationDialogScreenRotation() {
-        final MockPowerManager powerManager1 = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager1));
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
-        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
-        rotateScreen(activityScenario);
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        final MockPowerManager powerManager2 = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager2));
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager2.setBatteryOptimized(false);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Inactive")));
-        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
-        rotateScreen(activityScenario);
-        final MockPowerManager powerManager3 = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager3));
-        powerManager3.setBatteryOptimized(true);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
-    }
-
-    @Test
-    public void testNotificationsAllowed() {
-        activityScenario.moveToState(Lifecycle.State.STARTED);
-        permissionManager.setHasPostNotificationsPermission(true);
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
-        activityScenario.moveToState(Lifecycle.State.RESUMED);
-        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Allowed")));
-        activityScenario.moveToState(Lifecycle.State.STARTED);
-        permissionManager.setHasPostNotificationsPermission(false);
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
-        activityScenario.moveToState(Lifecycle.State.RESUMED);
-        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
-    }
-
-    @Test
-    public void testNotificationsAllowedScreenRotation() {
-        activityScenario.moveToState(Lifecycle.State.STARTED);
-        permissionManager.setHasPostNotificationsPermission(true);
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
-        activityScenario.moveToState(Lifecycle.State.RESUMED);
-        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Allowed")));
-        rotateScreen(activityScenario);
-        activityScenario.moveToState(Lifecycle.State.STARTED);
-        permissionManager.setHasPostNotificationsPermission(false);
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
-        activityScenario.moveToState(Lifecycle.State.RESUMED);
-        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
-        rotateScreen(activityScenario);
-        activityScenario.moveToState(Lifecycle.State.STARTED);
-        permissionManager.setHasPostNotificationsPermission(false);
-        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
-        activityScenario.moveToState(Lifecycle.State.RESUMED);
-        onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
-    }
-
-    @Test
-    public void testSwitchTheme() {
-        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, themeManager.getCode());
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, getPreferenceManager().getPreferenceTheme());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, themeManager.getCode());
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
-    }
-
-    @Test
-    public void testSwitchThemeScreenRotation() {
-        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
-        rotateScreen(activityScenario);
-        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
-        rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
-        rotateScreen(activityScenario);
-        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, getPreferenceManager().getPreferenceTheme());
-        rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
-        rotateScreen(activityScenario);
-        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
-    }
-
-    @Test
-    public void testDisplayDefaultValues() {
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals("config", preferenceManager.getPreferenceImportFolder());
-        assertEquals("config", preferenceManager.getPreferenceExportFolder());
-        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
-        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
-        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
-        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
-        onView(withId(R.id.textview_activity_system_external_storage_type_label)).check(matches(withText("External storage type")));
-        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
-        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_system_theme_label)).check(matches(withText("Theme")));
-        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_config_export_label)).check(matches(withText("Export configuration")));
-        onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
-        onView(withId(R.id.textview_activity_system_config_import_label)).check(matches(withText("Import configuration")));
-        onView(withId(R.id.textview_activity_system_config_import_folder)).check(matches(withText(endsWith("config"))));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_log_folder)).check(matches(withText(endsWith("log"))));
-        onView(withId(R.id.textview_activity_system_log_folder)).check(matches(not(isEnabled())));
-    }
-
-    @Test
-    public void testDisplayValues() {
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
-        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
-        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
-        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isChecked()));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_log_folder)).check(matches(withText(endsWith("log"))));
-        onView(withId(R.id.textview_activity_system_log_folder)).check(matches(not(isEnabled())));
-    }
-
-    @Test
-    public void testSwitchYesNoText() {
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
-    }
-
-    @Test
-    public void testSetPreferencesOk() {
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
-        assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
-        assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
-        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
-    }
-
-    @Test
-    public void testFileLoggerInitialized() {
-        assertNull(Log.getLogger());
-        assertNull(Dump.getDump());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        assertNotNull(Log.getLogger());
-        assertNotNull(Dump.getDump());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        assertNull(Log.getLogger());
-        assertNull(Dump.getDump());
-    }
-
-    @Test
-    public void testResetValues() {
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        PreferenceManager preferenceManager = getPreferenceManager();
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
-        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
-        onView(withText("Reset")).perform(click());
-        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
-        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
-        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
-        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
-        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
-        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
-        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
-    }
-
-    @Test
-    public void testPreserveValuesOnScreenRotation() {
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        rotateScreen(activityScenario);
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
-        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
-        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
-    }
-
-    @Test
-    public void testAlarmOnHighPrio() {
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
-        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-    }
-
-    @Test
-    public void testAlarmOnHighPrioScreenRotation() {
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        rotateScreen(activityScenario);
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
-        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-        rotateScreen(activityScenario);
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-    }
-
-    @Test
-    public void testAlarmOnHighPrioReset() {
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
-        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
-        onView(withText("Reset")).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
-        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-    }
-
-    @Test
-    public void testAlarmOnHighPrioConfigurationReset() {
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
-        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
-        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
-        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
-        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
-        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
     private void insertAndScheduleNetworkTask() {

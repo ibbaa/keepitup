@@ -16,6 +16,9 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.concurrent.Callable;
 
 public abstract class UIDispatchBackgroundTask<T> implements Callable<T> {
@@ -29,7 +32,7 @@ public abstract class UIDispatchBackgroundTask<T> implements Callable<T> {
     @Override
     public T call() {
         T result = runInBackground();
-        dispatcher.dispatch(result);
+        new Handler(Looper.getMainLooper()).post(() -> dispatcher.dispatch(result));
         return result;
     }
 

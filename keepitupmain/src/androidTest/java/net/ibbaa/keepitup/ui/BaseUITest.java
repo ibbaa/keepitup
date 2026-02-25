@@ -224,6 +224,14 @@ public abstract class BaseUITest {
         onView(isRoot()).perform(waitFor(1000));
     }
 
+    public void waitUntilAllDialogsClosed(ActivityScenario<?> scenario) {
+        int waits = 20;
+        while (!getActivity(scenario).getSupportFragmentManager().getFragments().isEmpty() && waits > 0) {
+            waits--;
+            onView(isRoot()).perform(waitFor(500));
+        }
+    }
+
     public DialogFragment getDialog(ActivityScenario<?> scenario, Class<? extends DialogFragment> clazz) {
         List<Fragment> fragments = getActivity(scenario).getSupportFragmentManager().getFragments();
         int size = fragments.size();

@@ -21,19 +21,22 @@ import androidx.lifecycle.MutableLiveData;
 
 public class UITaskResultDispatcher<T> {
 
-    private final MutableLiveData<T> liveData = new MutableLiveData<>();
+    private final MutableLiveData<UIEvent<T>> liveData = new MutableLiveData<>();
 
     public void observe(LifecycleOwner owner, TaskCallback<T> callback) {
-        liveData.observe(owner, value -> {
-            if (value != null) {
-                callback.onResult(value);
-                liveData.setValue(null);
+        liveData.observe(owner, event -> {
+            if (event != null) {
+                T value = event.getIfNotHandled();
+                if (value != null) {
+                    callback.onResult(value);
+                    liveData.setValue(null);
+                }
             }
         });
     }
 
     public void dispatch(T result) {
-        liveData.postValue(result);
+        liveData.setValue(new UIEvent<>(result));
     }
 
     public interface TaskCallback<T> {
