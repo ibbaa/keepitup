@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -226,7 +227,25 @@ public abstract class BaseUITest {
 
     public void waitUntilAllDialogsClosed(ActivityScenario<?> scenario) {
         int waits = 20;
-        while (!getActivity(scenario).getSupportFragmentManager().getFragments().isEmpty() && waits > 0) {
+        while (waits > 0) {
+            if (Lifecycle.State.DESTROYED.equals(scenario.getState())) {
+                return;
+            }
+            final boolean[] hasDialogs = {false};
+            try {
+                scenario.onActivity(activity -> {
+                    if (activity instanceof FragmentActivity fragmentActivity) {
+                        if (!fragmentActivity.isFinishing() && !fragmentActivity.isDestroyed()) {
+                            hasDialogs[0] = !fragmentActivity.getSupportFragmentManager().getFragments().isEmpty();
+                        }
+                    }
+                });
+            } catch (Exception exc) {
+                return;
+            }
+            if (!hasDialogs[0]) {
+                return;
+            }
             waits--;
             onView(isRoot()).perform(waitFor(500));
         }

@@ -32,8 +32,4 @@ public class UIEvent<T> {
         handled = true;
         return content;
     }
-
-    public T peek() {
-        return content;
-    }
 }

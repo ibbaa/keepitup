@@ -1055,7 +1055,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
                 DocumentFile documentFile = getDocumentManager().getFile(file);
                 if (documentFile == null) {
-                    Log.e(ImportTask.class.getName(), "Error accessing file uri " + file);
+                    Log.e(SystemActivity.class.getName(), "Error accessing file uri " + file);
                     return null;
                 }
                 fileDescriptor = getImportFileDescriptor(documentFile);
@@ -1068,20 +1068,20 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             }
             return StreamUtil.inputStreamToString(stream, StandardCharsets.UTF_8);
         } catch (Exception exc) {
-            Log.e(ImportTask.class.getName(), "Error opening " + file, exc);
+            Log.e(SystemActivity.class.getName(), "Error opening " + file, exc);
         } finally {
             if (stream != null) {
                 try {
                     stream.close();
                 } catch (Exception exc) {
-                    Log.e(ImportTask.class.getName(), "Error closing file", exc);
+                    Log.e(SystemActivity.class.getName(), "Error closing file", exc);
                 }
             }
             if (fileDescriptor != null) {
                 try {
                     fileDescriptor.close();
                 } catch (Exception exc) {
-                    Log.e(ImportTask.class.getName(), "Error closing file descriptor", exc);
+                    Log.e(SystemActivity.class.getName(), "Error closing file descriptor", exc);
                 }
             }
         }

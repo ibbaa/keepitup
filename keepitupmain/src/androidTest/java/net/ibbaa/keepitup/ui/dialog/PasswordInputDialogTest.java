@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -48,6 +49,7 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testDefaultValue() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
         onView(withId(R.id.imageview_dialog_password_input_cancel)).perform(click());
@@ -59,7 +61,9 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testDefaultValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withText("")));
         onView(withId(R.id.imageview_dialog_password_input_cancel)).perform(click());
@@ -72,6 +76,7 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testEnterPassword() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
@@ -83,7 +88,9 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testEnterPasswordScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678"));
         rotateScreen(activityScenario);
@@ -96,6 +103,7 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testEnterPasswordNoValue() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
@@ -112,9 +120,11 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testEnterPasswordNoValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText(""));
         rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -130,6 +140,7 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testEnterPasswordMaxLength() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
@@ -146,9 +157,11 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testEnterPasswordMaxLengthScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         PasswordInputDialog dialog = openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_password_input_title)).check(matches(withText("Enter password")));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(replaceText("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
         rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -164,6 +177,7 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testPasswordToggle() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withPasswordVisibility(false)));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withPasswordVisibility(true)));
@@ -177,10 +191,12 @@ public class PasswordInputDialogTest extends BaseUITest {
     public void testPasswordToggleScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openPasswordInputDialog();
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withPasswordVisibility(false)));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withPasswordVisibility(true)));
         rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_password_input_password)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_password_input_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(togglePassword());
         rotateScreen(activityScenario);

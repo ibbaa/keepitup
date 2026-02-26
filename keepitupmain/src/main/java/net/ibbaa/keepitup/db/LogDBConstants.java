@@ -111,8 +111,7 @@ class LogDBConstants {
     }
 
     public String getReadOldestLogStatement() {
-        return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName() +
-                " WHERE " + getNetworkTaskIdColumnName() + " = ?";
+        return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
     public String getLogCountStatement() {

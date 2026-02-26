@@ -272,10 +272,7 @@ class NetworkTaskDBConstants {
     }
 
     public String getReadNetworkTaskIndexStatement() {
-        return "SELECT " +
-                getIndexColumnName() +
-                " FROM " + getTableName() +
-                " WHERE " + getIdColumnName() + " = ?;";
+        return "SELECT " + getIndexColumnName() + " FROM " + getTableName() + " WHERE " + getIdColumnName() + " = ?;";
     }
 
     public String getSchedulerIdCountStatement() {

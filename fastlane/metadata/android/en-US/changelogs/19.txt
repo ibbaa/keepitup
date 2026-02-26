@@ -1,0 +1,3 @@
+* It is now possible to encrypt the file during export
+* Stabilizing UI handling
+* Some minor fixes
