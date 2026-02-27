@@ -67,9 +67,9 @@ public class InfoDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAndroid() {
+    public void testSystem() {
         openInfoDialog();
-        onView(withId(R.id.textview_dialog_info_android)).check(matches(withText(Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")")));
+        onView(withId(R.id.textview_dialog_info_system)).check(matches(withText("Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")")));
     }
 
     @Test

@@ -24,10 +24,10 @@
     <dimen name="textview_dialog_info_version_label_padding">4dp</dimen>
     <dimen name="textview_dialog_info_version_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_version_padding">4dp</dimen>
-    <dimen name="textview_dialog_info_android_label_margin_top">0dp</dimen>
-    <dimen name="textview_dialog_info_android_label_padding">4dp</dimen>
-    <dimen name="textview_dialog_info_android_margin_top">0dp</dimen>
-    <dimen name="textview_dialog_info_android_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_system_label_margin_top">0dp</dimen>
+    <dimen name="textview_dialog_info_system_label_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_system_margin_top">0dp</dimen>
+    <dimen name="textview_dialog_info_system_padding">4dp</dimen>
     <dimen name="textview_dialog_info_build_type_label_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_build_type_label_padding">4dp</dimen>
     <dimen name="textview_dialog_info_build_type_margin_top">0dp</dimen>

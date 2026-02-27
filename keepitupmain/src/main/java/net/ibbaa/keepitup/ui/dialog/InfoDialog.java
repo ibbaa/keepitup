@@ -48,7 +48,7 @@ public class InfoDialog extends DialogFragmentBase {
         View view = inflater.inflate(R.layout.dialog_info, container);
         initEdgeToEdgeInsets(view);
         prepareBuildInfo(view);
-        prepareAndroidVersion(view);
+        prepareSystem(view);
         prepareCopyright(view);
         prepareLicense(view);
         prepareOkImageButton(view);
@@ -63,10 +63,10 @@ public class InfoDialog extends DialogFragmentBase {
         buildTypeText.setText(BuildConfig.BUILD_TYPE.toUpperCase());
     }
 
-    private void prepareAndroidVersion(View view) {
-        Log.d(InfoDialog.class.getName(), "prepareAndroidVersion");
-        TextView androidText = view.findViewById(R.id.textview_dialog_info_android);
-        androidText.setText(getResources().getString(R.string.label_dialog_info_API, Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
+    private void prepareSystem(View view) {
+        Log.d(InfoDialog.class.getName(), "prepareSystem");
+        TextView androidText = view.findViewById(R.id.textview_dialog_info_system);
+        androidText.setText(getResources().getString(R.string.label_dialog_info_android, Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
     }
 
     private void prepareCopyright(View view) {
