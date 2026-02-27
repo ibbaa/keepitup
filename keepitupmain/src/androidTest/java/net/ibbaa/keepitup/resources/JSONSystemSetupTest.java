@@ -391,9 +391,21 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testInvalidJSON() {
+    public void testInvalidJSON() throws Exception {
         networkTaskDAO.insertNetworkTask(getNetworkTask1());
         SystemSetupResult importResult = setup.checkImportPossible("wrong");
+        assertFalse(importResult.success());
+        assertEquals("The requested file is invalid.", importResult.message());
+        SystemSetupResult exportResult = setup.exportData();
+        JSONObject jsonData = new JSONObject(exportResult.data());
+        jsonData.remove("database");
+        importResult = setup.checkImportPossible(jsonData.toString());
+        assertFalse(importResult.success());
+        assertEquals("The requested file is invalid.", importResult.message());
+        exportResult = setup.exportData();
+        jsonData = new JSONObject(exportResult.data());
+        jsonData.remove("preferences");
+        importResult = setup.checkImportPossible(jsonData.toString());
         assertFalse(importResult.success());
         assertEquals("The requested file is invalid.", importResult.message());
     }

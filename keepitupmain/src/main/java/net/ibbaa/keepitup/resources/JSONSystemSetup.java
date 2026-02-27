@@ -126,6 +126,10 @@ public class JSONSystemSetup {
         JSONObject root;
         try {
             root = new JSONObject(data);
+            String dbKey = getResources().getString(R.string.database_json_key);
+            String settingsKey = getResources().getString(R.string.preferences_json_key);
+            root.get(dbKey);
+            root.get(settingsKey);
         } catch (JSONException exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error on checking import data", exc);
             return new SystemSetupResult(false, getResources().getString(R.string.text_dialog_general_message_config_import_json_invalid), data);
