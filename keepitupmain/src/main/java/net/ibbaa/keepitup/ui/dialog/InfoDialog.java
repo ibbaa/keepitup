@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +31,6 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.BundleUtil;
-
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 @SuppressWarnings({"unused"})
 public class InfoDialog extends DialogFragmentBase {
@@ -52,6 +48,7 @@ public class InfoDialog extends DialogFragmentBase {
         View view = inflater.inflate(R.layout.dialog_info, container);
         initEdgeToEdgeInsets(view);
         prepareBuildInfo(view);
+        prepareAndroidVersion(view);
         prepareCopyright(view);
         prepareLicense(view);
         prepareOkImageButton(view);
@@ -64,9 +61,12 @@ public class InfoDialog extends DialogFragmentBase {
         versionText.setText(BuildConfig.VERSION_NAME);
         TextView buildTypeText = view.findViewById(R.id.textview_dialog_info_build_type);
         buildTypeText.setText(BuildConfig.BUILD_TYPE.toUpperCase());
-        TextView buildTimeText = view.findViewById(R.id.textview_dialog_info_build_timestamp_);
-        String buildTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(BuildConfig.TIMESTAMP));
-        buildTimeText.setText(buildTime);
+    }
+
+    private void prepareAndroidVersion(View view) {
+        Log.d(InfoDialog.class.getName(), "prepareAndroidVersion");
+        TextView androidText = view.findViewById(R.id.textview_dialog_info_android);
+        androidText.setText(getResources().getString(R.string.label_dialog_info_API, Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
     }
 
     private void prepareCopyright(View view) {
@@ -103,14 +103,6 @@ public class InfoDialog extends DialogFragmentBase {
     }
 
     private String getCopyrightText() {
-        Calendar buildDate = new GregorianCalendar();
-        buildDate.setTime(new Date(BuildConfig.TIMESTAMP));
-        int buildYear = buildDate.get(GregorianCalendar.YEAR);
-        int releaseYear = BuildConfig.RELEASE_YEAR;
-        String copyrightYear = String.valueOf(releaseYear);
-        if (buildYear > releaseYear) {
-            copyrightYear += " - " + buildYear;
-        }
-        return String.format(getResources().getString(R.string.text_dialog_info_copyright), copyrightYear);
+        return String.format(getResources().getString(R.string.text_dialog_info_copyright));
     }
 }

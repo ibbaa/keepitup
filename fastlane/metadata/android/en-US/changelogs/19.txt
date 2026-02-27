@@ -1,3 +1,4 @@
 * It is now possible to encrypt the file during export
+* Redesign info dialog
 * Stabilizing UI handling
 * Some minor fixes

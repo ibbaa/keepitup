@@ -25,8 +25,6 @@ android {
         versionCode 19
         versionName "1.11.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        buildConfigField "int", "RELEASE_YEAR", '2026'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21

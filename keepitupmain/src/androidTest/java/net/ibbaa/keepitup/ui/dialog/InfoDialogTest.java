@@ -25,6 +25,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 
+import android.os.Build;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -38,10 +40,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -66,7 +64,12 @@ public class InfoDialogTest extends BaseUITest {
         openInfoDialog();
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_build_type)).check(matches(withText(BuildConfig.BUILD_TYPE.toUpperCase())));
-        onView(withId(R.id.textview_dialog_info_build_timestamp_)).check(matches(withText(containsString(getBuildYear()))));
+    }
+
+    @Test
+    public void testAndroid() {
+        openInfoDialog();
+        onView(withId(R.id.textview_dialog_info_android)).check(matches(withText(Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + ")")));
     }
 
     @Test
@@ -74,8 +77,6 @@ public class InfoDialogTest extends BaseUITest {
         openInfoDialog();
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Alwin Ibba"))));
-        onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString(String.valueOf(BuildConfig.RELEASE_YEAR)))));
-        onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString(getBuildYear()))));
     }
 
     @Test
@@ -86,6 +87,7 @@ public class InfoDialogTest extends BaseUITest {
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Apache License"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Copyright"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Alwin Ibba"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Licensed under the Apache License"))));
     }
 
@@ -107,11 +109,5 @@ public class InfoDialogTest extends BaseUITest {
         InfoDialog infoDialog = new InfoDialog();
         infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
-    }
-
-    private String getBuildYear() {
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(new Date(BuildConfig.TIMESTAMP));
-        return String.valueOf(calendar.get(Calendar.YEAR));
     }
 }
