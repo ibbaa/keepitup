@@ -82,7 +82,7 @@ public class HeaderHandler {
         }
         try {
             List<Header> newHeaders = headerDialog.getAdapter().getAllItems();
-            newHeaders = excludeNonAdaptable(newHeaders, networkTaskId);
+            newHeaders = excludeNonApplicable(newHeaders, networkTaskId);
             List<Header> dbHeaders = new ArrayList<>(networkTaskId < 0 ? getGlobalHeaders() : getHeaders(networkTaskId));
             DBSyncHandler<Header> syncHandler = new DBSyncHandler<>();
             List<DBSyncHandler.ActionWrapper<Header>> headerActions = syncHandler.retrieveSyncList(newHeaders, dbHeaders);
@@ -107,7 +107,7 @@ public class HeaderHandler {
         }
     }
 
-    private List<Header> excludeNonAdaptable(List<Header> newHeaders, long networkTaskId) {
+    private List<Header> excludeNonApplicable(List<Header> newHeaders, long networkTaskId) {
         List<Header> headers = new ArrayList<>();
         for (Header header : newHeaders) {
             if (networkTaskId < 0 && header.getNetworkTaskId() < 0) {
