@@ -127,6 +127,28 @@ public class BundleUtil {
         return bundle;
     }
 
+    public static long longFromBundle(String key, Bundle bundle) {
+        if (bundle == null || key == null || !bundle.containsKey(key)) {
+            return -1;
+        }
+        return bundle.getLong(key);
+    }
+
+    public static Bundle longToBundle(String key, long value) {
+        return longToBundle(key, value, new Bundle());
+    }
+
+    public static Bundle longToBundle(String key, long value, Bundle bundle) {
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        if (key == null) {
+            return bundle;
+        }
+        bundle.putLong(key, value);
+        return bundle;
+    }
+
     public static int integerFromBundle(String key, Bundle bundle) {
         if (bundle == null || key == null || !bundle.containsKey(key)) {
             return -1;

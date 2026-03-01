@@ -188,7 +188,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.e(GlobalSettingsActivity.class.getName(), "Error deleting headers", exc);
         }
         getTimeBasedSuspensionScheduler().restart();
-        HeaderHandler handler = new HeaderHandler(this);
+        HeaderHandler handler = getHeaderHandler(null);
         handler.reset();
     }
 
@@ -560,7 +560,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void prepareGlobalHeadersField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersField");
         CardView globalHeadersCardView = findViewById(R.id.cardview_activity_global_settings_global_headers);
-        globalHeadersCardView.setOnClickListener(this::showGlobalHeadersDialog);
+        globalHeadersCardView.setOnClickListener(this::showHeadersDialog);
         prepareGlobalHeadersTextLayoutFields();
     }
 
@@ -568,7 +568,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextLayoutFields");
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
         gridLayout.removeAllViews();
-        List<Header> headers = new HeaderHandler(this).getGlobalHeaders();
+        List<Header> headers = getHeaderHandler(null).getGlobalHeaders();
         if (headers.isEmpty()) {
             Log.d(GlobalSettingsActivity.class.getName(), "No headers defined");
             gridLayout.setColumnCount(1);
@@ -706,7 +706,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             if (overflow) {
                 textView.setOnClickListener(view -> toggleHeaderTextExpandCollapse(textView, maxLines));
             } else {
-                textView.setOnClickListener(this::showGlobalHeadersDialog);
+                textView.setOnClickListener(this::showHeadersDialog);
             }
         });
     }
@@ -732,9 +732,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         return null;
     }
 
-    private void showGlobalHeadersDialog(View view) {
-        Log.d(GlobalSettingsActivity.class.getName(), "showGlobalHeadersDialog");
+    private void showHeadersDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showHeadersDialog");
         HeadersDialog headersDialog = new HeadersDialog();
+        Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), getHeaderHandler(headersDialog).getGlobalHeaders());
+        BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), -1, bundle);
+        headersDialog.setArguments(bundle);
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }
 
@@ -1107,8 +1110,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     @Override
     public void onHeadersDialogOkClicked(HeadersDialog headersDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onGlobalHeadersDialogOkClicked");
-        HeaderHandler handler = new HeaderHandler(this, headersDialog);
-        if (handler.synchronizeHeaders()) {
+        HeaderHandler handler = getHeaderHandler(headersDialog);
+        if (handler.synchronizeHeaders(headersDialog.getNetworkTaskId())) {
             handler.reset();
             prepareGlobalHeadersField();
         }
@@ -1123,5 +1126,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private String getGlobalHeadersExpandedKey() {
         return GlobalSettingsActivity.class.getSimpleName() + "GlobalHeadersExpanded";
+    }
+
+    private HeaderHandler getHeaderHandler(HeadersDialog headersDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "getHeaderHandler");
+        if (headersDialog == null) {
+            return new HeaderHandler(this);
+        }
+        return new HeaderHandler(this, headersDialog);
     }
 }

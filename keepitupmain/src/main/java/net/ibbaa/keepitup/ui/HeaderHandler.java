@@ -52,6 +52,11 @@ public class HeaderHandler {
         this.headerDAO = new HeaderDAO(context);
     }
 
+    public List<Header> getHeaders(long networkTaskId) {
+        Log.d(HeaderHandler.class.getName(), "getHeaders for networkTaskId " + networkTaskId);
+        return headerDAO.readHeadersForNetworkTask(networkTaskId);
+    }
+
     public List<Header> getGlobalHeaders() {
         Log.d(HeaderHandler.class.getName(), "getGlobalHeaders");
         synchronized (LOCK) {
@@ -69,16 +74,16 @@ public class HeaderHandler {
         }
     }
 
-    public boolean synchronizeHeaders() {
-        Log.d(HeaderHandler.class.getName(), "synchronizeHeaders");
+    public boolean synchronizeHeaders(long networkTaskId) {
+        Log.d(HeaderHandler.class.getName(), "synchronizeHeaders for networkTaskId " + networkTaskId);
         if (headerDialog == null) {
             Log.e(HeaderHandler.class.getName(), "headerDialog is null");
             return false;
         }
         try {
             List<Header> newHeaders = headerDialog.getAdapter().getAllItems();
-            newHeaders = excludeNonGlobal(newHeaders);
-            List<Header> dbHeaders = new ArrayList<>(getGlobalHeaders());
+            newHeaders = excludeNonAdaptable(newHeaders, networkTaskId);
+            List<Header> dbHeaders = new ArrayList<>(networkTaskId < 0 ? getGlobalHeaders() : getHeaders(networkTaskId));
             DBSyncHandler<Header> syncHandler = new DBSyncHandler<>();
             List<DBSyncHandler.ActionWrapper<Header>> headerActions = syncHandler.retrieveSyncList(newHeaders, dbHeaders);
             for (DBSyncHandler.ActionWrapper<Header> actionWrapper : headerActions) {
@@ -102,10 +107,12 @@ public class HeaderHandler {
         }
     }
 
-    private List<Header> excludeNonGlobal(List<Header> newHeaders) {
+    private List<Header> excludeNonAdaptable(List<Header> newHeaders, long networkTaskId) {
         List<Header> headers = new ArrayList<>();
         for (Header header : newHeaders) {
-            if (header.getNetworkTaskId() < 0) {
+            if (networkTaskId < 0 && header.getNetworkTaskId() < 0) {
+                headers.add(header);
+            } else if (networkTaskId >= 0 && header.getNetworkTaskId() == networkTaskId) {
                 headers.add(header);
             }
         }

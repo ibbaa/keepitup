@@ -34,12 +34,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHolder> {
+public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
 
     private final List<Header> headers;
     private final HeadersDialog headersDialog;
 
-    public GlobalHeaderAdapter(List<Header> headers, HeadersDialog headersDialog) {
+    public HeadersAdapter(List<Header> headers, HeadersDialog headersDialog) {
         this.headers = new ArrayList<>();
         this.headersDialog = headersDialog;
         replaceItems(headers);
@@ -47,70 +47,70 @@ public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHo
 
     @NonNull
     @Override
-    public GlobalHeaderViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "onCreateViewHolder");
+    public HeaderViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        Log.d(HeadersAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_header, viewGroup, false);
-        return new GlobalHeaderViewHolder(itemView, headersDialog);
+        return new HeaderViewHolder(itemView, headersDialog);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GlobalHeaderViewHolder globalHeaderViewHolder, int position) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "onBindViewHolder");
+    public void onBindViewHolder(@NonNull HeaderViewHolder headerViewHolder, int position) {
+        Log.d(HeadersAdapter.class.getName(), "onBindViewHolder");
         if (!headers.isEmpty()) {
             if (position < headers.size()) {
                 Header header = headers.get(position);
-                bindHeaderText(globalHeaderViewHolder, header);
-                globalHeaderViewHolder.showHeadersCardView();
-                globalHeaderViewHolder.hideNoHeadersTextView();
+                bindHeaderText(headerViewHolder, header);
+                headerViewHolder.showHeadersCardView();
+                headerViewHolder.hideNoHeadersTextView();
             } else {
-                globalHeaderViewHolder.hideHeadersCardView();
-                globalHeaderViewHolder.hideNoHeadersTextView();
+                headerViewHolder.hideHeadersCardView();
+                headerViewHolder.hideNoHeadersTextView();
             }
-            globalHeaderViewHolder.hideNoHeadersTextView();
+            headerViewHolder.hideNoHeadersTextView();
         } else {
-            globalHeaderViewHolder.hideHeadersCardView();
-            globalHeaderViewHolder.showNoHeadersTextView();
+            headerViewHolder.hideHeadersCardView();
+            headerViewHolder.showNoHeadersTextView();
         }
     }
 
-    private void bindHeaderText(@NonNull GlobalHeaderViewHolder globalHeaderViewHolder, Header header) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "bindHeaderText");
-        globalHeaderViewHolder.setHeaderNameText(header.getName());
-        globalHeaderViewHolder.setHeaderValueText(header.getValue());
+    private void bindHeaderText(@NonNull HeaderViewHolder headerViewHolder, Header header) {
+        Log.d(HeadersAdapter.class.getName(), "bindHeaderText");
+        headerViewHolder.setHeaderNameText(header.getName());
+        headerViewHolder.setHeaderValueText(header.getValue());
     }
 
     public Bundle saveStateToBundle() {
-        Log.d(GlobalHeaderAdapter.class.getName(), "saveStateToBundle");
-        return BundleUtil.headerListToBundle(getGlobalHeadersKey(), headers);
+        Log.d(HeadersAdapter.class.getName(), "saveStateToBundle");
+        return BundleUtil.headerListToBundle(getHeadersKey(), headers);
     }
 
     public void restoreStateFromBundle(Bundle bundle) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "restoreStateFromBundle");
-        replaceItems(BundleUtil.headerListFromBundle(getGlobalHeadersKey(), bundle));
+        Log.d(HeadersAdapter.class.getName(), "restoreStateFromBundle");
+        replaceItems(BundleUtil.headerListFromBundle(getHeadersKey(), bundle));
     }
 
-    private String getGlobalHeadersKey() {
-        return GlobalHeaderAdapter.class.getSimpleName() + "GlobalHeaders";
+    private String getHeadersKey() {
+        return HeadersAdapter.class.getSimpleName() + "Headers";
     }
 
     public void addItem(Header header) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "addItem " + header);
+        Log.d(HeadersAdapter.class.getName(), "addItem " + header);
         headers.add(header);
     }
 
     public Header getItem(int index) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "getItem for index " + index);
+        Log.d(HeadersAdapter.class.getName(), "getItem for index " + index);
         if (index < 0 || index >= headers.size()) {
-            Log.e(GlobalHeaderAdapter.class.getName(), "invalid index " + index);
+            Log.e(HeadersAdapter.class.getName(), "invalid index " + index);
             return null;
         }
         return headers.get(index);
     }
 
     public void removeItem(int index) {
-        Log.d(GlobalHeaderAdapter.class.getName(), "removeItem for index " + index);
+        Log.d(HeadersAdapter.class.getName(), "removeItem for index " + index);
         if (index < 0 || index >= headers.size()) {
-            Log.e(GlobalHeaderAdapter.class.getName(), "invalid index " + index);
+            Log.e(HeadersAdapter.class.getName(), "invalid index " + index);
             return;
         }
         headers.remove(index);

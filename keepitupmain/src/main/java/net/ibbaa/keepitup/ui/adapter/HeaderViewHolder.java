@@ -28,7 +28,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 
 @SuppressWarnings({"FieldCanBeLocal"})
-public class GlobalHeaderViewHolder extends RecyclerView.ViewHolder {
+public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
     private final HeadersDialog headersDialog;
     private final TextView noHeadersText;
@@ -37,7 +37,7 @@ public class GlobalHeaderViewHolder extends RecyclerView.ViewHolder {
     private final TextView headerValue;
     private final ImageView headerDeleteImage;
 
-    public GlobalHeaderViewHolder(@NonNull View itemView, HeadersDialog headersDialog) {
+    public HeaderViewHolder(@NonNull View itemView, HeadersDialog headersDialog) {
         super(itemView);
         this.headersDialog = headersDialog;
         noHeadersText = itemView.findViewById(R.id.textview_list_item_header_no_header);

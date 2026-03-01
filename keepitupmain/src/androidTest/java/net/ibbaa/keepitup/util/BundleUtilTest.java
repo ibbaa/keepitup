@@ -197,6 +197,39 @@ public class BundleUtilTest {
     }
 
     @Test
+    public void testLongToBundle() {
+        Bundle bundle = BundleUtil.longToBundle("key", 0);
+        assertEquals(0, bundle.getLong("key"));
+        bundle = BundleUtil.longToBundle("key", Long.MAX_VALUE);
+        assertEquals(Long.MAX_VALUE, bundle.getLong("key"));
+        assertTrue(BundleUtil.longToBundle(null, 5).isEmpty());
+    }
+
+    @Test
+    public void testLongToBundleProvidedBundle() {
+        Bundle bundle = BundleUtil.longToBundle("key", 0, null);
+        assertEquals(0, bundle.getLong("key"));
+        bundle = new Bundle();
+        bundle.putString("otherkey", "message");
+        bundle = BundleUtil.longToBundle("key", 5, bundle);
+        assertEquals(5, bundle.getLong("key"));
+        assertEquals("message", bundle.getString("otherkey"));
+    }
+
+    @Test
+    public void testLongFromBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("key", Long.MIN_VALUE);
+        assertEquals(Long.MIN_VALUE, BundleUtil.longFromBundle("key", bundle));
+        bundle = new Bundle();
+        bundle.putLong("key", -1);
+        assertEquals(-1, BundleUtil.longFromBundle("key", bundle));
+        assertEquals(-1, BundleUtil.longFromBundle("xyz", bundle));
+        assertEquals(-1, BundleUtil.longFromBundle(null, bundle));
+        assertEquals(-1, BundleUtil.longFromBundle("key", null));
+    }
+
+    @Test
     public void testBundleToBundle() {
         Bundle bundle = BundleUtil.bundleToBundle("key", null);
         assertNotNull(bundle);

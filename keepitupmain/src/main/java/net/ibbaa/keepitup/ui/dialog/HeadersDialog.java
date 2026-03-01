@@ -36,7 +36,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.HeaderHandler;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
-import net.ibbaa.keepitup.ui.adapter.GlobalHeaderAdapter;
+import net.ibbaa.keepitup.ui.adapter.HeadersAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.ui.support.HeaderEditSupport;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
@@ -71,8 +71,8 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         initEdgeToEdgeInsets(dialogView);
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(HeadersDialog.class.getName(), "containsSavedState is " + containsSavedState);
-        Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getGlobalHeadersAdapterKey()) : null;
-        prepareGlobalHeadersRecyclerView(adapterState);
+        Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getHeadersAdapterKey()) : null;
+        prepareHeadersRecyclerView(adapterState);
         prepareAddImageButton();
         prepareOkCancelImageButtons();
         return dialogView;
@@ -83,7 +83,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         Log.d(HeadersDialog.class.getName(), "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         Bundle adapterBundle = getAdapter().saveStateToBundle();
-        outState.putBundle(getGlobalHeadersAdapterKey(), adapterBundle);
+        outState.putBundle(getHeadersAdapterKey(), adapterBundle);
     }
 
     private boolean containsSavedState(Bundle savedInstanceState) {
@@ -92,15 +92,27 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
             Log.d(HeadersDialog.class.getName(), "savedInstanceState bundle is null");
             return false;
         }
-        return savedInstanceState.containsKey(getGlobalHeadersAdapterKey());
+        return savedInstanceState.containsKey(getHeadersAdapterKey());
     }
 
-    private String getGlobalHeadersAdapterKey() {
-        return HeadersDialog.class.getSimpleName() + "GlobalHeadersAdapter";
+    public String getInitialHeadersKey() {
+        return HeadersDialog.class.getSimpleName() + "InitialHeaders";
     }
 
-    private void prepareGlobalHeadersRecyclerView(Bundle adapterState) {
-        Log.d(HeadersDialog.class.getName(), "prepareGlobalHeadersRecyclerView");
+    public String getNetworkTaskIdKey() {
+        return HeadersDialog.class.getSimpleName() + "NetworkTaskId";
+    }
+
+    private String getHeadersAdapterKey() {
+        return HeadersDialog.class.getSimpleName() + "HeadersAdapter";
+    }
+
+    public long getNetworkTaskId() {
+        return BundleUtil.longFromBundle(getNetworkTaskIdKey(), requireArguments());
+    }
+
+    private void prepareHeadersRecyclerView(Bundle adapterState) {
+        Log.d(HeadersDialog.class.getName(), "prepareHeadersRecyclerView");
         globalHeadersRecyclerView = dialogView.findViewById(R.id.listview_dialog_headers_headers);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         globalHeadersRecyclerView.setLayoutManager(layoutManager);
@@ -112,7 +124,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     }
 
     private boolean noHeadersDefined() {
-        return ((GlobalHeaderAdapter) Objects.requireNonNull(globalHeadersRecyclerView.getAdapter())).getAllItems().isEmpty();
+        return ((HeadersAdapter) Objects.requireNonNull(globalHeadersRecyclerView.getAdapter())).getAllItems().isEmpty();
     }
 
     private void prepareAddImageButton() {
@@ -244,7 +256,9 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private void onHeaderAddClicked(View view) {
         Log.d(HeadersDialog.class.getName(), "onHeaderAddClicked");
-        showGlobalHeaderEditDialog(new Header(), -1);
+        Header header = new Header();
+        header.setNetworkTaskId(getNetworkTaskId());
+        showGlobalHeaderEditDialog(header, -1);
     }
 
     private void onOkClicked(View view) {
@@ -275,22 +289,27 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
         Log.d(HeadersDialog.class.getName(), "restoreAdapter");
-        GlobalHeaderAdapter adapter = new GlobalHeaderAdapter(Collections.emptyList(), this);
+        HeadersAdapter adapter = new HeadersAdapter(Collections.emptyList(), this);
         adapter.restoreStateFromBundle(adapterState);
         return adapter;
     }
 
     private RecyclerView.Adapter<?> createAdapter() {
         Log.d(HeadersDialog.class.getName(), "createAdapter");
-        return new GlobalHeaderAdapter(getGlobalHeaderHandler().getGlobalHeaders(), this);
+        List<Header> initialHeaders = Collections.emptyList();
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            initialHeaders = BundleUtil.headerListFromBundle(getInitialHeadersKey(), arguments);
+        }
+        return new HeadersAdapter(initialHeaders, this);
     }
 
-    public GlobalHeaderAdapter getAdapter() {
-        return (GlobalHeaderAdapter) getGlobalHeadersRecyclerView().getAdapter();
+    public HeadersAdapter getAdapter() {
+        return (HeadersAdapter) getGlobalHeadersRecyclerView().getAdapter();
     }
 
-    public HeaderHandler getGlobalHeaderHandler() {
-        Log.d(HeadersDialog.class.getName(), "getGlobalHeaderHandler");
+    public HeaderHandler getHeaderHandler() {
+        Log.d(HeadersDialog.class.getName(), "getHeaderHandler");
         Activity activity = getActivity();
         if (!(activity instanceof GlobalSettingsActivity)) {
             Log.e(HeadersDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
