@@ -36,7 +36,7 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.ITimeService;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
-import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
+import net.ibbaa.keepitup.ui.HeaderHandler;
 import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StreamUtil;
@@ -256,7 +256,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         Request.Builder requestBuilder = new Request.Builder().url(url.toString());
         HTTPUtil.setAcceptHeader(getContext(), requestBuilder);
         HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), requestBuilder);
-        List<Header> headers = new GlobalHeaderHandler(getContext()).getGlobalHeaders();
+        List<Header> headers = new HeaderHandler(getContext()).getGlobalHeaders();
         if (headers != null) {
             for (Header currentHeader : headers) {
                 requestBuilder.header(currentHeader.getName(), currentHeader.getValue());

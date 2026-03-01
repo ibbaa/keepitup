@@ -23,37 +23,37 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.ui.sync.DBSyncHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class GlobalHeaderHandler {
+public class HeaderHandler {
 
-    public final static Object LOCK = GlobalHeaderHandler.class;
+    public final static Object LOCK = HeaderHandler.class;
 
     private static List<Header> headers;
 
     private final HeaderDAO headerDAO;
     private final GlobalSettingsActivity globalSettingsActivity;
-    private final GlobalHeadersDialog headerDialog;
+    private final HeadersDialog headerDialog;
 
-    public GlobalHeaderHandler(GlobalSettingsActivity globalSettingsActivity, GlobalHeadersDialog headerDialog) {
+    public HeaderHandler(GlobalSettingsActivity globalSettingsActivity, HeadersDialog headerDialog) {
         this.globalSettingsActivity = globalSettingsActivity;
         this.headerDialog = headerDialog;
         this.headerDAO = new HeaderDAO(globalSettingsActivity);
     }
 
-    public GlobalHeaderHandler(Context context) {
+    public HeaderHandler(Context context) {
         this.globalSettingsActivity = null;
         this.headerDialog = null;
         this.headerDAO = new HeaderDAO(context);
     }
 
     public List<Header> getGlobalHeaders() {
-        Log.d(GlobalHeaderHandler.class.getName(), "getGlobalHeaders");
+        Log.d(HeaderHandler.class.getName(), "getGlobalHeaders");
         synchronized (LOCK) {
             if (headers == null) {
                 headers = headerDAO.readGlobalHeaders();
@@ -63,16 +63,16 @@ public class GlobalHeaderHandler {
     }
 
     public void reset() {
-        Log.d(GlobalHeaderHandler.class.getName(), "reset");
+        Log.d(HeaderHandler.class.getName(), "reset");
         synchronized (LOCK) {
             headers = null;
         }
     }
 
     public boolean synchronizeHeaders() {
-        Log.d(GlobalHeaderHandler.class.getName(), "synchronizeHeaders");
+        Log.d(HeaderHandler.class.getName(), "synchronizeHeaders");
         if (headerDialog == null) {
-            Log.e(GlobalHeaderHandler.class.getName(), "headerDialog is null");
+            Log.e(HeaderHandler.class.getName(), "headerDialog is null");
             return false;
         }
         try {
@@ -89,12 +89,12 @@ public class GlobalHeaderHandler {
                 } else if (DBSyncHandler.Action.DELETE.equals(actionWrapper.action())) {
                     deleteHeader(actionWrapper.object());
                 } else {
-                    Log.e(GlobalHeaderHandler.class.getName(), "Unknown action " + actionWrapper.action());
+                    Log.e(HeaderHandler.class.getName(), "Unknown action " + actionWrapper.action());
                 }
             }
             return !headerActions.isEmpty();
         } catch (Exception exc) {
-            Log.e(GlobalHeaderHandler.class.getName(), "Error synchronizing headers.", exc);
+            Log.e(HeaderHandler.class.getName(), "Error synchronizing headers.", exc);
             if (globalSettingsActivity != null) {
                 showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
             }
@@ -113,17 +113,17 @@ public class GlobalHeaderHandler {
     }
 
     private void insertHeader(Header header) {
-        Log.d(GlobalHeaderHandler.class.getName(), "insertHeader, header) = " + header);
+        Log.d(HeaderHandler.class.getName(), "insertHeader, header) = " + header);
         headerDAO.insertHeader(header);
     }
 
     private void updateHeader(Header header) {
-        Log.d(GlobalHeaderHandler.class.getName(), "updateHeader, header = " + header);
+        Log.d(HeaderHandler.class.getName(), "updateHeader, header = " + header);
         headerDAO.updateHeader(header);
     }
 
     private void deleteHeader(Header header) {
-        Log.d(GlobalHeaderHandler.class.getName(), "deleteHeader, header = " + header);
+        Log.d(HeaderHandler.class.getName(), "deleteHeader, header = " + header);
         headerDAO.deleteHeader(header);
     }
 

@@ -56,7 +56,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
@@ -64,7 +64,7 @@ import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
-import net.ibbaa.keepitup.ui.support.GlobalHeadersSupport;
+import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -81,7 +81,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport, GlobalHeadersSupport {
+public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport, HeadersSupport {
 
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
@@ -188,7 +188,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.e(GlobalSettingsActivity.class.getName(), "Error deleting headers", exc);
         }
         getTimeBasedSuspensionScheduler().restart();
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(this);
+        HeaderHandler handler = new HeaderHandler(this);
         handler.reset();
     }
 
@@ -380,11 +380,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private int getSuspensionIntervalsTextSize(int intervalCount) {
         if (intervalCount <= 1) {
-            return getResources().getInteger(R.integer.suspension_intervals_text_size_normal);
+            return getResources().getInteger(R.integer.activity_global_settings_suspension_intervals_text_size_normal);
         } else if (intervalCount == 2) {
-            return getResources().getInteger(R.integer.suspension_intervals_text_size_smaller);
+            return getResources().getInteger(R.integer.activity_global_settings_suspension_intervals_text_size_smaller);
         } else {
-            return getResources().getInteger(R.integer.suspension_intervals_text_size_small);
+            return getResources().getInteger(R.integer.activity_global_settings_suspension_intervals_text_size_small);
         }
     }
 
@@ -568,7 +568,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextLayoutFields");
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
         gridLayout.removeAllViews();
-        List<Header> headers = new GlobalHeaderHandler(this).getGlobalHeaders();
+        List<Header> headers = new HeaderHandler(this).getGlobalHeaders();
         if (headers.isEmpty()) {
             Log.d(GlobalSettingsActivity.class.getName(), "No headers defined");
             gridLayout.setColumnCount(1);
@@ -591,8 +591,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsLayout");
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
         int textSize = getGlobalHeadersTextSize(headers.size());
-        int maxLines = getResources().getInteger(R.integer.global_headers_max_value_lines);
-        int maxVisibleHeaders = getResources().getInteger(R.integer.global_headers_max_value_visible_headers);
+        int maxLines = getResources().getInteger(R.integer.activity_global_settings_global_headers_max_value_lines);
+        int maxVisibleHeaders = getResources().getInteger(R.integer.activity_global_settings_global_headers_max_value_visible_headers);
         int visibleCount = globalHeadersExpanded ? headers.size() : Math.min(headers.size(), maxVisibleHeaders);
         Log.d(GlobalSettingsActivity.class.getName(), "Header count is " + headers.size());
         Log.d(GlobalSettingsActivity.class.getName(), "Visible count is " + visibleCount);
@@ -658,11 +658,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private int getGlobalHeadersTextSize(int headerCount) {
         if (headerCount <= 1) {
-            return getResources().getInteger(R.integer.global_headers_text_size_normal);
+            return getResources().getInteger(R.integer.activity_global_settings_global_headers_text_size_normal);
         } else if (headerCount == 2) {
-            return getResources().getInteger(R.integer.global_headers_text_size_smaller);
+            return getResources().getInteger(R.integer.activity_global_settings_global_headers_text_size_smaller);
         } else {
-            return getResources().getInteger(R.integer.global_headers_text_size_small);
+            return getResources().getInteger(R.integer.activity_global_settings_global_headers_text_size_small);
         }
     }
 
@@ -734,8 +734,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private void showGlobalHeadersDialog(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "showGlobalHeadersDialog");
-        GlobalHeadersDialog globalHeadersDialog = new GlobalHeadersDialog();
-        globalHeadersDialog.show(getSupportFragmentManager(), GlobalHeadersDialog.class.getName());
+        HeadersDialog headersDialog = new HeadersDialog();
+        headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }
 
     private void prepareLogFileSwitch() {
@@ -1105,20 +1105,20 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     }
 
     @Override
-    public void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog) {
+    public void onHeadersDialogOkClicked(HeadersDialog headersDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onGlobalHeadersDialogOkClicked");
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(this, globalHeadersDialog);
+        HeaderHandler handler = new HeaderHandler(this, headersDialog);
         if (handler.synchronizeHeaders()) {
             handler.reset();
             prepareGlobalHeadersField();
         }
-        globalHeadersDialog.dismiss();
+        headersDialog.dismiss();
     }
 
     @Override
-    public void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog) {
+    public void onHeadersDialogCancelClicked(HeadersDialog headersDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSGlobalHeadersCancelClicked");
-        globalHeadersDialog.dismiss();
+        headersDialog.dismiss();
     }
 
     private String getGlobalHeadersExpandedKey() {

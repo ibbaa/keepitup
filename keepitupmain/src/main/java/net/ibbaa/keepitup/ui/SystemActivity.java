@@ -1155,7 +1155,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(this);
+        HeaderHandler handler = new HeaderHandler(this);
         handler.reset();
         if (success) {
             NetworkTaskLog.clear();
@@ -1169,7 +1169,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         Log.d(SystemActivity.class.getName(), "onPurgeDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(this);
+        HeaderHandler handler = new HeaderHandler(this);
         handler.reset();
         if (success) {
             resetPreferences();

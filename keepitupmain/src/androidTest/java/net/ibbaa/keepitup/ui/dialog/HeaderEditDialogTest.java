@@ -48,33 +48,33 @@ import org.junit.runner.RunWith;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class GlobalHeadersEditDialogTest extends BaseUITest {
+public class HeaderEditDialogTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
 
     @Test
     public void testEmptyNameAndValue() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
-        onView(withId(R.id.textview_dialog_global_header_edit_title)).check(matches(withText("HTTP Header")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("")));
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEmptyNameAndValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
-        onView(withId(R.id.textview_dialog_global_header_edit_title)).check(matches(withText("HTTP Header")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("")));
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -82,8 +82,8 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -91,44 +91,44 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.textview_dialog_global_header_edit_title)).check(matches(withText("HTTP Header")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEditNameAndValue() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
-        onView(withId(R.id.textview_dialog_global_header_edit_title)).check(matches(withText("HTTP Header")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("name"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("value"));
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("name"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("value"));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEditNameAndValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("name"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("value"));
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("name"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("value"));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -136,8 +136,8 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("value", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("name")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("value")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("name")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("value")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -145,38 +145,38 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("value", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("name")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("value")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("name")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("value")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testNameAndValueSet() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
+        HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testNameAndValueSetScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
+        HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -184,8 +184,8 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("Value1", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -193,42 +193,42 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("Value1", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEditNameAndValueSet() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name2"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Name2"));
+        HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name2"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Name2"));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("Name2", header.getName());
         assertEquals("Name2", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEditNameAndValueSetScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name2"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value2"));
+        HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name2"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value2"));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
@@ -236,118 +236,118 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("Value2", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name2")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value2")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name2")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value2")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
         dialog = getDialog();
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name2")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value2")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name2")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value2")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEditNameAndValueErrorColor() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Name2"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name\tTest"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Test\u007FMore"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("NameTest"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("TestMore"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Name2"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name\tTest"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test\u007FMore"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("NameTest"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("TestMore"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("NameTest", header.getName());
         assertEquals("TestMore", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testEditNameAndValueErrorColorScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("Name1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("Value1")));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Name2"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Name1")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("Value1")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Name2"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name\tTest"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Test\u007FMore"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name\tTest"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test\u007FMore"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textErrorColor)));
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("NameTest"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("TestMore"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
-        GlobalHeaderEditDialog dialog = getDialog();
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("NameTest"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("TestMore"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        HeaderEditDialog dialog = getDialog();
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("NameTest", header.getName());
         assertEquals("TestMore", header.getValue());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testNameValidationFailed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText(""));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Äpfel"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Äpfel"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("success"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("success"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -355,17 +355,17 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testValueValidationFailed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Test\nMore"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test\nMore"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Header value"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText(""));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -373,21 +373,21 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testNameAndValueValidationFailed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Test\nMore"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Test\nMore"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Test\nMore"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test\nMore"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Header value"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("success"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("success"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("success"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("success"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -395,11 +395,11 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testAuthorizationHeaderAddOk() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
@@ -412,11 +412,11 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testAuthorizationHeaderAddOkScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
@@ -431,11 +431,11 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testAuthorizationHeaderAddCancel() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
@@ -448,11 +448,11 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testAuthorizationHeaderAddCancelScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openGlobalHeaderEditDialog(getHeader(1));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Authorization"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("xyz"));
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
@@ -467,26 +467,26 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
     @Test
     public void testCopyPasteNoOption() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         prepareMockClipboardManager(dialog);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyPasteNameCancel() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -494,23 +494,23 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyPasteNameCancelScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -519,22 +519,22 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyPasteValueCancel() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -542,23 +542,23 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyPasteValueCancelScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -567,42 +567,42 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyOptionName() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyOptionNameScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         prepareMockClipboardManager(dialog);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
@@ -612,42 +612,42 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyOptionValue() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyOptionValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         prepareMockClipboardManager(dialog);
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
@@ -657,45 +657,45 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testPasteOptionName() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testPasteOptionNameScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText(""));
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -705,45 +705,45 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testPasteOptionValue() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testPasteOptionValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText(""));
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -753,22 +753,22 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyPasteOption() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("test"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -776,21 +776,21 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("abc"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -798,10 +798,10 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -809,23 +809,23 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("abc")));
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("abc")));
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
     @Test
     public void testCopyPasteOptionScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        GlobalHeaderEditDialog dialog = openGlobalHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("test"));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
         rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -833,21 +833,21 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("test")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("abc"));
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -855,13 +855,13 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_value)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
         rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(longClick());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -869,30 +869,30 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_global_header_edit_name)).check(matches(withText("abc")));
-        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("abc")));
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
-    private MockClipboardManager prepareMockClipboardManager(GlobalHeaderEditDialog dialog) {
+    private MockClipboardManager prepareMockClipboardManager(HeaderEditDialog dialog) {
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();
         dialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
     }
 
-    private GlobalHeaderEditDialog openGlobalHeaderEditDialog(Header header) {
-        GlobalHeaderEditDialog globalHeaderEditDialog = new GlobalHeaderEditDialog();
-        Bundle bundle = BundleUtil.bundleToBundle(globalHeaderEditDialog.getHeaderKey(), header.toBundle());
-        bundle = BundleUtil.integerToBundle(globalHeaderEditDialog.getPositionKey(), -1, bundle);
-        globalHeaderEditDialog.setArguments(bundle);
-        globalHeaderEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalHeaderEditDialog.class.getName());
+    private HeaderEditDialog openHeaderEditDialog(Header header) {
+        HeaderEditDialog headerEditDialog = new HeaderEditDialog();
+        Bundle bundle = BundleUtil.bundleToBundle(headerEditDialog.getHeaderKey(), header.toBundle());
+        bundle = BundleUtil.integerToBundle(headerEditDialog.getPositionKey(), -1, bundle);
+        headerEditDialog.setArguments(bundle);
+        headerEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), HeaderEditDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
-        return globalHeaderEditDialog;
+        return headerEditDialog;
     }
 
-    private GlobalHeaderEditDialog getDialog() {
-        return (GlobalHeaderEditDialog) getDialog(activityScenario, GlobalHeaderEditDialog.class);
+    private HeaderEditDialog getDialog() {
+        return (HeaderEditDialog) getDialog(activityScenario, HeaderEditDialog.class);
     }
 
     @SuppressWarnings("SameParameterValue")

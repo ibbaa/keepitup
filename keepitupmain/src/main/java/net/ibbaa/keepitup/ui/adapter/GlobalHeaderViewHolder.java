@@ -25,27 +25,27 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 public class GlobalHeaderViewHolder extends RecyclerView.ViewHolder {
 
-    private final GlobalHeadersDialog headersDialog;
+    private final HeadersDialog headersDialog;
     private final TextView noHeadersText;
     private final CardView cardView;
     private final TextView headerName;
     private final TextView headerValue;
     private final ImageView headerDeleteImage;
 
-    public GlobalHeaderViewHolder(@NonNull View itemView, GlobalHeadersDialog headersDialog) {
+    public GlobalHeaderViewHolder(@NonNull View itemView, HeadersDialog headersDialog) {
         super(itemView);
         this.headersDialog = headersDialog;
-        noHeadersText = itemView.findViewById(R.id.textview_list_item_global_header_no_header);
+        noHeadersText = itemView.findViewById(R.id.textview_list_item_header_no_header);
         cardView = itemView.findViewById(R.id.cardview_list_item_global_header);
         cardView.setOnClickListener(this::onHeaderOpenClicked);
-        headerName = itemView.findViewById(R.id.textview_list_item_global_header_name);
-        headerValue = itemView.findViewById(R.id.textview_list_item_global_header_value);
-        headerDeleteImage = itemView.findViewById(R.id.imageview_list_item_global_header_delete);
+        headerName = itemView.findViewById(R.id.textview_list_item_header_name);
+        headerValue = itemView.findViewById(R.id.textview_list_item_header_value);
+        headerDeleteImage = itemView.findViewById(R.id.imageview_list_item_header_delete);
         headerDeleteImage.setOnClickListener(this::onHeaderDeleteClicked);
     }
 

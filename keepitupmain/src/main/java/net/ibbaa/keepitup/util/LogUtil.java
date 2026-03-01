@@ -116,12 +116,12 @@ public class LogUtil {
 
     public static String formatLogEntryLog(Context context, NetworkTask task, LogEntry entry) {
         String networkTaskTitle = UIUtil.getTextForNamedTask(context, task);
-        String formattedTitleText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_title, networkTaskTitle);
+        String formattedTitleText = context.getResources().getString(R.string.list_item_log_entry_title, networkTaskTitle);
         String successText = entry.isSuccess() ? context.getResources().getString(R.string.string_successful) : context.getResources().getString(R.string.string_not_successful);
-        String formattedSuccessText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_success, successText);
+        String formattedSuccessText = context.getResources().getString(R.string.list_item_log_entry_success, successText);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(entry.getTimestamp()));
-        String formattedTimestampText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_timestamp, timestampText);
-        String formattedMessageText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_message, entry.getMessage());
+        String formattedTimestampText = context.getResources().getString(R.string.list_item_log_entry_timestamp, timestampText);
+        String formattedMessageText = context.getResources().getString(R.string.list_item_log_entry_message, entry.getMessage());
         return formattedTitleText + ", " + formattedSuccessText + ", " + formattedTimestampText + ", " + formattedMessageText;
     }
 }

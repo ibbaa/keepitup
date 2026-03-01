@@ -28,7 +28,7 @@
         android:layout_margin="@dimen/textview_list_item_suspension_interval_margin"
         android:layout_gravity="center_horizontal"
         android:textStyle="normal"
-        android:text="@string/text_dialog_suspension_intervals_no_intervals" />
+        android:text="@string/list_item_suspension_interval_no_intervals" />
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardview_list_item_suspension_interval"
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_suspension_intervals_delete_interval"
+                android:contentDescription="@string/list_item_suspension_interval_delete_interval"
                 app:srcCompat="@drawable/icon_delete_selector" />
 
         </LinearLayout>

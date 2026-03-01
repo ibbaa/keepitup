@@ -33,13 +33,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
+import net.ibbaa.keepitup.ui.HeaderHandler;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.GlobalHeaderAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
-import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
-import net.ibbaa.keepitup.ui.support.GlobalHeadersSupport;
+import net.ibbaa.keepitup.ui.support.HeaderEditSupport;
+import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHeaderEditSupport, ConfirmSupport, SwipeDeleteSupport {
+public class HeadersDialog extends DialogFragmentBase implements HeaderEditSupport, ConfirmSupport, SwipeDeleteSupport {
 
     private View dialogView;
     private RecyclerView globalHeadersRecyclerView;
@@ -59,18 +59,18 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onCreate");
+        Log.d(HeadersDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onCreateView");
-        dialogView = inflater.inflate(R.layout.dialog_global_headers, container);
+        Log.d(HeadersDialog.class.getName(), "onCreateView");
+        dialogView = inflater.inflate(R.layout.dialog_headers, container);
         initEdgeToEdgeInsets(dialogView);
         boolean containsSavedState = containsSavedState(savedInstanceState);
-        Log.d(GlobalHeadersDialog.class.getName(), "containsSavedState is " + containsSavedState);
+        Log.d(HeadersDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getGlobalHeadersAdapterKey()) : null;
         prepareGlobalHeadersRecyclerView(adapterState);
         prepareAddImageButton();
@@ -80,28 +80,28 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onSaveInstanceState");
+        Log.d(HeadersDialog.class.getName(), "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         Bundle adapterBundle = getAdapter().saveStateToBundle();
         outState.putBundle(getGlobalHeadersAdapterKey(), adapterBundle);
     }
 
     private boolean containsSavedState(Bundle savedInstanceState) {
-        Log.d(GlobalHeadersDialog.class.getName(), "containsSavedState");
+        Log.d(HeadersDialog.class.getName(), "containsSavedState");
         if (savedInstanceState == null) {
-            Log.d(GlobalHeadersDialog.class.getName(), "savedInstanceState bundle is null");
+            Log.d(HeadersDialog.class.getName(), "savedInstanceState bundle is null");
             return false;
         }
         return savedInstanceState.containsKey(getGlobalHeadersAdapterKey());
     }
 
     private String getGlobalHeadersAdapterKey() {
-        return GlobalHeadersDialog.class.getSimpleName() + "GlobalHeadersAdapter";
+        return HeadersDialog.class.getSimpleName() + "GlobalHeadersAdapter";
     }
 
     private void prepareGlobalHeadersRecyclerView(Bundle adapterState) {
-        Log.d(GlobalHeadersDialog.class.getName(), "prepareGlobalHeadersRecyclerView");
-        globalHeadersRecyclerView = dialogView.findViewById(R.id.listview_dialog_global_headers_headers);
+        Log.d(HeadersDialog.class.getName(), "prepareGlobalHeadersRecyclerView");
+        globalHeadersRecyclerView = dialogView.findViewById(R.id.listview_dialog_headers_headers);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         globalHeadersRecyclerView.setLayoutManager(layoutManager);
         globalHeadersRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -116,42 +116,42 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
     }
 
     private void prepareAddImageButton() {
-        Log.d(GlobalHeadersDialog.class.getName(), "prepareAddImageButton");
-        ImageView addImage = dialogView.findViewById(R.id.imageview_dialog_global_headers_add);
+        Log.d(HeadersDialog.class.getName(), "prepareAddImageButton");
+        ImageView addImage = dialogView.findViewById(R.id.imageview_dialog_headers_add);
         addImage.setOnClickListener(this::onHeaderAddClicked);
     }
 
     private void prepareOkCancelImageButtons() {
-        Log.d(GlobalHeadersDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_global_headers_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_global_headers_cancel);
+        Log.d(HeadersDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_headers_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_headers_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
     public void onHeaderOpenClicked(View view, int index) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onHeaderOpenClicked for index " + index);
+        Log.d(HeadersDialog.class.getName(), "onHeaderOpenClicked for index " + index);
         Header header = getAdapter().getItem(index);
         if (header == null) {
-            Log.e(GlobalHeadersDialog.class.getName(), "onHeaderOpenClicked, header is null");
+            Log.e(HeadersDialog.class.getName(), "onHeaderOpenClicked, header is null");
             return;
         }
         showGlobalHeaderEditDialog(header, index);
     }
 
     public void onHeaderDeleteClicked(View view, int index) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onHeaderDeleteClicked for index " + index);
+        Log.d(HeadersDialog.class.getName(), "onHeaderDeleteClicked for index " + index);
         if (index < 0) {
-            Log.e(GlobalHeadersDialog.class.getName(), "index " + index + " is invalid");
+            Log.e(HeadersDialog.class.getName(), "index " + index + " is invalid");
             return;
         }
         openConfirmDialog(index, ConfirmDialog.Type.DELETEHEADER);
     }
 
     public void onDeleteSwiped(int index) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onHeaderDeleteSwiped for index " + index);
+        Log.d(HeadersDialog.class.getName(), "onHeaderDeleteSwiped for index " + index);
         if (index < 0) {
-            Log.e(GlobalHeadersDialog.class.getName(), "index " + index + " is invalid");
+            Log.e(HeadersDialog.class.getName(), "index " + index + " is invalid");
             return;
         }
         openConfirmDialog(index, ConfirmDialog.Type.DELETEHEADERSWIPE);
@@ -168,28 +168,28 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
 
     @Override
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
+        Log.d(HeadersDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.DELETEHEADER.equals(type) || ConfirmDialog.Type.DELETEHEADERSWIPE.equals(type)) {
             int deletePosition = confirmDialog.getPosition();
             if (deletePosition >= 0) {
-                Log.d(GlobalHeadersDialog.class.getName(), "deleting header at deletePosition " + deletePosition);
+                Log.d(HeadersDialog.class.getName(), "deleting header at deletePosition " + deletePosition);
                 getAdapter().removeItem(deletePosition);
                 getAdapter().notifyItemRemoved(deletePosition);
                 if (ConfirmDialog.Type.DELETEHEADERSWIPE.equals(type)) {
                     reattachItemTouchHelper();
                 }
             } else {
-                Log.e(GlobalHeadersDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain deletePosition key " + confirmDialog.getPositionKey());
+                Log.e(HeadersDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain deletePosition key " + confirmDialog.getPositionKey());
             }
         } else {
-            Log.e(GlobalHeadersDialog.class.getName(), "Unknown type " + type);
+            Log.e(HeadersDialog.class.getName(), "Unknown type " + type);
         }
         confirmDialog.dismiss();
     }
 
     @Override
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onConfirmDialogCancelClicked");
+        Log.d(HeadersDialog.class.getName(), "onConfirmDialogCancelClicked");
         if (ConfirmDialog.Type.DELETEHEADERSWIPE.equals(type)) {
             int position = confirmDialog.getPosition();
             getAdapter().notifyItemChanged(position);
@@ -199,8 +199,8 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
     }
 
     private void reattachItemTouchHelper() {
-        Log.d(GlobalHeadersDialog.class.getName(), "reattachItemTouchHelper");
-        RecyclerView recyclerView = dialogView.findViewById(R.id.listview_dialog_global_headers_headers);
+        Log.d(HeadersDialog.class.getName(), "reattachItemTouchHelper");
+        RecyclerView recyclerView = dialogView.findViewById(R.id.listview_dialog_headers_headers);
         if (itemTouchHelper != null) {
             itemTouchHelper.attachToRecyclerView(null);
         }
@@ -212,28 +212,28 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
 
     @Override
     @SuppressWarnings("NotifyDataSetChanged")
-    public void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog, int position) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onGlobalHeaderEditDialogOkClicked with position " + position);
+    public void onHeaderEditDialogOkClicked(HeaderEditDialog headerEditDialog, int position) {
+        Log.d(HeadersDialog.class.getName(), "onGlobalHeaderEditDialogOkClicked with position " + position);
         if (position >= 0) {
             getAdapter().removeItem(position);
         }
-        Header header = globalHeaderEditDialog.getHeader();
+        Header header = headerEditDialog.getHeader();
         getAdapter().addItem(header);
         List<Header> headers = sortHeaderList(getAdapter().getAllItems());
         getAdapter().replaceItems(headers);
         getAdapter().notifyDataSetChanged();
-        globalHeaderEditDialog.dismiss();
+        headerEditDialog.dismiss();
     }
 
     @Override
-    public void onGlobalHeaderEditDialogCancelClicked(GlobalHeaderEditDialog globalHeaderEditDialog) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onGlobalHeaderEditDialogCancelClicked");
-        globalHeaderEditDialog.dismiss();
+    public void onHeaderEditDialogCancelClicked(HeaderEditDialog headerEditDialog) {
+        Log.d(HeadersDialog.class.getName(), "onGlobalHeaderEditDialogCancelClicked");
+        headerEditDialog.dismiss();
     }
 
     @Override
     public List<String> getExistingHeaderNames() {
-        Log.d(GlobalHeadersDialog.class.getName(), "getExistingHeaderNames");
+        Log.d(HeadersDialog.class.getName(), "getExistingHeaderNames");
         List<String> names = new ArrayList<>();
         List<Header> headers = getAdapter().getAllItems();
         for (Header header : headers) {
@@ -243,28 +243,28 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
     }
 
     private void onHeaderAddClicked(View view) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onHeaderAddClicked");
+        Log.d(HeadersDialog.class.getName(), "onHeaderAddClicked");
         showGlobalHeaderEditDialog(new Header(), -1);
     }
 
     private void onOkClicked(View view) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onOkClicked");
-        GlobalHeadersSupport globalHeadersSupport = getGlobalHeadersSupport();
-        if (globalHeadersSupport != null) {
-            globalHeadersSupport.onGlobalHeadersDialogOkClicked(this);
+        Log.d(HeadersDialog.class.getName(), "onOkClicked");
+        HeadersSupport headersSupport = getGlobalHeadersSupport();
+        if (headersSupport != null) {
+            headersSupport.onHeadersDialogOkClicked(this);
         } else {
-            Log.e(GlobalHeadersDialog.class.getName(), "globalHeadersSupport is null");
+            Log.e(HeadersDialog.class.getName(), "globalHeadersSupport is null");
             dismiss();
         }
     }
 
     private void onCancelClicked(View view) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onCancelClicked");
-        GlobalHeadersSupport globalHeadersSupport = getGlobalHeadersSupport();
-        if (globalHeadersSupport != null) {
-            globalHeadersSupport.onGlobalHeadersDialogCancelClicked(this);
+        Log.d(HeadersDialog.class.getName(), "onCancelClicked");
+        HeadersSupport headersSupport = getGlobalHeadersSupport();
+        if (headersSupport != null) {
+            headersSupport.onHeadersDialogCancelClicked(this);
         } else {
-            Log.e(GlobalHeadersDialog.class.getName(), "globalHeadersSupport is null");
+            Log.e(HeadersDialog.class.getName(), "globalHeadersSupport is null");
             dismiss();
         }
     }
@@ -274,14 +274,14 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
     }
 
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
-        Log.d(GlobalHeadersDialog.class.getName(), "restoreAdapter");
+        Log.d(HeadersDialog.class.getName(), "restoreAdapter");
         GlobalHeaderAdapter adapter = new GlobalHeaderAdapter(Collections.emptyList(), this);
         adapter.restoreStateFromBundle(adapterState);
         return adapter;
     }
 
     private RecyclerView.Adapter<?> createAdapter() {
-        Log.d(GlobalHeadersDialog.class.getName(), "createAdapter");
+        Log.d(HeadersDialog.class.getName(), "createAdapter");
         return new GlobalHeaderAdapter(getGlobalHeaderHandler().getGlobalHeaders(), this);
     }
 
@@ -289,44 +289,44 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
         return (GlobalHeaderAdapter) getGlobalHeadersRecyclerView().getAdapter();
     }
 
-    public GlobalHeaderHandler getGlobalHeaderHandler() {
-        Log.d(GlobalHeadersDialog.class.getName(), "getGlobalHeaderHandler");
+    public HeaderHandler getGlobalHeaderHandler() {
+        Log.d(HeadersDialog.class.getName(), "getGlobalHeaderHandler");
         Activity activity = getActivity();
         if (!(activity instanceof GlobalSettingsActivity)) {
-            Log.e(GlobalHeadersDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
+            Log.e(HeadersDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
             return null;
         }
-        return new GlobalHeaderHandler((GlobalSettingsActivity) activity, this);
+        return new HeaderHandler((GlobalSettingsActivity) activity, this);
     }
 
-    private GlobalHeadersSupport getGlobalHeadersSupport() {
-        Log.d(GlobalHeadersDialog.class.getName(), "getGlobalHeadersSupport");
+    private HeadersSupport getGlobalHeadersSupport() {
+        Log.d(HeadersDialog.class.getName(), "getGlobalHeadersSupport");
         Activity activity = getActivity();
         if (activity == null) {
-            Log.e(GlobalHeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is null");
+            Log.e(HeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is null");
             return null;
         }
-        if (!(activity instanceof GlobalHeadersSupport)) {
-            Log.e(GlobalHeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is not an instance of " + GlobalHeadersSupport.class.getSimpleName());
+        if (!(activity instanceof HeadersSupport)) {
+            Log.e(HeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is not an instance of " + HeadersSupport.class.getSimpleName());
             return null;
         }
-        return (GlobalHeadersSupport) activity;
+        return (HeadersSupport) activity;
     }
 
     private void showGlobalHeaderEditDialog(Header header, int position) {
-        Log.d(GlobalHeadersDialog.class.getName(), "showGlobalHeaderEditDialog with header " + header + " and position " + position);
-        GlobalHeaderEditDialog headerEditDialog = new GlobalHeaderEditDialog();
+        Log.d(HeadersDialog.class.getName(), "showGlobalHeaderEditDialog with header " + header + " and position " + position);
+        HeaderEditDialog headerEditDialog = new HeaderEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(headerEditDialog.getHeaderKey(), header.toBundle());
         bundle = BundleUtil.integerToBundle(headerEditDialog.getPositionKey(), position, bundle);
         headerEditDialog.setArguments(bundle);
-        showDialog(headerEditDialog, GlobalHeaderEditDialog.class.getName());
+        showDialog(headerEditDialog, HeaderEditDialog.class.getName());
     }
 
     private void showDialog(DialogFragment dialog, String name) {
         try {
             dialog.show(getParentFragmentManager(), name);
         } catch (Exception exc) {
-            Log.e(GlobalHeadersDialog.class.getName(), "Error opening dialog", exc);
+            Log.e(HeadersDialog.class.getName(), "Error opening dialog", exc);
         }
     }
 

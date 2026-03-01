@@ -22,63 +22,63 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textview_list_item_global_header_no_header"
+        android:id="@+id/textview_list_item_header_no_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/textview_list_item_global_header_margin"
+        android:layout_margin="@dimen/textview_list_item_header_margin"
         android:layout_gravity="center_horizontal"
         android:textStyle="normal"
-        android:text="@string/text_dialog_global_headers_no_headers" />
+        android:text="@string/text_dialog_headers_no_headers" />
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardview_list_item_global_header"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cardview_list_item_global_header_margin"
-        card_view:cardCornerRadius="@dimen/cardview_list_item_global_header_corner_radius"
-        app:cardElevation="@dimen/cardview_list_item_global_header_card_elevation"
+        android:layout_margin="@dimen/cardview_list_item_header_margin"
+        card_view:cardCornerRadius="@dimen/cardview_list_item_header_corner_radius"
+        app:cardElevation="@dimen/cardview_list_item_header_card_elevation"
         app:cardBackgroundColor="@color/cardBackgroundColor">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/relativelayout_list_item_global_header_padding">
+            android:padding="@dimen/relativelayout_list_item_header_padding">
 
             <ImageView
-                android:id="@+id/imageview_list_item_global_header_delete"
+                android:id="@+id/imageview_list_item_header_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_global_headers_delete_header"
+                android:contentDescription="@string/label_dialog_headers_delete_header"
                 app:srcCompat="@drawable/icon_delete_selector" />
 
             <TextView
-                android:id="@+id/textview_list_item_global_header_name"
+                android:id="@+id/textview_list_item_header_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@id/imageview_list_item_global_header_delete"
+                android:layout_toStartOf="@id/imageview_list_item_header_delete"
                 android:textStyle="bold"
                 android:singleLine="true"
-                android:textSize="@dimen/list_item_global_header_text_size_name"
+                android:textSize="@dimen/list_item_header_text_size_name"
                 android:ellipsize="end"
                 android:text="" />
 
             <TextView
-                android:id="@+id/textview_list_item_global_header_value"
+                android:id="@+id/textview_list_item_header_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textview_list_item_global_header_name"
+                android:layout_below="@id/textview_list_item_header_name"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="@dimen/textview_list_item_global_header_value_margin_top"
-                android:layout_marginEnd="@dimen/textview_list_item_global_header_value_margin_end"
-                android:maxLines="@integer/list_item_global_header_max_value_lines"
+                android:layout_marginTop="@dimen/textview_list_item_header_value_margin_top"
+                android:layout_marginEnd="@dimen/textview_list_item_header_value_margin_end"
+                android:maxLines="@integer/list_item_header_max_value_lines"
                 android:singleLine="false"
-                android:textSize="@dimen/list_item_global_header_text_size_value"
+                android:textSize="@dimen/list_item_header_text_size_value"
                 android:ellipsize="end"
                 android:text="" />
 

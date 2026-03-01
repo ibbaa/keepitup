@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 
-public interface GlobalHeadersSupport {
+public interface HeadersSupport {
 
-    void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog);
+    void onHeadersDialogOkClicked(HeadersDialog headersDialog);
 
-    void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog);
+    void onHeadersDialogCancelClicked(HeadersDialog headersDialog);
 }

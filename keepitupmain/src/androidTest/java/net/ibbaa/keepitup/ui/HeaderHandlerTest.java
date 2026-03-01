@@ -28,7 +28,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,7 +40,7 @@ import java.util.List;
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
-public class GlobalHeaderHandlerTest extends BaseUITest {
+public class HeaderHandlerTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
 
@@ -58,7 +58,7 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
 
     @Test
     public void testGetGlobalHeaders() {
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
         handler.reset();
         assertEquals(0, handler.getGlobalHeaders().size());
         getHeaderDAO().insertHeader(getHeader1(-1));
@@ -77,9 +77,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
     @Test
     public void testSynchronizeHeaderEmpty() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
+        HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
         handler.reset();
         assertFalse(handler.synchronizeHeaders());
         assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
@@ -93,9 +93,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader2(-1));
         getHeaderDAO().insertHeader(getHeader2(1));
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
+        HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         assertTrue(handler.synchronizeHeaders());
@@ -108,9 +108,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
     @Test
     public void testSynchronizeIntervalsAdd() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
+        HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().addItem(getHeader1(-1));
         headersDialog.getAdapter().addItem(getHeader2(-1));
@@ -128,9 +128,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getHeaderDAO().insertHeader(getHeader2(1));
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
+        HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         headersDialog.getAdapter().addItem(header1);
@@ -147,9 +147,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getHeaderDAO().insertHeader(getHeader2(1));
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
+        HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         header2.setName("name3");
@@ -171,9 +171,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader2(-1));
         Header header3 = getHeaderDAO().insertHeader(getHeader3(-1));
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
+        HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         header3.setName("anotherName");
@@ -187,9 +187,9 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         activityScenario.close();
     }
 
-    private GlobalHeadersDialog openGlobalHeadersDialog() {
-        GlobalHeadersDialog headersDialog = new GlobalHeadersDialog();
-        headersDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalHeadersDialog.class.getName());
+    private HeadersDialog openGlobalHeadersDialog() {
+        HeadersDialog headersDialog = new HeadersDialog();
+        headersDialog.show(getActivity(activityScenario).getSupportFragmentManager(), HeadersDialog.class.getName());
         return headersDialog;
     }
 

@@ -18,8 +18,8 @@ package net.ibbaa.keepitup;
 
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManagerTest;
 import net.ibbaa.keepitup.ui.DefaultsActivityTest;
-import net.ibbaa.keepitup.ui.GlobalHeaderHandlerTest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivityTest;
+import net.ibbaa.keepitup.ui.HeaderHandlerTest;
 import net.ibbaa.keepitup.ui.IntervalHandlerTest;
 import net.ibbaa.keepitup.ui.LogHandlerTest;
 import net.ibbaa.keepitup.ui.NetworkTaskHandlerTest;
@@ -38,8 +38,8 @@ import net.ibbaa.keepitup.ui.dialog.FileChooseDialogFileModeTest;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialogFolderModeTest;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialogMockTest;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialogTest;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialogTest;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersEditDialogTest;
+import net.ibbaa.keepitup.ui.dialog.HeaderEditDialogTest;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialogTest;
 import net.ibbaa.keepitup.ui.dialog.InfoDialogTest;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialogTest;
 import net.ibbaa.keepitup.ui.dialog.PasswordInputDialogTest;
@@ -62,7 +62,7 @@ import org.junit.runners.Suite;
         //net.ibbaa.keepitup.ui
         ContextOptionsSupportManagerTest.class,
         DefaultsActivityTest.class,
-        GlobalHeaderHandlerTest.class,
+        HeaderHandlerTest.class,
         GlobalSettingsActivityTest.class,
         IntervalHandlerTest.class,
         LogHandlerTest.class,
@@ -83,8 +83,8 @@ import org.junit.runners.Suite;
         FileChooseDialogFolderModeTest.class,
         FileChooseDialogMockTest.class,
         GeneralMessageDialogTest.class,
-        GlobalHeadersDialogTest.class,
-        GlobalHeadersEditDialogTest.class,
+        HeadersDialogTest.class,
+        HeaderEditDialogTest.class,
         InfoDialogTest.class,
         NetworkTaskEditDialogTest.class,
         PasswordInputDialogTest.class,

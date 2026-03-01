@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.ArrayList;
@@ -37,9 +37,9 @@ import java.util.List;
 public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHolder> {
 
     private final List<Header> headers;
-    private final GlobalHeadersDialog headersDialog;
+    private final HeadersDialog headersDialog;
 
-    public GlobalHeaderAdapter(List<Header> headers, GlobalHeadersDialog headersDialog) {
+    public GlobalHeaderAdapter(List<Header> headers, HeadersDialog headersDialog) {
         this.headers = new ArrayList<>();
         this.headersDialog = headersDialog;
         replaceItems(headers);
@@ -49,7 +49,7 @@ public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHo
     @Override
     public GlobalHeaderViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(GlobalHeaderAdapter.class.getName(), "onCreateViewHolder");
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_global_header, viewGroup, false);
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_header, viewGroup, false);
         return new GlobalHeaderViewHolder(itemView, headersDialog);
     }
 

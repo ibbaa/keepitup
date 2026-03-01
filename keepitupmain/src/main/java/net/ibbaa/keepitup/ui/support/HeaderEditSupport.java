@@ -16,15 +16,15 @@
 
 package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.GlobalHeaderEditDialog;
+import net.ibbaa.keepitup.ui.dialog.HeaderEditDialog;
 
 import java.util.List;
 
-public interface GlobalHeaderEditSupport {
+public interface HeaderEditSupport {
 
-    void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog, int position);
+    void onHeaderEditDialogOkClicked(HeaderEditDialog headerEditDialog, int position);
 
-    void onGlobalHeaderEditDialogCancelClicked(GlobalHeaderEditDialog globalHeaderEditDialog);
+    void onHeaderEditDialogCancelClicked(HeaderEditDialog headerEditDialog);
 
     List<String> getExistingHeaderNames();
 }

@@ -51,7 +51,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:text="@string/text_activity_main_list_item_network_task_title"
+                android:text="@string/list_item_network_task_title"
                 tools:ignore="KeyboardInaccessibleWidget" />
 
             <LinearLayout
@@ -117,7 +117,7 @@
                 android:layout_row="1"
                 android:layout_column="0"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_status" />
+                android:text="@string/list_item_network_task_status" />
 
             <ImageView
                 android:id="@+id/imageview_list_item_network_task_start_stop"
@@ -146,7 +146,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_instances" />
+                android:text="@string/list_item_network_task_instances" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_accesstype"
@@ -157,7 +157,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_access_type" />
+                android:text="@string/list_item_network_task_access_type" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_address"
@@ -168,7 +168,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_address" />
+                android:text="@string/list_item_network_task_address" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_connect_to"
@@ -179,7 +179,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_connect_to" />
+                android:text="@string/list_item_network_task_connect_to" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_interval"
@@ -190,7 +190,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_interval" />
+                android:text="@string/list_item_network_task_interval" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_ignore_ssl_error"
@@ -200,7 +200,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_ignore_ssl_error" />
+                android:text="@string/list_item_network_task_ignore_ssl_error" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_stop_on_success"
@@ -210,7 +210,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_stop_on_success" />
+                android:text="@string/list_item_network_task_stop_on_success" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_only_wifi"
@@ -220,7 +220,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_only_wifi" />
+                android:text="@string/list_item_network_task_only_wifi" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_notification"
@@ -230,7 +230,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_notification" />
+                android:text="@string/list_item_network_task_notification" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_last_exec_timestamp"
@@ -240,7 +240,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_last_exec_timestamp" />
+                android:text="@string/list_item_network_task_last_exec_timestamp" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_failure_count"
@@ -250,7 +250,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_failure_count" />
+                android:text="@string/list_item_network_task_failure_count" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_last_exec_message"
@@ -260,7 +260,7 @@
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_last_exec_message" />
+                android:text="@string/list_item_network_task_last_exec_message" />
 
         </GridLayout>
 
