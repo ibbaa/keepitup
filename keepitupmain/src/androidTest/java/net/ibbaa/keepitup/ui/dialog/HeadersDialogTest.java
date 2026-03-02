@@ -41,7 +41,7 @@ import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
+import net.ibbaa.keepitup.ui.DefaultsActivity;
 import net.ibbaa.keepitup.ui.HeaderHandler;
 
 import org.junit.Test;
@@ -56,13 +56,13 @@ public class HeadersDialogTest extends BaseUITest {
 
     @Test
     public void testOpenCloseDialog() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -72,9 +72,9 @@ public class HeadersDialogTest extends BaseUITest {
     @Test
     public void testNoHeaders() {
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("No headers defined")));
@@ -86,9 +86,9 @@ public class HeadersDialogTest extends BaseUITest {
     @Test
     public void testNoHeadersScreenRotation() {
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("No headers defined")));
@@ -111,9 +111,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -127,9 +127,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -159,9 +159,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(4));
         getHeaderDAO().insertHeader(getHeader(5));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(5)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -187,9 +187,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(4));
         getHeaderDAO().insertHeader(getHeader(5));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(5)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -241,9 +241,9 @@ public class HeadersDialogTest extends BaseUITest {
         header.setValue("122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890");
         getHeaderDAO().insertHeader(header);
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(allOf(withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(allOf(withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -256,9 +256,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderDeleteCancel() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -279,9 +279,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderSwipeDeleteCancel() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -302,9 +302,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderDeleteCancelScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -327,9 +327,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderSwipeDeleteCancelScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -352,9 +352,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderDelete() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -375,9 +375,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderSwipeDelete() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -398,9 +398,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderDeleteScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -423,9 +423,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderSwipeDeleteScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -450,9 +450,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -502,9 +502,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -554,9 +554,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -608,9 +608,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -660,9 +660,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderAddCancel() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
@@ -678,9 +678,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderAddCancelScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -698,9 +698,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderAddOk() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -726,9 +726,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderAddOkScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -758,9 +758,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
@@ -782,9 +782,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -808,9 +808,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(4));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name3"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value3"));
@@ -848,9 +848,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(4));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name3"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value3"));
@@ -890,9 +890,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
@@ -927,9 +927,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
@@ -963,9 +963,9 @@ public class HeadersDialogTest extends BaseUITest {
     @Test
     public void testNoHeadersAddValidationFailed() {
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name\nName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Name\nName"));
@@ -996,9 +996,9 @@ public class HeadersDialogTest extends BaseUITest {
     @Test
     public void testNoHeadersAddValidationFailedScreenRotation() {
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name\nName"));
@@ -1032,9 +1032,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name2"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value2"));
@@ -1079,9 +1079,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderOpenCancel() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
@@ -1099,9 +1099,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderOpenCancelScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name"));
@@ -1121,9 +1121,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderOpenOk() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
@@ -1144,9 +1144,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testDefaultHeaderOpenOkScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name"));
@@ -1171,9 +1171,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -1196,9 +1196,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1223,9 +1223,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -1258,9 +1258,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1294,9 +1294,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(2));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value\nValue"));
@@ -1332,9 +1332,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(2));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value\nValue"));
@@ -1372,9 +1372,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(2));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name1"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value1"));
@@ -1406,9 +1406,9 @@ public class HeadersDialogTest extends BaseUITest {
     @Test
     public void testAuthorizationHeaderAdd() {
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
@@ -1432,9 +1432,9 @@ public class HeadersDialogTest extends BaseUITest {
     @Test
     public void testAuthorizationHeaderAddScreenRotation() {
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
@@ -1461,9 +1461,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testAuthorizationHeaderOpen() {
         getHeaderDAO().insertHeader(getHeader(1));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
@@ -1488,9 +1488,9 @@ public class HeadersDialogTest extends BaseUITest {
     public void testAuthorizationHeaderOpenScreenRotation() {
         getHeaderDAO().insertHeader(getHeader(1));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
@@ -1519,9 +1519,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
@@ -1551,9 +1551,9 @@ public class HeadersDialogTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(2));
         getHeaderDAO().insertHeader(getHeader(3));
         resetGlobalHeaderHandler();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         rotateScreen(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());

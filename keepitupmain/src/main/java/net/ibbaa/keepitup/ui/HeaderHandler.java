@@ -37,17 +37,17 @@ public class HeaderHandler {
     private static List<Header> headers;
 
     private final HeaderDAO headerDAO;
-    private final GlobalSettingsActivity globalSettingsActivity;
+    private final DefaultsActivity defaultsActivity;
     private final HeadersDialog headerDialog;
 
-    public HeaderHandler(GlobalSettingsActivity globalSettingsActivity, HeadersDialog headerDialog) {
-        this.globalSettingsActivity = globalSettingsActivity;
+    public HeaderHandler(DefaultsActivity defaultsActivity, HeadersDialog headerDialog) {
+        this.defaultsActivity = defaultsActivity;
         this.headerDialog = headerDialog;
-        this.headerDAO = new HeaderDAO(globalSettingsActivity);
+        this.headerDAO = new HeaderDAO(defaultsActivity);
     }
 
     public HeaderHandler(Context context) {
-        this.globalSettingsActivity = null;
+        this.defaultsActivity = null;
         this.headerDialog = null;
         this.headerDAO = new HeaderDAO(context);
     }
@@ -100,7 +100,7 @@ public class HeaderHandler {
             return !headerActions.isEmpty();
         } catch (Exception exc) {
             Log.e(HeaderHandler.class.getName(), "Error synchronizing headers.", exc);
-            if (globalSettingsActivity != null) {
+            if (defaultsActivity != null) {
                 showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
             }
             return true;
@@ -135,10 +135,10 @@ public class HeaderHandler {
     }
 
     private void showMessageDialog(String errorMessage) {
-        Objects.requireNonNull(globalSettingsActivity).showMessageDialog(errorMessage);
+        Objects.requireNonNull(defaultsActivity).showMessageDialog(errorMessage);
     }
 
     private Resources getResources() {
-        return Objects.requireNonNull(globalSettingsActivity).getResources();
+        return Objects.requireNonNull(defaultsActivity).getResources();
     }
 }

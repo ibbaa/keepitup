@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
+import net.ibbaa.keepitup.ui.DefaultsActivity;
 import net.ibbaa.keepitup.ui.HeaderHandler;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.HeadersAdapter;
@@ -311,11 +311,11 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     public HeaderHandler getHeaderHandler() {
         Log.d(HeadersDialog.class.getName(), "getHeaderHandler");
         Activity activity = getActivity();
-        if (!(activity instanceof GlobalSettingsActivity)) {
+        if (!(activity instanceof DefaultsActivity)) {
             Log.e(HeadersDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
             return null;
         }
-        return new HeaderHandler((GlobalSettingsActivity) activity, this);
+        return new HeaderHandler((DefaultsActivity) activity, this);
     }
 
     private HeadersSupport getGlobalHeadersSupport() {

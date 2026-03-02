@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activity_defaults_title">Defaults</string>
     <string name="menu_action_activity_defaults_reset">Reset</string>
     <string name="label_activity_defaults_defaults">Defaults</string>
@@ -28,8 +28,17 @@
     <string name="label_activity_defaults_connect_to_port">Connect-to port</string>
     <string name="label_activity_defaults_stop_on_success">Stop on success</string>
     <string name="label_activity_defaults_ignore_ssl_error">Ignore SSL errors</string>
+    <string name="label_activity_defaults_global_headers">HTTP Header</string>
+    <string name="text_activity_defaults_global_headers_none">None</string>
+    <string name="text_activity_defaults_global_headers_more" tools:ignore="PluralsCandidate">%d more…</string>
+    <string name="text_activity_defaults_global_headers_less">less…</string>
     <string name="label_activity_defaults_only_wifi">Only on WiFi</string>
     <string name="label_activity_defaults_notification">Notifications</string>
     <string name="label_activity_defaults_high_prio">High priority</string>
     <string name="label_activity_defaults_accesstype">Type</string>
+    <integer name="activity_defaults_global_headers_text_size_normal">14</integer>
+    <integer name="activity_defaults_global_headers_text_size_smaller">12</integer>
+    <integer name="activity_defaults_global_headers_text_size_small">10</integer>
+    <integer name="activity_defaults_global_headers_max_value_lines">5</integer>
+    <integer name="activity_defaults_global_headers_max_value_visible_headers">5</integer>
 </resources>

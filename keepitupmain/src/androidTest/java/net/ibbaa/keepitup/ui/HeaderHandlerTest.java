@@ -95,10 +95,10 @@ public class HeaderHandlerTest extends BaseUITest {
 
     @Test
     public void testSynchronizeGlobalHeadersEmpty() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         assertFalse(handler.synchronizeHeaders(-1));
         assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
@@ -108,10 +108,10 @@ public class HeaderHandlerTest extends BaseUITest {
 
     @Test
     public void testSynchronizeHeadersEmpty() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         assertFalse(handler.synchronizeHeaders(1));
         assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
@@ -124,10 +124,10 @@ public class HeaderHandlerTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader1(-1));
         getHeaderDAO().insertHeader(getHeader2(-1));
         getHeaderDAO().insertHeader(getHeader2(1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         assertTrue(handler.synchronizeHeaders(-1));
@@ -142,10 +142,10 @@ public class HeaderHandlerTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader1(1));
         getHeaderDAO().insertHeader(getHeader2(1));
         getHeaderDAO().insertHeader(getHeader3(3));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         assertTrue(handler.synchronizeHeaders(1));
@@ -156,10 +156,10 @@ public class HeaderHandlerTest extends BaseUITest {
 
     @Test
     public void testSynchronizeGlobalHeadersAdd() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().addItem(getHeader1(-1));
         headersDialog.getAdapter().addItem(getHeader2(-1));
@@ -173,10 +173,10 @@ public class HeaderHandlerTest extends BaseUITest {
 
     @Test
     public void testSynchronizeHeadersAdd() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().addItem(getHeader1(1));
         headersDialog.getAdapter().addItem(getHeader2(1));
@@ -193,10 +193,10 @@ public class HeaderHandlerTest extends BaseUITest {
         Header header1 = getHeaderDAO().insertHeader(getHeader1(-1));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getHeaderDAO().insertHeader(getHeader2(1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         headersDialog.getAdapter().addItem(header1);
@@ -212,10 +212,10 @@ public class HeaderHandlerTest extends BaseUITest {
         Header header1 = getHeaderDAO().insertHeader(getHeader1(1));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(1));
         getHeaderDAO().insertHeader(getHeader2(-1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         headersDialog.getAdapter().addItem(header1);
@@ -231,10 +231,10 @@ public class HeaderHandlerTest extends BaseUITest {
         Header header1 = getHeaderDAO().insertHeader(getHeader1(-1));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getHeaderDAO().insertHeader(getHeader2(1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         header2.setName("name3");
@@ -256,10 +256,10 @@ public class HeaderHandlerTest extends BaseUITest {
         Header header1 = getHeaderDAO().insertHeader(getHeader1(1));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(1));
         getHeaderDAO().insertHeader(getHeader2(-1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         header2.setName("name3");
@@ -280,10 +280,10 @@ public class HeaderHandlerTest extends BaseUITest {
     public void testSynchronizeGlobalHeadersAddedUpdatedDeleted() {
         getHeaderDAO().insertHeader(getHeader2(-1));
         Header header3 = getHeaderDAO().insertHeader(getHeader3(-1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         header3.setName("anotherName");
@@ -301,10 +301,10 @@ public class HeaderHandlerTest extends BaseUITest {
     public void testSynchronizeHeadersAddedUpdatedDeleted() {
         getHeaderDAO().insertHeader(getHeader2(1));
         Header header3 = getHeaderDAO().insertHeader(getHeader3(1));
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         HeadersDialog headersDialog = openGlobalHeadersDialog();
         onView(isRoot()).perform(waitFor(500));
-        HeaderHandler handler = new HeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        HeaderHandler handler = new HeaderHandler(getDefaultsActivity(), headersDialog);
         handler.reset();
         headersDialog.getAdapter().removeItems();
         header3.setName("anotherName");
@@ -324,8 +324,8 @@ public class HeaderHandlerTest extends BaseUITest {
         return headersDialog;
     }
 
-    private GlobalSettingsActivity getGlobalSettingsActivity() {
-        return (GlobalSettingsActivity) getActivity(activityScenario);
+    private DefaultsActivity getDefaultsActivity() {
+        return (DefaultsActivity) getActivity(activityScenario);
     }
 
     private Header getHeader1(long networktaskid) {

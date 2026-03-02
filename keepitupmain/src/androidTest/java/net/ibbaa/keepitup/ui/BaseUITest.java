@@ -60,6 +60,7 @@ import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.EllipsizedMatcher;
+import net.ibbaa.keepitup.test.matcher.FontSizeMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutRowColumnPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
@@ -362,6 +363,10 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withPasswordVisibility(boolean visible) {
         return new PasswordVisibilityMatcher(visible);
+    }
+
+    public static Matcher<View> withFontSize(float expectedSize) {
+        return new FontSizeMatcher(expectedSize);
     }
 
     public static ViewAction waitFor(long time) {

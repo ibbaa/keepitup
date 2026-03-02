@@ -17,14 +17,8 @@
 package net.ibbaa.keepitup.ui;
 
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -49,14 +43,12 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.EncryptionInfo;
-import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
-import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
@@ -64,7 +56,6 @@ import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
-import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -74,14 +65,12 @@ import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport, HeadersSupport {
+public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport {
 
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
@@ -98,13 +87,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private TextView downloadKeepOnOffText;
     private SwitchMaterial downloadFollowsRedirectsSwitch;
     private TextView downloadFollowsRedirectsOnOffText;
-    private TextView httpUserAgentText;
     private SwitchMaterial logFileSwitch;
     private TextView logFileOnOffText;
     private TextView logFolderText;
     private PermissionLauncher logFolderLauncher;
     private PermissionLauncher downloadFolderLauncher;
-    private boolean globalHeadersExpanded;
 
     public static String getBypassSystemSAFKey() {
         return GlobalSettingsActivity.class.getSimpleName() + "BypassSystemSAF";
@@ -116,7 +103,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        initGlobalHeadersExpanded(savedInstanceState);
         setContentView(R.layout.activity_global_settings);
         initEdgeToEdgeInsets(R.id.layout_activity_global_settings);
         prepareNotificationInactiveNetworkSwitch();
@@ -130,18 +116,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
         prepareDownloadFollowsRedirectsSwitch();
-        prepareGlobalHeadersField();
         prepareLogFolderLauncher();
         prepareLogFileSwitch();
         prepareLogFolderField();
-    }
-
-    private void initGlobalHeadersExpanded(Bundle savedInstanceState) {
-        if (savedInstanceState != null && savedInstanceState.containsKey(getGlobalHeadersExpandedKey())) {
-            globalHeadersExpanded = savedInstanceState.getBoolean(getGlobalHeadersExpandedKey());
-        } else {
-            globalHeadersExpanded = false;
-        }
     }
 
     public void injectLogFolderLauncher(PermissionLauncher logFolderLauncher) {
@@ -165,14 +142,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_activity_global_settings_reset triggered");
             PreferenceSetup preferenceSetup = new PreferenceSetup(this);
             preferenceSetup.removeGlobalSettingsWithoutArbitraryFolders();
-            resetIntervalsAndHeaders();
+            resetIntervals();
             recreateActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void resetIntervalsAndHeaders() {
+    private void resetIntervals() {
         try {
             IntervalDAO intervalDAO = new IntervalDAO(this);
             intervalDAO.deleteAllIntervals();
@@ -188,14 +165,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.e(GlobalSettingsActivity.class.getName(), "Error deleting headers", exc);
         }
         getTimeBasedSuspensionScheduler().restart();
-        HeaderHandler handler = getHeaderHandler(null);
-        handler.reset();
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NotNull Bundle state) {
-        super.onSaveInstanceState(state);
-        state.putBoolean(getGlobalHeadersExpandedKey(), globalHeadersExpanded);
     }
 
     private void prepareNotificationInactiveNetworkSwitch() {
@@ -557,170 +526,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadFollowsRedirectsOnOffText();
     }
 
-    private void prepareGlobalHeadersField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersField");
-        CardView globalHeadersCardView = findViewById(R.id.cardview_activity_global_settings_global_headers);
-        globalHeadersCardView.setOnClickListener(this::showHeadersDialog);
-        prepareGlobalHeadersTextLayoutFields();
-    }
-
-    private void prepareGlobalHeadersTextLayoutFields() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextLayoutFields");
-        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        gridLayout.removeAllViews();
-        List<Header> headers = getHeaderHandler(null).getGlobalHeaders();
-        if (headers.isEmpty()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "No headers defined");
-            gridLayout.setColumnCount(1);
-            prepareGlobalHeadersTextFieldsSingleLayout(getResources().getString(R.string.text_activity_global_settings_global_headers_none));
-            return;
-        }
-        gridLayout.setColumnCount(2);
-        prepareGlobalHeadersTextFieldsLayout(headers);
-    }
-
-    private void prepareGlobalHeadersTextFieldsSingleLayout(String text) {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsSingleLayout with text " + text);
-        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        TextView globalHeaderText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
-        GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
-        gridLayout.addView(globalHeaderText, globalHeaderTextParams);
-    }
-
-    private void prepareGlobalHeadersTextFieldsLayout(List<Header> headers) {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsLayout");
-        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        int textSize = getGlobalHeadersTextSize(headers.size());
-        int maxLines = getResources().getInteger(R.integer.activity_global_settings_global_headers_max_value_lines);
-        int maxVisibleHeaders = getResources().getInteger(R.integer.activity_global_settings_global_headers_max_value_visible_headers);
-        int visibleCount = globalHeadersExpanded ? headers.size() : Math.min(headers.size(), maxVisibleHeaders);
-        Log.d(GlobalSettingsActivity.class.getName(), "Header count is " + headers.size());
-        Log.d(GlobalSettingsActivity.class.getName(), "Visible count is " + visibleCount);
-        for (int ii = 0; ii < visibleCount; ii++) {
-            Header header = headers.get(ii);
-            TextView nameText = getGlobalHeadersTextView(header.getName() + ": ", textSize, Typeface.BOLD, Integer.MAX_VALUE);
-            TextView valueText = getGlobalHeadersTextView(header.getValue(), textSize, Typeface.NORMAL, maxLines);
-            GridLayout.LayoutParams nameTextParams = getGlobalHeaderTextViewLayoutParams(ii, 0);
-            GridLayout.LayoutParams valueTextParams = getGlobalHeaderTextViewLayoutParams(ii, 1);
-            gridLayout.addView(nameText, nameTextParams);
-            gridLayout.addView(valueText, valueTextParams);
-            enableHeaderTextToggleIfOverflow(valueText, maxLines);
-        }
-        if (headers.size() > maxVisibleHeaders) {
-            String more = getResources().getString(R.string.text_activity_global_settings_global_headers_more, headers.size() - maxVisibleHeaders);
-            String less = getResources().getString(R.string.text_activity_global_settings_global_headers_less);
-            TextView toggleText = getGlobalHeadersTextView(globalHeadersExpanded ? less : more, getGlobalHeadersTextSize(headers.size()), Typeface.ITALIC, Integer.MAX_VALUE);
-            GridLayout.LayoutParams toggleParams = getGlobalHeaderTextViewLayoutParams(visibleCount, 0);
-            GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
-            gridLayout.addView(toggleText, toggleParams);
-            toggleText.setOnClickListener(view -> {
-                globalHeadersExpanded = !globalHeadersExpanded;
-                prepareGlobalHeadersTextLayoutFields();
-            });
-        }
-    }
-
-    private TextView getGlobalHeadersTextView(String text, int textSize, int typeface, int maxLines) {
-        Log.d(GlobalSettingsActivity.class.getName(), "getGlobalHeadersTextView, text is " + text + ", textSize is " + textSize + ", maxLines is " + maxLines);
-        TextView headerText = new TextView(this);
-        headerText.setId(View.generateViewId());
-        headerText.setText(text);
-        headerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-        headerText.setTypeface(null, typeface);
-        if (maxLines < Integer.MAX_VALUE) {
-            headerText.setMaxLines(maxLines);
-            headerText.setEllipsize(TextUtils.TruncateAt.END);
-        } else {
-            headerText.setMaxLines(Integer.MAX_VALUE);
-            headerText.setEllipsize(null);
-        }
-        return headerText;
-    }
-
-    private GridLayout.LayoutParams getGlobalHeaderTextViewLayoutParams(int row, int column) {
-        Log.d(GlobalSettingsActivity.class.getName(), "getGlobalHeaderTextViewLayoutParams, row is " + row + ", column is " + column);
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        float weight;
-        if (column == 1) {
-            weight = Float.parseFloat(getResources().getString(R.string.textview_activity_global_settings_global_headers_value_weight));
-        } else {
-            weight = Float.parseFloat(getResources().getString(R.string.textview_activity_global_settings_global_headers_name_weight));
-        }
-        params.width = 0;
-        params.columnSpec = GridLayout.spec(column, weight);
-        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        params.setGravity(Gravity.FILL_HORIZONTAL);
-        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_right);
-        params.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_top);
-        params.rowSpec = GridLayout.spec(row + 1);
-        return params;
-    }
-
-    private int getGlobalHeadersTextSize(int headerCount) {
-        if (headerCount <= 1) {
-            return getResources().getInteger(R.integer.activity_global_settings_global_headers_text_size_normal);
-        } else if (headerCount == 2) {
-            return getResources().getInteger(R.integer.activity_global_settings_global_headers_text_size_smaller);
-        } else {
-            return getResources().getInteger(R.integer.activity_global_settings_global_headers_text_size_small);
-        }
-    }
-
-    @SuppressWarnings("SizeReplaceableByIsEmpty")
-    private void enableHeaderTextToggleIfOverflow(TextView textView, int maxLines) {
-        Log.d(GlobalSettingsActivity.class.getName(), "enableHeaderTextToggleIfOverflow with maxLines of " + maxLines);
-        textView.post(() -> {
-            textView.setSingleLine(false);
-            textView.setMaxLines(maxLines);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-            Layout layout = textView.getLayout();
-            boolean overflow = false;
-            if (layout != null) {
-                int visibleLines = layout.getLineCount();
-                if (visibleLines > 0) {
-                    int lastVisibleLineIndex = Math.min(visibleLines, maxLines) - 1;
-                    if (lastVisibleLineIndex >= 0 && layout.getEllipsisCount(lastVisibleLineIndex) > 0) {
-                        overflow = true;
-                    }
-                }
-            }
-            if (!overflow) {
-                CharSequence text = textView.getText();
-                TextPaint tp = textView.getPaint();
-                int availWidth = textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
-                if (availWidth > 0 && text != null && text.length() > 0) {
-                    int realLines;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        StaticLayout staticLayout = StaticLayout.Builder.obtain(text, 0, text.length(), tp, availWidth).setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(textView.getLineSpacingExtra(), textView.getLineSpacingMultiplier()).setIncludePad(textView.getIncludeFontPadding()).build();
-                        realLines = staticLayout.getLineCount();
-                    } else {
-                        StaticLayout staticLayout = new StaticLayout(text, tp, availWidth, Layout.Alignment.ALIGN_NORMAL, textView.getLineSpacingMultiplier(), textView.getLineSpacingExtra(), textView.getIncludeFontPadding());
-                        realLines = staticLayout.getLineCount();
-                    }
-                    if (realLines > maxLines) {
-                        overflow = true;
-                    }
-                }
-            }
-            Log.d(GlobalSettingsActivity.class.getName(), "overflow is " + overflow);
-            if (overflow) {
-                textView.setOnClickListener(view -> toggleHeaderTextExpandCollapse(textView, maxLines));
-            } else {
-                textView.setOnClickListener(this::showHeadersDialog);
-            }
-        });
-    }
-
-    private void toggleHeaderTextExpandCollapse(TextView textView, int maxLines) {
-        if (textView.getMaxLines() == Integer.MAX_VALUE) {
-            textView.setMaxLines(maxLines);
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-        } else {
-            textView.setMaxLines(Integer.MAX_VALUE);
-            textView.setEllipsize(null);
-        }
-    }
-
     private View findClickableParent(View view) {
         ViewParent parent = view.getParent();
         while (parent instanceof View parentView) {
@@ -730,15 +535,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             parent = parent.getParent();
         }
         return null;
-    }
-
-    private void showHeadersDialog(View view) {
-        Log.d(GlobalSettingsActivity.class.getName(), "showHeadersDialog");
-        HeadersDialog headersDialog = new HeadersDialog();
-        Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), getHeaderHandler(headersDialog).getGlobalHeaders());
-        BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), -1, bundle);
-        headersDialog.setArguments(bundle);
-        headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }
 
     private void prepareLogFileSwitch() {
@@ -839,14 +635,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private void setDownloadFolder(String downloadFolder) {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
-    }
-
-    private String getHTTPUserAgent() {
-        return StringUtil.notNull(httpUserAgentText.getText());
-    }
-
-    private void setHTTPUserAgent(String httpUserAgent) {
-        httpUserAgentText.setText(StringUtil.notNull(httpUserAgent));
     }
 
     private void setLogFolder(String logFolder) {
@@ -1105,34 +893,5 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     public void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogCancelClicked");
         intervalsDialog.dismiss();
-    }
-
-    @Override
-    public void onHeadersDialogOkClicked(HeadersDialog headersDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onGlobalHeadersDialogOkClicked");
-        HeaderHandler handler = getHeaderHandler(headersDialog);
-        if (handler.synchronizeHeaders(headersDialog.getNetworkTaskId())) {
-            handler.reset();
-            prepareGlobalHeadersField();
-        }
-        headersDialog.dismiss();
-    }
-
-    @Override
-    public void onHeadersDialogCancelClicked(HeadersDialog headersDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onSGlobalHeadersCancelClicked");
-        headersDialog.dismiss();
-    }
-
-    private String getGlobalHeadersExpandedKey() {
-        return GlobalSettingsActivity.class.getSimpleName() + "GlobalHeadersExpanded";
-    }
-
-    private HeaderHandler getHeaderHandler(HeadersDialog headersDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "getHeaderHandler");
-        if (headersDialog == null) {
-            return new HeaderHandler(this);
-        }
-        return new HeaderHandler(this, headersDialog);
     }
 }
