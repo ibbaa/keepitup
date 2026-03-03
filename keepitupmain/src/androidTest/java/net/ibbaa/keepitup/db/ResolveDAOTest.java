@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -89,6 +90,26 @@ public class ResolveDAOTest {
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         resolveDAO.deleteAllResolve();
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+    }
+
+    @Test
+    public void testReadAllResolveForNetworkTasks() {
+        Resolve resolve1 = getResolve1();
+        resolve1 = resolveDAO.insertResolve(resolve1);
+        Resolve resolve2 = getResolve2();
+        resolve2 = resolveDAO.insertResolve(resolve2);
+        Resolve resolve3 = getResolve1();
+        resolve3.setNetworkTaskId(2);
+        resolve3 = resolveDAO.insertResolve(resolve3);
+        Resolve resolve4 = getResolve1();
+        resolve4.setNetworkTaskId(3);
+        resolve4 = resolveDAO.insertResolve(resolve4);
+        Map<Long, Resolve> result = resolveDAO.readAllResolveForNetworkTasks();
+        assertEquals(4, result.size());
+        assertTrue(resolve1.isTechnicallyEqual(result.get(0L)));
+        assertTrue(resolve2.isTechnicallyEqual(result.get(1L)));
+        assertTrue(resolve3.isTechnicallyEqual(result.get(2L)));
+        assertTrue(resolve4.isTechnicallyEqual(result.get(3L)));
     }
 
     @Test

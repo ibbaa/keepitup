@@ -110,6 +110,17 @@ class LogDBConstants {
                 " FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
+    public String getReadAllMostRecentLogsForNetworkTasksStatement() {
+        return "SELECT MAX(" + getTimestampColumnName() + "), " +
+                getIdColumnName() + ", " +
+                getNetworkTaskIdColumnName() + ", " +
+                getTimestampColumnName() + ", " +
+                getSuccessColumnName() + ", " +
+                getMessageColumnName() +
+                " FROM " + getTableName() +
+                " GROUP BY " + getNetworkTaskIdColumnName();
+    }
+
     public String getReadOldestLogStatement() {
         return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }

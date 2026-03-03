@@ -28,7 +28,10 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LogDAO extends BaseDAO {
 
@@ -51,6 +54,11 @@ public class LogDAO extends BaseDAO {
         LogEntry returnedEntry = executeDBOperationInTransaction(entry, this::readMostRecentLogForNetworkTask);
         Log.d(LogDAO.class.getName(), "Read log entry is " + returnedEntry);
         return returnedEntry;
+    }
+
+    public Map<Long, LogEntry> readAllMostRecentLogsForNetworkTasks() {
+        Log.d(LogDAO.class.getName(), "Reading all most recent log entries for all network tasks");
+        return executeDBOperationInTransaction((LogEntry) null, this::readAllMostRecentLogsForNetworkTasks);
     }
 
     public List<LogEntry> readAllLogsForNetworkTask(long networkTaskId) {
@@ -124,72 +132,51 @@ public class LogDAO extends BaseDAO {
 
     private LogEntry readMostRecentLogForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
         Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, log entry is " + logEntry);
-        Cursor cursor = null;
-        LogEntry result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
-        try {
-            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadMostRecentLogStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
-            cursor = db.rawQuery(dbConstants.getReadMostRecentLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
-            while (cursor.moveToNext()) {
-                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
-                if (!cursor.isNull(indexIdColumn)) {
-                    result = mapCursorToLogEntry(cursor);
-                }
-            }
-        } finally {
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (Throwable exc) {
-                    Log.e(LogDAO.class.getName(), "Error closing result cursor", exc);
-                }
-            }
-        }
-        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, returning " + result);
+        LogEntry[] result = { null };
+        readLogEntriesInternal(db, dbConstants.getReadMostRecentLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())}, entry -> result[0] = entry);
+        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, returning " + result[0]);
+        return result[0];
+    }
+
+    private Map<Long, LogEntry> readAllMostRecentLogsForNetworkTasks(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "readAllMostRecentLogsForNetworkTasks, log entry is " + logEntry);
+        LogDBConstants dbConstants = new LogDBConstants(getContext());
+        Map<Long, LogEntry> result = new HashMap<>();
+        readLogEntriesInternal(db, dbConstants.getReadAllMostRecentLogsForNetworkTasksStatement(), null, entry -> result.put(entry.getNetworkTaskId(), entry));
+        Log.d(LogDAO.class.getName(), "readAllMostRecentLogsForNetworkTasks, returning " + result);
         return result;
     }
 
     private List<LogEntry> readAllLogsForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
         Log.d(LogDAO.class.getName(), "readAllLogsForNetworkTask, log entry is " + logEntry);
-        Cursor cursor = null;
-        List<LogEntry> result = new ArrayList<>();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
-        try {
-            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllLogsForNetworkTaskStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
-            cursor = db.rawQuery(dbConstants.getReadAllLogsForNetworkTaskStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
-            while (cursor.moveToNext()) {
-                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
-                if (!cursor.isNull(indexIdColumn)) {
-                    LogEntry mappedLogEntry = mapCursorToLogEntry(cursor);
-                    result.add(mappedLogEntry);
-                }
-            }
-        } finally {
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (Throwable exc) {
-                    Log.e(LogDAO.class.getName(), "Error closing result cursor", exc);
-                }
-            }
-        }
+        List<LogEntry> result = new ArrayList<>();
+        readLogEntriesInternal(db, dbConstants.getReadAllLogsForNetworkTaskStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())}, result::add);
         Log.d(LogDAO.class.getName(), "readAllLogsForNetworkTask, returning " + result);
         return result;
     }
 
     private List<LogEntry> readAllLogs(LogEntry logEntry, SQLiteDatabase db) {
         Log.d(LogDAO.class.getName(), "readAllLogs, log entry is " + logEntry);
-        Cursor cursor = null;
+        LogDBConstants dbConstants = new LogDBConstants(getContext());
         List<LogEntry> result = new ArrayList<>();
+        readLogEntriesInternal(db, dbConstants.getReadAllLogsStatement(), null, result::add);
+        Log.d(LogDAO.class.getName(), "readAllLogs, returning " + result);
+        return result;
+    }
+
+    private void readLogEntriesInternal(SQLiteDatabase db, String sql, String[] sqlArgs, LogEntryCollector collector) {
+        Log.d(LogDAO.class.getName(), "readLogEntriesInternal");
+        Cursor cursor = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
-            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllLogsStatement());
-            cursor = db.rawQuery(dbConstants.getReadAllLogsStatement(), null);
+            Log.d(LogDAO.class.getName(), "Executing SQL " + sql + (sqlArgs != null ? " with parameters " + Arrays.toString(sqlArgs) : ""));
+            cursor = db.rawQuery(sql, sqlArgs);
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
-                    LogEntry mappedLogEntry = mapCursorToLogEntry(cursor);
-                    result.add(mappedLogEntry);
+                    collector.collect(mapCursorToLogEntry(cursor));
                 }
             }
         } finally {
@@ -201,8 +188,6 @@ public class LogDAO extends BaseDAO {
                 }
             }
         }
-        Log.d(LogDAO.class.getName(), "readAllLogs, returning " + result);
-        return result;
     }
 
     private int deleteAllLogsForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
@@ -297,5 +282,10 @@ public class LogDAO extends BaseDAO {
         logEntry.setSuccess(cursor.getInt(indexSuccessColumn) >= 1);
         logEntry.setMessage(cursor.getString(indexMessageColumn));
         return logEntry;
+    }
+
+    @FunctionalInterface
+    private interface LogEntryCollector {
+        void collect(LogEntry logEntry);
     }
 }

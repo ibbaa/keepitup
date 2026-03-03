@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -216,6 +217,27 @@ public class LogDAOTest {
     }
 
     @Test
+    public void testReadAllMostRecentLogsForNetworkTasks() {
+        LogEntry insertedLogEntry1 = getLogEntryWithNetworkTaskIdAndTimestamp(1, 100);
+        LogEntry insertedLogEntry2 = getLogEntryWithNetworkTaskIdAndTimestamp(2, 1000);
+        LogEntry insertedLogEntry3 = getLogEntryWithNetworkTaskIdAndTimestamp(2, 1001);
+        LogEntry insertedLogEntry4 = getLogEntryWithNetworkTaskIdAndTimestamp(1, 200);
+        LogEntry insertedLogEntry5 = getLogEntryWithNetworkTaskIdAndTimestamp(1, 300);
+        LogEntry insertedLogEntry6 = getLogEntryWithNetworkTaskIdAndTimestamp(3, 1);
+        logDAO.insertAndDeleteLog(insertedLogEntry1);
+        logDAO.insertAndDeleteLog(insertedLogEntry2);
+        insertedLogEntry3 = logDAO.insertAndDeleteLog(insertedLogEntry3);
+        logDAO.insertAndDeleteLog(insertedLogEntry4);
+        insertedLogEntry5 = logDAO.insertAndDeleteLog(insertedLogEntry5);
+        insertedLogEntry6 = logDAO.insertAndDeleteLog(insertedLogEntry6);
+        Map<Long, LogEntry> allEntries = logDAO.readAllMostRecentLogsForNetworkTasks();
+        assertEquals(3, allEntries.size());
+        assertTrue(insertedLogEntry5.isTechnicallyEqual(allEntries.get(1L)));
+        assertTrue(insertedLogEntry3.isTechnicallyEqual(allEntries.get(2L)));
+        assertTrue(insertedLogEntry6.isTechnicallyEqual(allEntries.get(3L)));
+    }
+
+    @Test
     public void testDeleteAllOrphanLogs() {
         NetworkTask task1 = getNetworkTask();
         NetworkTask task2 = getNetworkTask();
@@ -318,6 +340,16 @@ public class LogDAOTest {
         LogEntry insertedLogEntry = new LogEntry();
         insertedLogEntry.setId(0);
         insertedLogEntry.setNetworkTaskId(1);
+        insertedLogEntry.setSuccess(true);
+        insertedLogEntry.setTimestamp(timestamp);
+        insertedLogEntry.setMessage("TestMessage");
+        return insertedLogEntry;
+    }
+
+    private LogEntry getLogEntryWithNetworkTaskIdAndTimestamp(long networkTaskId, long timestamp) {
+        LogEntry insertedLogEntry = new LogEntry();
+        insertedLogEntry.setId(0);
+        insertedLogEntry.setNetworkTaskId(networkTaskId);
         insertedLogEntry.setSuccess(true);
         insertedLogEntry.setTimestamp(timestamp);
         insertedLogEntry.setMessage("TestMessage");

@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -35,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -60,7 +62,7 @@ public class HeaderDAOTest {
     }
 
     @Test
-    public void testBasicInsertReadDelete() {
+    public void testInsertReadDelete() {
         Header header1 = getHeader1();
         header1 = headerDAO.insertHeader(header1);
         List<Header> readHeaderList = headerDAO.readAllHeaders();
@@ -90,6 +92,46 @@ public class HeaderDAOTest {
         assertTrue(header1.isTechnicallyEqual(readHeader1));
         headerDAO.deleteAllHeaders();
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+    }
+
+    @Test
+    public void testReadAllHeadersForNetworkTasks() {
+        Header header1 = getHeader1();
+        Header header2 = getHeader2();
+        Header header3 = getHeader1();
+        Header header4 = getHeader2();
+        Header header5 = getHeader1();
+        Header header6 = getHeader2();
+        Header header7 = getHeader2();
+        Header header8 = getHeader1();
+        header6.setNetworkTaskId(3);
+        header7.setNetworkTaskId(-1);
+        header8.setNetworkTaskId(-1);
+        header1 = headerDAO.insertHeader(header1);
+        header2 = headerDAO.insertHeader(header2);
+        headerDAO.insertHeader(header3);
+        headerDAO.insertHeader(header4);
+        headerDAO.insertHeader(header5);
+        header6 = headerDAO.insertHeader(header6);
+        headerDAO.insertHeader(header7);
+        headerDAO.insertHeader(header8);
+        Map<Long, List<Header>> result = headerDAO.readAllHeadersForNetworkTasks();
+        assertEquals(3, result.size());
+        List<Header> headerList1 = result.get(0L);
+        List<Header> headerList2 = result.get(1L);
+        List<Header> headerList3 = result.get(3L);
+        assertNotNull(headerList1);
+        assertNotNull(headerList2);
+        assertNotNull(headerList3);
+        assertEquals(3, headerList1.size());
+        assertEquals(2, headerList2.size());
+        assertEquals(1, headerList3.size());
+        assertTrue(header1.isTechnicallyEqual(headerList1.get(0)));
+        assertTrue(header1.isTechnicallyEqual(headerList1.get(1)));
+        assertTrue(header1.isTechnicallyEqual(headerList1.get(2)));
+        assertTrue(header2.isTechnicallyEqual(headerList2.get(0)));
+        assertTrue(header2.isTechnicallyEqual(headerList2.get(1)));
+        assertTrue(header6.isTechnicallyEqual(headerList3.get(0)));
     }
 
     @Test

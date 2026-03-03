@@ -81,6 +81,17 @@ public class HeaderDBConstants {
                 " ORDER BY " + getNameColumnName() + " ASC";
     }
 
+    public String getReadNonGlobalHeadersStatement() {
+        return "SELECT " +
+                getIdColumnName() + ", " +
+                getNetworkTaskIdColumnName() + ", " +
+                getNameColumnName() + ", " +
+                getValueColumnName() +
+                " FROM " + getTableName() +
+                " WHERE " + getNetworkTaskIdColumnName() + " IS NOT NULL" +
+                " ORDER BY " + getNameColumnName() + " ASC";
+    }
+
     public String getReadHeadersForNetworkTaskStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +

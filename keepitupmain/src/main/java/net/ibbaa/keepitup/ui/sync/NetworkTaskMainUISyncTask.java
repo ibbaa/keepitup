@@ -21,12 +21,10 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
-import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -64,9 +62,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
                     data.setNetworkTaskId(networkTask.getId());
                     accessTypeDataDAO.insertAccessTypeData(data);
                 }
-                ResolveDAO resolveDAO = new ResolveDAO(context);
-                Resolve resolve = resolveDAO.readResolveForNetworkTask(networkTask.getId());
-                return new NetworkTaskUIWrapper(networkTask, data, resolve, logEntry);
+                return new NetworkTaskUIWrapper(networkTask, data, null, logEntry);
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);
@@ -84,7 +80,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
         if (adapter != null) {
             try {
                 Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper);
-                int replacePosition = adapter.replaceItem(networkTaskWrapper);
+                int replacePosition = adapter.replaceNetworkTask(networkTaskWrapper.getNetworkTask(), networkTaskWrapper.getAccessTypeData(), null, networkTaskWrapper.getLogEntry());
                 if (replacePosition >= 0) {
                     adapter.notifyItemChanged(replacePosition);
                 }

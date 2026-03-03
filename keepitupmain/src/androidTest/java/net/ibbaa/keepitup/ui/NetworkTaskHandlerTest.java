@@ -225,7 +225,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         task1.setAddress("192.168.178.1");
         data1.setPingCount(9);
         resolve1.setTargetPort(8080);
-        getAdapter().replaceNetworkTask(task1, null, null);
+        getAdapter().replaceNetworkTask(task1, null, null, null);
         handler.updateNetworkTask(task1, null, null);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task1 = tasks.get(0);

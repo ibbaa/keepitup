@@ -319,19 +319,18 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    public int replaceItem(NetworkTaskUIWrapper task) {
+    public void replaceItem(NetworkTaskUIWrapper task) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceItem " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
                 networkTaskWrapperList.set(ii, task);
-                return ii;
+                return;
             }
         }
-        return -1;
     }
 
-    public void replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve) {
+    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, LogEntry logEntry) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
@@ -342,22 +341,14 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 if (resolve == null) {
                     resolve = currentTask.getResolve();
                 }
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolve, currentTask.getLogEntry()));
-                return;
+                if (logEntry == null) {
+                    logEntry = currentTask.getLogEntry();
+                }
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolve, logEntry));
+                return ii;
             }
         }
-    }
-
-    @SuppressWarnings({"unused"})
-    public void replaceLogEntry(NetworkTask task, LogEntry logEntry) {
-        Log.d(NetworkTaskAdapter.class.getName(), "replaceLogEntry " + logEntry);
-        for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
-            NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
-            if (task.getId() == currentTask.getId()) {
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(currentTask.getNetworkTask(), currentTask.getAccessTypeData(), currentTask.getResolve(), logEntry));
-                return;
-            }
-        }
+        return -1;
     }
 
     public void replaceItems(List<NetworkTaskUIWrapper> networkTaskWrapperList) {

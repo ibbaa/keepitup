@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -95,6 +96,21 @@ public class AccessTypeDataDAOTest {
         assertTrue(doesAccessTypeDataListContain(readDataList, data3));
         accessTypeDataDAO.deleteAllAccessTypeData();
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+    }
+
+    @Test
+    public void testReadAllAccessTypeDataForNetworkTasks() {
+        AccessTypeData accessTypeData1 = getAccessTypeData1();
+        accessTypeData1 = accessTypeDataDAO.insertAccessTypeData(accessTypeData1);
+        AccessTypeData accessTypeData2 = getAccessTypeData2();
+        accessTypeData2 = accessTypeDataDAO.insertAccessTypeData(accessTypeData2);
+        AccessTypeData accessTypeData3 = getAccessTypeData3();
+        accessTypeData3 = accessTypeDataDAO.insertAccessTypeData(accessTypeData3);
+        Map<Long, AccessTypeData> result = accessTypeDataDAO.readAllAccessTypeDataForNetworkTasks();
+        assertEquals(3, result.size());
+        assertTrue(accessTypeData1.isTechnicallyEqual(result.get(0L)));
+        assertTrue(accessTypeData2.isTechnicallyEqual(result.get(1L)));
+        assertTrue(accessTypeData3.isTechnicallyEqual(result.get(2L)));
     }
 
     @Test

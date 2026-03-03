@@ -27,7 +27,9 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AccessTypeDataDAO extends BaseDAO {
 
@@ -65,6 +67,11 @@ public class AccessTypeDataDAO extends BaseDAO {
         List<AccessTypeData> accessTypeDataList = executeDBOperationInTransaction((AccessTypeData) null, this::readAllAccessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "Number of accessTypeData read: " + accessTypeDataList.size());
         return accessTypeDataList;
+    }
+
+    public Map<Long, AccessTypeData> readAllAccessTypeDataForNetworkTasks() {
+        Log.d(AccessTypeDataDAO.class.getName(), "Reading all accessTypeData for all network tasks");
+        return executeDBOperationInTransaction((AccessTypeData) null, this::readAllAccessTypeDataForNetworkTasks);
     }
 
     public void deleteAccessTypeDataForNetworkTask(long networkTaskId) {
@@ -157,8 +164,23 @@ public class AccessTypeDataDAO extends BaseDAO {
 
     private List<AccessTypeData> readAllAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
         Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeData, accessTypeData is " + accessTypeData);
-        Cursor cursor = null;
         List<AccessTypeData> result = new ArrayList<>();
+        readAllAccessTypeDataInternal(db, result::add);
+        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeData, returning " + result);
+        return result;
+    }
+
+    private Map<Long, AccessTypeData> readAllAccessTypeDataForNetworkTasks(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeDataForNetworkTasks, accessTypeData is " + accessTypeData);
+        Map<Long, AccessTypeData> result = new HashMap<>();
+        readAllAccessTypeDataInternal(db, mappedAccessTypeData -> result.put(mappedAccessTypeData.getNetworkTaskId(), mappedAccessTypeData));
+        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeDataForNetworkTasks, returning " + result);
+        return result;
+    }
+
+    private void readAllAccessTypeDataInternal(SQLiteDatabase db, AccessTypeDataCollector collector) {
+        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeDataInternal");
+        Cursor cursor = null;
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
         try {
             Log.d(AccessTypeDataDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllAccessTypeDataStatement());
@@ -166,8 +188,7 @@ public class AccessTypeDataDAO extends BaseDAO {
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
-                    AccessTypeData mappedAccessTypeData = mapCursorToAccessTypeData(cursor);
-                    result.add(mappedAccessTypeData);
+                    collector.collect(mapCursorToAccessTypeData(cursor));
                 }
             }
         } finally {
@@ -179,8 +200,6 @@ public class AccessTypeDataDAO extends BaseDAO {
                 }
             }
         }
-        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeData, returning " + result);
-        return result;
     }
 
     private int deleteAccessTypeDataForNetworkTask(AccessTypeData accessTypeData, SQLiteDatabase db) {
@@ -225,5 +244,10 @@ public class AccessTypeDataDAO extends BaseDAO {
         accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
         accessTypeData.setUseDefaultHeaders(cursor.getInt(indexUseDefaultHeadersColumn) >= 1);
         return accessTypeData;
+    }
+
+    @FunctionalInterface
+    private interface AccessTypeDataCollector {
+        void collect(AccessTypeData data);
     }
 }

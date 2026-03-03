@@ -27,7 +27,10 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HeaderDAO extends BaseDAO {
 
@@ -55,6 +58,11 @@ public class HeaderDAO extends BaseDAO {
         List<Header> headerList = executeDBOperationInTransaction((Header) null, this::readGlobalHeaders);
         Log.d(HeaderDAO.class.getName(), "Number of headers read: " + headerList.size());
         return headerList;
+    }
+
+    public Map<Long, List<Header>> readAllHeadersForNetworkTasks() {
+        Log.d(HeaderDAO.class.getName(), "Reading all headers for all network tasks");
+        return executeDBOperationInTransaction((Header) null, this::readAllHeadersForNetworkTasks);
     }
 
     public List<Header> readHeadersForNetworkTask(long networkTaskId) {
@@ -141,73 +149,62 @@ public class HeaderDAO extends BaseDAO {
 
     private List<Header> readGlobalHeaders(Header header, SQLiteDatabase db) {
         Log.d(HeaderDAO.class.getName(), "readGlobalHeaders, header is " + header);
-        Cursor cursor = null;
-        List<Header> result = new ArrayList<>();
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
-        try {
-            Log.d(HeaderDAO.class.getName(), "Executing SQL " + dbConstants.getReadGlobalHeadersStatement());
-            cursor = db.rawQuery(dbConstants.getReadGlobalHeadersStatement(), null);
-            while (cursor.moveToNext()) {
-                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
-                if (!cursor.isNull(indexIdColumn)) {
-                    Header mappedHeader = mapCursorToHeader(cursor);
-                    result.add(mappedHeader);
-                }
-            }
-        } finally {
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (Throwable exc) {
-                    Log.e(HeaderDAO.class.getName(), "Error closing result cursor", exc);
-                }
-            }
-        }
-        Log.d(HeaderDAO.class.getName(), "no header found, returning null");
+        List<Header> result = new ArrayList<>();
+        readHeadersInternal(db, dbConstants.getReadGlobalHeadersStatement(), null, result::add);
+        Log.d(HeaderDAO.class.getName(), "readGlobalHeaders, returning " + result);
         return result;
+    }
+
+    private Map<Long, List<Header>> readAllHeadersForNetworkTasks(Header header, SQLiteDatabase db) {
+        Log.d(HeaderDAO.class.getName(), "readAllHeadersForNetworkTasks, header is " + header);
+        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+        Map<Long, List<Header>> result = new HashMap<>();
+        readHeadersInternal(db, dbConstants.getReadNonGlobalHeadersStatement(), null, mappedHeader -> collectHeaderForNetworkTask(result, mappedHeader));
+        Log.d(HeaderDAO.class.getName(), "readAllHeadersForNetworkTasks, returning " + result);
+        return result;
+    }
+
+    private void collectHeaderForNetworkTask(Map<Long, List<Header>> result, Header mappedHeader) {
+        if (mappedHeader.getNetworkTaskId() >= 0) {
+            List<Header> currentList = result.get(mappedHeader.getNetworkTaskId());
+            if (currentList == null) {
+                currentList = new ArrayList<>();
+                result.put(mappedHeader.getNetworkTaskId(), currentList);
+            }
+            currentList.add(mappedHeader);
+        }
     }
 
     private List<Header> readHeadersForNetworkTask(Header header, SQLiteDatabase db) {
         Log.d(HeaderDAO.class.getName(), "readHeadersForNetworkTask, header is " + header);
-        Cursor cursor = null;
-        List<Header> result = new ArrayList<>();
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
-        try {
-            Log.d(HeaderDAO.class.getName(), "Executing SQL " + dbConstants.getReadHeadersForNetworkTaskStatement() + " with a parameter of " + header.getNetworkTaskId());
-            cursor = db.rawQuery(dbConstants.getReadHeadersForNetworkTaskStatement(), new String[]{String.valueOf(header.getNetworkTaskId())});
-            while (cursor.moveToNext()) {
-                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
-                if (!cursor.isNull(indexIdColumn)) {
-                    Header mappedHeader = mapCursorToHeader(cursor);
-                    result.add(mappedHeader);
-                }
-            }
-        } finally {
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (Throwable exc) {
-                    Log.e(HeaderDAO.class.getName(), "Error closing result cursor", exc);
-                }
-            }
-        }
-        Log.d(HeaderDAO.class.getName(), "no header found, returning null");
+        List<Header> result = new ArrayList<>();
+        readHeadersInternal(db, dbConstants.getReadHeadersForNetworkTaskStatement(), new String[]{String.valueOf(header.getNetworkTaskId())}, result::add);
+        Log.d(HeaderDAO.class.getName(), "readHeadersForNetworkTask, returning " + result);
         return result;
     }
 
     private List<Header> readAllHeaders(Header header, SQLiteDatabase db) {
         Log.d(HeaderDAO.class.getName(), "readAllHeaders, header is " + header);
-        Cursor cursor = null;
+        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
         List<Header> result = new ArrayList<>();
+        readHeadersInternal(db, dbConstants.getReadAllHeadersStatement(), null, result::add);
+        Log.d(HeaderDAO.class.getName(), "readAllHeaders, returning " + result);
+        return result;
+    }
+
+    private void readHeadersInternal(SQLiteDatabase db, String sql, String[] sqlArgs, HeaderCollector collector) {
+        Log.d(HeaderDAO.class.getName(), "readHeadersInternal");
+        Cursor cursor = null;
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
         try {
-            Log.d(HeaderDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllHeadersStatement());
-            cursor = db.rawQuery(dbConstants.getReadAllHeadersStatement(), null);
+            Log.d(HeaderDAO.class.getName(), "Executing SQL " + sql + (sqlArgs != null ? " with parameters " + Arrays.toString(sqlArgs) : ""));
+            cursor = db.rawQuery(sql, sqlArgs);
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
-                    Header mappedHeader = mapCursorToHeader(cursor);
-                    result.add(mappedHeader);
+                    collector.collect(mapCursorToHeader(cursor));
                 }
             }
         } finally {
@@ -219,8 +216,6 @@ public class HeaderDAO extends BaseDAO {
                 }
             }
         }
-        Log.d(HeaderDAO.class.getName(), "no header found, returning null");
-        return result;
     }
 
     private int deleteHeader(Header header, SQLiteDatabase db) {
@@ -273,5 +268,10 @@ public class HeaderDAO extends BaseDAO {
         header.setName(cursor.getString(indexNameColumn));
         header.setValue(cursor.getString(indexValueColumn));
         return header;
+    }
+
+    @FunctionalInterface
+    private interface HeaderCollector {
+        void collect(Header header);
     }
 }

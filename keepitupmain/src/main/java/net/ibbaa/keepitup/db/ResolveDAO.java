@@ -27,7 +27,9 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ResolveDAO extends BaseDAO {
 
@@ -65,6 +67,11 @@ public class ResolveDAO extends BaseDAO {
         List<Resolve> resolveList = executeDBOperationInTransaction((Resolve) null, this::readAllResolve);
         Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
         return resolveList;
+    }
+
+    public Map<Long, Resolve> readAllResolveForNetworkTasks() {
+        Log.d(ResolveDAO.class.getName(), "Reading all resolve objects for all network tasks");
+        return executeDBOperationInTransaction((Resolve) null, this::readAllResolveForNetworkTasks);
     }
 
     public void deleteResolveForNetworkTask(long networkTaskId) {
@@ -153,17 +160,31 @@ public class ResolveDAO extends BaseDAO {
 
     private List<Resolve> readAllResolve(Resolve resolve, SQLiteDatabase db) {
         Log.d(ResolveDAO.class.getName(), "readAllResolve, resolve object is " + resolve);
-        Cursor cursor = null;
         List<Resolve> result = new ArrayList<>();
+        readAllResolveInternal(db, result::add);
+        Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
+        return result;
+    }
+
+    private Map<Long, Resolve> readAllResolveForNetworkTasks(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTasks, resolve object is " + resolve);
+        Map<Long, Resolve> result = new HashMap<>();
+        readAllResolveInternal(db, mappedResolve -> result.put(mappedResolve.getNetworkTaskId(), mappedResolve));
+        Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
+        return result;
+    }
+
+    private void readAllResolveInternal(SQLiteDatabase db, ResolveCollector collector) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolveInternal");
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
+        Cursor cursor = null;
         try {
             Log.d(ResolveDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllResolveStatement());
             cursor = db.rawQuery(dbConstants.getReadAllResolveStatement(), null);
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
-                    Resolve mappedResolve = mapCursorToResolve(cursor);
-                    result.add(mappedResolve);
+                    collector.collect(mapCursorToResolve(cursor));
                 }
             }
         } finally {
@@ -175,8 +196,6 @@ public class ResolveDAO extends BaseDAO {
                 }
             }
         }
-        Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
-        return result;
     }
 
     private int deleteResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
@@ -217,5 +236,10 @@ public class ResolveDAO extends BaseDAO {
         resolve.setTargetAddress(cursor.getString(indexTargetAddressColumn));
         resolve.setTargetPort(cursor.getInt(indexTargetPortColumn));
         return resolve;
+    }
+
+    @FunctionalInterface
+    private interface ResolveCollector {
+        void collect(Resolve resolve);
     }
 }
