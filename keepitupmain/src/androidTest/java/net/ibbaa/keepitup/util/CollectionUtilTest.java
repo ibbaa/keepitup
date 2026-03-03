@@ -17,16 +17,22 @@
 package net.ibbaa.keepitup.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.Equality;
+import net.ibbaa.keepitup.model.Header;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SmallTest
@@ -75,5 +81,39 @@ public class CollectionUtilTest {
         map.put("key1", "value1");
         map.put("key3", null);
         assertEquals("[key1=value1:key2=value2:key3=null]", CollectionUtil.mapToStableString(map));
+    }
+
+    @Test
+    public void testAreListsEqual() {
+        Header header1 = getHeader("Content-Type", "application/json");
+        Header header2 = getHeader("Authorization", "Bearer token");
+        Header header3 = getHeader("Content-Type", "application/json");
+        List<Header> list1 = Arrays.asList(header1, header2);
+        List<Header> list2 = Arrays.asList(header3, header2);
+        List<Header> listShort = List.of(header1);
+        List<Header> listWithNull = Arrays.asList(header1, null);
+        List<Header> listBothNull = Arrays.asList(header1, null);
+        Equality<Header> equality = new Equality<Header>() {
+            @Override
+            public boolean areEqual(Header h1, Header h2) {
+                return h1.isEqual(h2);
+            }
+        };
+        assertTrue(CollectionUtil.areListsEqual(list1, list1, equality));
+        assertTrue(CollectionUtil.areListsEqual(list1, list2, equality));
+        assertFalse(CollectionUtil.areListsEqual(list1, listShort, equality));
+        assertFalse(CollectionUtil.areListsEqual(list1, null, equality));
+        assertTrue(CollectionUtil.areListsEqual(null, null, equality));
+        assertTrue(CollectionUtil.areListsEqual(listWithNull, listBothNull, equality));
+        assertFalse(CollectionUtil.areListsEqual(list1, listWithNull, equality));
+    }
+
+    private Header getHeader(String name, String value) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(0);
+        header.setName(name);
+        header.setValue(value);
+        return header;
     }
 }
