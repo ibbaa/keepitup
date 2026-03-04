@@ -21,11 +21,13 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -60,6 +62,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
                 NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
                 AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
+                HeaderDAO headerDAO = new HeaderDAO(context);
                 ResolveDAO resolveDAO = new ResolveDAO(context);
                 LogDAO logDAO = new LogDAO(context);
                 List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -67,6 +70,9 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 Map<Long, AccessTypeData> allData = accessTypeDataDAO.readAllAccessTypeDataForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all resolve objects");
                 Map<Long, Resolve> allResolve = resolveDAO.readAllResolveForNetworkTasks();
+                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all headers");
+                Map<Long, List<Header>> allHeaders = headerDAO.readAllHeadersForNetworkTasks();
+                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading most recent log entries");
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading most recent log entries");
                 Map<Long, LogEntry> allLogEntries = logDAO.readAllMostRecentLogsForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
@@ -86,9 +92,11 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                     }
                     Resolve resolve = allResolve.get(currentTask.getId());
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following resolve object: " + (resolve == null ? "null" : resolve.toString()));
+                    List<Header> headers = allHeaders.get(currentTask.getId());
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following headers: " + (headers == null ? "null" : headers.toString()));
                     LogEntry logEntry = allLogEntries.get(currentTask.getId());
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
-                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolve, logEntry);
+                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolve, headers, logEntry);
                     wrapperList.add(currentWrapper);
                 }
                 return wrapperList;

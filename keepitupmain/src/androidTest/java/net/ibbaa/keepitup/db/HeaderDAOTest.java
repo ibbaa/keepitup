@@ -95,6 +95,20 @@ public class HeaderDAOTest {
     }
 
     @Test
+    public void testBulkInsert() {
+        Header header1 = getHeader1();
+        Header header2 = getHeader2();
+        Header header3 = getHeader3();
+        int count = headerDAO.insertHeaders(List.of(header1, header2, header3));
+        assertEquals(3, count);
+        List<Header> readHeaderList = headerDAO.readAllHeaders();
+        assertEquals(3, readHeaderList.size());
+        assertTrue(header1.isTechnicallyEqual(readHeaderList.get(0)));
+        assertTrue(header2.isTechnicallyEqual(readHeaderList.get(1)));
+        assertTrue(header3.isTechnicallyEqual(readHeaderList.get(2)));
+    }
+
+    @Test
     public void testReadAllHeadersForNetworkTasks() {
         Header header1 = getHeader1();
         Header header2 = getHeader2();
@@ -310,6 +324,15 @@ public class HeaderDAOTest {
         header.setNetworkTaskId(1);
         header.setName("name2");
         header.setValue("value2");
+        return header;
+    }
+
+    private Header getHeader3() {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(1);
+        header.setName("name3");
+        header.setValue("value3");
         return header;
     }
 }

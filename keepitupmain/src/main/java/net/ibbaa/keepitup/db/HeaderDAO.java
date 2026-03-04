@@ -46,6 +46,13 @@ public class HeaderDAO extends BaseDAO {
         return returnedHeader;
     }
 
+    public int insertHeaders(List<Header> headers) {
+        Log.d(HeaderDAO.class.getName(), "Inserting headers " + headers);
+        int count = executeDBOperationInTransactionWithRollback(headers, this::insertHeaders);
+        dumpDatabase("Dump after insertHeader call");
+        return count;
+    }
+
     public void updateHeader(Header header) {
         Log.d(HeaderDAO.class.getName(), "Updating header with id " + header.getId());
         Header returnedHeader = executeDBOperationInTransaction(header, this::updateHeader);
@@ -132,6 +139,27 @@ public class HeaderDAO extends BaseDAO {
         }
         header.setId(rowid);
         return header;
+    }
+
+    private DBResult<Integer> insertHeaders(List<Header> headers, SQLiteDatabase db) {
+        Log.d(HeaderDAO.class.getName(), "insertHeaders with headers " + headers);
+        int count = 0;
+        for (Header header : headers) {
+            ContentValues values = new ContentValues();
+            HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+            values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
+            values.put(dbConstants.getNameColumnName(), header.getName());
+            values.put(dbConstants.getValueColumnName(), header.getValue());
+            long rowid = db.insert(dbConstants.getTableName(), null, values);
+            if (rowid < 0) {
+                Log.e(HeaderDAO.class.getName(), "Error inserting header into database.");
+                return new DBResult<>(false, -1);
+            } else {
+                count++;
+            }
+            header.setId(rowid);
+        }
+        return new DBResult<>(true, count);
     }
 
     private Header updateHeader(Header header, SQLiteDatabase db) {

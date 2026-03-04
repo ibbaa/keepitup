@@ -30,14 +30,24 @@ public abstract class BaseDAO {
     }
 
     protected <S, T> T executeDBOperationInTransaction(S modelObject, DBOperation<S, T> dbOperation) {
+        return executeInternal(modelObject, (obj, db) -> new DBResult<>(true, dbOperation.execute(obj, db)));
+    }
+
+    protected <S, T> T executeDBOperationInTransactionWithRollback(S modelObject, DBOperation<S, DBResult<T>> dbOperation) {
+        return executeInternal(modelObject, dbOperation);
+    }
+
+    private <S, T> T executeInternal(S modelObject, DBOperation<S, DBResult<T>> dbOperation) {
         Log.d(BaseDAO.class.getName(), "Executing db operation on " + modelObject);
         SQLiteDatabase db = null;
-        T result;
+        DBResult<T> result;
         try {
             db = DBOpenHelper.getInstance(getContext()).getWritableDatabase();
             db.beginTransaction();
             result = dbOperation.execute(modelObject, db);
-            db.setTransactionSuccessful();
+            if (result.success()) {
+                db.setTransactionSuccessful();
+            }
         } catch (Throwable exc) {
             Log.e(BaseDAO.class.getName(), "Error executing database operation", exc);
             throw exc;
@@ -50,10 +60,13 @@ public abstract class BaseDAO {
                 }
             }
         }
-        return result;
+        return result.value();
     }
 
     protected Context getContext() {
         return context;
+    }
+
+    protected record DBResult<T>(boolean success, T value) {
     }
 }

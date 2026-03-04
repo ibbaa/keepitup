@@ -62,7 +62,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
                     data.setNetworkTaskId(networkTask.getId());
                     accessTypeDataDAO.insertAccessTypeData(data);
                 }
-                return new NetworkTaskUIWrapper(networkTask, data, null, logEntry);
+                return new NetworkTaskUIWrapper(networkTask, data, null, null, logEntry);
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);
@@ -80,7 +80,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
         if (adapter != null) {
             try {
                 Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper);
-                int replacePosition = adapter.replaceNetworkTask(networkTaskWrapper.getNetworkTask(), networkTaskWrapper.getAccessTypeData(), null, networkTaskWrapper.getLogEntry());
+                int replacePosition = adapter.replaceNetworkTask(networkTaskWrapper.getNetworkTask(), networkTaskWrapper.getAccessTypeData(), null, null, networkTaskWrapper.getLogEntry());
                 if (replacePosition >= 0) {
                     adapter.notifyItemChanged(replacePosition);
                 }

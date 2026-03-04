@@ -19,15 +19,24 @@ package net.ibbaa.keepitup.ui.adapter;
 import androidx.annotation.NonNull;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Equality;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.util.CollectionUtil;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NetworkTaskUIWrapper {
+
+    private static final Equality<Header> HEADER_EQUALITY = new Equality<Header>() {
+        @Override
+        public boolean areEqual(Header header1, Header header2) {
+            return header2.isEqual(header2);
+        }
+    };
 
     private final NetworkTask networkTask;
     private final AccessTypeData accessTypeData;
@@ -35,11 +44,19 @@ public class NetworkTaskUIWrapper {
     private final List<Header> headers;
     private final LogEntry logEntry;
 
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, List<Header> headers, LogEntry logEntry) {
+        this.networkTask = networkTask;
+        this.accessTypeData = accessTypeData;
+        this.resolve = resolve;
+        this.headers = headers;
+        this.logEntry = logEntry;
+    }
+
     public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, LogEntry logEntry) {
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
         this.resolve = resolve;
-        this.headers = new ArrayList<>();
+        this.headers = Collections.emptyList();
         this.logEntry = logEntry;
     }
 
@@ -57,6 +74,10 @@ public class NetworkTaskUIWrapper {
 
     public Resolve getResolve() {
         return resolve;
+    }
+
+    public List<Header> getHeaders() {
+        return headers;
     }
 
     public LogEntry getLogEntry() {
@@ -83,6 +104,9 @@ public class NetworkTaskUIWrapper {
             return false;
         }
         if (resolve != null && !resolve.isEqual(other.getResolve())) {
+            return false;
+        }
+        if (!CollectionUtil.areListsEqual(headers, other.getHeaders(), HEADER_EQUALITY)) {
             return false;
         }
         if (logEntry == null && other.getLogEntry() != null) {

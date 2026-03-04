@@ -62,7 +62,9 @@ public class CollectionUtil {
     }
 
     public static <T> boolean areListsEqual(List<T> list1, List<T> list2, Equality<T> equality) {
-        if (list1 == list2) {return true;}
+        if (list1 == list2) {
+            return true;
+        }
         if (list1 == null || list2 == null || list1.size() != list2.size()) {
             return false;
         }

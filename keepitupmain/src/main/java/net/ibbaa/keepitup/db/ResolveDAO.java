@@ -45,6 +45,7 @@ public class ResolveDAO extends BaseDAO {
         return returnedResolve;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Resolve updateResolve(Resolve resolve) {
         Log.d(ResolveDAO.class.getName(), "Updating resolve object with id " + resolve.getId());
         Resolve returnedResolve = executeDBOperationInTransaction(resolve, this::updateResolve);

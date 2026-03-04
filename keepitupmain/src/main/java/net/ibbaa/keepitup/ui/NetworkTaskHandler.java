@@ -47,7 +47,7 @@ public class NetworkTaskHandler {
         Log.d(NetworkTaskHandler.class.getName(), "startNetworkTask for task " + task);
         try {
             scheduler.start(task);
-            getAdapter().replaceNetworkTask(task, null, null, null);
+            getAdapter().replaceNetworkTask(task, null, null, null, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error starting network task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_start_network_task));
@@ -58,7 +58,7 @@ public class NetworkTaskHandler {
         Log.d(NetworkTaskHandler.class.getName(), "stopNetworkTask for task " + task);
         try {
             scheduler.cancel(task);
-            getAdapter().replaceNetworkTask(task, null, null, null);
+            getAdapter().replaceNetworkTask(task, null, null, null, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error stopping network task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_stop_network_task));
