@@ -42,7 +42,7 @@ import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestDownloadCommand;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestResponseBody;
-import net.ibbaa.keepitup.ui.HeaderHandler;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
 import org.junit.After;
 import org.junit.Before;
@@ -1399,7 +1399,7 @@ public class DownloadCommandTest {
     }
 
     private void resetGlobalHeaderHandler() {
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         handler.reset();
     }
 

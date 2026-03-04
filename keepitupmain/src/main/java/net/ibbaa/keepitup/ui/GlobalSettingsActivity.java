@@ -57,6 +57,8 @@ import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.support.SuspensionIntervalsSupport;
+import net.ibbaa.keepitup.ui.sync.DBSyncResult;
+import net.ibbaa.keepitup.ui.sync.IntervalSyncHandler;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
@@ -66,6 +68,7 @@ import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -881,12 +884,18 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     @Override
     public void onSuspensionIntervalsDialogOkClicked(SuspensionIntervalsDialog intervalsDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogOkClicked");
-        IntervalHandler handler = new IntervalHandler(this, intervalsDialog);
-        if (handler.synchronizeIntervals()) {
+        List<Interval> newIntervals = intervalsDialog.getAdapter().getAllItems();
+        List<Interval> dbIntervals = new ArrayList<>(getTimeBasedSuspensionScheduler().getIntervals());
+        IntervalSyncHandler handler = new IntervalSyncHandler(this);
+        DBSyncResult syncResult = handler.synchronizeIntervals(newIntervals, dbIntervals);
+        if (syncResult.dbChanged()) {
             getTimeBasedSuspensionScheduler().restart();
             prepareSuspensionIntervalsField();
         }
         intervalsDialog.dismiss();
+        if (!syncResult.success()) {
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_intervals));
+        }
     }
 
     @Override

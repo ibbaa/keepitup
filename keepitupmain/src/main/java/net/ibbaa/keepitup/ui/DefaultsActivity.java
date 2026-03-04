@@ -54,6 +54,8 @@ import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
+import net.ibbaa.keepitup.ui.sync.DBSyncResult;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.HostFieldValidator;
 import net.ibbaa.keepitup.ui.validation.IntervalFieldValidator;
@@ -162,7 +164,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         } catch (Exception exc) {
             Log.e(DefaultsActivity.class.getName(), "Error deleting headers", exc);
         }
-        HeaderHandler handler = getHeaderHandler(null);
+        HeaderSyncHandler handler = new HeaderSyncHandler(this);
         handler.reset();
     }
 
@@ -344,7 +346,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         Log.d(DefaultsActivity.class.getName(), "prepareGlobalHeadersTextLayoutFields");
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_defaults_global_headers_value);
         gridLayout.removeAllViews();
-        List<Header> headers = getHeaderHandler(null).getGlobalHeaders();
+        List<Header> headers = new HeaderSyncHandler(this).getGlobalHeaders();
         if (headers.isEmpty()) {
             Log.d(DefaultsActivity.class.getName(), "No headers defined");
             gridLayout.setColumnCount(1);
@@ -699,7 +701,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     private void showHeadersDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showHeadersDialog");
         HeadersDialog headersDialog = new HeadersDialog();
-        Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), getHeaderHandler(headersDialog).getGlobalHeaders());
+        Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), new HeaderSyncHandler(this).getGlobalHeaders());
         BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), -1, bundle);
         headersDialog.setArguments(bundle);
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
@@ -755,12 +757,18 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     @Override
     public void onHeadersDialogOkClicked(HeadersDialog headersDialog) {
         Log.d(DefaultsActivity.class.getName(), "onHeadersDialogOkClicked");
-        HeaderHandler handler = getHeaderHandler(headersDialog);
-        if (handler.synchronizeHeaders(headersDialog.getNetworkTaskId())) {
+        List<Header> newHeaders = headersDialog.getAdapter().getAllItems();
+        long networkTaskId = headersDialog.getNetworkTaskId();
+        HeaderSyncHandler handler = new HeaderSyncHandler(this);
+        DBSyncResult syncResult = handler.synchronizeHeaders(networkTaskId, newHeaders);
+        if (syncResult.dbChanged()) {
             handler.reset();
             prepareGlobalHeadersField();
         }
         headersDialog.dismiss();
+        if (!syncResult.success()) {
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
+        }
     }
 
     @Override
@@ -771,13 +779,5 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
 
     private String getGlobalHeadersExpandedKey() {
         return DefaultsActivity.class.getSimpleName() + "GlobalHeadersExpanded";
-    }
-
-    private HeaderHandler getHeaderHandler(HeadersDialog headersDialog) {
-        Log.d(DefaultsActivity.class.getName(), "getHeaderHandler");
-        if (headersDialog == null) {
-            return new HeaderHandler(this);
-        }
-        return new HeaderHandler(this, headersDialog);
     }
 }

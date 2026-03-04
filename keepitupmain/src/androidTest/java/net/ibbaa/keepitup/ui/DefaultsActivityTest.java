@@ -51,6 +51,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
 import org.junit.After;
 import org.junit.Before;
@@ -518,7 +519,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
@@ -536,7 +537,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -570,7 +571,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -599,7 +600,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(5, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -636,7 +637,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("1 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(6, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -679,7 +680,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("5 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(10, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -888,7 +889,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
@@ -912,7 +913,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
@@ -941,7 +942,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -976,7 +977,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1011,7 +1012,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(4, handler.getGlobalHeaders().size());
         assertEquals("AName", handler.getGlobalHeaders().get(0).getName());
         assertEquals("AValue", handler.getGlobalHeaders().get(0).getValue());
@@ -1050,7 +1051,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(4, handler.getGlobalHeaders().size());
         assertEquals("AName", handler.getGlobalHeaders().get(0).getName());
         assertEquals("AValue", handler.getGlobalHeaders().get(0).getValue());
@@ -1099,7 +1100,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("1 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(6, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1154,7 +1155,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("1 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(6, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1187,7 +1188,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isEllipsized()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890122345689012234568901223456890", handler.getGlobalHeaders().get(0).getValue());
@@ -1234,7 +1235,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(handler.getGlobalHeaders().isEmpty());
         activityScenario.close();
     }
@@ -1251,7 +1252,7 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(handler.getGlobalHeaders().isEmpty());
         activityScenario.close();
     }
@@ -1274,7 +1275,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value3"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1303,7 +1304,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value3"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1361,7 +1362,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("4 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(9, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1422,7 +1423,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(handler.getGlobalHeaders().isEmpty());
         activityScenario.close();
     }
@@ -1517,7 +1518,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1552,7 +1553,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1615,7 +1616,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Value8"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name9: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value9"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(5, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
@@ -1644,7 +1645,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
@@ -2920,7 +2921,7 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     private void resetGlobalHeaderHandler() {
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         handler.reset();
     }
 

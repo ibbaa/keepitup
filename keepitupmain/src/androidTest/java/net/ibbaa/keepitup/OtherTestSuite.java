@@ -89,7 +89,9 @@ import net.ibbaa.keepitup.ui.mapping.EnumMappingTest;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTaskTest;
 import net.ibbaa.keepitup.ui.sync.DBSyncHandlerTest;
 import net.ibbaa.keepitup.ui.sync.ExportTaskTest;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandlerTest;
 import net.ibbaa.keepitup.ui.sync.ImportTaskTest;
+import net.ibbaa.keepitup.ui.sync.IntervalSyncHandlerTest;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiverTest;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIInitTaskTest;
 import net.ibbaa.keepitup.ui.sync.LogEntryUISyncTaskTest;
@@ -234,7 +236,9 @@ import org.junit.runners.Suite;
         DBPurgeTaskTest.class,
         DBSyncHandlerTest.class,
         ExportTaskTest.class,
+        HeaderSyncHandlerTest.class,
         ImportTaskTest.class,
+        IntervalSyncHandlerTest.class,
         LogEntryUIBroadcastReceiverTest.class,
         LogEntryUIInitTaskTest.class,
         LogEntryUISyncTaskTest.class,

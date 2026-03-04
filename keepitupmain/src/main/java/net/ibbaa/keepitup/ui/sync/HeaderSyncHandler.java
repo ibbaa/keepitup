@@ -14,51 +14,36 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.sync;
 
 import android.content.Context;
-import android.content.res.Resources;
 
-import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
-import net.ibbaa.keepitup.ui.sync.DBSyncHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class HeaderHandler {
+public class HeaderSyncHandler {
 
-    public final static Object LOCK = HeaderHandler.class;
+    public final static Object LOCK = HeaderSyncHandler.class;
 
     private static List<Header> headers;
 
     private final HeaderDAO headerDAO;
-    private final DefaultsActivity defaultsActivity;
-    private final HeadersDialog headerDialog;
 
-    public HeaderHandler(DefaultsActivity defaultsActivity, HeadersDialog headerDialog) {
-        this.defaultsActivity = defaultsActivity;
-        this.headerDialog = headerDialog;
-        this.headerDAO = new HeaderDAO(defaultsActivity);
-    }
-
-    public HeaderHandler(Context context) {
-        this.defaultsActivity = null;
-        this.headerDialog = null;
+    public HeaderSyncHandler(Context context) {
         this.headerDAO = new HeaderDAO(context);
     }
 
     public List<Header> getHeaders(long networkTaskId) {
-        Log.d(HeaderHandler.class.getName(), "getHeaders for networkTaskId " + networkTaskId);
+        Log.d(HeaderSyncHandler.class.getName(), "getHeaders for networkTaskId " + networkTaskId);
         return headerDAO.readHeadersForNetworkTask(networkTaskId);
     }
 
     public List<Header> getGlobalHeaders() {
-        Log.d(HeaderHandler.class.getName(), "getGlobalHeaders");
+        Log.d(HeaderSyncHandler.class.getName(), "getGlobalHeaders");
         synchronized (LOCK) {
             if (headers == null) {
                 headers = headerDAO.readGlobalHeaders();
@@ -68,20 +53,15 @@ public class HeaderHandler {
     }
 
     public void reset() {
-        Log.d(HeaderHandler.class.getName(), "reset");
+        Log.d(HeaderSyncHandler.class.getName(), "reset");
         synchronized (LOCK) {
             headers = null;
         }
     }
 
-    public boolean synchronizeHeaders(long networkTaskId) {
-        Log.d(HeaderHandler.class.getName(), "synchronizeHeaders for networkTaskId " + networkTaskId);
-        if (headerDialog == null) {
-            Log.e(HeaderHandler.class.getName(), "headerDialog is null");
-            return false;
-        }
+    public DBSyncResult synchronizeHeaders(long networkTaskId, List<Header> newHeaders) {
+        Log.d(HeaderSyncHandler.class.getName(), "synchronizeHeaders for networkTaskId " + networkTaskId);
         try {
-            List<Header> newHeaders = headerDialog.getAdapter().getAllItems();
             newHeaders = excludeNonApplicable(newHeaders, networkTaskId);
             List<Header> dbHeaders = new ArrayList<>(networkTaskId < 0 ? getGlobalHeaders() : getHeaders(networkTaskId));
             DBSyncHandler<Header> syncHandler = new DBSyncHandler<>();
@@ -94,16 +74,13 @@ public class HeaderHandler {
                 } else if (DBSyncHandler.Action.DELETE.equals(actionWrapper.action())) {
                     deleteHeader(actionWrapper.object());
                 } else {
-                    Log.e(HeaderHandler.class.getName(), "Unknown action " + actionWrapper.action());
+                    Log.e(HeaderSyncHandler.class.getName(), "Unknown action " + actionWrapper.action());
                 }
             }
-            return !headerActions.isEmpty();
+            return new DBSyncResult(true, !headerActions.isEmpty());
         } catch (Exception exc) {
-            Log.e(HeaderHandler.class.getName(), "Error synchronizing headers.", exc);
-            if (defaultsActivity != null) {
-                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
-            }
-            return true;
+            Log.e(HeaderSyncHandler.class.getName(), "Error synchronizing headers.", exc);
+            return new DBSyncResult(false, true);
         }
     }
 
@@ -120,25 +97,17 @@ public class HeaderHandler {
     }
 
     private void insertHeader(Header header) {
-        Log.d(HeaderHandler.class.getName(), "insertHeader, header) = " + header);
+        Log.d(HeaderSyncHandler.class.getName(), "insertHeader, header) = " + header);
         headerDAO.insertHeader(header);
     }
 
     private void updateHeader(Header header) {
-        Log.d(HeaderHandler.class.getName(), "updateHeader, header = " + header);
+        Log.d(HeaderSyncHandler.class.getName(), "updateHeader, header = " + header);
         headerDAO.updateHeader(header);
     }
 
     private void deleteHeader(Header header) {
-        Log.d(HeaderHandler.class.getName(), "deleteHeader, header = " + header);
+        Log.d(HeaderSyncHandler.class.getName(), "deleteHeader, header = " + header);
         headerDAO.deleteHeader(header);
-    }
-
-    private void showMessageDialog(String errorMessage) {
-        Objects.requireNonNull(defaultsActivity).showMessageDialog(errorMessage);
-    }
-
-    private Resources getResources() {
-        return Objects.requireNonNull(defaultsActivity).getResources();
     }
 }

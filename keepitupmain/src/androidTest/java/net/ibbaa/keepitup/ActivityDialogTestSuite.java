@@ -19,8 +19,6 @@ package net.ibbaa.keepitup;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManagerTest;
 import net.ibbaa.keepitup.ui.DefaultsActivityTest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivityTest;
-import net.ibbaa.keepitup.ui.HeaderHandlerTest;
-import net.ibbaa.keepitup.ui.IntervalHandlerTest;
 import net.ibbaa.keepitup.ui.LogHandlerTest;
 import net.ibbaa.keepitup.ui.NetworkTaskHandlerTest;
 import net.ibbaa.keepitup.ui.NetworkTaskLogActivityTest;
@@ -62,9 +60,7 @@ import org.junit.runners.Suite;
         //net.ibbaa.keepitup.ui
         ContextOptionsSupportManagerTest.class,
         DefaultsActivityTest.class,
-        HeaderHandlerTest.class,
         GlobalSettingsActivityTest.class,
-        IntervalHandlerTest.class,
         LogHandlerTest.class,
         NetworkTaskHandlerTest.class,
         NetworkTaskLogActivityTest.class,

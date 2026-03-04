@@ -42,7 +42,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.DefaultsActivity;
-import net.ibbaa.keepitup.ui.HeaderHandler;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1584,7 +1584,7 @@ public class HeadersDialogTest extends BaseUITest {
     }
 
     private void resetGlobalHeaderHandler() {
-        HeaderHandler handler = new HeaderHandler(TestRegistry.getContext());
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         handler.reset();
     }
 

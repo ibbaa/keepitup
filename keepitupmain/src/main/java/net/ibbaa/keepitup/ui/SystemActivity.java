@@ -75,6 +75,7 @@ import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.ui.support.PasswordInputSupport;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
 import net.ibbaa.keepitup.ui.sync.UITaskViewModel;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -1155,7 +1156,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
-        HeaderHandler handler = new HeaderHandler(this);
+        HeaderSyncHandler handler = new HeaderSyncHandler(this);
         handler.reset();
         if (success) {
             NetworkTaskLog.clear();
@@ -1169,7 +1170,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         Log.d(SystemActivity.class.getName(), "onPurgeDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
-        HeaderHandler handler = new HeaderHandler(this);
+        HeaderSyncHandler handler = new HeaderSyncHandler(this);
         handler.reset();
         if (success) {
             resetPreferences();

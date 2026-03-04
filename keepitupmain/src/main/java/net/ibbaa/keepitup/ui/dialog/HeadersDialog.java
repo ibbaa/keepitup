@@ -33,8 +33,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.DefaultsActivity;
-import net.ibbaa.keepitup.ui.HeaderHandler;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.HeadersAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
@@ -54,7 +52,7 @@ import java.util.Objects;
 public class HeadersDialog extends DialogFragmentBase implements HeaderEditSupport, ConfirmSupport, SwipeDeleteSupport {
 
     private View dialogView;
-    private RecyclerView globalHeadersRecyclerView;
+    private RecyclerView headersRecyclerView;
     private ItemTouchHelper itemTouchHelper;
 
     @Override
@@ -113,18 +111,18 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private void prepareHeadersRecyclerView(Bundle adapterState) {
         Log.d(HeadersDialog.class.getName(), "prepareHeadersRecyclerView");
-        globalHeadersRecyclerView = dialogView.findViewById(R.id.listview_dialog_headers_headers);
+        headersRecyclerView = dialogView.findViewById(R.id.listview_dialog_headers_headers);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        globalHeadersRecyclerView.setLayoutManager(layoutManager);
-        globalHeadersRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        headersRecyclerView.setLayoutManager(layoutManager);
+        headersRecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
-        globalHeadersRecyclerView.setAdapter(adapter);
+        headersRecyclerView.setAdapter(adapter);
         itemTouchHelper = new ItemTouchHelper(new DeleteSwipeCallback(this));
-        itemTouchHelper.attachToRecyclerView(globalHeadersRecyclerView);
+        itemTouchHelper.attachToRecyclerView(headersRecyclerView);
     }
 
     private boolean noHeadersDefined() {
-        return ((HeadersAdapter) Objects.requireNonNull(globalHeadersRecyclerView.getAdapter())).getAllItems().isEmpty();
+        return ((HeadersAdapter) Objects.requireNonNull(headersRecyclerView.getAdapter())).getAllItems().isEmpty();
     }
 
     private void prepareAddImageButton() {
@@ -263,7 +261,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private void onOkClicked(View view) {
         Log.d(HeadersDialog.class.getName(), "onOkClicked");
-        HeadersSupport headersSupport = getGlobalHeadersSupport();
+        HeadersSupport headersSupport = getHeadersSupport();
         if (headersSupport != null) {
             headersSupport.onHeadersDialogOkClicked(this);
         } else {
@@ -274,7 +272,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private void onCancelClicked(View view) {
         Log.d(HeadersDialog.class.getName(), "onCancelClicked");
-        HeadersSupport headersSupport = getGlobalHeadersSupport();
+        HeadersSupport headersSupport = getHeadersSupport();
         if (headersSupport != null) {
             headersSupport.onHeadersDialogCancelClicked(this);
         } else {
@@ -283,8 +281,8 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         }
     }
 
-    public RecyclerView getGlobalHeadersRecyclerView() {
-        return globalHeadersRecyclerView;
+    public RecyclerView getHeadersRecyclerView() {
+        return headersRecyclerView;
     }
 
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
@@ -305,21 +303,11 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     }
 
     public HeadersAdapter getAdapter() {
-        return (HeadersAdapter) getGlobalHeadersRecyclerView().getAdapter();
+        return (HeadersAdapter) getHeadersRecyclerView().getAdapter();
     }
 
-    public HeaderHandler getHeaderHandler() {
-        Log.d(HeadersDialog.class.getName(), "getHeaderHandler");
-        Activity activity = getActivity();
-        if (!(activity instanceof DefaultsActivity)) {
-            Log.e(HeadersDialog.class.getName(), "getGlobalHeaderHandler, activity is invalid");
-            return null;
-        }
-        return new HeaderHandler((DefaultsActivity) activity, this);
-    }
-
-    private HeadersSupport getGlobalHeadersSupport() {
-        Log.d(HeadersDialog.class.getName(), "getGlobalHeadersSupport");
+    private HeadersSupport getHeadersSupport() {
+        Log.d(HeadersDialog.class.getName(), "getHeadersSupport");
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(HeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is null");
