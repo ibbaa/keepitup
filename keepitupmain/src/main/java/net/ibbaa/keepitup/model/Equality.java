@@ -17,5 +17,6 @@
 package net.ibbaa.keepitup.model;
 
 public interface Equality<T> {
-        boolean areEqual(T a, T b);
-    }
+    @SuppressWarnings("unused")
+    boolean areEqual(T a, T b);
+}

@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.notification.NotificationHandler;
@@ -376,7 +377,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
         Resolve resolve = new Resolve(this);
-        openNetworkTaskEditDialog(task, data, resolve, -1);
+        openNetworkTaskEditDialog(task, data, resolve, null, -1);
     }
 
     public void onMainStartStopClicked(int position) {
@@ -436,7 +437,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTask task = uiWrapper.getNetworkTask();
         AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
         Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : uiWrapper.getResolve();
-        openNetworkTaskEditDialog(task, accessTypeData, resolve, position);
+        List<Header> headers = uiWrapper.getHeaders();
+        openNetworkTaskEditDialog(task, accessTypeData, resolve, headers, position);
     }
 
     public void onMainCopyClicked(int position) {
@@ -453,10 +455,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTask task = new NetworkTask(uiWrapper.getNetworkTask());
         AccessTypeData accessTypeData = new AccessTypeData(uiWrapper.getAccessTypeData());
         Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : new Resolve(uiWrapper.getResolve());
-        openNetworkTaskEditDialog(task, accessTypeData, resolve, position);
+        List<Header> headers = uiWrapper.getHeaders() == null ? null : new ArrayList<>(uiWrapper.getHeaders());
+        openNetworkTaskEditDialog(task, accessTypeData, resolve, headers, position);
     }
 
-    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, Resolve resolve, int position) {
+    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, Resolve resolve, List<Header> headers, int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is" + accessTypeData + ", resolve is" + resolve + ", position is " + position);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
@@ -466,6 +469,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
         bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), accessTypeData.toBundle(), bundle);
         bundle = BundleUtil.bundleToBundle(editDialog.getResolveKey(), resolve.toBundle(), bundle);
+        if (headers != null) {
+            bundle = BundleUtil.headerListToBundle(editDialog.getHeadersKey(), headers, bundle);
+        }
         editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
@@ -499,7 +505,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
-            handler.insertNetworkTask(task, accessTypeData, resolve);
+            handler.insertNetworkTask(task, accessTypeData, resolve, null);
             getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
             scrollToEntryByIndex(task.getIndex());
         } else {
@@ -520,7 +526,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 Log.d(NetworkTaskMainActivity.class.getName(), "No changes were made. Skipping update.");
             } else {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolveChanged ? resolve : null);
+                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolveChanged ? resolve : null, null);
                 getAdapter().notifyItemChanged(editDialog.getPosition());
             }
         }

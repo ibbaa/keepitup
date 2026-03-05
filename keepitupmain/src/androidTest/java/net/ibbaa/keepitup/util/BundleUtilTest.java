@@ -55,7 +55,7 @@ public class BundleUtilTest {
     }
 
     @Test
-    public void testStringToBundleProvidedBundle() {
+    public void testStringToProvidedBundle() {
         Bundle bundle = BundleUtil.stringToBundle("key", "message", null);
         assertEquals("message", bundle.getString("key"));
         bundle = new Bundle();
@@ -140,7 +140,7 @@ public class BundleUtilTest {
     }
 
     @Test
-    public void testBooleanToBundleProvidedBundle() {
+    public void testBooleanTorovidedBundle() {
         Bundle bundle = BundleUtil.booleanToBundle("key", true, null);
         assertTrue(bundle.getBoolean("key"));
         bundle = new Bundle();
@@ -173,7 +173,7 @@ public class BundleUtilTest {
     }
 
     @Test
-    public void testIntegerToBundleProvidedBundle() {
+    public void testIntegerToProvidedBundle() {
         Bundle bundle = BundleUtil.integerToBundle("key", 0, null);
         assertEquals(0, bundle.getInt("key"));
         bundle = new Bundle();
@@ -206,7 +206,7 @@ public class BundleUtilTest {
     }
 
     @Test
-    public void testLongToBundleProvidedBundle() {
+    public void testLongToProvidedBundle() {
         Bundle bundle = BundleUtil.longToBundle("key", 0, null);
         assertEquals(0, bundle.getLong("key"));
         bundle = new Bundle();
@@ -246,7 +246,7 @@ public class BundleUtilTest {
     }
 
     @Test
-    public void testBundleToBundleProvidedBundle() {
+    public void testBundleToProvidedBundle() {
         Bundle bundle = BundleUtil.bundleToBundle("key", null, new Bundle());
         assertNotNull(bundle);
         assertTrue(bundle.isEmpty());
@@ -295,6 +295,20 @@ public class BundleUtilTest {
         assertEquals("message2", Objects.requireNonNull(bundle.getBundle("key1")).getString("key2"));
         assertTrue(BundleUtil.bundleListToBundle(null, Arrays.asList(nestedBundle1, nestedBundle2)).isEmpty());
         assertTrue(BundleUtil.bundleListToBundle("key", null).isEmpty());
+    }
+
+    @Test
+    public void testBundleListToProvidedBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.bundleListToBundle("key", Arrays.asList(nestedBundle1, nestedBundle2), bundle);
+        assertEquals("message1", Objects.requireNonNull(bundle.getBundle("key0")).getString("key1"));
+        assertEquals("message2", Objects.requireNonNull(bundle.getBundle("key1")).getString("key2"));
+        assertTrue(bundle.getBoolean("otherkey"));
     }
 
     @Test
@@ -581,6 +595,20 @@ public class BundleUtilTest {
         Header otherHeader2 = new Header(Objects.requireNonNull(bundle.getBundle("key1")));
         assertTrue(header1.isEqual(otherHeader1));
         assertTrue(header2.isEqual(otherHeader2));
+    }
+
+    @Test
+    public void testHeaderListToProvidedBundle() {
+        Header header1 = getHeader(1, 2, "name1", "value1");
+        Header header2 = getHeader(2, 3, "name2", "value2");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.headerListToBundle("key", Arrays.asList(header1, header2), bundle);
+        Header otherHeader1 = new Header(Objects.requireNonNull(bundle.getBundle("key0")));
+        Header otherHeader2 = new Header(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(header1.isEqual(otherHeader1));
+        assertTrue(header2.isEqual(otherHeader2));
+        assertTrue(bundle.getBoolean("otherkey"));
     }
 
     @Test

@@ -93,12 +93,7 @@ public class CollectionUtilTest {
         List<Header> listShort = List.of(header1);
         List<Header> listWithNull = Arrays.asList(header1, null);
         List<Header> listBothNull = Arrays.asList(header1, null);
-        Equality<Header> equality = new Equality<Header>() {
-            @Override
-            public boolean areEqual(Header h1, Header h2) {
-                return h1.isEqual(h2);
-            }
-        };
+        Equality<Header> equality = Header::isEqual;
         assertTrue(CollectionUtil.areListsEqual(list1, list1, equality));
         assertTrue(CollectionUtil.areListsEqual(list1, list2, equality));
         assertFalse(CollectionUtil.areListsEqual(list1, listShort, equality));

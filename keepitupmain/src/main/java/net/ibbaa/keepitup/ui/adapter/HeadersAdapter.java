@@ -116,6 +116,7 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
         headers.remove(index);
     }
 
+    @SuppressWarnings("unused")
     public void removeItems() {
         this.headers.clear();
     }

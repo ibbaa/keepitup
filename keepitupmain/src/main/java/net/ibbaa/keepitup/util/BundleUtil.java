@@ -176,7 +176,10 @@ public class BundleUtil {
     }
 
     public static Bundle bundleListToBundle(String baseKey, List<Bundle> list) {
-        Bundle bundle = new Bundle();
+        return bundleListToBundle(baseKey, list, new Bundle());
+    }
+
+    public static Bundle bundleListToBundle(String baseKey, List<Bundle> list, Bundle bundle) {
         if (baseKey == null || list == null) {
             return bundle;
         }
@@ -292,14 +295,18 @@ public class BundleUtil {
     }
 
     public static Bundle headerListToBundle(String baseKey, List<Header> headerList) {
+        return headerListToBundle(baseKey, headerList, new Bundle());
+    }
+
+    public static Bundle headerListToBundle(String baseKey, List<Header> headerList, Bundle bundle) {
         if (baseKey == null || headerList == null) {
-            return new Bundle();
+            return bundle;
         }
         List<Bundle> bundleList = new ArrayList<>();
         for (Header header : headerList) {
             bundleList.add(header.toBundle());
         }
-        return bundleListToBundle(baseKey, bundleList);
+        return bundleListToBundle(baseKey, bundleList, bundle);
     }
 
     public static List<Header> headerListFromBundle(String baseKey, Bundle bundle) {

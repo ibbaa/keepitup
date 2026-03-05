@@ -192,6 +192,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return NetworkTaskEditDialog.class.getName() + ".Resolve";
     }
 
+    public String getHeadersKey() {
+        return NetworkTaskEditDialog.class.getName() + ".Headers";
+    }
+
     private String getAccessTypeBundleKey() {
         return NetworkTaskEditDialog.class.getName() + ".AccessType";
     }

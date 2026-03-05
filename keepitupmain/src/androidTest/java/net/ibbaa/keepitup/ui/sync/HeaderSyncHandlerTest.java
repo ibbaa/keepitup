@@ -261,7 +261,7 @@ public class HeaderSyncHandlerTest extends BaseUITest {
         handler.reset();
         header3.setName("anotherName");
         List<Header> newHeaders = List.of(getHeader1(1), header3);
-        DBSyncResult syncResult =handler.synchronizeHeaders(1, newHeaders);
+        DBSyncResult syncResult = handler.synchronizeHeaders(1, newHeaders);
         assertTrue(syncResult.success());
         assertTrue(syncResult.dbChanged());
         List<Header> headers = getHeaderDAO().readAllHeaders();

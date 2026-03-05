@@ -24,6 +24,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -31,45 +32,53 @@ import net.ibbaa.keepitup.model.Resolve;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskUIWrapperTest {
 
     @Test
     public void testIsEqual() {
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), getLogEntry());
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), List.of(getHeader1(), getHeader2()), getLogEntry());
         NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
         assertFalse(wrapper1.isEqual(wrapper2));
         wrapper2 = new NetworkTaskUIWrapper(null, null, null, getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(null, null, getResolve(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, List.of(getHeader1(), getHeader2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(null, getAccessTypeData(), getResolve(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, getResolve(), List.of(getHeader1(), getHeader2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, getAccessTypeData(), getResolve(), List.of(getHeader1(), getHeader2()), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), List.of(getHeader1(), getHeader2()), getLogEntry());
         assertTrue(wrapper1.isEqual(wrapper2));
         assertTrue(wrapper2.isEqual(wrapper1));
         NetworkTask task = getNetworkTask();
         task.setInstances(3);
-        wrapper2 = new NetworkTaskUIWrapper(task, getAccessTypeData(), getResolve(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(task, getAccessTypeData(), getResolve(), List.of(getHeader1(), getHeader2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         LogEntry entry = getLogEntry();
         entry.setNetworkTaskId(2);
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), entry);
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), List.of(getHeader1(), getHeader2()), entry);
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         AccessTypeData data = getAccessTypeData();
         data.setConnectCount(25);
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), data, getResolve(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), data, getResolve(), List.of(getHeader1(), getHeader2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         Resolve resolve = getResolve();
         resolve.setTargetAddress("address");
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), resolve, getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), resolve, List.of(getHeader1(), getHeader2()), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), resolve, List.of(getHeader2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         wrapper1 = new NetworkTaskUIWrapper(null, null, null, null);
@@ -129,5 +138,23 @@ public class NetworkTaskUIWrapperTest {
         resolve.setTargetAddress("192.168.178.1");
         resolve.setTargetPort(22);
         return resolve;
+    }
+
+    private Header getHeader1() {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(0);
+        header.setName("name1");
+        header.setValue("value1");
+        return header;
+    }
+
+    private Header getHeader2() {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(1);
+        header.setName("name2");
+        header.setValue("value2");
+        return header;
     }
 }

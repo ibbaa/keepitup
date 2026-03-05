@@ -117,6 +117,7 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
         intervals.remove(index);
     }
 
+    @SuppressWarnings("unused")
     public void removeItems() {
         this.intervals.clear();
     }

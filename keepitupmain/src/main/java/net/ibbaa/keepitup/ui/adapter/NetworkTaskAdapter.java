@@ -331,27 +331,6 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, LogEntry logEntry) {
-        Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
-        for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
-            NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
-            if (task.getId() == currentTask.getId()) {
-                if (data == null) {
-                    data = currentTask.getAccessTypeData();
-                }
-                if (resolve == null) {
-                    resolve = currentTask.getResolve();
-                }
-                if (logEntry == null) {
-                    logEntry = currentTask.getLogEntry();
-                }
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolve, logEntry));
-                return ii;
-            }
-        }
-        return -1;
-    }
-
     public int replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers, LogEntry logEntry) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {

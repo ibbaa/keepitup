@@ -29,14 +29,10 @@ import net.ibbaa.keepitup.util.CollectionUtil;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class NetworkTaskUIWrapper {
 
-    private static final Equality<Header> HEADER_EQUALITY = new Equality<Header>() {
-        @Override
-        public boolean areEqual(Header header1, Header header2) {
-            return header2.isEqual(header2);
-        }
-    };
+    private static final Equality<Header> HEADER_EQUALITY = Header::isEqual;
 
     private final NetworkTask networkTask;
     private final AccessTypeData accessTypeData;

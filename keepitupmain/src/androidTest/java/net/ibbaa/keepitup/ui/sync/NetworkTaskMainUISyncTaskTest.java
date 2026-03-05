@@ -30,7 +30,6 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -174,7 +173,6 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData data1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
-        Resolve resolve = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null);
         NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null);
@@ -184,7 +182,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
         NetworkTaskMainUISyncTask nullSyncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, null);
-        nullSyncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, resolve, logEntry));
+        nullSyncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, null, logEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
         assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
@@ -301,37 +299,6 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
         return data;
-    }
-
-    private Resolve getResolve1(long networkTaskId) {
-        Resolve resolve = new Resolve();
-        resolve.setId(0);
-        resolve.setNetworkTaskId(networkTaskId);
-        resolve.setTargetAddress("192.168.178.1");
-        resolve.setTargetPort(22);
-        return resolve;
-    }
-
-    private Resolve getResolve2(long networkTaskId) {
-        Resolve resolve = new Resolve();
-        resolve.setId(0);
-        resolve.setNetworkTaskId(networkTaskId);
-        resolve.setSourceAddress("");
-        resolve.setSourcePort(-1);
-        resolve.setTargetAddress("192.168.178.1");
-        resolve.setTargetPort(443);
-        return resolve;
-    }
-
-    private Resolve getResolve3(long networkTaskId) {
-        Resolve resolve = new Resolve();
-        resolve.setId(0);
-        resolve.setNetworkTaskId(networkTaskId);
-        resolve.setSourceAddress("");
-        resolve.setSourcePort(-1);
-        resolve.setTargetAddress("127.0.0.1");
-        resolve.setTargetPort(-1);
-        return resolve;
     }
 
     private LogEntry getLogEntryWithNetworkTaskId(long networkTaskId, long timestamp) {

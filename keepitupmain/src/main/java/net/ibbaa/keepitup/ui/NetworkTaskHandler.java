@@ -20,6 +20,7 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
@@ -27,11 +28,15 @@ import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+
+import java.util.List;
 
 public class NetworkTaskHandler {
 
@@ -65,8 +70,10 @@ public class NetworkTaskHandler {
         }
     }
 
-    public void insertNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve) {
+    public void insertNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers) {
         Log.d(NetworkTaskHandler.class.getName(), "insertNetworkTask for task " + task + " and access type data " + data);
+        Log.d(NetworkTaskHandler.class.getName(), "resolve is " + resolve);
+        Log.d(NetworkTaskHandler.class.getName(), "headers is " + headers);
         int index = getAdapter().getNextIndex();
         task.setIndex(index);
         try {
@@ -76,17 +83,28 @@ public class NetworkTaskHandler {
                 Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.");
                 mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_network_task));
             } else {
+                long taskId = task.getId();
                 AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
-                data.setNetworkTaskId(task.getId());
+                data.setNetworkTaskId(taskId);
                 accessTypeDataDAO.insertAccessTypeData(data);
                 LogDAO logDAO = new LogDAO(mainActivity);
-                logDAO.deleteAllLogsForNetworkTask(task.getId());
+                logDAO.deleteAllLogsForNetworkTask(taskId);
                 if (resolve != null && !resolve.isEmpty()) {
                     ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
-                    resolve.setNetworkTaskId(task.getId());
+                    resolve.setNetworkTaskId(taskId);
                     resolveDAO.insertResolve(resolve);
                 }
-                getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolve, null));
+                if (headers != null) {
+                    for (Header header : headers) {
+                        header.setNetworkTaskId(taskId);
+                    }
+                    HeaderDAO headerDAO = new HeaderDAO(mainActivity);
+                    int count = headerDAO.insertHeaders(headers);
+                    if (count < 0) {
+                        mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_headers));
+                    }
+                }
+                getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolve, headers, null));
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
@@ -100,7 +118,7 @@ public class NetworkTaskHandler {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             networkTaskDAO.updateNetworkTaskName(task.getId(), name);
             task.setName(name);
-            getAdapter().replaceNetworkTask(task, null, null, null);
+            getAdapter().replaceNetworkTask(task, null, null, null, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task name. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
@@ -109,8 +127,10 @@ public class NetworkTaskHandler {
         }
     }
 
-    public void updateNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve) {
+    public void updateNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers) {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task + " and access type data " + data);
+        Log.d(NetworkTaskHandler.class.getName(), "resolve is " + resolve);
+        Log.d(NetworkTaskHandler.class.getName(), "headers is " + headers);
         try {
             boolean running = task.isRunning();
             if (running) {
@@ -141,7 +161,11 @@ public class NetworkTaskHandler {
                     resolve = resolveDAO.insertResolve(resolve);
                 }
             }
-            getAdapter().replaceNetworkTask(task, data, resolve, null);
+            if (headers != null) {
+                HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
+                syncHandler.synchronizeHeaders(task.getId(), headers);
+            }
+            getAdapter().replaceNetworkTask(task, data, resolve, headers, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
@@ -156,16 +180,18 @@ public class NetworkTaskHandler {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
             ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
+            HeaderDAO headerDAO = new HeaderDAO(mainActivity);
             LogDAO logDAO = new LogDAO(mainActivity);
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Stopping.");
                 task = scheduler.cancel(task);
             }
             logDAO.deleteAllLogsForNetworkTask(task.getId());
+            headerDAO.deleteHeadersForNetworkTask(task.getId());
             resolveDAO.deleteResolveForNetworkTask(task.getId());
             accessTypeDataDAO.deleteAccessTypeDataForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);
-            getAdapter().removeItem(new NetworkTaskUIWrapper(task, null, null, null));
+            getAdapter().removeItem(new NetworkTaskUIWrapper(task, null, null, null, null));
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_delete_network_task));

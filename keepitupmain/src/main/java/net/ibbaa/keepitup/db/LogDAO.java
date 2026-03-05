@@ -133,7 +133,7 @@ public class LogDAO extends BaseDAO {
     private LogEntry readMostRecentLogForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
         Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, log entry is " + logEntry);
         LogDBConstants dbConstants = new LogDBConstants(getContext());
-        LogEntry[] result = { null };
+        LogEntry[] result = {null};
         readLogEntriesInternal(db, dbConstants.getReadMostRecentLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())}, entry -> result[0] = entry);
         Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, returning " + result[0]);
         return result[0];
