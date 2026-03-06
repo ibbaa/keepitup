@@ -39,4 +39,5 @@
     <integer name="activity_global_settings_suspension_intervals_text_size_normal">14</integer>
     <integer name="activity_global_settings_suspension_intervals_text_size_smaller">12</integer>
     <integer name="activity_global_settings_suspension_intervals_text_size_small">10</integer>
+    <integer name="activity_global_settings_suspension_intervals_number_column_break">3</integer>
 </resources>

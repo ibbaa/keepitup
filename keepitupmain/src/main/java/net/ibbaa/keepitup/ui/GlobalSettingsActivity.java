@@ -296,14 +296,15 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             prepareSuspensionIntervalsTextFieldsSingleLayoutColumn(getResources().getString(R.string.text_activity_global_settings_suspension_intervals_none));
             return;
         }
-        if (intervals.size() > 3) {
-            Log.d(GlobalSettingsActivity.class.getName(), "More than 3 suspension intervals are present");
+        int numberColumnBreak = getResources().getInteger(R.integer.activity_global_settings_suspension_intervals_number_column_break);
+        if (intervals.size() > numberColumnBreak) {
+            Log.d(GlobalSettingsActivity.class.getName(), "More than " + numberColumnBreak + " suspension intervals are present");
             gridLayout.setColumnCount(2);
             int index = (intervals.size() + 1) / 2;
             prepareSuspensionIntervalsTextFieldsLayoutColumn(0, intervals.size(), intervals.subList(0, index));
             prepareSuspensionIntervalsTextFieldsLayoutColumn(1, intervals.size(), intervals.subList(index, intervals.size()));
         } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Less than 3 suspension intervals are present");
+            Log.d(GlobalSettingsActivity.class.getName(), "Less than " + numberColumnBreak + " suspension intervals are present");
             gridLayout.setColumnCount(1);
             prepareSuspensionIntervalsTextFieldsLayoutColumn(0, intervals.size(), intervals);
         }
