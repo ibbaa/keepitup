@@ -23,6 +23,7 @@ import android.content.Intent;
 import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.DBOpenHelper;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
@@ -72,6 +73,7 @@ public class StartupService extends BroadcastReceiver {
         Log.d(StartupService.class.getName(), "Cleanup logs");
         cleanupAccessTypeData(context);
         cleanupResolve(context);
+        cleanupHeaders(context);
         cleanupLogs(context);
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
@@ -181,6 +183,17 @@ public class StartupService extends BroadcastReceiver {
             resolveDAO.deleteAllOrphanResolve();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on cleaning up resolve objects", exc);
+        }
+    }
+
+    private void cleanupHeaders(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupHeaders");
+        try {
+            Log.d(StartupService.class.getName(), "Deleting orphan header objects.");
+            HeaderDAO headerDAO = new HeaderDAO(context);
+            headerDAO.deleteAllOrphanHeaders();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on cleaning up header objects", exc);
         }
     }
 

@@ -25,6 +25,7 @@
     <string name="label_dialog_network_task_edit_connect_to_host">Connect-to host:</string>
     <string name="label_dialog_network_task_edit_connect_to_port">Connect-to port:</string>
     <string name="label_dialog_network_task_edit_stop_on_success">Stop on success:</string>
+    <string name="label_dialog_network_task_edit_use_default_headers">Use default headers:</string>
     <string name="label_dialog_network_task_edit_ignore_ssl_error">Ignore SSL errors:</string>
     <string name="label_dialog_network_task_edit_only_wifi">Only on WiFi:</string>
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>

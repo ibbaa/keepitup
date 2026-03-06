@@ -40,6 +40,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -51,6 +52,7 @@ import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.ui.validation.ResolveValidator;
@@ -72,6 +74,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private NetworkTask task;
     private AccessTypeData accessTypeData;
     private Resolve resolve;
+    private List<Header> headers;
+    private List<Header> currentHeaders;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -89,6 +93,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextColorValidatingWatcher connectToHostEditTextWatcher;
     private EditText connectToPortEditText;
     private TextColorValidatingWatcher connectToPortEditTextWatcher;
+    private SwitchMaterial useDefaultHeadersSwitch;
+    private TextView useDefaultHeadersOnOffText;
     private SwitchMaterial ignoreSSLErrorSwitch;
     private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial stopOnSuccessSwitch;
@@ -143,10 +149,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         accessTypeData = accessTypeDataBundle != null ? new AccessTypeData(accessTypeDataBundle) : new AccessTypeData();
         Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
         resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
+        headers = BundleUtil.headerListFromBundle(getHeadersKey(), requireArguments());
+        prepareCurrentHeaders(savedInstanceState);
         prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
+        prepareUseDefaultHeadersSwitch();
         prepareIgnoreSSLErrorSwitch();
         prepareStopOnSuccessSwitch();
         prepareAccessTypeDataFields();
@@ -168,6 +177,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (selectedAccessTypeRadioButton != null) {
             AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
             outState.putInt(getAccessTypeBundleKey(), accessType.getCode());
+        }
+        if (currentHeaders != null) {
+            BundleUtil.headerListToBundle(getCurrentHeadersKey(), currentHeaders, outState);
         }
     }
 
@@ -194,6 +206,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     public String getHeadersKey() {
         return NetworkTaskEditDialog.class.getName() + ".Headers";
+    }
+
+    public String getCurrentHeadersKey() {
+        return NetworkTaskEditDialog.class.getName() + ".CurrentHeaders";
     }
 
     private String getAccessTypeBundleKey() {
@@ -276,6 +292,29 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isHighPrioVisible() {
         return highPrioSwitch.getVisibility() == View.VISIBLE;
+    }
+
+    private void prepareCurrentHeaders(Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentHeaders");
+        if (currentHeaders != null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentHeaders, currentHeaders are " + currentHeaders);
+            return;
+        }
+        if (savedInstanceState != null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentHeaders, restored currentHeaders to " + currentHeaders);
+            currentHeaders = BundleUtil.headerListFromBundle(getCurrentHeadersKey(), savedInstanceState);
+        } else {
+            if (headers == null) {
+                Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentHeaders, headers is null, currentHeaders remains null");
+                return;
+            }
+            if (headers.isEmpty() && accessTypeData.isUseDefaultHeaders()) {
+                Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentHeaders, headers is empty with using default headers, currentHeaders remains null");
+                return;
+            }
+            currentHeaders = new ArrayList<>(headers);
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentHeaders, set currentHeaders to " + currentHeaders);
+        }
     }
 
     private void prepareAccessTypeRadioButtons(Bundle savedInstanceState) {
@@ -474,11 +513,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         LinearLayout connectCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_count);
         LinearLayout pingPackageSizeLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_package_size);
         LinearLayout stopOnSuccessLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_stop_on_success);
+        LinearLayout useDefaultHeadersLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_use_default_headers);
         LinearLayout ignoreSSLErrorLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error);
         TextView pingCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_count_label);
         TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
         TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
         TextView stopOnSuccessTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stop_on_success_label);
+        TextView useDefaultHeadersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_use_default_headers_label);
         TextView ignoreSSLErrorTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_label);
         if (accessType.isPing()) {
             PreferenceManager preferenceManager = new PreferenceManager(requireContext());
@@ -518,6 +559,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             connectCountLinearLayout.setVisibility(View.GONE);
         }
         if (accessType.isDownload()) {
+            useDefaultHeadersTextView.setVisibility(View.VISIBLE);
+            useDefaultHeadersSwitch.setVisibility(View.VISIBLE);
+            useDefaultHeadersLinearLayout.setVisibility(View.VISIBLE);
             ignoreSSLErrorTextView.setVisibility(View.VISIBLE);
             ignoreSSLErrorSwitch.setVisibility(View.VISIBLE);
             ignoreSSLErrorLinearLayout.setVisibility(View.VISIBLE);
@@ -525,6 +569,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             stopOnSuccessSwitch.setVisibility(View.GONE);
             stopOnSuccessLinearLayout.setVisibility(View.GONE);
         } else {
+            useDefaultHeadersTextView.setVisibility(View.GONE);
+            useDefaultHeadersSwitch.setVisibility(View.GONE);
+            useDefaultHeadersLinearLayout.setVisibility(View.GONE);
             ignoreSSLErrorTextView.setVisibility(View.GONE);
             ignoreSSLErrorSwitch.setVisibility(View.GONE);
             ignoreSSLErrorLinearLayout.setVisibility(View.GONE);
@@ -581,8 +628,17 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         connectToPortEditText.addTextChangedListener(connectToPortEditTextWatcher);
     }
 
+    private void prepareUseDefaultHeadersSwitch() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareUseDefaultHeadersSwitch with use default headers setting of " + accessTypeData.isUseDefaultHeaders());
+        useDefaultHeadersSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_use_default_headers);
+        useDefaultHeadersOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_use_default_headers_on_off);
+        useDefaultHeadersSwitch.setChecked(accessTypeData.isUseDefaultHeaders());
+        useDefaultHeadersSwitch.setOnCheckedChangeListener(this::onUseDefaultHeadersCheckedChanged);
+        prepareUseDefaultHeadersOnOffText();
+    }
+
     private void prepareIgnoreSSLErrorSwitch() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareIgnoreSSLErrorSwitch with stop on success setting of " + accessTypeData.isIgnoreSSLError());
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareIgnoreSSLErrorSwitch with ignore ssl error setting of " + accessTypeData.isIgnoreSSLError());
         ignoreSSLErrorSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_ignore_ssl_error);
         ignoreSSLErrorOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_on_off);
         ignoreSSLErrorSwitch.setChecked(accessTypeData.isIgnoreSSLError());
@@ -662,6 +718,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
     }
 
+    private void prepareUseDefaultHeadersOnOffText() {
+        useDefaultHeadersOnOffText.setText(useDefaultHeadersSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
     private void prepareIgnoreSSLErrorOnOffText() {
         ignoreSSLErrorOnOffText.setText(ignoreSSLErrorSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
@@ -700,6 +760,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     public Resolve getInitialResolve() {
         return resolve;
+    }
+
+    public List<Header> getInitialHeaders() {
+        return headers;
     }
 
     public NetworkTask getNetworkTask() {
@@ -785,6 +849,15 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
+    }
+
+    private void onUseDefaultHeadersCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onUseDefaultHeadersCheckedChanged, new value is " + isChecked);
+        if (currentHeaders == null) {
+            HeaderSyncHandler syncHandler = new HeaderSyncHandler(requireActivity());
+            currentHeaders = syncHandler.getGlobalHeaders();
+        }
+        prepareUseDefaultHeadersOnOffText();
     }
 
     private void onIgnoreSSLErrorCheckedChanged(CompoundButton buttonView, boolean isChecked) {

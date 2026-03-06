@@ -100,11 +100,11 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult connectExecutionResult = executeDownloadCommand(networkTask, data, url, new DownloadCommand.ConnectToAddress(resolve, address));
-            LogEntry logEntry = connectExecutionResult.getLogEntry();
+            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, new DownloadCommand.ConnectToAddress(resolve, address));
+            LogEntry logEntry = downloadExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
-            return connectExecutionResult;
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
+            return downloadExecutionResult;
         }
         Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         LogEntry logEntry = dnsExecutionResult.getLogEntry();
