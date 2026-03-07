@@ -53,6 +53,9 @@
     <dimen name="switch_dialog_network_task_edit_use_default_headers_padding_top">0dp</dimen>
     <dimen name="switch_dialog_network_task_edit_use_default_headers_padding_bottom">0dp</dimen>
     <dimen name="switch_dialog_network_task_edit_use_default_headers_min_height">0dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_headers_label_margin_top">14dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_headers_margin_top">12dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_headers_margin_left">10dp</dimen>
     <dimen name="textview_dialog_network_task_edit_ignore_ssl_error_label_margin_top">14dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_top">12dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_left">10dp</dimen>

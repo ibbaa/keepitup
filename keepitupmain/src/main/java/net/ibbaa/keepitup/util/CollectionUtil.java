@@ -18,12 +18,17 @@ package net.ibbaa.keepitup.util;
 
 import net.ibbaa.keepitup.model.Equality;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class CollectionUtil {
+
+    public static int getSize(Collection<?> col) {
+        return col != null ? col.size() : 0;
+    }
 
     public static <V> void copyMap(Map<String, V> source, Map<String, V> target, String prefix) {
         if (source == null || target == null) {

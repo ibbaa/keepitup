@@ -352,12 +352,41 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/textview_dialog_network_task_edit_headers_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_headers_label_margin_top"
+                android:textStyle="bold"
+                android:layout_row="9"
+                android:layout_column="0"
+                android:text="@string/label_dialog_network_task_edit_headers" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_headers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_headers_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_headers_margin_top"
+                android:layout_row="9"
+                android:layout_column="1">
+
+                <TextView
+                    android:id="@+id/textview_dialog_network_task_edit_headers_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/textview_dialog_network_task_edit_ignore_ssl_error_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_ignore_ssl_error_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="9"
+                android:layout_row="10"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_ignore_ssl_error" />
 
@@ -369,7 +398,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_top"
-                android:layout_row="9"
+                android:layout_row="10"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -398,7 +427,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_stop_on_success_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="10"
+                android:layout_row="11"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_stop_on_success" />
 
@@ -410,7 +439,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_stop_on_success_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_stop_on_success_margin_top"
-                android:layout_row="10"
+                android:layout_row="11"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -439,7 +468,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_only_wifi_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="11"
+                android:layout_row="12"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_only_wifi" />
 
@@ -451,7 +480,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_only_wifi_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_only_wifi_margin_top"
-                android:layout_row="11"
+                android:layout_row="12"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -480,7 +509,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_notification_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="12"
+                android:layout_row="13"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_notification" />
 
@@ -492,7 +521,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_notification_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_notification_margin_top"
-                android:layout_row="12"
+                android:layout_row="13"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -521,7 +550,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_high_prio_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="13"
+                android:layout_row="14"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_high_prio" />
 
@@ -533,7 +562,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_high_prio_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_high_prio_margin_top"
-                android:layout_row="13"
+                android:layout_row="14"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial

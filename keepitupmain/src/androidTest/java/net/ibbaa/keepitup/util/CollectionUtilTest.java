@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,14 @@ import java.util.Map;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class CollectionUtilTest {
+
+    @Test
+    public void testGetSize() {
+        assertEquals(0, CollectionUtil.getSize(null));
+        assertEquals(0, CollectionUtil.getSize(Collections.emptyList()));
+        assertEquals(1, CollectionUtil.getSize(List.of(1)));
+        assertEquals(5, CollectionUtil.getSize(List.of(1, 2, 3, 4, 5)));
+    }
 
     @Test
     public void testCopyMap() {
