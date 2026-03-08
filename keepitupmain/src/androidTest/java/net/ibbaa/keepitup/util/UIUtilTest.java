@@ -37,6 +37,24 @@ import org.junit.runner.RunWith;
 public class UIUtilTest {
 
     @Test
+    public void testGetNetworkTaskName() {
+        assertEquals("Network task", UIUtil.getNetworkTaskName(TestRegistry.getContext(), new NetworkTask(), false));
+        assertEquals("network task", UIUtil.getNetworkTaskName(TestRegistry.getContext(), new NetworkTask(), true));
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(0);
+        assertEquals("Network task 1", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, false));
+        assertEquals("network task 1", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, true));
+        networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        assertEquals("Network task 2", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, false));
+        assertEquals("network task 2", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, true));
+        networkTask = new NetworkTask();
+        networkTask.setName("Xyz");
+        assertEquals("Xyz", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, false));
+        assertEquals("Xyz", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, true));
+    }
+
+    @Test
     public void testIsInputTypeNumber() {
         assertFalse(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS));
         assertFalse(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_TEXT));

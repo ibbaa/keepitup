@@ -36,7 +36,49 @@
             android:layout_marginBottom="@dimen/textview_dialog_headers_label_margin"
             android:gravity="center_horizontal"
             android:textStyle="bold"
-            android:text="@string/label_dialog_headers_headers" />
+            android:text="@string/label_dialog_headers_global_headers" />
+
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardview_dialog_headers_restore"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/cardview_dialog_headers_restore_margin"
+            card_view:cardCornerRadius="@dimen/cardview_dialog_headers_restore_corner_radius"
+            app:cardElevation="@dimen/cardview_dialog_headers_restore_card_elevation"
+            app:cardBackgroundColor="@color/cardBackgroundColor">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/relativelayout_dialog_headers_restore_padding">
+
+                <ImageView
+                    android:id="@+id/imageview_dialog_headers_restore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/label_dialog_headers_restore"
+                    app:srcCompat="@drawable/icon_restore_selector" />
+
+                <TextView
+                    android:id="@+id/textview_dialog_headers_restore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/imageview_dialog_headers_restore"
+                    android:layout_marginTop="@dimen/textview_dialog_headers_restore_margin_top"
+                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:textSize="@dimen/textview_dialog_headers_restore_text_size"
+                    android:text="@string/label_dialog_headers_restore" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listview_dialog_headers_headers"

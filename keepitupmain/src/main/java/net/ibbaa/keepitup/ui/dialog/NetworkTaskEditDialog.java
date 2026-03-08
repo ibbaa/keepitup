@@ -45,6 +45,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
+import net.ibbaa.keepitup.ui.DefaultsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
@@ -52,6 +53,7 @@ import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
+import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
@@ -70,7 +72,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport {
+public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport {
 
     private View dialogView;
     private NetworkTask task;
@@ -665,6 +667,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareHeadersField() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeadersField");
+        prepareHeadersText();
+        LinearLayout linearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_headers);
+        linearLayout.setOnClickListener(this::showHeadersDialog);
+    }
+
+    private void prepareHeadersText() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeadersText");
         TextView headersText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
         int size = CollectionUtil.getSize(currentHeaders);
         String formattedHeaderText = getResources().getQuantityString(R.plurals.text_dialog_network_task_edit_headers_value, size, size);
@@ -891,7 +900,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private void onUseDefaultHeadersCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onUseDefaultHeadersCheckedChanged, new value is " + isChecked);
         if (currentHeaders == null) {
-            HeaderSyncHandler syncHandler = new HeaderSyncHandler(requireActivity());
+            HeaderSyncHandler syncHandler = new HeaderSyncHandler(requireContext());
             currentHeaders = syncHandler.getGlobalHeaders();
         }
         prepareUseDefaultHeadersOnOffText();
@@ -1147,7 +1156,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "showHeadersDialog");
         HeadersDialog headersDialog = new HeadersDialog();
         Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), currentHeaders != null ? currentHeaders : Collections.emptyList());
-        BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), -1, bundle);
+        BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), task.getId(), bundle);
+        String title = getResources().getString(R.string.label_dialog_headers_headers_network_task);
+        title += " " + UIUtil.getNetworkTaskName(requireContext(), task, true);
+        BundleUtil.stringToBundle(headersDialog.getHeadersTitleKey(), title, bundle);
+        BundleUtil.booleanToBundle(headersDialog.getSupportsRestoreDefaultHeadersKey(), true, bundle);
         headersDialog.setArguments(bundle);
         headersDialog.show(getParentFragmentManager(), HeadersDialog.class.getName());
     }
@@ -1204,6 +1217,20 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             Log.e(NetworkTaskEditDialog.class.getName(), "Source field is undefined.");
         }
         contextOptionsDialog.dismiss();
+    }
+
+    @Override
+    public void onHeadersDialogOkClicked(HeadersDialog headersDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onHeadersDialogOkClicked");
+        currentHeaders = headersDialog.getAdapter().getAllItems();
+        headersDialog.dismiss();
+        prepareHeadersText();
+    }
+
+    @Override
+    public void onHeadersDialogCancelClicked(HeadersDialog headersDialog) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onHeadersDialogCancelClicked");
+        headersDialog.dismiss();
     }
 
     private int getColor(int colorid) {

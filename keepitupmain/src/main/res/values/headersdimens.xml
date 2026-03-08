@@ -19,6 +19,11 @@
     <dimen name="textview_dialog_headers_label_margin">8dp</dimen>
     <dimen name="listview_dialog_headers_margin">0dp</dimen>
     <dimen name="listview_dialog_headers_padding">0dp</dimen>
+    <dimen name="cardview_dialog_headers_restore_margin">4dp</dimen>
+    <dimen name="cardview_dialog_headers_restore_corner_radius">4dp</dimen>
+    <dimen name="cardview_dialog_headers_restore_card_elevation">4dp</dimen>
+    <dimen name="relativelayout_dialog_headers_restore_padding">8dp</dimen>
+    <dimen name="textview_dialog_headers_restore_margin_top">8dp</dimen>
     <dimen name="linearlayout_dialog_headers_ok_cancel_padding_top">10dp</dimen>
     <dimen name="relativelayout_list_item_header_padding">8dp</dimen>
     <dimen name="cardview_list_item_header_margin">4dp</dimen>

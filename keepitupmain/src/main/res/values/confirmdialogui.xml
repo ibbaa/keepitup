@@ -26,9 +26,11 @@
     <string name="text_dialog_confirm_dismiss_active_alarm">Dismiss alarm?</string>
     <string name="text_dialog_confirm_confirm_authorization_header">Confirm security risk</string>
     <string name="text_dialog_confirm_config_export_existing_file">Export configuration</string>
+    <string name="text_dialog_confirm_restore_default_headers">Restore headers?</string>
     <string name="text_dialog_confirm_config_reset_description">This will delete all network tasks and log entries, reset the configuration to default settings and cannot be undone.</string>
     <string name="text_dialog_confirm_config_import_description">The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.</string>
     <string name="text_dialog_confirm_config_export_existing_file_description">The specified file exists and will be overwritten.</string>
     <string name="text_dialog_confirm_dismiss_active_alarm_description">An alarm sound is playing because of a failed high priority task. Dismiss the alarm now?</string>
     <string name="text_dialog_confirm_add_authorization_header_description">Authorization headers often include credentials. If your device is lost or compromised, these values could be accessed. If you export the settings, it is recommended to encrypt the file.</string>
+    <string name="text_dialog_confirm_restore_default_headers_description">This overwrites the current headers with the default headers.</string>
 </resources>

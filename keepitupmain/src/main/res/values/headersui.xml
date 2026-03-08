@@ -15,12 +15,15 @@
   -->
 
 <resources>
-    <string name="label_dialog_headers_headers">Global headers</string>
+    <string name="label_dialog_headers_global_headers">Global headers</string>
+    <string name="label_dialog_headers_headers_network_task">Headers</string>
     <string name="text_dialog_headers_no_headers">No headers defined</string>
     <string name="label_dialog_headers_delete_header">Delete header</string>
+    <string name="label_dialog_headers_restore">Restore default headers</string>
     <string name="label_dialog_headers_ok">@android:string/ok</string>
     <string name="label_dialog_headers_cancel">@android:string/cancel</string>
-    <string name="label_dialog_headers_edit_header">Add global header</string>
+    <string name="label_dialog_headers_edit_header">Add header</string>
+    <dimen name="textview_dialog_headers_restore_text_size">14sp</dimen>
     <integer name="list_item_header_max_value_lines">3</integer>
     <dimen name="list_item_header_text_size_name">14sp</dimen>
     <dimen name="list_item_header_text_size_value">12sp</dimen>

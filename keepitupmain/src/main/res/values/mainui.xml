@@ -26,7 +26,6 @@
     <string name="menu_action_activity_main_global_settings">Settings</string>
     <string name="menu_action_activity_main_system">System</string>
     <string name="menu_action_activity_main_info">Info</string>
-    <string name="list_item_network_task_title">Network task %d</string>
     <string name="list_item_network_task_title_alarm">(alarm playing)</string>
     <string name="list_item_network_task_status">Status: %s</string>
     <string name="list_item_network_task_instances" tools:ignore="PluralsCandidate">Instances: %d active</string>

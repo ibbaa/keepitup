@@ -703,6 +703,9 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         HeadersDialog headersDialog = new HeadersDialog();
         Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), new HeaderSyncHandler(this).getGlobalHeaders());
         BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), -1, bundle);
+        String title = getResources().getString(R.string.label_dialog_headers_global_headers);
+        BundleUtil.stringToBundle(headersDialog.getHeadersTitleKey(), title, bundle);
+        BundleUtil.booleanToBundle(headersDialog.getSupportsRestoreDefaultHeadersKey(), false, bundle);
         headersDialog.setArguments(bundle);
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }

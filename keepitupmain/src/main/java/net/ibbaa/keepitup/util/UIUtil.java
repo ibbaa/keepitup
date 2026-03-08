@@ -34,6 +34,18 @@ import net.ibbaa.keepitup.model.NetworkTask;
 
 public class UIUtil {
 
+    public static String getNetworkTaskName(Context context, NetworkTask networkTask, boolean lowerCase) {
+        String defaultName = context.getResources().getString(R.string.task_name_default);
+        String name = StringUtil.isEmpty(networkTask.getName()) ? defaultName : networkTask.getName();
+        if (name.equals(defaultName) && networkTask.getIndex() >= 0) {
+            if (lowerCase) {
+                name = name.toLowerCase();
+            }
+            name += " " + (networkTask.getIndex() + 1);
+        }
+        return name;
+    }
+
     public static boolean isInputTypeNumber(int inputType) {
         return (inputType & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
     }

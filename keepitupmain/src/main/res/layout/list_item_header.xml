@@ -31,7 +31,7 @@
         android:text="@string/text_dialog_headers_no_headers" />
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardview_list_item_global_header"
+        android:id="@+id/cardview_list_item_header"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

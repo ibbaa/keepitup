@@ -41,7 +41,7 @@ public class HeaderViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.headersDialog = headersDialog;
         noHeadersText = itemView.findViewById(R.id.textview_list_item_header_no_header);
-        cardView = itemView.findViewById(R.id.cardview_list_item_global_header);
+        cardView = itemView.findViewById(R.id.cardview_list_item_header);
         cardView.setOnClickListener(this::onHeaderOpenClicked);
         headerName = itemView.findViewById(R.id.textview_list_item_header_name);
         headerValue = itemView.findViewById(R.id.textview_list_item_header_value);

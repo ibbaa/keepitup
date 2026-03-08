@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="label_dialog_network_task_edit_ok">@android:string/ok</string>
     <string name="label_dialog_network_task_edit_cancel">@android:string/cancel</string>
     <string name="label_dialog_network_task_edit_accesstype">Type:</string>

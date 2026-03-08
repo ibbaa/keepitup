@@ -22,9 +22,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,12 +36,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.ui.RecyclerViewBaseActivity;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.HeadersAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.ui.support.HeaderEditSupport;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
@@ -70,6 +75,8 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(HeadersDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getHeadersAdapterKey()) : null;
+        prepareHeadersTitleField();
+        prepareRestoreDefaultHeadersFields();
         prepareHeadersRecyclerView(adapterState);
         prepareAddImageButton();
         prepareOkCancelImageButtons();
@@ -93,6 +100,14 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         return savedInstanceState.containsKey(getHeadersAdapterKey());
     }
 
+    public String getHeadersTitleKey() {
+        return HeadersDialog.class.getSimpleName() + "HeadersTitle";
+    }
+
+    public String getSupportsRestoreDefaultHeadersKey() {
+        return HeadersDialog.class.getSimpleName() + "SupportsDefaultHeaders";
+    }
+
     public String getInitialHeadersKey() {
         return HeadersDialog.class.getSimpleName() + "InitialHeaders";
     }
@@ -107,6 +122,28 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     public long getNetworkTaskId() {
         return BundleUtil.longFromBundle(getNetworkTaskIdKey(), requireArguments());
+    }
+
+    private void prepareHeadersTitleField() {
+        Log.d(HeadersDialog.class.getName(), "prepareHeadersTitleField");
+        TextView title = dialogView.findViewById(R.id.textview_dialog_headers_label);
+        String titleText = BundleUtil.stringFromBundle(getHeadersTitleKey(), requireArguments());
+        if (!StringUtil.isEmpty(titleText)) {
+            title.setText(titleText);
+        }
+    }
+
+    private void prepareRestoreDefaultHeadersFields() {
+        Log.d(HeadersDialog.class.getName(), "prepareRestoreDefaultHeadersFields");
+        CardView restoreHeadersCardView = dialogView.findViewById(R.id.cardview_dialog_headers_restore);
+        boolean supportsRestoreDefaultHeader = BundleUtil.booleanFromBundle(getSupportsRestoreDefaultHeadersKey(), requireArguments());
+        if (supportsRestoreDefaultHeader) {
+            restoreHeadersCardView.setVisibility(View.VISIBLE);
+            ImageView restoreHeadersImageView = dialogView.findViewById(R.id.imageview_dialog_headers_restore);
+            restoreHeadersImageView.setOnClickListener(this::onHeadersRestoreClicked);
+        } else {
+            restoreHeadersCardView.setVisibility(View.GONE);
+        }
     }
 
     private void prepareHeadersRecyclerView(Bundle adapterState) {
@@ -149,13 +186,18 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         showGlobalHeaderEditDialog(header, index);
     }
 
+    public void onHeadersRestoreClicked(View view) {
+        Log.d(HeadersDialog.class.getName(), "onHeadersRestoreClicked");
+        openConfirmDialogRestore();
+    }
+
     public void onHeaderDeleteClicked(View view, int index) {
         Log.d(HeadersDialog.class.getName(), "onHeaderDeleteClicked for index " + index);
         if (index < 0) {
             Log.e(HeadersDialog.class.getName(), "index " + index + " is invalid");
             return;
         }
-        openConfirmDialog(index, ConfirmDialog.Type.DELETEHEADER);
+        openConfirmDialogDelete(index, ConfirmDialog.Type.DELETEHEADER);
     }
 
     public void onDeleteSwiped(int index) {
@@ -164,10 +206,10 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
             Log.e(HeadersDialog.class.getName(), "index " + index + " is invalid");
             return;
         }
-        openConfirmDialog(index, ConfirmDialog.Type.DELETEHEADERSWIPE);
+        openConfirmDialogDelete(index, ConfirmDialog.Type.DELETEHEADERSWIPE);
     }
 
-    private void openConfirmDialog(int index, ConfirmDialog.Type type) {
+    private void openConfirmDialogDelete(int index, ConfirmDialog.Type type) {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         String confirmMessage = getResources().getString(R.string.text_dialog_confirm_delete_header);
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, type.name()});
@@ -176,7 +218,19 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         showDialog(confirmDialog, ConfirmDialog.class.getName());
     }
 
+    private void openConfirmDialogRestore() {
+        Log.d(RecyclerViewBaseActivity.class.getName(), "openConfirmDialogRestore");
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        ConfirmDialog.Type type = ConfirmDialog.Type.RESTOREHEADER;
+        String confirmMessage = getResources().getString(R.string.text_dialog_confirm_restore_default_headers);
+        String descriptionMessage = getResources().getString(R.string.text_dialog_confirm_restore_default_headers_description);
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, descriptionMessage, type.name()});
+        confirmDialog.setArguments(bundle);
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
+    }
+
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(HeadersDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.DELETEHEADER.equals(type) || ConfirmDialog.Type.DELETEHEADERSWIPE.equals(type)) {
@@ -191,6 +245,11 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
             } else {
                 Log.e(HeadersDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain deletePosition key " + confirmDialog.getPositionKey());
             }
+        }
+        if (ConfirmDialog.Type.RESTOREHEADER.equals(type)) {
+            HeaderSyncHandler syncHandler = new HeaderSyncHandler(requireContext());
+            getAdapter().replaceItems(syncHandler.getGlobalHeaders());
+            getAdapter().notifyDataSetChanged();
         } else {
             Log.e(HeadersDialog.class.getName(), "Unknown type " + type);
         }
@@ -308,6 +367,12 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private HeadersSupport getHeadersSupport() {
         Log.d(HeadersDialog.class.getName(), "getHeadersSupport");
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof HeadersSupport) {
+                return (HeadersSupport) fragment;
+            }
+        }
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(HeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is null");

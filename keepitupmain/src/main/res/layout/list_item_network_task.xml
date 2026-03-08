@@ -51,7 +51,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:text="@string/list_item_network_task_title"
+                android:text=""
                 tools:ignore="KeyboardInaccessibleWidget" />
 
             <LinearLayout

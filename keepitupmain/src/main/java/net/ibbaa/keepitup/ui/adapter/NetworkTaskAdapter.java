@@ -40,6 +40,7 @@ import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.UIUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.URL;
@@ -93,10 +94,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindTitle, networkTask is " + networkTask);
-        String name = StringUtil.isEmpty(networkTask.getName()) ? getResources().getString(R.string.task_name_default) : networkTask.getName();
-        if (name.equals(getResources().getString(R.string.task_name_default))) {
-            name = getResources().getString(R.string.list_item_network_task_title, networkTask.getIndex() + 1);
-        }
+        String name = UIUtil.getNetworkTaskName(getContext(), networkTask, false);
         int color = getColor(R.color.textColor);
         if (AlarmService.isPlayingAlarm(networkTask)) {
             name += " " + getResources().getString(R.string.list_item_network_task_title_alarm);
