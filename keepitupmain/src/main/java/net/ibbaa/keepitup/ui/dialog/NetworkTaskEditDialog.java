@@ -99,6 +99,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextColorValidatingWatcher connectToPortEditTextWatcher;
     private SwitchMaterial useDefaultHeadersSwitch;
     private TextView useDefaultHeadersOnOffText;
+    private TextView headersText;
     private SwitchMaterial ignoreSSLErrorSwitch;
     private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial stopOnSuccessSwitch;
@@ -290,6 +291,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isUseDefaultHeadersVisible() {
         return useDefaultHeadersSwitch.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isHeadersVisible() {
+        return headersText.getVisibility() == View.VISIBLE;
     }
 
     private boolean isIgnoreSSLErrorVisible() {
@@ -674,7 +679,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareHeadersText() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeadersText");
-        TextView headersText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
+        headersText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
         int size = CollectionUtil.getSize(currentHeaders);
         String formattedHeaderText = getResources().getQuantityString(R.plurals.text_dialog_network_task_edit_headers_value, size, size);
         headersText.setText(formattedHeaderText);
@@ -876,6 +881,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         Log.d(NetworkTaskEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
         return resolve;
+    }
+
+    public List<Header> getHeaders() {
+        if (isHeadersVisible()) {
+            return currentHeaders;
+        }
+        return null;
     }
 
     private void onOkClicked(View view) {
