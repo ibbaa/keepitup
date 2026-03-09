@@ -154,7 +154,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         accessTypeData = accessTypeDataBundle != null ? new AccessTypeData(accessTypeDataBundle) : new AccessTypeData();
         Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
         resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
-        headers = BundleUtil.headerListFromBundle(getHeadersKey(), requireArguments());
+        prepareHeaders();
         prepareCurrentHeaders(savedInstanceState);
         prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
@@ -307,6 +307,16 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isHighPrioVisible() {
         return highPrioSwitch.getVisibility() == View.VISIBLE;
+    }
+
+    private void prepareHeaders() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeaders");
+        Bundle headersBundle = BundleUtil.bundleFromBundle(getHeadersKey(), requireArguments());
+        if (headersBundle != null) {
+            headers = BundleUtil.headerListFromBundle(getHeadersKey(), headersBundle);
+        } else {
+            headers = null;
+        }
     }
 
     private void prepareCurrentHeaders(Bundle savedInstanceState) {
@@ -501,12 +511,15 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeadersFieldVisibility with headers " + currentHeaders);
         LinearLayout headersLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_headers);
         TextView headersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_label);
+        TextView headersTextValueView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
         if (useDefaultHeadersSwitch.isChecked()) {
             headersLinearLayout.setVisibility(View.GONE);
             headersTextView.setVisibility(View.GONE);
+            headersTextValueView.setVisibility(View.GONE);
         } else {
             headersLinearLayout.setVisibility(View.VISIBLE);
             headersTextView.setVisibility(View.VISIBLE);
+            headersTextValueView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -913,7 +926,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "onUseDefaultHeadersCheckedChanged, new value is " + isChecked);
         if (currentHeaders == null) {
             HeaderSyncHandler syncHandler = new HeaderSyncHandler(requireContext());
-            currentHeaders = syncHandler.getGlobalHeaders();
+            currentHeaders = syncHandler.getGlobalHeadersCopyForNetworkTask(task.getId());
         }
         prepareUseDefaultHeadersOnOffText();
         prepareHeadersField();

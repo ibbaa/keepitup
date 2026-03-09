@@ -42,6 +42,18 @@ public class HeaderSyncHandler {
         return headerDAO.readHeadersForNetworkTask(networkTaskId);
     }
 
+    public List<Header> getGlobalHeadersCopyForNetworkTask(long networkTaskId) {
+        Log.d(HeaderSyncHandler.class.getName(), "getGlobalHeadersCopyForNetworkTask");
+        List<Header> globalHeaders = getGlobalHeaders();
+        List<Header> copyGlobalHeaders = new ArrayList<>(globalHeaders.size());
+        for (Header currentHeader : globalHeaders) {
+            Header header = new Header(currentHeader);
+            header.setNetworkTaskId(networkTaskId);
+            copyGlobalHeaders.add(header);
+        }
+        return copyGlobalHeaders;
+    }
+
     public List<Header> getGlobalHeaders() {
         Log.d(HeaderSyncHandler.class.getName(), "getGlobalHeaders");
         synchronized (LOCK) {

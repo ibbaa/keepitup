@@ -26,7 +26,7 @@
     <string name="label_dialog_network_task_edit_connect_to_port">Connect-to port:</string>
     <string name="label_dialog_network_task_edit_stop_on_success">Stop on success:</string>
     <string name="label_dialog_network_task_edit_use_default_headers">Use default headers:</string>
-    <string name="label_dialog_network_task_edit_headers">HTTP headers:</string>
+    <string name="label_dialog_network_task_edit_headers">HTTP Headers:</string>
     <plurals name="text_dialog_network_task_edit_headers_value">
         <item quantity="one">Click here (%d header)</item>
         <item quantity="other">Click here (%d headers)</item>

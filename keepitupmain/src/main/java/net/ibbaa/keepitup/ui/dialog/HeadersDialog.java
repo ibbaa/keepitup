@@ -248,7 +248,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         }
         if (ConfirmDialog.Type.RESTOREHEADER.equals(type)) {
             HeaderSyncHandler syncHandler = new HeaderSyncHandler(requireContext());
-            getAdapter().replaceItems(syncHandler.getGlobalHeaders());
+            getAdapter().replaceItems(syncHandler.getGlobalHeadersCopyForNetworkTask(getNetworkTaskId()));
             getAdapter().notifyDataSetChanged();
         } else {
             Log.e(HeadersDialog.class.getName(), "Unknown type " + type);

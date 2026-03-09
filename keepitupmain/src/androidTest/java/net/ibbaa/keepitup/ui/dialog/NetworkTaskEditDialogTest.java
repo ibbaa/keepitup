@@ -40,6 +40,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
@@ -48,8 +49,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
@@ -57,11 +60,14 @@ import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -178,6 +184,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("no")));
         onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_use_default_headers_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_use_default_headers_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_use_default_headers_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_ignore_ssl_error_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).perform(click());
@@ -333,6 +347,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         AccessTypeData data = dialog.getAccessTypeData();
         Resolve initialResolve = dialog.getInitialResolve();
         Resolve resolve = dialog.getResolve();
+        List<Header> initialHeaders = dialog.getInitialHeaders();
+        List<Header> headers = dialog.getInitialHeaders();
         assertEquals(initialTask.getId(), task.getId());
         assertEquals(initialTask.getIndex(), task.getIndex());
         assertEquals(initialTask.getSchedulerId(), task.getSchedulerId());
@@ -352,6 +368,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
         assertEquals(initialResolve.getTargetAddress(), resolve.getTargetAddress());
         assertEquals(initialResolve.getTargetPort(), resolve.getTargetPort());
+        assertNull(initialHeaders);
+        assertNull(headers);
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
@@ -441,6 +459,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(isDisplayed()));
@@ -453,6 +472,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
@@ -469,6 +489,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
@@ -481,7 +502,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testResolveFieldsFields() {
+    public void testResolveFields() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(not(isDisplayed())));
@@ -522,6 +543,426 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host.com")));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("11")));
+    }
+
+    @Test
+    public void testHeadersFields() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void testHeadersFieldsScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        rotateScreen(activityScenario);
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
+        onView(withText("Download")).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void testHeadersChangeCancel() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+    }
+
+    @Test
+    public void testHeadersChangeCancelScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+    }
+
+    @Test
+    public void testHeadersChangeOk() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AValue")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+    }
+
+    @Test
+    public void testHeadersChangeOkScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AValue")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+    }
+
+    @Test
+    public void testHeadersRestore() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_restore)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_headers_restore)).check(matches(withText("Restore default headers")));
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_restore)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Restore headers?")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("This overwrites the current headers with the default headers.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+    }
+
+    @Test
+    public void testHeadersRestoreScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_restore)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_headers_restore)).check(matches(withText("Restore default headers")));
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_restore)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Restore headers?")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("This overwrites the current headers with the default headers.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+    }
+
+    @Test
+    public void testHeadersAddedUseDefaultHeaders() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        assertNull(dialog.getHeaders());
+    }
+
+    @Test
+    public void testHeadersAddedUseDefaultHeadersScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        assertNull(dialog.getHeaders());
+    }
+
+    @Test
+    public void testNoHeaders() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("No headers defined")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (0 headers)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        assertTrue(dialog.getHeaders().isEmpty());
+    }
+
+    @Test
+    public void testNoHeadersScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("No headers defined")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (0 headers)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        assertTrue(dialog.getHeaders().isEmpty());
+    }
+
+    @Test
+    public void testHeadersAddedUpdated() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("BName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("BValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AValue")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("BName")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("BValue")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals("BName", headers.get(1).getName());
+        assertEquals("BValue", headers.get(1).getValue());
+    }
+
+    @Test
+    public void testHeadersAddedUpdatedScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("BName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("BValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AValue")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("BName")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("BValue")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals("BName", headers.get(1).getName());
+        assertEquals("BValue", headers.get(1).getValue());
     }
 
     @Test
@@ -2144,5 +2585,15 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     private void injectPermissionManager() {
         ((NetworkTaskMainActivity) getActivity(activityScenario)).injectPermissionManager(permissionManager);
+    }
+
+    private void resetGlobalHeaderHandler() {
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        handler.reset();
+    }
+
+    private void addDefaultHeader() {
+        DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
+        dbSetup.initializeHeaderTable();
     }
 }
