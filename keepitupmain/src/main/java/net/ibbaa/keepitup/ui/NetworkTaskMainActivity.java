@@ -530,7 +530,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             boolean taskChanged = !initialTask.isTechnicallyEqual(task);
             boolean accessTypeDataChanged = !initialAccessTypeData.isTechnicallyEqual(accessTypeData);
             boolean resolveChanged = !initialResolve.isTechnicallyEqual(resolve);
-            boolean headersChanged = headers == null || !CollectionUtil.areListsEqual(initialHeaders, headers, HEADER_TECHNICAL_EQUALITY);
+            boolean headersChanged = headers != null && !CollectionUtil.areListsEqual(initialHeaders, headers, HEADER_TECHNICAL_EQUALITY);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task changed: " + taskChanged);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data changed: " + accessTypeDataChanged);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve object changed: " + resolveChanged);

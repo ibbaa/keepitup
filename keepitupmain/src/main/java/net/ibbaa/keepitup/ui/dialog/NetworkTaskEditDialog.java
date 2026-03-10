@@ -45,7 +45,6 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
-import net.ibbaa.keepitup.ui.DefaultsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
@@ -315,7 +314,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (headersBundle != null) {
             headers = BundleUtil.headerListFromBundle(getHeadersKey(), headersBundle);
         } else {
-            headers = null;
+            headers = accessTypeData.isUseDefaultHeaders() ? null : Collections.emptyList();
         }
     }
 
@@ -1246,7 +1245,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     @Override
     public void onHeadersDialogOkClicked(HeadersDialog headersDialog) {
-        Log.d(DefaultsActivity.class.getName(), "onHeadersDialogOkClicked");
+        Log.d(NetworkTaskEditDialog.class.getName(), "onHeadersDialogOkClicked");
         currentHeaders = headersDialog.getAdapter().getAllItems();
         headersDialog.dismiss();
         prepareHeadersText();

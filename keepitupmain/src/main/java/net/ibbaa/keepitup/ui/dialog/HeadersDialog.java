@@ -36,7 +36,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.RecyclerViewBaseActivity;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.HeadersAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
@@ -219,7 +218,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     }
 
     private void openConfirmDialogRestore() {
-        Log.d(RecyclerViewBaseActivity.class.getName(), "openConfirmDialogRestore");
+        Log.d(HeadersDialog.class.getName(), "openConfirmDialogRestore");
         ConfirmDialog confirmDialog = new ConfirmDialog();
         ConfirmDialog.Type type = ConfirmDialog.Type.RESTOREHEADER;
         String confirmMessage = getResources().getString(R.string.text_dialog_confirm_restore_default_headers);

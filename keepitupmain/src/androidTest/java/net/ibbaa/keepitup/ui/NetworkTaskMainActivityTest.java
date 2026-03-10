@@ -46,6 +46,7 @@ import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
@@ -59,6 +60,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestUtil;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
 import org.junit.After;
 import org.junit.Before;
@@ -1147,6 +1149,482 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
+    @Test
+    public void testHeadersEmpty() {
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHeadersEmptyScreenRotation() {
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertTrue(headers.isEmpty());
+        assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        rotateScreen(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHeadersEmptyNotUseDefaultHeaders() {
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHeadersEmptyNotUseDefaultHeadersScreenRotation() {
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        rotateScreen(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAddHeaderNotUseDefaultHeader() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAddHeaderNotUseDefaultHeaderScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testExistingHeadersNotChanged() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        NetworkTask task = getNetworkTask1();
+        task.setAccessType(AccessType.DOWNLOAD);
+        task.setAddress("https://www.test.com\"");
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        data.setUseDefaultHeaders(true);
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        Header header1 = getHeaderDAO().insertHeader(getHeader(1, task.getId()));
+        Header header2 = getHeaderDAO().insertHeader(getHeader(2, task.getId()));
+        Header header3 = getHeaderDAO().insertHeader(getHeader(3, task.getId()));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask readTask = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(task.isEqual(readTask));
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(3, headers.size());
+        assertTrue(header1.isEqual(headers.get(0)));
+        assertTrue(header2.isEqual(headers.get(1)));
+        assertTrue(header3.isEqual(headers.get(2)));
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testExistingHeadersAllDeleted() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        NetworkTask task = getNetworkTask1();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        getHeaderDAO().insertHeader(getHeader(1, task.getId()));
+        getHeaderDAO().insertHeader(getHeader(2, task.getId()));
+        getHeaderDAO().insertHeader(getHeader(3, task.getId()));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask readTask = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertFalse(task.isEqual(readTask));
+        assertFalse(task.isTechnicallyEqual(readTask));
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testExistingHeadersRestore() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        NetworkTask task = getNetworkTask1();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        getHeaderDAO().insertHeader(getHeader(1, task.getId()));
+        getHeaderDAO().insertHeader(getHeader(2, task.getId()));
+        getHeaderDAO().insertHeader(getHeader(3, task.getId()));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_restore)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Restore headers?")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("This overwrites the current headers with the default headers.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAddEditDelete() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("BName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("BValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("CName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("CValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals("CName", headers.get(1).getName());
+        assertEquals("CValue", headers.get(1).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAddEditDeleteScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("BName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("BValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("CName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("CValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals("CName", headers.get(1).getName());
+        assertEquals("CValue", headers.get(1).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAddEditDefaultHeader() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAddEditDefaultHeaderScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("AName", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        globalHeaders = getHeaderDAO().readGlobalHeaders();
+        assertEquals(1, globalHeaders.size());
+        assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
+        activityScenario.close();
+    }
+
     private void startAlarmService(NetworkTask task) {
         if (AlarmService.isRunning()) {
             return;
@@ -1283,6 +1761,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         return logEntry;
     }
 
+    private Header getHeader(int number, long networkTaskId) {
+        Header header = new Header();
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("Name" + number);
+        header.setValue("Value" + number);
+        return header;
+    }
+
     private NetworkTaskAdapter getAdapter(ActivityScenario<?> activityScenario) {
         return (NetworkTaskAdapter) getNetworkTaskMainActivity(activityScenario).getAdapter();
     }
@@ -1293,6 +1779,16 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     private void injectPermissionManager(ActivityScenario<?> activityScenario) {
         ((NetworkTaskMainActivity) getActivity(activityScenario)).injectPermissionManager(permissionManager);
+    }
+
+    private void resetGlobalHeaderHandler() {
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        handler.reset();
+    }
+
+    private void addDefaultHeader() {
+        DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
+        dbSetup.initializeHeaderTable();
     }
 }
 

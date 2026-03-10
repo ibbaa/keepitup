@@ -488,7 +488,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         activityScenario.close();
     }
@@ -499,15 +499,15 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         activityScenario.close();
     }
@@ -516,7 +516,7 @@ public class DefaultsActivityTest extends BaseUITest {
     public void testHTTPHeaderOneHeader() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
@@ -532,7 +532,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -552,21 +552,21 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -589,7 +589,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -625,7 +625,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -668,7 +668,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -714,7 +714,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isEllipsized()));
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).perform(click());
@@ -736,7 +736,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -791,7 +791,7 @@ public class DefaultsActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -850,7 +850,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         activityScenario.close();
     }
@@ -869,7 +869,7 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         activityScenario.close();
     }
@@ -886,7 +886,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
@@ -910,7 +910,7 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
@@ -935,7 +935,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -970,7 +970,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1003,7 +1003,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("AName: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("AValue"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1042,7 +1042,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("AName: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("AValue"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1087,7 +1087,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value6"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("1 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(scrollTo());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
@@ -1142,7 +1142,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value6"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("1 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(scrollTo());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
@@ -1185,7 +1185,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isEllipsized()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
@@ -1203,7 +1203,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -1219,7 +1219,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -1233,7 +1233,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(handler.getGlobalHeaders().isEmpty());
@@ -1250,7 +1250,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(handler.getGlobalHeaders().isEmpty());
@@ -1270,7 +1270,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1299,7 +1299,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1349,7 +1349,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("4 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(scrollTo());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
@@ -1421,7 +1421,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(handler.getGlobalHeaders().isEmpty());
@@ -1438,7 +1438,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -1456,7 +1456,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -1472,7 +1472,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -1490,7 +1490,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -1511,7 +1511,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value4"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1546,7 +1546,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1605,7 +1605,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value9"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
@@ -1642,7 +1642,7 @@ public class DefaultsActivityTest extends BaseUITest {
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
