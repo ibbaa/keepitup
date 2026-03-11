@@ -137,6 +137,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: https://localhost")));
         onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Headers: default")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 40 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Ignore SSL errors: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
@@ -174,6 +175,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
         onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 40 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Ignore SSL errors: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: yes")));
@@ -437,6 +439,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: http://test")));
         onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Headers: default")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 60 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Ignore SSL errors: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
@@ -1159,6 +1162,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 0 defined")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
@@ -1168,6 +1172,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 0 defined")));
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
         activityScenario.close();
@@ -1183,6 +1188,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 0 defined")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertTrue(headers.isEmpty());
@@ -1195,6 +1201,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 0 defined")));
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
         activityScenario.close();
@@ -1211,6 +1218,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
@@ -1219,6 +1227,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
@@ -1241,6 +1250,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
@@ -1251,6 +1261,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
@@ -1280,6 +1291,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
@@ -1288,6 +1300,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
@@ -1317,6 +1330,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertTrue(getHeaderDAO().readHeadersForNetworkTask(task.getId()).isEmpty());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
@@ -1327,6 +1341,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
@@ -1344,7 +1359,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         NetworkTask task = getNetworkTask1();
         task.setAccessType(AccessType.DOWNLOAD);
-        task.setAddress("https://www.test.com\"");
+        task.setAddress("https://www.test.com");
         task = getNetworkTaskDAO().insertNetworkTask(task);
         AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
         data.setUseDefaultHeaders(true);
@@ -1355,8 +1370,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         NetworkTask readTask = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertTrue(task.isEqual(readTask));
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
@@ -1397,6 +1412,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 0 defined")));
         NetworkTask readTask = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         assertFalse(task.isEqual(readTask));
         assertFalse(task.isTechnicallyEqual(readTask));
@@ -1438,6 +1454,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
@@ -1482,6 +1499,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 2 defined")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(2, headers.size());
@@ -1531,6 +1549,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 2 defined")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(2, headers.size());
@@ -1556,6 +1575,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
@@ -1573,6 +1593,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("AName", headers.get(0).getName());
@@ -1595,6 +1616,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
@@ -1614,6 +1636,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 1 defined")));
         headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("AName", headers.get(0).getName());
@@ -1747,7 +1770,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
-        data.setUseDefaultHeaders(false);
+        data.setUseDefaultHeaders(true);
         return data;
     }
 

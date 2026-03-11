@@ -117,7 +117,7 @@ public class DownloadCommandTest {
     @Test
     public void testConnectionFailed() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, null, null);
         setCurrentTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(1, result.connectResults().size());
@@ -142,7 +142,7 @@ public class DownloadCommandTest {
     @Test
     public void testConnectionFailedWithConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, getConnectToAddress("192.168.179.1", 33, InetAddress.getByName("192.168.179.1")));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, getConnectToAddress("192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(1, result.connectResults().size());
@@ -167,7 +167,7 @@ public class DownloadCommandTest {
     @Test
     public void testConnectionFailedWithRedirectAndConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddress("192.168.179.1", 33, InetAddress.getByName("192.168.179.1")));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddress("192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null).newBuilder().header("Location", "http://www.host.com").build();
         downloadCommand.addResponse("http://test.com", testResponse);
         setCurrentTimeInverted(downloadCommand);
@@ -201,7 +201,7 @@ public class DownloadCommandTest {
     @Test
     public void testConnectionFailedNegativeTime() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null, null);
         setNegativeTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
@@ -210,7 +210,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOk() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com:333", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
         downloadCommand.addResponse("http://test.com:333", testResponse);
@@ -239,7 +239,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkWithConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, getConnectToAddress("host.com", 33, InetAddress.getByName("192.168.179.1")));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, getConnectToAddress("host.com", 33, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com:333", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
         downloadCommand.addResponse("http://test.com:333", testResponse);
@@ -268,7 +268,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkNegativeTime() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null, null);
         setNegativeTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
         downloadCommand.addResponse("http://test.com", testResponse);
@@ -280,7 +280,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkWithLocationHeaderWithoutRedirect() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("https://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "new location"));
         downloadCommand.addResponse("https://test.com", testResponse);
@@ -309,7 +309,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkRedirectInvalidLocationHeader() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "ccc://xyz"));
         downloadCommand.addResponse("http://test.com", testResponse);
@@ -338,7 +338,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkRedirectsExceeded() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null, null);
         setCurrentTime(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test1.com"));
         Response response2 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test2.com"));
@@ -456,7 +456,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkRedirectsExceededRecursiveWithConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddress("host.com", 12345, InetAddress.getByName("127.0.0.1")));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddress("host.com", 12345, InetAddress.getByName("127.0.0.1")), null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test.com"));
         downloadCommand.addResponse("http://test.com", testResponse);
@@ -490,7 +490,7 @@ public class DownloadCommandTest {
     @Test
     public void testFileNameIsNull() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         MockFileManager fileManager = new MockFileManager();
@@ -522,7 +522,7 @@ public class DownloadCommandTest {
     public void testFileNameFromContentDispositionException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
         Response testResponse = new Response.Builder().request(new Request.Builder().url("http://test.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
@@ -554,7 +554,7 @@ public class DownloadCommandTest {
     public void testFileNameFromContentDispositionExceptionNegativeTime() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null, null);
         setNegativeTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
         Response testResponse = new Response.Builder().request(new Request.Builder().url("http://test.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
@@ -568,7 +568,7 @@ public class DownloadCommandTest {
     public void testFileNameFromURLException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
         Response testResponse = new Response.Builder().request(new Request.Builder().url("https://www.host.com/test.jpg").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
@@ -600,7 +600,7 @@ public class DownloadCommandTest {
     public void testFileNameFromHostException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com:1234"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com:1234"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
         Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Type", "image/jpeg").body(body).build();
@@ -632,7 +632,7 @@ public class DownloadCommandTest {
     public void testFileNameFromHostExceptionNegativeTime() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setNegativeTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
         Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Type", "image/jpeg").body(body).build();
@@ -648,7 +648,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         File existingFile = new File(externalDir, "www_host_com.jpg");
         assertTrue(existingFile.createNewFile());
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream, Map.of("Content-Type", "image/jpeg"));
@@ -679,7 +679,7 @@ public class DownloadCommandTest {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("test");
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null, null);
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFolder(null);
         downloadCommand.setDocumentManager(documentManager);
@@ -715,7 +715,7 @@ public class DownloadCommandTest {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("test");
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null, null);
         MockDocumentManager documentManager = new MockDocumentManager();
         documentManager.setFolder(DocumentFile.fromFile(new File("test")));
         documentManager.setValidFileName("valid_file.txt");
@@ -754,7 +754,7 @@ public class DownloadCommandTest {
         NetworkTask task = getNetworkTaskWithId(databaseTask);
         task.setSchedulerId(databaseTask.getSchedulerId() + 1);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", new BlockingTestInputStream(downloadCommand::isValid), Map.of("Content-Disposition", "attachment; filename=\"test.jpg\""));
         downloadCommand.addResponse("http://www.host.com", testResponse);
@@ -787,7 +787,7 @@ public class DownloadCommandTest {
         networkTaskDAO.updateNetworkTaskRunning(databaseTask.getId(), false);
         NetworkTask task = getNetworkTaskWithId(databaseTask);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", new BlockingTestInputStream(downloadCommand::isValid), Map.of("Content-Disposition", "attachment; filename=\"test.jpg\""));
         downloadCommand.addResponse("http://www.host.com", testResponse);
@@ -818,7 +818,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false, null, null);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("http://www.host.com", 206, "Everything ok", inputStream, Map.of("Content-Disposition", "attachment; filename=\"test.jpg\""));
@@ -839,7 +839,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false, null, null);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream, Map.of("Content-Disposition", "attachment; filename=\"test.txt\""));
@@ -874,7 +874,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream, Map.of("Content-Type", "text/plain"));
@@ -910,7 +910,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadExternalStorage(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("http://www.host.com/test.jpg", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
@@ -945,7 +945,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("test");
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null, null);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         File downloadFile = new File(externalDir, "valid_file.txt");
         downloadCommand.setOutputStream(new FileOutputStream(downloadFile));
@@ -987,7 +987,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("https://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("https://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("https://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
@@ -1028,7 +1028,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("test");
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), "test", true, null, null);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         File downloadFile = new File(externalDir, "valid_file.txt");
         downloadCommand.setOutputStream(new FileOutputStream(downloadFile));
@@ -1070,7 +1070,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setNegativeTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
@@ -1090,7 +1090,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTimeInverted(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://www.host.com/test.jpg"));
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
@@ -1134,7 +1134,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddress("host.com", 33, InetAddress.getByName("192.168.179.1")));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddress("host.com", 33, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTimeInverted(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "/abc"));
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
@@ -1178,7 +1178,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test2.com"));
         Response response2 = prepareResponse("http://test2.com", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null, Map.of("Location", "http://www.host.com/test.jpg"));
@@ -1231,7 +1231,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com/abc/xyz"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com/abc/xyz"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         Response response1 = prepareResponse("http://test.com/abc/xyz", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "abc"));
         Response response2 = prepareResponse("http://test.com/abc/abc", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null, Map.of("Location", "/abc"));
@@ -1281,7 +1281,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddress("host.com", 56, InetAddress.getByName("192.168.179.1")));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddress("host.com", 56, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTime(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "/abc"));
         Response response2 = prepareResponse("http://test.com/abc", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null, Map.of("Location", "http://www.host.com/test.jpg"));
@@ -1323,7 +1323,7 @@ public class DownloadCommandTest {
         resetGlobalHeaderHandler();
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         downloadCommand.addResponse("http://www.host.com", testResponse);
@@ -1352,7 +1352,7 @@ public class DownloadCommandTest {
         resetGlobalHeaderHandler();
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         downloadCommand.addResponse("http://www.host.com", testResponse);

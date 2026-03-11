@@ -75,6 +75,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
         AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
         Resolve resolve = networkTaskWrapperList.get(position).getResolve();
+        List<Header> headers = networkTaskWrapperList.get(position).getHeaders();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
         bindTitle(networkTaskViewHolder, networkTask);
         bindStatus(networkTaskViewHolder, networkTask);
@@ -82,6 +83,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
         bindConnectTo(networkTaskViewHolder, networkTask, resolve);
+        bindHeaders(networkTaskViewHolder, networkTask, accessTypeData, headers);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
         bindFailureCount(networkTaskViewHolder, networkTask, logEntry);
@@ -196,6 +198,24 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             networkTaskViewHolder.hideConnectToTextView();
         }
 
+    }
+
+    private void bindHeaders(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData, List<Header> headers) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindHeaders, networkTask is " + networkTask + ". accessTypeData is " + accessTypeData + ", headers is " + headers);
+        if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
+            networkTaskViewHolder.showHeadersTextView();
+            String headersText;
+            if (accessTypeData != null && !accessTypeData.isUseDefaultHeaders()) {
+                int headerCount = headers != null ? headers.size() : 0;
+                headersText = headerCount + " " + getResources().getString(R.string.string_defined);
+            } else {
+                headersText = getResources().getString(R.string.string_default);
+            }
+            String formattedHeaderText = getResources().getString(R.string.list_item_network_task_headers, headersText);
+            networkTaskViewHolder.setHeaders(formattedHeaderText);
+        } else {
+            networkTaskViewHolder.hideHeadersTextView();
+        }
     }
 
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

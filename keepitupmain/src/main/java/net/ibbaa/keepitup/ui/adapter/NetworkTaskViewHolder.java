@@ -39,6 +39,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView accessTypeText;
     private final TextView addressText;
     private final TextView connectToText;
+    private final TextView headersText;
     private final TextView intervalText;
     private final TextView notificationText;
     private final TextView ignoreSSLErrorText;
@@ -70,6 +71,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         connectToText = itemView.findViewById(R.id.textview_list_item_network_task_connect_to);
+        headersText = itemView.findViewById(R.id.textview_list_item_network_task_headers);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
         ignoreSSLErrorText = itemView.findViewById(R.id.textview_list_item_network_task_ignore_ssl_error);
@@ -108,6 +110,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setConnectTo(String connectTo) {
         connectToText.setText(connectTo);
+    }
+
+    public void setHeaders(String headers) {
+        headersText.setText(headers);
     }
 
     public void setInterval(String interval) {
@@ -180,6 +186,14 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideConnectToTextView() {
         connectToText.setVisibility(View.GONE);
+    }
+
+    public void showHeadersTextView() {
+        headersText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideHeadersTextView() {
+        headersText.setVisibility(View.GONE);
     }
 
     private void onTitleClicked(View view) {

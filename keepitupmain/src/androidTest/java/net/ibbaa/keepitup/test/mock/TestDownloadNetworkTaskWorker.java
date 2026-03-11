@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.PowerManager;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.service.IDocumentManager;
@@ -31,6 +32,7 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -74,10 +76,11 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     }
 
     @Override
-    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommand.ConnectToAddress connectToAddress) {
+    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommand.ConnectToAddress connectToAddress, List<Header> headers) {
         mockDownloadCommand.setUrl(url);
         mockDownloadCommand.setFolder(folder);
         mockDownloadCommand.setConnectToAddress(connectToAddress);
+        mockDownloadCommand.setHeaders(headers);
         return mockDownloadCommand;
     }
 

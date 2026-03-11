@@ -19,11 +19,13 @@ package net.ibbaa.keepitup.test.mock;
 import android.content.Context;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class MockDownloadCommand extends DownloadCommand {
@@ -34,6 +36,7 @@ public class MockDownloadCommand extends DownloadCommand {
     private final CountDownLatch latch;
     private URL url;
     private ConnectToAddress connectToAddress;
+    private List<Header> headers;
     private String folder;
 
     public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, DownloadCommandResult downloadCommandResult) {
@@ -83,6 +86,14 @@ public class MockDownloadCommand extends DownloadCommand {
 
     public void setConnectToAddress(ConnectToAddress connectToAddress) {
         this.connectToAddress = connectToAddress;
+    }
+
+    public List<Header> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(List<Header> headers) {
+        this.headers = headers;
     }
 
     public String getFolder() {

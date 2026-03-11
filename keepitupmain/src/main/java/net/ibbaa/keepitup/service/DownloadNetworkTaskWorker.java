@@ -21,9 +21,11 @@ import android.net.Uri;
 import android.os.PowerManager;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -67,6 +69,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     @Override
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
+        List<Header> headers = getHeaders(networkTask, data);
         Resolve resolve = getResolve(networkTask);
         URL url = determineURL(networkTask.getAddress());
         if (url == null) {
@@ -80,7 +83,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "URL is " + url.toExternalForm());
         if (resolve == null) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "No valid resolve object present");
-            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, null);
+            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, null, headers);
             LogEntry logEntry = downloadExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
@@ -100,7 +103,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, new DownloadCommand.ConnectToAddress(resolve, address));
+            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, new DownloadCommand.ConnectToAddress(resolve, address), headers);
             LogEntry logEntry = downloadExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
@@ -129,8 +132,17 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return resolve;
     }
 
+    private List<Header> getHeaders(NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "getHeaders for network task " + networkTask + " and accessTypeData " + accessTypeData);
+        if (accessTypeData.isUseDefaultHeaders()) {
+            return null;
+        }
+        HeaderDAO headerDAO = new HeaderDAO(getContext());
+        return headerDAO.readHeadersForNetworkTask(networkTask.getId());
+    }
+
     @SuppressWarnings("resource")
-    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, DownloadCommand.ConnectToAddress connectToAddress) {
+    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, DownloadCommand.ConnectToAddress connectToAddress, List<Header> headers) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
@@ -155,7 +167,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         }
         boolean delete = determineDeleteDownloadedFile();
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
-        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete, connectToAddress);
+        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete, connectToAddress, headers);
         int timeout = getResources().getInteger(R.integer.download_timeout);
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -513,7 +525,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new SystemFileManager(getContext());
     }
 
-    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommand.ConnectToAddress connectToAddress) {
-        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete, connectToAddress);
+    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommand.ConnectToAddress connectToAddress, List<Header> headers) {
+        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete, connectToAddress, headers);
     }
 }

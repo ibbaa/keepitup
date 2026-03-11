@@ -84,15 +84,16 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final String folder;
     private final boolean delete;
     private final ConnectToAddress connectToAddress;
+    private final List<Header> headers;
     private boolean valid;
     private boolean stopped;
     private final ITimeService timeService;
 
     public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete) {
-        this(context, networkTask, accessTypeData, url, folder, delete, null);
+        this(context, networkTask, accessTypeData, url, folder, delete, null, null);
     }
 
-    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, ConnectToAddress connectToAddress) {
+    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, List<Header> headers) {
         this.context = context;
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
@@ -100,6 +101,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         this.folder = folder;
         this.delete = delete;
         this.connectToAddress = connectToAddress;
+        this.headers = headers;
         this.timeService = createTimeService();
     }
 
@@ -256,7 +258,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         Request.Builder requestBuilder = new Request.Builder().url(url.toString());
         HTTPUtil.setAcceptHeader(getContext(), requestBuilder);
         HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), requestBuilder);
-        List<Header> headers = new HeaderSyncHandler(getContext()).getGlobalHeaders();
+        List<Header> headers = this.headers;
+        if (headers == null) {
+            headers = new HeaderSyncHandler(getContext()).getGlobalHeaders();
+        }
         if (headers != null) {
             for (Header currentHeader : headers) {
                 requestBuilder.header(currentHeader.getName(), currentHeader.getValue());
