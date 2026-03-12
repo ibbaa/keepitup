@@ -128,6 +128,9 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = resolveDAO.insertResolve(getResolve2(task2.getId()));
+        Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
+        Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
+        Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
@@ -177,6 +180,14 @@ public class JSONSystemSetupTest {
         Resolve task2Resolve = new Resolve(JSONUtil.toMap((task2ResolveJSON)));
         assertTrue(task1Resolve.isEqual(resolve1));
         assertTrue(task2Resolve.isEqual(resolve2));
+        JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
+        JSONArray task2HeaderJSON = (JSONArray) task2Data.get("header");
+        Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
+        Header task2Header1 = new Header(JSONUtil.toMap((JSONObject) task2HeaderJSON.get(0)));
+        Header task2Header2 = new Header(JSONUtil.toMap((JSONObject) task2HeaderJSON.get(1)));
+        assertTrue(task1Header.isEqual(header1));
+        assertTrue(task2Header1.isEqual(header2));
+        assertTrue(task2Header2.isEqual(header3));
     }
 
     @Test
@@ -240,6 +251,26 @@ public class JSONSystemSetupTest {
         JSONObject task1ResolveJSON = (JSONObject) task1Data.get("resolve");
         Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON)));
         assertTrue(task1Resolve.isEqual(insertedResolve1));
+    }
+
+    @Test
+    public void testExportDatabaseHeaders() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        Header header1 = getHeader1(task1.getId());
+        Header header2 = getHeader2(-1);
+        header1 = headerDAO.insertHeader(header1);
+        header2 = headerDAO.insertHeader(header2);
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONArray globalHeaderData = (JSONArray) databaseData.get("globalheader");
+        Header globalHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
+        Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
+        assertTrue(task1Header.isEqual(header1));
+        assertTrue(globalHeader1.isEqual(header2));
     }
 
     @Test
@@ -428,20 +459,26 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = resolveDAO.insertResolve(getResolve2(task2.getId()));
+        Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
+        Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
+        Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
         SystemSetupResult exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -497,6 +534,11 @@ public class JSONSystemSetupTest {
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
         assertNull(resolveDAO.readResolveForNetworkTask(readTask3.getId()));
+        List<Header> readHeaderList1 = headerDAO.readHeadersForNetworkTask(readTask1.getId());
+        List<Header> readHeaderList2 = headerDAO.readHeadersForNetworkTask(readTask2.getId());
+        assertTrue(header1.isTechnicallyEqual(readHeaderList1.get(0)));
+        assertTrue(header2.isTechnicallyEqual(readHeaderList2.get(0)));
+        assertTrue(header3.isTechnicallyEqual(readHeaderList2.get(1)));
     }
 
     @Test
@@ -512,13 +554,9 @@ public class JSONSystemSetupTest {
         task3 = networkTaskDAO.insertNetworkTask(task3);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
-        resolveDAO.insertResolve(getResolve1(task1.getId()));
-        resolveDAO.insertResolve(getResolve2(task2.getId()));
         SystemSetupResult exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
-        logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -609,12 +647,13 @@ public class JSONSystemSetupTest {
         assertTrue(interval1.isEqual(readInterval2));
         assertTrue(interval2.isEqual(readInterval1));
         assertTrue(interval3.isEqual(readInterval3));
-        List<Header> headers = headerDAO.readAllHeaders();
+        List<Header> headers = headerDAO.readGlobalHeaders();
         assertEquals(2, headers.size());
         Header readHeader1 = headers.get(0);
         Header readHeader2 = headers.get(1);
         assertTrue(header1.isTechnicallyEqual(readHeader2));
         assertTrue(header2.isTechnicallyEqual(readHeader1));
+        assertEquals(3, headerDAO.readAllHeaders().size());
     }
 
     @Test
@@ -994,10 +1033,11 @@ public class JSONSystemSetupTest {
     public void testImportDatabaseInvalidHeaders() {
         Header header1 = getHeader1(-1);
         Header header2 = getHeader2(-1);
+        Header header3 = getHeader3(1);
         header1.setName("");
         header2.setValue("Test\u007FMore");
-        headerDAO.insertHeader(header1);
-        headerDAO.insertHeader(header2);
+        header3.setName(new String(new char[129]));
+        headerDAO.insertHeaders(List.of(header1, header2, header3));
         SystemSetupResult exportResult = setup.exportData();
         headerDAO.deleteAllHeaders();
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -1009,13 +1049,15 @@ public class JSONSystemSetupTest {
     public void testImportDatabaseHeaderExists() {
         Header header1 = getHeader1(-1);
         Header header2 = getHeader1(-1);
-        headerDAO.insertHeader(header1);
-        headerDAO.insertHeader(header2);
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        Header header3 = getHeader1(task1.getId());
+        headerDAO.insertHeaders(List.of(header1, header2, header3));
         SystemSetupResult exportResult = setup.exportData();
         headerDAO.deleteAllHeaders();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
-        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertEquals(2, headerDAO.readAllHeaders().size());
     }
 
     @Test
@@ -1403,6 +1445,15 @@ public class JSONSystemSetupTest {
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
         header.setName("aname");
+        header.setValue("value");
+        return header;
+    }
+
+    private Header getHeader3(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("cname");
         header.setValue("value");
         return header;
     }

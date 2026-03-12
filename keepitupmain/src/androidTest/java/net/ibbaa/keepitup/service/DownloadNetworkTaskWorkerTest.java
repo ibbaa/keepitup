@@ -26,12 +26,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -77,8 +80,10 @@ public class DownloadNetworkTaskWorkerTest {
     private MockFileManager fileManager;
     private PreferenceManager preferenceManager;
     private NetworkTaskDAO networkTaskDAO;
+    private AccessTypeDataDAO accessTypeDataDAO;
     private LogDAO logDAO;
     private ResolveDAO resolveDAO;
+    private HeaderDAO headerDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -90,10 +95,14 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.removeAllPreferences();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
+        accessTypeDataDAO.deleteAllAccessTypeData();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
         resolveDAO.deleteAllResolve();
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
+        headerDAO.deleteAllHeaders();
         InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(Locale.US);
     }
 
@@ -103,6 +112,8 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.removeAllPreferences();
         logDAO.deleteAllLogs();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         networkTaskDAO.deleteAllNetworkTasks();
     }
 
@@ -223,6 +234,49 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals("test.com", downloadCommand.getConnectToAddress().resolve().getTargetAddress());
         assertEquals(22, downloadCommand.getConnectToAddress().resolve().getTargetPort());
         assertEquals("127.0.0.1", downloadCommand.getConnectToAddress().resolvedAddress().getHostAddress());
+    }
+
+    @Test
+    public void testHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com");
+        networkTask = networkTaskDAO.insertNetworkTask(networkTask);
+        AccessTypeData data = getAccessTypeData();
+        data.setNetworkTaskId(networkTask.getId());
+        data.setUseDefaultHeaders(false);
+        accessTypeDataDAO.insertAccessTypeData(data);
+        Header header1 = getHeader(networkTask.getId(), 1);
+        Header header2 = getHeader(networkTask.getId(), 2);
+        headerDAO.insertHeaders(List.of(header1, header2));
+        downloadNetworkTaskWorker.execute(networkTask, data);
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        List<Header> headers = downloadCommand.getHeaders();
+        assertEquals(2, headers.size());
+        assertTrue(header1.isTechnicallyEqual(headers.get(0)));
+        assertTrue(header2.isTechnicallyEqual(headers.get(1)));
+    }
+
+    @Test
+    public void testUseDefaultHeaders() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com");
+        networkTask = networkTaskDAO.insertNetworkTask(networkTask);
+        AccessTypeData data = getAccessTypeData();
+        data.setNetworkTaskId(networkTask.getId());
+        data.setUseDefaultHeaders(true);
+        accessTypeDataDAO.insertAccessTypeData(data);
+        Header header1 = getHeader(networkTask.getId(), 1);
+        Header header2 = getHeader(networkTask.getId(), 2);
+        headerDAO.insertHeaders(List.of(header1, header2));
+        downloadNetworkTaskWorker.execute(networkTask, data);
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertNull(downloadCommand.getHeaders());
     }
 
     @Test
@@ -2015,5 +2069,14 @@ public class DownloadNetworkTaskWorkerTest {
         resolve.setTargetAddress("192.168.178.1");
         resolve.setTargetPort(22);
         return resolve;
+    }
+
+    private Header getHeader(long networkTaskId, int number) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("name" + number);
+        header.setValue("value" + number);
+        return header;
     }
 }

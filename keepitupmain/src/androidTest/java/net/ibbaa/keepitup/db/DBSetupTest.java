@@ -112,7 +112,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
-        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(getHeader(0, 1));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -139,7 +139,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
-        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(getHeader(0, 1));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -165,7 +165,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
-        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(getHeader(0, 1));
         setup.tryDropTables();
         setup.createTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
@@ -333,10 +333,10 @@ public class DBSetupTest {
     @Test
     public void testDropCreateHeaderTable() {
         assertTrue(headerDAO.readAllHeaders().isEmpty());
-        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(getHeader(0, 1));
         assertEquals(1, headerDAO.readAllHeaders().size());
         assertEquals(0, headerDAO.readGlobalHeaders().size());
-        headerDAO.insertHeader(getHeader(-1));
+        headerDAO.insertHeader(getHeader(-1, 1));
         assertEquals(2, headerDAO.readAllHeaders().size());
         assertEquals(1, headerDAO.readGlobalHeaders().size());
         setup.dropHeaderTable();
@@ -344,7 +344,7 @@ public class DBSetupTest {
         assertEquals(1, headerDAO.readAllHeaders().size());
         assertEquals(1, headerDAO.readGlobalHeaders().size());
         resolveDAO.insertResolve(getResolve(0));
-        headerDAO.insertHeader(getHeader(-1));
+        headerDAO.insertHeader(getHeader(-1, 1));
         assertEquals(2, headerDAO.readAllHeaders().size());
         assertEquals(2, headerDAO.readGlobalHeaders().size());
         setup.recreateHeaderTable();
@@ -381,7 +381,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
-        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(getHeader(0, 1));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -569,13 +569,11 @@ public class DBSetupTest {
     }
 
     @Test
-    public void testExportHeaders() {
-        Header header1 = getHeader(-1);
-        header1.setName("bName");
-        Header header2 = getHeader(-1);
-        header2.setName("aName");
+    public void testExportGlobalHeaders() {
+        Header header1 = getHeader(-1, 2);
+        Header header2 = getHeader(-1, 1);
         headerDAO.insertHeader(header1);
-        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(getHeader(0, 3));
         headerDAO.insertHeader(header2);
         List<Map<String, ?>> headerList = setup.exportGlobalHeaders();
         assertEquals(2, headerList.size());
@@ -586,18 +584,20 @@ public class DBSetupTest {
     }
 
     @Test
-    public void testImportNetworkTaskWithLogsAccessTypeDataAndResolve() {
+    public void testImportNetworkTaskWithAssociatedObjects() {
         Map<String, ?> taskMap = getNetworkTask1().toMap();
         Map<String, ?> entryMap1 = getLogEntry1(0).toMap();
         Map<String, ?> entryMap2 = getLogEntry2(0).toMap();
         Map<String, ?> entryMap3 = getLogEntry3(0).toMap();
         Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         Map<String, ?> resolveMap = getResolve(0).toMap();
+        Map<String, ?> headerMap1 = getHeader(0, 1).toMap();
+        Map<String, ?> headerMap2 = getHeader(0, 2).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap, Arrays.asList(headerMap1, headerMap2));
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -612,6 +612,10 @@ public class DBSetupTest {
         assertTrue(data.isTechnicallyEqual(getAccessTypeData(task.getId())));
         Resolve resolve = resolveDAO.readResolveForNetworkTask(task.getId());
         assertTrue(resolve.isTechnicallyEqual(getResolve(task.getId())));
+        List<Header> headerList = headerDAO.readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headerList.size());
+        assertTrue(headerList.get(0).isTechnicallyEqual(getHeader(task.getId(), 1)));
+        assertTrue(headerList.get(1).isTechnicallyEqual(getHeader(task.getId(), 2)));
     }
 
     @Test
@@ -623,7 +627,7 @@ public class DBSetupTest {
         Resolve resolve = getResolve(0);
         resolve.setTargetAddress("   127.0.0.1");
         Map<String, ?> resolveMap = resolve.toMap();
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, resolveMap, Collections.emptyList());
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         task = taskList.get(0);
@@ -634,6 +638,7 @@ public class DBSetupTest {
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         task = getNetworkTask1();
         task.setAccessType(AccessType.DOWNLOAD);
         task.setAddress("   https://test.org   ");
@@ -641,7 +646,7 @@ public class DBSetupTest {
         resolve = getResolve(0);
         resolve.setTargetAddress("   192.168.178.1  ");
         resolveMap = resolve.toMap();
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, resolveMap, Collections.emptyList());
         taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         task = taskList.get(0);
@@ -651,7 +656,7 @@ public class DBSetupTest {
     }
 
     @Test
-    public void testImportNetworkTaskWithLogsAccessTypeDataAndResolveMissing() {
+    public void testImportNetworkTaskWithAssociatedObjectsMissing() {
         Map<String, ?> taskMap = getNetworkTask1().toMap();
         Map<String, ?> entryMap1 = getLogEntry1(0).toMap();
         Map<String, ?> entryMap2 = getLogEntry2(0).toMap();
@@ -660,7 +665,7 @@ public class DBSetupTest {
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), null, null);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), null, null, null);
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -676,13 +681,14 @@ public class DBSetupTest {
         defaultData.setNetworkTaskId(task.getId());
         assertTrue(defaultData.isTechnicallyEqual(data));
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
 
     @Test
     public void testImportNetworkTaskWithLogsAndAccessTypeDataNotResetRunning() {
         Map<String, ?> taskMap = getNetworkTask1().toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, null, null, null, false);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, null, null, null, null, false);
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -700,51 +706,57 @@ public class DBSetupTest {
         Map<String, ?> entryMap3 = getLogEntry3(0).toMap();
         Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         Map<String, ?> resolveMap = getResolve(0).toMap();
+        Map<String, ?> headerMap = getHeader(0, 1).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap, Collections.singletonList(headerMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
         task = getNetworkTask1();
         task.setPort(80000);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap, Collections.singletonList(headerMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
         task = getNetworkTask1();
         task.setAccessType(null);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap, Collections.singletonList(headerMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
         task = getNetworkTask1();
         task.setInterval(-1);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap, Collections.singletonList(headerMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
         task = getNetworkTask1();
         task.setName("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, resolveMap, Collections.singletonList(headerMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
 
     @Test
@@ -754,29 +766,36 @@ public class DBSetupTest {
         AccessTypeData data = getAccessTypeData(0);
         data.setPingCount(11);
         Map<String, ?> resolveMap = getResolve(0).toMap();
+        Map<String, ?> headerMap = getHeader(0, 1).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolveMap);
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolveMap, Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         AccessTypeData defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task.getId());
         assertTrue(defaultData.isTechnicallyEqual(data));
         Resolve resolve = resolveDAO.readResolveForNetworkTask(task.getId());
-        assertTrue(getResolve(1).isTechnicallyEqual(resolve));
+        assertTrue(getResolve(task.getId()).isTechnicallyEqual(resolve));
+        Header header = headerDAO.readAllHeaders().get(0);
+        assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         data = getAccessTypeData(0);
         data.setPingPackageSize(12345678);
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolveMap, Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -784,15 +803,19 @@ public class DBSetupTest {
         assertTrue(defaultData.isTechnicallyEqual(data));
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
         assertTrue(getResolve(task.getId()).isTechnicallyEqual(resolve));
+        header = headerDAO.readAllHeaders().get(0);
+        assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         data = getAccessTypeData(0);
         data.setConnectCount(11);
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolveMap, Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -800,14 +823,18 @@ public class DBSetupTest {
         assertTrue(defaultData.isTechnicallyEqual(data));
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
         assertTrue(getResolve(task.getId()).isTechnicallyEqual(resolve));
+        header = headerDAO.readAllHeaders().get(0);
+        assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         data = getAccessTypeData(0);
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolveMap);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolveMap, Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -815,6 +842,8 @@ public class DBSetupTest {
         assertFalse(defaultData.isTechnicallyEqual(data));
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
         assertTrue(getResolve(task.getId()).isTechnicallyEqual(resolve));
+        header = headerDAO.readAllHeaders().get(0);
+        assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
     }
 
     @Test
@@ -823,42 +852,90 @@ public class DBSetupTest {
         Map<String, ?> taskMap = task.toMap();
         Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         Resolve resolve = getResolve(0);
+        Header header = getHeader(0, 1);
+        Map<String, ?> headerMap = header.toMap();
         resolve.setTargetAddress("1.1.1.1.1");
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), dataMap, resolve.toMap());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, resolve.toMap(), Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         resolve = getResolve(0);
         resolve.setTargetPort(Integer.MAX_VALUE);
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap(), Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         resolve = getResolve(0);
-        setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap(), Collections.singletonList(headerMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
+        header = headerDAO.readAllHeaders().get(0);
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
         assertTrue(getResolve(task.getId()).isTechnicallyEqual(resolve));
+        assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+    }
+
+    @Test
+    public void testImportHeaderInvalid() {
+        NetworkTask task = getNetworkTask1();
+        Map<String, ?> taskMap = task.toMap();
+        Map<String, ?> dataMap = getAccessTypeData(0).toMap();
+        Resolve resolve = getResolve(0);
+        Header header = getHeader(0, 1);
+        header.setName(new String(new char[129]));
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, resolve.toMap(), Collections.singletonList(header.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        task = networkTaskDAO.readAllNetworkTasks().get(0);
+        AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
+        assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
+        header = getHeader(0, 1);
+        header.setName("Name\nTest");
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap(), Collections.singletonList(header.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        Header header1 = getHeader(0, 1);
+        Header header2 = getHeader(0, 1);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap(), Arrays.asList(header1.toMap(), header2.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertEquals(1, headerDAO.readAllHeaders().size());
     }
 
     @Test
@@ -1043,10 +1120,10 @@ public class DBSetupTest {
 
     @Test
     public void testImportGlobalHeaders() {
-        Map<String, ?> headerMap1 = getHeader(-1).toMap();
-        Map<String, ?> headerMap2 = getHeader(0).toMap();
-        Map<String, ?> headerMap3 = getHeader(-1).toMap();
-        Header header4 = getHeader(-1);
+        Map<String, ?> headerMap1 = getHeader(-1, 1).toMap();
+        Map<String, ?> headerMap2 = getHeader(0, 2).toMap();
+        Map<String, ?> headerMap3 = getHeader(-1, 1).toMap();
+        Header header4 = getHeader(-1, 4);
         header4.setName("  otherName  ");
         Map<String, ?> headerMap4 = header4.toMap();
         assertTrue(headerDAO.readAllHeaders().isEmpty());
@@ -1055,20 +1132,20 @@ public class DBSetupTest {
         List<Header> globalHeaderList = headerDAO.readGlobalHeaders();
         assertEquals(2, headerList.size());
         assertEquals(2, globalHeaderList.size());
-        assertTrue(containsName(headerList, "name"));
+        assertTrue(containsName(headerList, "name1"));
         assertTrue(containsName(headerList, "otherName"));
-        assertTrue(containsName(globalHeaderList, "name"));
+        assertTrue(containsName(globalHeaderList, "name1"));
         assertTrue(containsName(globalHeaderList, "otherName"));
     }
 
     @Test
     public void testImportGlobalHeadersInvalid() {
-        Header header1 = getHeader(-1);
-        Header header2 = getHeader(-1);
-        Header header3 = getHeader(-1);
-        Header header4 = getHeader(-1);
-        Header header5 = getHeader(-1);
-        Header header6 = getHeader(-1);
+        Header header1 = getHeader(-1, 1);
+        Header header2 = getHeader(-1, 2);
+        Header header3 = getHeader(-1, 3);
+        Header header4 = getHeader(-1, 4);
+        Header header5 = getHeader(-1, 5);
+        Header header6 = getHeader(-1, 6);
         header1.setName("  ");
         header2.setName("Name\nTest");
         header3.setName(new String(new char[129]));
@@ -1251,12 +1328,12 @@ public class DBSetupTest {
         return resolve;
     }
 
-    private Header getHeader(long networkTaskId) {
+    private Header getHeader(long networkTaskId, int number) {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
-        header.setName("name");
-        header.setValue("value");
+        header.setName("name" + number);
+        header.setValue("value" + number);
         return header;
     }
 }

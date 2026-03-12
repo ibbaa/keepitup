@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service.network;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -63,6 +64,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Headers;
@@ -1340,12 +1342,12 @@ public class DownloadCommandTest {
     public void testGlobalHeadersWithHeadersSet() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         headerDAO.deleteAllHeaders();
-        headerDAO.insertHeader(getHeader(1));
-        headerDAO.insertHeader(getHeader(2));
-        headerDAO.insertHeader(getHeader(3));
-        Header acceptHeader = getHeader(4);
+        headerDAO.insertHeader(getHeader(-1, 1));
+        headerDAO.insertHeader(getHeader(-1, 2));
+        headerDAO.insertHeader(getHeader(-1, 3));
+        Header acceptHeader = getHeader(-1, 4);
         acceptHeader.setName("Accept");
-        Header acceptLanguageHeader = getHeader(5);
+        Header acceptLanguageHeader = getHeader(-1, 5);
         acceptLanguageHeader.setName("Accept-Language");
         headerDAO.insertHeader(acceptHeader);
         headerDAO.insertHeader(acceptLanguageHeader);
@@ -1365,6 +1367,31 @@ public class DownloadCommandTest {
         assertEquals("Value3", headers.get("Name3"));
         assertEquals("Value4", headers.get("Accept"));
         assertEquals("Value5", headers.get("Accept-Language"));
+        testResponse.close();
+    }
+
+    @Test
+    public void testNetworkTaskHeaders() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        headerDAO.deleteAllHeaders();
+        headerDAO.insertHeader(getHeader(-1, 1));
+        Header header1 = headerDAO.insertHeader(getHeader(task.getId(), 2));
+        Header header2 = headerDAO.insertHeader(getHeader(task.getId(), 3));
+        resetGlobalHeaderHandler();
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, List.of(header1, header2));
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
+        downloadCommand.call();
+        Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
+        Headers headers = request.headers();
+        assertEquals(4, headers.size());
+        assertEquals("Value2", headers.get("Name2"));
+        assertEquals("Value3", headers.get("Name3"));
+        assertNotNull(headers.get("Accept"));
+        assertNotNull(headers.get("Accept-Language"));
         testResponse.close();
     }
 
@@ -1424,9 +1451,9 @@ public class DownloadCommandTest {
         return task;
     }
 
-    private Header getHeader(int number) {
+    private Header getHeader(long networkTaskId, int number) {
         Header header = new Header();
-        header.setNetworkTaskId(-1);
+        header.setNetworkTaskId(networkTaskId);
         header.setName("Name" + number);
         header.setValue("Value" + number);
         return header;
