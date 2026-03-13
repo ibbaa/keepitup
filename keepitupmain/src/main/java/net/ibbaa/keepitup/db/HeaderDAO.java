@@ -25,6 +25,7 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,6 +132,7 @@ public class HeaderDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
+        values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
         values.put(dbConstants.getNameColumnName(), header.getName());
         values.put(dbConstants.getValueColumnName(), header.getValue());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
@@ -148,6 +150,7 @@ public class HeaderDAO extends BaseDAO {
             ContentValues values = new ContentValues();
             HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
             values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
+            values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
             values.put(dbConstants.getNameColumnName(), header.getName());
             values.put(dbConstants.getValueColumnName(), header.getValue());
             long rowid = db.insert(dbConstants.getTableName(), null, values);
@@ -169,6 +172,7 @@ public class HeaderDAO extends BaseDAO {
         String[] selectionArgs = {String.valueOf(header.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
+        values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
         values.put(dbConstants.getNameColumnName(), header.getName());
         values.put(dbConstants.getValueColumnName(), header.getValue());
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
@@ -289,10 +293,16 @@ public class HeaderDAO extends BaseDAO {
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
+        int indexHeaderTypeColumn = cursor.getColumnIndex(dbConstants.getHeaderTypeColumnName());
         int indexNameColumn = cursor.getColumnIndex(dbConstants.getNameColumnName());
         int indexValueColumn = cursor.getColumnIndex(dbConstants.getValueColumnName());
         header.setId(cursor.getLong(indexIdColumn));
         header.setNetworkTaskId(cursor.isNull(indexNetworkTaskIdColumn) ? -1 : cursor.getLong(indexNetworkTaskIdColumn));
+        if (cursor.isNull(indexHeaderTypeColumn)) {
+            header.setHeaderType(null);
+        } else {
+            header.setHeaderType(HeaderType.forCode(cursor.getInt(indexHeaderTypeColumn)));
+        }
         header.setName(cursor.getString(indexNameColumn));
         header.setValue(cursor.getString(indexValueColumn));
         return header;

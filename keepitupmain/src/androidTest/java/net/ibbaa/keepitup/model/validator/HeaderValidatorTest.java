@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.validation.HeaderValidator;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -142,6 +143,7 @@ public class HeaderValidatorTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(0);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName(name);
         header.setValue(value);
         return header;

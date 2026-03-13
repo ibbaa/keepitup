@@ -27,6 +27,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -313,6 +314,7 @@ public class HeaderDAOTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(0);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("name1");
         header.setValue("value1");
         return header;
@@ -322,6 +324,7 @@ public class HeaderDAOTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(1);
+        header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name2");
         header.setValue("value2");
         return header;
@@ -331,6 +334,7 @@ public class HeaderDAOTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(1);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("name3");
         header.setValue("value3");
         return header;

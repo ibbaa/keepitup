@@ -43,6 +43,7 @@ public class HeaderTest {
         Header header = new Header();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
         PersistableBundle persistableBundle = header.toPersistableBundle();
@@ -50,6 +51,7 @@ public class HeaderTest {
         header = new Header(persistableBundle);
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
         Bundle bundle = header.toBundle();
@@ -57,6 +59,7 @@ public class HeaderTest {
         header = new Header(bundle);
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
         Map<String, ?> map = header.toMap();
@@ -64,6 +67,7 @@ public class HeaderTest {
         header = new Header(map);
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
     }
@@ -73,6 +77,7 @@ public class HeaderTest {
         Header header = new Header(25);
         assertEquals(-1, header.getId());
         assertEquals(25, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
     }
@@ -82,13 +87,15 @@ public class HeaderTest {
         Header header = new Header();
         header.setId(1);
         header.setNetworkTaskId(2);
+        header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name");
         header.setValue("value");
-        Header copyResolve = new Header(header);
-        assertEquals(-1, copyResolve.getId());
-        assertEquals(-1, copyResolve.getNetworkTaskId());
-        assertEquals("name", copyResolve.getName());
-        assertEquals("value", copyResolve.getValue());
+        Header copyHeader = new Header(header);
+        assertEquals(-1, copyHeader.getId());
+        assertEquals(-1, copyHeader.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, copyHeader.getHeaderType());
+        assertEquals("name", copyHeader.getName());
+        assertEquals("value", copyHeader.getValue());
     }
 
     @Test
@@ -96,6 +103,7 @@ public class HeaderTest {
         Header header = new Header();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
     }
@@ -105,11 +113,13 @@ public class HeaderTest {
         Map<String, Object> map = new HashMap<>();
         map.put("id", "id");
         map.put("networktaskid", "networktaskid");
+        map.put("headerType", 5);
         map.put("name", null);
         map.put("value", null);
         Header header = new Header(map);
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
     }
@@ -119,11 +129,13 @@ public class HeaderTest {
         Map<String, Object> map = new HashMap<>();
         map.put("id", "1");
         map.put("networktaskid", "2");
+        map.put("headerType", "2");
         map.put("name", "name");
         map.put("value", "value");
         Header header = new Header(map);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
     }
@@ -133,10 +145,12 @@ public class HeaderTest {
         Header header = new Header();
         header.setId(1);
         header.setNetworkTaskId(2);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("name");
         header.setValue("value");
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         PersistableBundle persistableBundle = header.toPersistableBundle();
@@ -144,6 +158,7 @@ public class HeaderTest {
         header = new Header(persistableBundle);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         Bundle bundle = header.toBundle();
@@ -151,6 +166,7 @@ public class HeaderTest {
         header = new Header(bundle);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
     }
@@ -160,6 +176,7 @@ public class HeaderTest {
         Header header = new Header();
         header.setId(1);
         header.setNetworkTaskId(2);
+        header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name");
         header.setValue("value");
         Map<String, ?> map = header.toMap();
@@ -167,6 +184,7 @@ public class HeaderTest {
         header = new Header(map);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
     }
@@ -183,6 +201,10 @@ public class HeaderTest {
         header1.setNetworkTaskId(22);
         assertFalse(header1.isEqual(header2));
         header2.setNetworkTaskId(22);
+        assertTrue(header1.isEqual(header2));
+        header1.setHeaderType(HeaderType.GENERIC);
+        assertFalse(header1.isEqual(header2));
+        header2.setHeaderType(HeaderType.GENERIC);
         assertTrue(header1.isEqual(header2));
         header1.setName("name");
         assertFalse(header1.isEqual(header2));
@@ -206,6 +228,10 @@ public class HeaderTest {
         header1.setNetworkTaskId(22);
         assertFalse(header1.isTechnicallyEqual(header2));
         header2.setNetworkTaskId(22);
+        header1.setHeaderType(HeaderType.GENERIC);
+        assertFalse(header1.isEqual(header2));
+        header2.setHeaderType(HeaderType.GENERIC);
+        assertTrue(header1.isEqual(header2));
         assertTrue(header1.isTechnicallyEqual(header2));
         header1.setName("name");
         assertFalse(header1.isTechnicallyEqual(header2));

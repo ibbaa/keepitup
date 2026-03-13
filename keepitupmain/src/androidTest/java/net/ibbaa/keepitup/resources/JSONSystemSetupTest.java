@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -1435,6 +1436,7 @@ public class JSONSystemSetupTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("bname");
         header.setValue("value");
         return header;
@@ -1444,6 +1446,7 @@ public class JSONSystemSetupTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("aname");
         header.setValue("value");
         return header;
@@ -1453,6 +1456,7 @@ public class JSONSystemSetupTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("cname");
         header.setValue("value");
         return header;

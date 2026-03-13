@@ -50,6 +50,7 @@ import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -1787,6 +1788,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     private Header getHeader(int number, long networkTaskId) {
         Header header = new Header();
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
         return header;

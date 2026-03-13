@@ -231,6 +231,11 @@ public class DBSetup {
         preferenceManager.removePreferenceHTTPUserAgent();
     }
 
+    public void addHeaderTypeColumnToHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + headerDBConstants.getHeaderTypeColumnName() + " to table " + headerDBConstants.getTableName());
+        db.execSQL(headerDBConstants.getAddHeaderTypeColumnStatement());
+    }
+
     private void executeDBOperationInTransaction(SQLiteDatabase db, DBSetupOperation operation) {
         Log.d(DBSetup.class.getName(), "executeDBOperationInTransaction");
         try {
@@ -397,6 +402,11 @@ public class DBSetup {
         }
     }
 
+    public void dropHeaderTypeColumnFromHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + headerDBConstants.getHeaderTypeColumnName() + " from table " + headerDBConstants.getTableName());
+        db.execSQL(headerDBConstants.getDropHeaderTypeColumnStatement());
+    }
+
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
         dropNetworkTaskTable(db);
@@ -527,6 +537,10 @@ public class DBSetup {
         initializeHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addHeaderTypeColumnToHeaderTable() {
+        addHeaderTypeColumnToHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropTables() {
         dropTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -631,6 +645,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void tryDropHeaderTable() {
         tryDropHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropHeaderTypeColumnFromHeaderTable() {
+        dropHeaderTypeColumnFromHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void recreateNetworkTaskTable() {

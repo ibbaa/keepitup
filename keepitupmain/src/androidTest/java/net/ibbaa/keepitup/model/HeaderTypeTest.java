@@ -29,32 +29,26 @@ import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class AccessTypeTest {
+public class HeaderTypeTest {
 
     @Test
     public void testValueMethods() {
-        AccessType type = AccessType.PING;
-        assertFalse(type.needsPort());
-        assertTrue(type.isPing());
-        assertFalse(type.isConnect());
-        assertFalse(type.isDownload());
-        type = AccessType.CONNECT;
-        assertTrue(type.needsPort());
-        assertFalse(type.isPing());
-        assertTrue(type.isConnect());
-        assertFalse(type.isDownload());
-        type = AccessType.DOWNLOAD;
-        assertFalse(type.needsPort());
-        assertFalse(type.isPing());
-        assertFalse(type.isConnect());
-        assertTrue(type.isDownload());
+        HeaderType type = HeaderType.GENERIC;
+        assertFalse(type.isFixed());
+        assertFalse(type.isSecret());
+        assertTrue(type.isGeneric());
+        assertFalse(type.isBasicAuth());
+        type = HeaderType.BASICAUTH;
+        assertTrue(type.isFixed());
+        assertTrue(type.isSecret());
+        assertFalse(type.isGeneric());
+        assertTrue(type.isBasicAuth());
     }
 
     @Test
     public void testForCode() {
-        assertEquals(AccessType.PING, AccessType.forCode(AccessType.PING.getCode()));
-        assertEquals(AccessType.CONNECT, AccessType.forCode(AccessType.CONNECT.getCode()));
-        assertEquals(AccessType.DOWNLOAD, AccessType.forCode(AccessType.DOWNLOAD.getCode()));
-        assertNull(AccessType.forCode(AccessType.DOWNLOAD.getCode() + 1));
+        assertEquals(HeaderType.GENERIC, HeaderType.forCode(HeaderType.GENERIC.getCode()));
+        assertEquals(HeaderType.BASICAUTH, HeaderType.forCode(HeaderType.BASICAUTH.getCode()));
+        assertNull(HeaderType.forCode(HeaderType.BASICAUTH.getCode() + 1));
     }
 }

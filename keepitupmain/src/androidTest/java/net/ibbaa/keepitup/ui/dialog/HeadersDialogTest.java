@@ -41,6 +41,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.DefaultsActivity;
@@ -1832,6 +1833,7 @@ public class HeadersDialogTest extends BaseUITest {
     private Header getHeader(int number) {
         Header header = new Header();
         header.setNetworkTaskId(-1);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
         return header;

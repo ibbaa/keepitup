@@ -31,12 +31,14 @@ public class Header implements Syncable<Header> {
 
     private long id;
     private long networktaskid;
+    private HeaderType headerType;
     private String name;
     private String value;
 
     public Header() {
         this.id = -1;
         this.networktaskid = -1;
+        this.headerType = null;
         this.name = null;
         this.value = null;
     }
@@ -44,12 +46,14 @@ public class Header implements Syncable<Header> {
     public Header(long networktaskid) {
         this.id = -1;
         this.networktaskid = networktaskid;
+        this.headerType = null;
         this.name = null;
         this.value = null;
     }
 
     public Header(Header other) {
         this();
+        this.headerType = other.getHeaderType();
         this.name = other.getName();
         this.value = other.getValue();
     }
@@ -62,6 +66,9 @@ public class Header implements Syncable<Header> {
         this();
         this.id = bundle.getLong("id");
         this.networktaskid = bundle.getLong("networktaskid");
+        if (bundle.containsKey("headerType")) {
+            headerType = HeaderType.forCode(bundle.getInt("headerType"));
+        }
         this.name = bundle.getString("name");
         this.value = bundle.getString("value");
     }
@@ -73,6 +80,9 @@ public class Header implements Syncable<Header> {
         }
         if (NumberUtil.isValidLongValue(map.get("networktaskid"))) {
             this.networktaskid = NumberUtil.getLongValue(map.get("networktaskid"), -1);
+        }
+        if (NumberUtil.isValidIntValue(map.get("headerType"))) {
+            headerType = HeaderType.forCode(NumberUtil.getIntValue(map.get("headerType"), -1));
         }
         if (map.get("name") != null) {
             this.name = Objects.requireNonNull(map.get("name")).toString();
@@ -98,6 +108,14 @@ public class Header implements Syncable<Header> {
         this.networktaskid = networktaskid;
     }
 
+    public HeaderType getHeaderType() {
+        return headerType;
+    }
+
+    public void setHeaderType(HeaderType headerType) {
+        this.headerType = headerType;
+    }
+
     public String getName() {
         return name;
     }
@@ -118,6 +136,9 @@ public class Header implements Syncable<Header> {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
         bundle.putLong("networktaskid", networktaskid);
+        if (headerType != null) {
+            bundle.putInt("headerType", headerType.getCode());
+        }
         if (name != null) {
             bundle.putString("name", name);
         }
@@ -135,6 +156,9 @@ public class Header implements Syncable<Header> {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("networktaskid", networktaskid);
+        if (headerType != null) {
+            map.put("headerType", headerType.getCode());
+        }
         if (name != null) {
             map.put("name", name);
         }
@@ -154,6 +178,9 @@ public class Header implements Syncable<Header> {
         if (networktaskid != other.networktaskid) {
             return false;
         }
+        if (!Objects.equals(headerType, other.headerType)) {
+            return false;
+        }
         if (!Objects.equals(name, other.name)) {
             return false;
         }
@@ -167,18 +194,22 @@ public class Header implements Syncable<Header> {
         if (networktaskid != other.networktaskid) {
             return false;
         }
+        if (!Objects.equals(headerType, other.headerType)) {
+            return false;
+        }
         if (!Objects.equals(name, other.name)) {
             return false;
         }
         return Objects.equals(value, other.value);
     }
 
-    @NonNull
     @Override
+    @NonNull
     public String toString() {
         return "Header{" +
                 "id=" + id +
                 ", networktaskid=" + networktaskid +
+                ", headerType=" + headerType +
                 ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 '}';

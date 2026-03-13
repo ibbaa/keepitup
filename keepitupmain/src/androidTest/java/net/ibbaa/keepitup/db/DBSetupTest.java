@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -370,6 +371,16 @@ public class DBSetupTest {
         assertEquals("User-Agent", header.getName());
         assertEquals("Test", header.getValue());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", constantPreferenceManager.getPreferenceHTTPUserAgent());
+    }
+
+    @Test
+    public void testAddHeaderTypeColumnToHeaderTable() {
+        setup.dropHeaderTable();
+        HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderType());
+        setup.addHeaderTypeColumnToHeaderTable();
+        Header header = new Header();
+        headerDAO.insertHeader(header);
     }
 
     @Test
@@ -1332,6 +1343,7 @@ public class DBSetupTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("name" + number);
         header.setValue("value" + number);
         return header;

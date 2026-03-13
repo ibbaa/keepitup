@@ -16,7 +16,7 @@
 
 <resources>
     <string name="db_name">keepitup.db</string>
-    <integer name="db_version">6</integer>
+    <integer name="db_version">7</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
@@ -72,6 +72,7 @@
     <string name="header_table_name">HEADER</string>
     <string name="header_id_column_name">_id</string>
     <string name="header_taskid_column_name">NETWORKTASKID</string>
+    <string name="header_headertype_column_name">HEADERTYPE</string>
     <string name="header_name_column_name">NAME</string>
     <string name="header_value_column_name">VALUE</string>
 </resources>

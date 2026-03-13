@@ -29,6 +29,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
@@ -659,6 +660,7 @@ public class BundleUtilTest {
         Header header = new Header();
         header.setId(id);
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName(name);
         header.setValue(value);
         return header;

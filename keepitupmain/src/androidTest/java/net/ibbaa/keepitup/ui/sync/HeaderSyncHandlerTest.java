@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 
@@ -287,30 +288,33 @@ public class HeaderSyncHandlerTest extends BaseUITest {
     }
 
     private Header getHeader1(long networktaskid) {
-        Header resolve = new Header();
-        resolve.setId(-1);
-        resolve.setNetworkTaskId(networktaskid);
-        resolve.setName("name1");
-        resolve.setValue("value1");
-        return resolve;
+        Header header = new Header();
+        header.setId(-1);
+        header.setNetworkTaskId(networktaskid);
+        header.setHeaderType(HeaderType.GENERIC);
+        header.setName("name1");
+        header.setValue("value1");
+        return header;
     }
 
     private Header getHeader2(long networktaskid) {
-        Header resolve = new Header();
-        resolve.setId(-1);
-        resolve.setNetworkTaskId(networktaskid);
-        resolve.setName("name2");
-        resolve.setValue("value2");
-        return resolve;
+        Header header = new Header();
+        header.setId(-1);
+        header.setNetworkTaskId(networktaskid);
+        header.setHeaderType(HeaderType.BASICAUTH);
+        header.setName("name2");
+        header.setValue("value2");
+        return header;
     }
 
     @SuppressWarnings("SameParameterValue")
     private Header getHeader3(long networktaskid) {
-        Header resolve = new Header();
-        resolve.setId(-1);
-        resolve.setNetworkTaskId(networktaskid);
-        resolve.setName("name3");
-        resolve.setValue("value3");
-        return resolve;
+        Header header = new Header();
+        header.setId(-1);
+        header.setNetworkTaskId(networktaskid);
+        header.setHeaderType(HeaderType.GENERIC);
+        header.setName("name3");
+        header.setValue("value3");
+        return header;
     }
 }

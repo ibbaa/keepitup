@@ -26,6 +26,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Equality;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -116,6 +117,7 @@ public class CollectionUtilTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(0);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName(name);
         header.setValue(value);
         return header;

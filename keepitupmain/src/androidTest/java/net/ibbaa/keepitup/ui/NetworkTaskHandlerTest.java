@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -626,10 +627,11 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         return logEntry;
     }
 
-    private Header getHeaderWithNetworkTaskId(long networkTaskIdS, String name) {
+    private Header getHeaderWithNetworkTaskId(long networkTaskId, String name) {
         Header header = new Header();
         header.setId(0);
-        header.setNetworkTaskId(networkTaskIdS);
+        header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName(name);
         header.setValue("value");
         return header;

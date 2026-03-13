@@ -27,6 +27,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -93,12 +94,13 @@ public class DBPurgeTaskTest extends BaseUITest {
     }
 
     private Header getHeader() {
-        Header resolve = new Header();
-        resolve.setId(0);
-        resolve.setNetworkTaskId(-1);
-        resolve.setName("name");
-        resolve.setValue("value");
-        return resolve;
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(-1);
+        header.setHeaderType(HeaderType.GENERIC);
+        header.setName("name");
+        header.setValue("value");
+        return header;
     }
 
     private UITaskResultDispatcher<Boolean> getPurgeResultDispatcher() {

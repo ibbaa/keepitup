@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -2075,6 +2076,7 @@ public class DownloadNetworkTaskWorkerTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name" + number);
         header.setValue("value" + number);
         return header;

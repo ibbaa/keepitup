@@ -37,6 +37,7 @@ public class HeaderDBConstantsTest {
         assertEquals(getResourceString(R.string.header_table_name), dbConstants.getTableName());
         assertEquals(getResourceString(R.string.header_id_column_name), dbConstants.getIdColumnName());
         assertEquals(getResourceString(R.string.header_taskid_column_name), dbConstants.getNetworkTaskIdColumnName());
+        assertEquals(getResourceString(R.string.header_headertype_column_name), dbConstants.getHeaderTypeColumnName());
         assertEquals(getResourceString(R.string.header_name_column_name), dbConstants.getNameColumnName());
         assertEquals(getResourceString(R.string.header_value_column_name), dbConstants.getValueColumnName());
     }

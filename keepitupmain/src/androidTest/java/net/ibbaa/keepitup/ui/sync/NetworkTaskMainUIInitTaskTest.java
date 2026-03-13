@@ -29,6 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -381,6 +382,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskIdS);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName(name);
         header.setValue("value");
         return header;

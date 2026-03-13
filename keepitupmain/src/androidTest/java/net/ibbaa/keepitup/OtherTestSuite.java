@@ -41,6 +41,7 @@ import net.ibbaa.keepitup.model.AccessTypeTest;
 import net.ibbaa.keepitup.model.EncryptInfoTest;
 import net.ibbaa.keepitup.model.FileEntryTest;
 import net.ibbaa.keepitup.model.HeaderTest;
+import net.ibbaa.keepitup.model.HeaderTypeTest;
 import net.ibbaa.keepitup.model.IntervalTest;
 import net.ibbaa.keepitup.model.LogEntryTest;
 import net.ibbaa.keepitup.model.NetworkTaskTest;
@@ -177,6 +178,7 @@ import org.junit.runners.Suite;
         EncryptInfoTest.class,
         FileEntryTest.class,
         HeaderTest.class,
+        HeaderTypeTest.class,
         IntervalTest.class,
         LogEntryTest.class,
         NetworkTaskTest.class,

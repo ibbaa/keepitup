@@ -25,6 +25,7 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -144,6 +145,7 @@ public class NetworkTaskUIWrapperTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(0);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("name1");
         header.setValue("value1");
         return header;
@@ -153,6 +155,7 @@ public class NetworkTaskUIWrapperTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(1);
+        header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name2");
         header.setValue("value2");
         return header;

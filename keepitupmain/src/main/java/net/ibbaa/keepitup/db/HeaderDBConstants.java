@@ -26,6 +26,7 @@ public class HeaderDBConstants {
     private final String tableName;
     private final String idColumnName;
     private final String networkTaskIdColumnName;
+    private final String headerTypeColumnName;
     private final String nameColumnName;
     private final String valueColumnName;
 
@@ -34,6 +35,7 @@ public class HeaderDBConstants {
         tableName = context.getResources().getString(R.string.header_table_name);
         idColumnName = context.getResources().getString(R.string.header_id_column_name);
         networkTaskIdColumnName = context.getResources().getString(R.string.header_taskid_column_name);
+        headerTypeColumnName = context.getResources().getString(R.string.header_headertype_column_name);
         nameColumnName = context.getResources().getString(R.string.header_name_column_name);
         valueColumnName = context.getResources().getString(R.string.header_value_column_name);
     }
@@ -50,6 +52,10 @@ public class HeaderDBConstants {
         return networkTaskIdColumnName;
     }
 
+    public String getHeaderTypeColumnName() {
+        return headerTypeColumnName;
+    }
+
     public String getNameColumnName() {
         return nameColumnName;
     }
@@ -58,7 +64,24 @@ public class HeaderDBConstants {
         return valueColumnName;
     }
 
+    public String getAddHeaderTypeColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getHeaderTypeColumnName() + " INTEGER;";
+    }
+
+    public String getDropHeaderTypeColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getHeaderTypeColumnName() + ";";
+    }
+
     public String getCreateTableStatement() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER," +
+                getHeaderTypeColumnName() + " INTEGER," +
+                getNameColumnName() + " TEXT, " +
+                getValueColumnName() + " TEXT);";
+    }
+
+    public String getCreateTableStatementWithoutHeaderType() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER," +
@@ -74,6 +97,7 @@ public class HeaderDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
+                getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
                 getValueColumnName() +
                 " FROM " + getTableName() +
@@ -85,6 +109,7 @@ public class HeaderDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
+                getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
                 getValueColumnName() +
                 " FROM " + getTableName() +
@@ -96,6 +121,7 @@ public class HeaderDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
+                getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
                 getValueColumnName() +
                 " FROM " + getTableName() +
@@ -107,6 +133,7 @@ public class HeaderDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
+                getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
                 getValueColumnName() +
                 " FROM " + getTableName() +

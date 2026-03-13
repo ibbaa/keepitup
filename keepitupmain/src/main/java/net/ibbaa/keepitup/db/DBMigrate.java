@@ -45,6 +45,8 @@ public class DBMigrate {
         versionDowngrades.put(5, this::version5DowngradeTo4);
         versionUpgrades.put(6, this::version6UpgradeFrom5);
         versionDowngrades.put(6, this::version6DowngradeTo5);
+        versionUpgrades.put(7, this::version7UpgradeFrom6);
+        versionDowngrades.put(7, this::version7DowngradeTo6);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -192,6 +194,24 @@ public class DBMigrate {
             setup.dropUseDefaultHeadersColumnFromAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "dropUseDefaultHeadersColumnFromAccessTypeDataTable failed ", exc);
+        }
+    }
+
+    private void version7UpgradeFrom6(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version7UpgradeFrom6");
+        try {
+            setup.addHeaderTypeColumnToHeaderTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addHeaderTypeColumnToHeaderTable failed ", exc);
+        }
+    }
+
+    private void version7DowngradeTo6(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version7DowngradeTo6");
+        try {
+            setup.dropHeaderTypeColumnFromHeaderTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropHeaderTypeColumnFromHeaderTable failed ", exc);
         }
     }
 
