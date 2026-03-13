@@ -1,4 +1,5 @@
 * It is now possible to encrypt the file during export
-* Redesign info dialog
-* Stabilizing UI handling
+* HTTP headers can now be configured per network task
+* The info dialog was redesigned
+* UI handling was stabilized
 * Some minor fixes
