@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class ExportEncryptDialog extends DialogFragmentBase { // implements ContextOptionsSupport, ConfirmSupport {
+public class ExportEncryptDialog extends DialogFragmentBase {
 
     private View dialogView;
     private CheckBox encryptCheckBox;
@@ -133,7 +133,7 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
     }
 
     private void preparePasswordEditTextListener() {
-        Log.d(ExportEncryptDialog.class.getName(), "prepareNameEditTextListener");
+        Log.d(ExportEncryptDialog.class.getName(), "preparePasswordEditTextListener");
         if (passwordEditTextWatcher != null) {
             passwordEditText.removeTextChangedListener(passwordEditTextWatcher);
             passwordEditTextWatcher = null;
@@ -215,7 +215,7 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
             }
         } else {
             Log.d(ExportEncryptDialog.class.getName(), "Validation failed");
-            showValidationMessageDialog(validationResult);
+            showValidationErrorDialog(validationResult);
         }
     }
 
@@ -277,8 +277,8 @@ public class ExportEncryptDialog extends DialogFragmentBase { // implements Cont
         return validationResults;
     }
 
-    private void showValidationMessageDialog(List<ValidationResult> validationResult) {
-        Log.d(ExportEncryptDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
+    private void showValidationErrorDialog(List<ValidationResult> validationResult) {
+        Log.d(ExportEncryptDialog.class.getName(), "showValidationErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());

@@ -25,7 +25,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -64,14 +63,6 @@ public class HTTPUtilTest {
         assertTrue(HTTPUtil.validateHeaderValue("Name\tTest"));
         assertTrue(HTTPUtil.validateHeaderValue("Äpfel"));
         assertTrue(HTTPUtil.validateHeaderValue("Value"));
-    }
-
-    @Test
-    public void testGetHeaderText() {
-        Header header = new Header();
-        header.setName("name");
-        header.setValue("value");
-        assertEquals("name: value", HTTPUtil.getHeaderText(header));
     }
 
     @Test

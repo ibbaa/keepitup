@@ -235,7 +235,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     protected Response openResponse(URL url, boolean overrideConnectHost) throws IOException, KeyManagementException, NoSuchAlgorithmException {
-        Log.d(DownloadCommand.class.getName(), "openConnection to " + url + " with overrideConnectHost of " + overrideConnectHost);
+        Log.d(DownloadCommand.class.getName(), "openResponse to " + url + " with overrideConnectHost of " + overrideConnectHost);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
             return null;

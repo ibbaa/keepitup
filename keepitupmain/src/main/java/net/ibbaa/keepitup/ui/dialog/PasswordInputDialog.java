@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class PasswordInputDialog extends DialogFragmentBase { // implements ContextOptionsSupport, ConfirmSupport {
+public class PasswordInputDialog extends DialogFragmentBase {
 
     private View dialogView;
     private EditText passwordEditText;
@@ -150,7 +150,7 @@ public class PasswordInputDialog extends DialogFragmentBase { // implements Cont
             }
         } else {
             Log.d(PasswordInputDialog.class.getName(), "Validation failed");
-            showValidationMessageDialog(validationResult);
+            showValidationErrorDialog(validationResult);
         }
 
     }
@@ -176,8 +176,8 @@ public class PasswordInputDialog extends DialogFragmentBase { // implements Cont
         return passwordValidator.validate(getPassword());
     }
 
-    private void showValidationMessageDialog(ValidationResult validationResult) {
-        Log.d(PasswordInputDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
+    private void showValidationErrorDialog(ValidationResult validationResult) {
+        Log.d(PasswordInputDialog.class.getName(), "showValidationErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), List.of(validationResult)));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());

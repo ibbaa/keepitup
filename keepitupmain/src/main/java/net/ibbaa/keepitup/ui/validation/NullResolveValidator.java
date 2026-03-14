@@ -32,7 +32,7 @@ public class NullResolveValidator implements ResolveValidator {
 
     @Override
     public ValidationResult validateTargetAddress(String address) {
-        Log.d(NullResolveValidator.class.getName(), "validateAddress, address is " + address);
+        Log.d(NullResolveValidator.class.getName(), "validateTargetAddress, address is " + address);
         String fieldName = getResources().getString(R.string.resolve_host_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);
@@ -40,7 +40,7 @@ public class NullResolveValidator implements ResolveValidator {
 
     @Override
     public ValidationResult validateTargetPort(String port) {
-        Log.d(NullResolveValidator.class.getName(), "validatePort, port is " + port);
+        Log.d(NullResolveValidator.class.getName(), "validateTargetPort, port is " + port);
         String fieldName = getResources().getString(R.string.resolve_port_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);

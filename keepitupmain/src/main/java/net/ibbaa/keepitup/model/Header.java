@@ -22,6 +22,7 @@ import android.os.PersistableBundle;
 import androidx.annotation.NonNull;
 
 import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -132,6 +133,10 @@ public class Header implements Syncable<Header> {
         this.value = value;
     }
 
+    public boolean isValueSecret() {
+        return headerType != null && headerType.isSecret();
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -211,7 +216,7 @@ public class Header implements Syncable<Header> {
                 ", networktaskid=" + networktaskid +
                 ", headerType=" + headerType +
                 ", name='" + name + '\'' +
-                ", value='" + value + '\'' +
+                ", value='" + StringUtil.maskSecret(value, isValueSecret()) + '\'' +
                 '}';
     }
 }

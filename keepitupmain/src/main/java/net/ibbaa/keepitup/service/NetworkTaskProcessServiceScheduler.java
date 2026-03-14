@@ -88,7 +88,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask reschedule(NetworkTask networkTask, Delay delay) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", delay is " + delay);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "reschedule, network task is " + networkTask + ", delay is " + delay);
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
         if (databaseTask == null) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task does no longer exist. Skipping reschedule.");
@@ -125,7 +125,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask cancel(NetworkTask networkTask) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "cancel, network task is " + networkTask);
         synchronized (TimeBasedSuspensionScheduler.LOCK) {
             networkTask.setRunning(false);
             networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
@@ -210,6 +210,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public void terminateAll() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "terminateAll");
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Terminating all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         for (NetworkTask currentTask : networkTasks) {
@@ -275,7 +276,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public void restartForegroundService() {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startServiceDelayed");
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "restartForegroundService");
         if (shouldStartForegroundService() && areNetworkTasksRunning()) {
             try {
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
@@ -286,7 +287,7 @@ public class NetworkTaskProcessServiceScheduler {
                     getContext().startService(intent);
                 }
             } catch (Exception exc) {
-                Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startServiceDelayed: Error starting the foreground service.", exc);
+                Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "restartForegroundService: Error starting the foreground service.", exc);
             }
         }
     }

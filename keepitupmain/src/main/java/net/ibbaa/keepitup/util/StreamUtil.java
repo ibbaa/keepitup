@@ -74,7 +74,7 @@ public class StreamUtil {
     }
 
     public static void stringToOutputStream(String data, OutputStream stream, Charset charset) throws Exception {
-        Log.d(StreamUtil.class.getName(), "stringToFile, data is " + data);
+        Log.d(StreamUtil.class.getName(), "stringToOutputStream, data is " + data);
         char[] buffer = new char[BUFFER_SIZE_1024];
         StringReader reader = new StringReader(data);
         OutputStreamWriter writer = new OutputStreamWriter(stream, charset);

@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.util;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -137,5 +138,25 @@ public class StringUtilTest {
         String base64 = StringUtil.byteArrayToBase64(original);
         byte[] result = StringUtil.base64ToByteArray(base64);
         assertArrayEquals(result, original);
+    }
+
+    @Test
+    public void testSplitAtFirstColon() {
+        assertArrayEquals(new String[]{"key", "value"}, StringUtil.splitAtFirstColon("key:value"));
+        assertArrayEquals(new String[]{"key", "val:ue"}, StringUtil.splitAtFirstColon("key:val:ue"));
+        assertArrayEquals(new String[]{"", "value"}, StringUtil.splitAtFirstColon(":value"));
+        assertArrayEquals(new String[]{"key", ""}, StringUtil.splitAtFirstColon("key:"));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtFirstColon(":"));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtFirstColon("abcdefghijklmn"));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtFirstColon(""));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtFirstColon(null));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtFirstColon("   "));
+        assertArrayEquals(new String[]{"key ", " value"}, StringUtil.splitAtFirstColon("key : value"));
+        assertNotNull(StringUtil.splitAtFirstColon(null));
+        assertNotNull(StringUtil.splitAtFirstColon(null)[0]);
+        assertNotNull(StringUtil.splitAtFirstColon(null)[1]);
+        assertEquals(2, StringUtil.splitAtFirstColon("key:value").length);
+        assertEquals(2, StringUtil.splitAtFirstColon(null).length);
+        assertArrayEquals(new String[]{"   ", "   "}, StringUtil.splitAtFirstColon("   :   "));
     }
 }

@@ -282,7 +282,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     }
 
     private void prepareSuspensionIntervalsTextLayoutFields(boolean disabled) {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsTextFields, disabled is " + disabled);
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsTextLayoutFields, disabled is " + disabled);
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_suspension_intervals_value);
         gridLayout.removeAllViews();
         List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();

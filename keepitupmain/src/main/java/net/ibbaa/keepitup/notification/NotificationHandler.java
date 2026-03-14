@@ -188,7 +188,7 @@ public class NotificationHandler {
     }
 
     public void sendMessageNotificationForNetworkTask(NetworkTask task, LogEntry logEntry) {
-        Log.d(NotificationHandler.class.getName(), "sendMessageNotification, network task is " + task + ", log entry is " + logEntry);
+        Log.d(NotificationHandler.class.getName(), "sendMessageNotificationForNetworkTask, network task is " + task + ", log entry is " + logEntry);
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
             Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
             return;

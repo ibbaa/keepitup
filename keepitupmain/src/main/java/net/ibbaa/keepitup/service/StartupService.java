@@ -221,6 +221,7 @@ public class StartupService extends BroadcastReceiver {
     }
 
     public void terminate(Context context) {
+        Log.d(StartupService.class.getName(), "terminate");
         Log.d(StartupService.class.getName(), "Terminating application.");
         try {
             Log.d(StartupService.class.getName(), "Stopping pending network tasks.");

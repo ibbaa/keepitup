@@ -171,7 +171,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
             }
         } else {
             Log.d(HeaderEditDialog.class.getName(), "Validation failed");
-            showValidationMessageDialog(validationResult);
+            showValidationErrorDialog(validationResult);
         }
     }
 
@@ -274,8 +274,8 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         return false;
     }
 
-    private void showValidationMessageDialog(List<ValidationResult> validationResult) {
-        Log.d(HeaderEditDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
+    private void showValidationErrorDialog(List<ValidationResult> validationResult) {
+        Log.d(HeaderEditDialog.class.getName(), "showValidationErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());

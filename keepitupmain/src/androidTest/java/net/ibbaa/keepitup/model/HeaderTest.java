@@ -73,6 +73,18 @@ public class HeaderTest {
     }
 
     @Test
+    public void testIsValueSecret() {
+        Header header = new Header();
+        assertFalse(header.isValueSecret());
+        header.setHeaderType(null);
+        assertFalse(header.isValueSecret());
+        header.setHeaderType(HeaderType.GENERIC);
+        assertFalse(header.isValueSecret());
+        header.setHeaderType(HeaderType.BASICAUTH);
+        assertTrue(header.isValueSecret());
+    }
+
+    @Test
     public void testNetworkTaskIdInitialize() {
         Header header = new Header(25);
         assertEquals(-1, header.getId());

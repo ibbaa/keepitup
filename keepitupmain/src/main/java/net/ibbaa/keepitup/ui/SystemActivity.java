@@ -579,7 +579,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
     }
 
     private void prepareFileLoggerEnabledSwitch() {
-        Log.d(SystemActivity.class.getName(), "prepareFileLoggerEnabled");
+        Log.d(SystemActivity.class.getName(), "prepareFileLoggerEnabledSwitch");
         CardView fileLoggerEnabledCardView = findViewById(R.id.cardview_activity_system_file_logger_enabled);
         fileLoggerEnabledSwitch = findViewById(R.id.switch_activity_system_file_logger_enabled);
         fileLoggerEnabledOnOffText = findViewById(R.id.textview_activity_system_file_logger_enabled_on_off);
@@ -905,7 +905,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
 
     @Override
     public void onPasswordInputDialogCancelClicked(PasswordInputDialog passwordInputDialog) {
-        Log.d(SystemActivity.class.getName(), "onExportEncryptDialogCancelClicked");
+        Log.d(SystemActivity.class.getName(), "onPasswordInputDialogCancelClicked");
         passwordInputDialog.dismiss();
     }
 
@@ -1135,9 +1135,9 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
 
     @Override
     public void onMessageDialogOkClicked(GeneralMessageDialog errorDialog) {
-        Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked");
+        Log.d(SystemActivity.class.getName(), "onMessageDialogOkClicked");
         String extraData = errorDialog.getExtraData();
-        Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked, extraData is " + extraData);
+        Log.d(SystemActivity.class.getName(), "onMessageDialogOkClicked, extraData is " + extraData);
         errorDialog.dismiss();
         if (Error.IMPORTERROR.name().equals(extraData) || Error.PURGERROR.name().equals(extraData)) {
             resetActivity();

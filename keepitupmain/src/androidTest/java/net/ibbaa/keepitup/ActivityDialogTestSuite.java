@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.ui.SAFGlobalSettingsActivityMockTest;
 import net.ibbaa.keepitup.ui.SAFSystemActivityMockTest;
 import net.ibbaa.keepitup.ui.SystemActivityTest;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialogTest;
+import net.ibbaa.keepitup.ui.dialog.BasicAuthDialogTest;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionTest;
@@ -70,6 +71,7 @@ import org.junit.runners.Suite;
         SystemActivityTest.class,
         //net.ibbaa.keepitup.ui.dialog
         AlarmPermissionDialogTest.class,
+        BasicAuthDialogTest.class,
         BatteryOptimizationDialogTest.class,
         ConfirmDialogTest.class,
         ContextOptionsDialogTest.class,
