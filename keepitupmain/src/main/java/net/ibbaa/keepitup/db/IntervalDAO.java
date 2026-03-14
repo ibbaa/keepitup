@@ -37,7 +37,7 @@ public class IntervalDAO extends BaseDAO {
     }
 
     public Interval insertInterval(Interval interval) {
-        Log.d(IntervalDAO.class.getName(), "Inserting interval " + interval);
+        Log.d(IntervalDAO.class.getName(), "insertInterval, interval is " + interval);
         Interval returnedInterval = executeDBOperationInTransaction(interval, this::insertInterval);
         Log.d(IntervalDAO.class.getName(), "Inserted interval is " + returnedInterval);
         dumpDatabase("Dump after insertInterval call");
@@ -45,20 +45,20 @@ public class IntervalDAO extends BaseDAO {
     }
 
     public void deleteInterval(Interval interval) {
-        Log.d(IntervalDAO.class.getName(), "Deleting interval with id " + interval.getId());
+        Log.d(IntervalDAO.class.getName(), "deleteInterval, interval is " + interval);
         executeDBOperationInTransaction(interval, this::deleteInterval);
         dumpDatabase("Dump after deleteInterval call");
     }
 
     public void deleteAllIntervals() {
-        Log.d(IntervalDAO.class.getName(), "Deleting all intervals");
+        Log.d(IntervalDAO.class.getName(), "deleteAllIntervals");
         executeDBOperationInTransaction((Interval) null, this::deleteAllIntervals);
         dumpDatabase("Dump after deleteAllIntervals call");
     }
 
     @SuppressWarnings({"UnusedReturnValue"})
     public Interval updateInterval(Interval interval) {
-        Log.d(IntervalDAO.class.getName(), "Updating interval with id " + interval.getId());
+        Log.d(IntervalDAO.class.getName(), "updateInterval, interval is " + interval);
         Interval returnedInterval = executeDBOperationInTransaction(interval, this::updateInterval);
         Log.d(IntervalDAO.class.getName(), "Updated interval is " + returnedInterval);
         dumpDatabase("Dump after updateInterval call");
@@ -66,7 +66,7 @@ public class IntervalDAO extends BaseDAO {
     }
 
     public Interval readInterval(long intervalId) {
-        Log.d(IntervalDAO.class.getName(), "Reading interval with id " + intervalId);
+        Log.d(IntervalDAO.class.getName(), "readInterval, interval id is " + intervalId);
         Interval interval = new Interval();
         interval.setId(intervalId);
         Interval returnedInterval = executeDBOperationInTransaction(interval, this::readInterval);
@@ -75,7 +75,7 @@ public class IntervalDAO extends BaseDAO {
     }
 
     public List<Interval> readAllIntervals() {
-        Log.d(IntervalDAO.class.getName(), "Reading all intervals");
+        Log.d(IntervalDAO.class.getName(), "readAllIntervals");
         List<Interval> intervalList = executeDBOperationInTransaction((Interval) null, this::readAllIntervals);
         Log.d(IntervalDAO.class.getName(), "Number of intervals read: " + intervalList.size());
         return intervalList;

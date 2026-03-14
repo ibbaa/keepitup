@@ -120,26 +120,27 @@ public class DBSetup {
     }
 
     public void createNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createNetworkTaskTable, table is " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getCreateTableStatement());
     }
 
     public void addFailureCountColumnToNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getFailureCountColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addFailureCountColumnToNetworkTaskTable, adding column " + networkTaskDBConstants.getFailureCountColumnName() + " to table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getAddFailureCountColumnStatement());
     }
 
     public void addHighPrioColumnToNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getHighPrioColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addHighPrioColumnToNetworkTaskTable, adding column " + networkTaskDBConstants.getHighPrioColumnName() + " to table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getAddHighPrioColumnStatement());
     }
 
     public void addNameColumnToNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getNameColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addNameColumnToNetworkTaskTable, adding column " + networkTaskDBConstants.getNameColumnName() + " to table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getAddNameColumnStatement());
     }
 
     public void initializeFailureCountColumn(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "initializeFailureCountColumn");
         Log.d(DBSetup.class.getName(), "Setting " + networkTaskDBConstants.getFailureCountColumnName() + " to 0 in " + networkTaskDBConstants.getTableName());
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         ContentValues values = new ContentValues();
@@ -148,17 +149,17 @@ public class DBSetup {
     }
 
     public void createLogTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + logDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createLogTable, table is " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getCreateTableStatement());
     }
 
     public void createSchedulerIdHistoryTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + schedulerIdDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createSchedulerIdHistoryTable, table is " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getCreateTableStatement());
     }
 
     public void createIntervalTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + intervalDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createIntervalTable, table is " + intervalDBConstants.getTableName());
         db.execSQL(intervalDBConstants.getCreateTableStatement());
     }
 
@@ -167,13 +168,13 @@ public class DBSetup {
     }
 
     public void createSchedulerStateTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + schedulerStateDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createSchedulerStateTable, table is " + schedulerStateDBConstants.getTableName());
         db.execSQL(schedulerStateDBConstants.getCreateTableStatement());
         initializeSchedulerStateTable(db);
     }
 
     public void createAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createAccessTypeDataTable, table is " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getCreateTableStatement());
     }
 
@@ -194,27 +195,27 @@ public class DBSetup {
     }
 
     public void addStopOnSuccessColumnToAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addStopOnSuccessColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddStopOnSuccessColumnStatement());
     }
 
     public void addIgnoreSSLErrorColumnToAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addIgnoreSSLErrorColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddIgnoreSSLErrorColumnStatement());
     }
 
     public void addUseDefaultHeadersColumnToAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addUseDefaultHeadersColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddUseDefaultHeadersColumnStatement());
     }
 
     public void createResolveTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + resolveDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createResolveTable, table is " + resolveDBConstants.getTableName());
         db.execSQL(resolveDBConstants.getCreateTableStatement());
     }
 
     public void createHeaderTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Creating database table " + headerDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "createHeaderTable, table is " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getCreateTableStatement());
         initializeHeaderTable(db);
     }
@@ -232,7 +233,7 @@ public class DBSetup {
     }
 
     public void addHeaderTypeColumnToHeaderTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + headerDBConstants.getHeaderTypeColumnName() + " to table " + headerDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "addHeaderTypeColumnToHeaderTable, adding column " + headerDBConstants.getHeaderTypeColumnName() + " to table " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getAddHeaderTypeColumnStatement());
     }
 
@@ -269,7 +270,7 @@ public class DBSetup {
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropNetworkTaskTable, table is " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropTableStatement());
     }
 
@@ -282,22 +283,22 @@ public class DBSetup {
     }
 
     public void dropFailureCountColumnFromNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getFailureCountColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropFailureCountColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getFailureCountColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropFailureCountColumnStatement());
     }
 
     public void dropHighPrioColumnFromNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getHighPrioColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropHighPrioColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getHighPrioColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropHighPrioColumnStatement());
     }
 
     public void dropNameColumnFromNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getNameColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropNameColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getNameColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropNameColumnStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + logDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropLogTable, table is " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getDropTableStatement());
     }
 
@@ -310,7 +311,7 @@ public class DBSetup {
     }
 
     public void dropSchedulerIdHistoryTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropSchedulerIdHistoryTable, table is " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getDropTableStatement());
     }
 
@@ -323,7 +324,7 @@ public class DBSetup {
     }
 
     public void dropIntervalTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + intervalDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropIntervalTable, table is " + intervalDBConstants.getTableName());
         db.execSQL(intervalDBConstants.getDropTableStatement());
     }
 
@@ -336,7 +337,7 @@ public class DBSetup {
     }
 
     public void dropSchedulerStateTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + schedulerStateDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropSchedulerStateTable, table is " + schedulerStateDBConstants.getTableName());
         db.execSQL(schedulerStateDBConstants.getDropTableStatement());
     }
 
@@ -349,7 +350,7 @@ public class DBSetup {
     }
 
     public void dropAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropAccessTypeDataTable, table is " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropTableStatement());
     }
 
@@ -362,22 +363,22 @@ public class DBSetup {
     }
 
     public void dropStopOnSuccessColumnFromAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropStopOnSuccessColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropStopOnSuccessColumnStatement());
     }
 
     public void dropIgnoreSSLErrorColumnFromAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropIgnoreSSLErrorColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropIgnoreSSLErrorColumnStatement());
     }
 
     public void dropUseDefaultHeadersColumnFromAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropUseDefaultHeadersColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropUseDefaultHeadersColumnStatement());
     }
 
     public void dropResolveTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + resolveDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropResolveTable, table is " + resolveDBConstants.getTableName());
         db.execSQL(resolveDBConstants.getDropTableStatement());
     }
 
@@ -390,7 +391,7 @@ public class DBSetup {
     }
 
     public void dropHeaderTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping database table " + headerDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropHeaderTable, table is " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getDropTableStatement());
     }
 
@@ -403,7 +404,7 @@ public class DBSetup {
     }
 
     public void dropHeaderTypeColumnFromHeaderTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + headerDBConstants.getHeaderTypeColumnName() + " from table " + headerDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "dropHeaderTypeColumnFromHeaderTable, dropping column " + headerDBConstants.getHeaderTypeColumnName() + " from table " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getDropHeaderTypeColumnStatement());
     }
 
@@ -816,7 +817,7 @@ public class DBSetup {
     }
 
     public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headerList, boolean resetRunnning) {
-        Log.d(DBSetup.class.getName(), "importNetworkTaskWithLogsAndAccessTypeData, resetRunning is " + resetRunnning);
+        Log.d(DBSetup.class.getName(), "importNetworkTaskWithAssociatedObjects, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
         NetworkTask task = new NetworkTask(taskMap);

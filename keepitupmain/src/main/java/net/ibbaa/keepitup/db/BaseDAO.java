@@ -38,6 +38,7 @@ public abstract class BaseDAO {
     }
 
     private <S, T> T executeInternal(S modelObject, DBOperation<S, DBResult<T>> dbOperation) {
+        Log.d(BaseDAO.class.getName(), "executeInternal");
         Log.d(BaseDAO.class.getName(), "Executing db operation on " + modelObject);
         SQLiteDatabase db = null;
         DBResult<T> result;

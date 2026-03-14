@@ -106,7 +106,7 @@ public class LoggingConsistencyTest {
                 String messageStart = logMessage.split("[\\s,]")[0];
                 String owningMethod = findOwningMethodName(lines, ii);
                 if (owningMethod != null && !messageStart.equals(owningMethod)) {
-                    //violations.add(assetPath + ":" + (ii + 1) + " — method name mismatch: log message starts with '" + messageStart + "' but method is '" + owningMethod + "'");
+                    violations.add(assetPath + ":" + (ii + 1) + " — method name mismatch: log message starts with '" + messageStart + "' but method is '" + owningMethod + "'");
                 }
             }
         }

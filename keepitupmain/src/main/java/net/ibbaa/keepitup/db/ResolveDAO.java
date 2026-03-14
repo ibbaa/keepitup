@@ -38,7 +38,7 @@ public class ResolveDAO extends BaseDAO {
     }
 
     public Resolve insertResolve(Resolve resolve) {
-        Log.d(ResolveDAO.class.getName(), "Inserting resolve object " + resolve);
+        Log.d(ResolveDAO.class.getName(), "insertResolve, resolve object is " + resolve);
         Resolve returnedResolve = executeDBOperationInTransaction(resolve, this::insertResolve);
         Log.d(ResolveDAO.class.getName(), "Inserted resolve object is " + returnedResolve);
         dumpDatabase("Dump after insertResolve call");
@@ -47,7 +47,7 @@ public class ResolveDAO extends BaseDAO {
 
     @SuppressWarnings("UnusedReturnValue")
     public Resolve updateResolve(Resolve resolve) {
-        Log.d(ResolveDAO.class.getName(), "Updating resolve object with id " + resolve.getId());
+        Log.d(ResolveDAO.class.getName(), "updateResolve, resolve object is " + resolve);
         Resolve returnedResolve = executeDBOperationInTransaction(resolve, this::updateResolve);
         Log.d(ResolveDAO.class.getName(), "Updated resolve object is " + returnedResolve);
         dumpDatabase("Dump after updateResolve call");
@@ -55,7 +55,7 @@ public class ResolveDAO extends BaseDAO {
     }
 
     public Resolve readResolveForNetworkTask(long networkTaskId) {
-        Log.d(ResolveDAO.class.getName(), "Reading resolve object for network task with id " + networkTaskId);
+        Log.d(ResolveDAO.class.getName(), "readResolveForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
         resolve = executeDBOperationInTransaction(resolve, this::readResolveForNetworkTask);
@@ -64,19 +64,19 @@ public class ResolveDAO extends BaseDAO {
     }
 
     public List<Resolve> readAllResolve() {
-        Log.d(ResolveDAO.class.getName(), "Reading all resolve objects");
+        Log.d(ResolveDAO.class.getName(), "readAllResolve");
         List<Resolve> resolveList = executeDBOperationInTransaction((Resolve) null, this::readAllResolve);
         Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
         return resolveList;
     }
 
     public Map<Long, Resolve> readAllResolveForNetworkTasks() {
-        Log.d(ResolveDAO.class.getName(), "Reading all resolve objects for all network tasks");
+        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTasks");
         return executeDBOperationInTransaction((Resolve) null, this::readAllResolveForNetworkTasks);
     }
 
     public void deleteResolveForNetworkTask(long networkTaskId) {
-        Log.d(ResolveDAO.class.getName(), "Deleting all resolve objects for network task with id " + networkTaskId);
+        Log.d(ResolveDAO.class.getName(), "deleteResolveForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(resolve, this::deleteResolveForNetworkTask);
@@ -84,13 +84,13 @@ public class ResolveDAO extends BaseDAO {
     }
 
     public void deleteAllOrphanResolve() {
-        Log.d(ResolveDAO.class.getName(), "Deleting all orphan resolve objects");
+        Log.d(ResolveDAO.class.getName(), "deleteAllOrphanResolve");
         executeDBOperationInTransaction((Resolve) null, this::deleteAllOrphanResolve);
         dumpDatabase("Dump after deleteAllOrphanResolve call");
     }
 
     public void deleteAllResolve() {
-        Log.d(ResolveDAO.class.getName(), "Deleting all resolve objects");
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolve");
         executeDBOperationInTransaction((Resolve) null, this::deleteAllResolve);
         dumpDatabase("Dump after deleteAllResolve call");
     }

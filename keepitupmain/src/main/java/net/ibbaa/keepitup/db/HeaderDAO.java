@@ -40,7 +40,7 @@ public class HeaderDAO extends BaseDAO {
     }
 
     public Header insertHeader(Header header) {
-        Log.d(HeaderDAO.class.getName(), "Inserting header " + header);
+        Log.d(HeaderDAO.class.getName(), "insertHeader, header is " + header);
         Header returnedHeader = executeDBOperationInTransaction(header, this::insertHeader);
         Log.d(HeaderDAO.class.getName(), "Inserted header is " + returnedHeader);
         dumpDatabase("Dump after insertHeader call");
@@ -48,33 +48,33 @@ public class HeaderDAO extends BaseDAO {
     }
 
     public int insertHeaders(List<Header> headers) {
-        Log.d(HeaderDAO.class.getName(), "Inserting headers " + headers);
+        Log.d(HeaderDAO.class.getName(), "insertHeaders, headers are " + headers);
         int count = executeDBOperationInTransactionWithRollback(headers, this::insertHeaders);
         dumpDatabase("Dump after insertHeader call");
         return count;
     }
 
     public void updateHeader(Header header) {
-        Log.d(HeaderDAO.class.getName(), "Updating header with id " + header.getId());
+        Log.d(HeaderDAO.class.getName(), "updateHeader, header is " + header);
         Header returnedHeader = executeDBOperationInTransaction(header, this::updateHeader);
         Log.d(HeaderDAO.class.getName(), "Updated header is " + returnedHeader);
         dumpDatabase("Dump after updateHeader call");
     }
 
     public List<Header> readGlobalHeaders() {
-        Log.d(HeaderDAO.class.getName(), "Reading global headers");
+        Log.d(HeaderDAO.class.getName(), "readGlobalHeaders");
         List<Header> headerList = executeDBOperationInTransaction((Header) null, this::readGlobalHeaders);
         Log.d(HeaderDAO.class.getName(), "Number of headers read: " + headerList.size());
         return headerList;
     }
 
     public Map<Long, List<Header>> readAllHeadersForNetworkTasks() {
-        Log.d(HeaderDAO.class.getName(), "Reading all headers for all network tasks");
+        Log.d(HeaderDAO.class.getName(), "readAllHeadersForNetworkTasks");
         return executeDBOperationInTransaction((Header) null, this::readAllHeadersForNetworkTasks);
     }
 
     public List<Header> readHeadersForNetworkTask(long networkTaskId) {
-        Log.d(HeaderDAO.class.getName(), "Reading headers for network task with id " + networkTaskId);
+        Log.d(HeaderDAO.class.getName(), "readHeadersForNetworkTask, network task id is " + networkTaskId);
         Header header = new Header();
         header.setNetworkTaskId(networkTaskId);
         List<Header> headerList = executeDBOperationInTransaction(header, this::readHeadersForNetworkTask);
@@ -83,26 +83,26 @@ public class HeaderDAO extends BaseDAO {
     }
 
     public List<Header> readAllHeaders() {
-        Log.d(HeaderDAO.class.getName(), "Reading all headers");
+        Log.d(HeaderDAO.class.getName(), "readAllHeaders");
         List<Header> headerList = executeDBOperationInTransaction((Header) null, this::readAllHeaders);
         Log.d(HeaderDAO.class.getName(), "Number of headers read: " + headerList.size());
         return headerList;
     }
 
     public void deleteGlobalHeaders() {
-        Log.d(HeaderDAO.class.getName(), "Deleting all global headers");
+        Log.d(HeaderDAO.class.getName(), "deleteGlobalHeaders");
         executeDBOperationInTransaction((Header) null, this::deleteGlobalHeaders);
         dumpDatabase("Dump after deleteGlobalHeaders call");
     }
 
     public void deleteHeader(Header header) {
-        Log.d(HeaderDAO.class.getName(), "Deleting header with id " + header.getId());
+        Log.d(HeaderDAO.class.getName(), "deleteHeader, header is " + header);
         executeDBOperationInTransaction(header, this::deleteHeader);
         dumpDatabase("Dump after deleteInterval call");
     }
 
     public void deleteHeadersForNetworkTask(long networkTaskId) {
-        Log.d(HeaderDAO.class.getName(), "Deleting all headers for network task with id " + networkTaskId);
+        Log.d(HeaderDAO.class.getName(), "deleteHeadersForNetworkTask, network task id is " + networkTaskId);
         Header header = new Header();
         header.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(header, this::deleteHeadersForNetworkTask);
@@ -110,13 +110,13 @@ public class HeaderDAO extends BaseDAO {
     }
 
     public void deleteAllOrphanHeaders() {
-        Log.d(HeaderDAO.class.getName(), "Deleting all orphan headers");
+        Log.d(HeaderDAO.class.getName(), "deleteAllOrphanHeaders");
         executeDBOperationInTransaction((Header) null, this::deleteAllOrphanHeaders);
         dumpDatabase("Dump after deleteAllOrphanHeaders call");
     }
 
     public void deleteAllHeaders() {
-        Log.d(HeaderDAO.class.getName(), "Deleting all headers");
+        Log.d(HeaderDAO.class.getName(), "deleteAllHeaders");
         executeDBOperationInTransaction((Header) null, this::deleteAllHeaders);
         dumpDatabase("Dump after deleteAllHeaders call");
     }

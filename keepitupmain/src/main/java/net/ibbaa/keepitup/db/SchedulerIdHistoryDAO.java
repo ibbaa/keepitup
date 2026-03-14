@@ -34,12 +34,12 @@ public class SchedulerIdHistoryDAO extends BaseDAO {
     }
 
     public void deleteAllSchedulerIds() {
-        Log.d(SchedulerIdHistoryDAO.class.getName(), "Deleting all scheduler ids");
+        Log.d(SchedulerIdHistoryDAO.class.getName(), "deleteAllSchedulerIds");
         executeDBOperationInTransaction((NetworkTask) null, this::deleteAllSchedulerIds);
     }
 
     public List<SchedulerId> readAllSchedulerIds() {
-        Log.d(SchedulerIdHistoryDAO.class.getName(), "Reading all scheduler ids");
+        Log.d(SchedulerIdHistoryDAO.class.getName(), "readAllSchedulerIds");
         List<SchedulerId> returnedIds = executeDBOperationInTransaction((SchedulerId) null, this::readAllSchedulerIds);
         Log.d(SchedulerIdHistoryDAO.class.getName(), "Number of read scheduler ids: " + returnedIds.size());
         return returnedIds;

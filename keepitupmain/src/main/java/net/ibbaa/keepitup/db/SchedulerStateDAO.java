@@ -36,7 +36,7 @@ public class SchedulerStateDAO extends BaseDAO {
 
     @SuppressWarnings({"UnusedReturnValue"})
     public SchedulerState insertSchedulerState(SchedulerState schedulerState) {
-        Log.d(SchedulerStateDAO.class.getName(), "Inserting schedulerState " + schedulerState);
+        Log.d(SchedulerStateDAO.class.getName(), "insertSchedulerState, schedulerState is " + schedulerState);
         SchedulerState returnedSchedulerState = executeDBOperationInTransaction(schedulerState, this::insertSchedulerState);
         Log.d(SchedulerStateDAO.class.getName(), "Inserted schedulerState is " + returnedSchedulerState);
         dumpDatabase("Dump after insertInterval call");
@@ -44,13 +44,13 @@ public class SchedulerStateDAO extends BaseDAO {
     }
 
     public void deleteSchedulerState() {
-        Log.d(SchedulerStateDAO.class.getName(), "Deleting the existing schedulerState");
+        Log.d(SchedulerStateDAO.class.getName(), "deleteSchedulerState");
         executeDBOperationInTransaction((SchedulerState) null, this::deleteSchedulerState);
         dumpDatabase("Dump after deleteSchedulerState call");
     }
 
     public SchedulerState readSchedulerState() {
-        Log.d(SchedulerStateDAO.class.getName(), "Reading the existing schedulerState");
+        Log.d(SchedulerStateDAO.class.getName(), "readSchedulerState");
         SchedulerState schedulerState = executeDBOperationInTransaction((SchedulerState) null, this::readSchedulerState);
         Log.d(SchedulerStateDAO.class.getName(), "Read schedulerState is " + schedulerState);
         return schedulerState;
@@ -58,7 +58,7 @@ public class SchedulerStateDAO extends BaseDAO {
 
     @SuppressWarnings({"UnusedReturnValue"})
     public SchedulerState updateSchedulerState(SchedulerState schedulerState) {
-        Log.d(SchedulerStateDAO.class.getName(), "Updating the existing schedulerState");
+        Log.d(SchedulerStateDAO.class.getName(), "updateSchedulerState, schedulerState is ");
         SchedulerState returnedSchedulerState = executeDBOperationInTransaction(schedulerState, this::updateSchedulerState);
         Log.d(SchedulerStateDAO.class.getName(), "Updated schedulerState is " + returnedSchedulerState);
         dumpDatabase("Dump after updateSchedulerState call");

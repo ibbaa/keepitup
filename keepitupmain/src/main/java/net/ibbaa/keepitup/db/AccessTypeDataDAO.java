@@ -38,7 +38,7 @@ public class AccessTypeDataDAO extends BaseDAO {
     }
 
     public AccessTypeData insertAccessTypeData(AccessTypeData accessTypeData) {
-        Log.d(AccessTypeDataDAO.class.getName(), "Inserting accessTypeData " + accessTypeData);
+        Log.d(AccessTypeDataDAO.class.getName(), "insertAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::insertAccessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "Inserted accessTypeData is " + returnedAccessTypeData);
         dumpDatabase("Dump after insertAccessTypeData call");
@@ -46,7 +46,7 @@ public class AccessTypeDataDAO extends BaseDAO {
     }
 
     public AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData) {
-        Log.d(AccessTypeDataDAO.class.getName(), "Updating accessTypeData with id " + accessTypeData.getId());
+        Log.d(AccessTypeDataDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::updateAccessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "Updated accessTypeData is " + returnedAccessTypeData);
         dumpDatabase("Dump after updateAccessTypeData call");
@@ -54,7 +54,7 @@ public class AccessTypeDataDAO extends BaseDAO {
     }
 
     public AccessTypeData readAccessTypeDataForNetworkTask(long networkTaskId) {
-        Log.d(AccessTypeDataDAO.class.getName(), "Reading accessTypeData for network task with id " + networkTaskId);
+        Log.d(AccessTypeDataDAO.class.getName(), "readAccessTypeDataForNetworkTask, network task id is " + networkTaskId);
         AccessTypeData accessTypeData = new AccessTypeData();
         accessTypeData.setNetworkTaskId(networkTaskId);
         accessTypeData = executeDBOperationInTransaction(accessTypeData, this::readAccessTypeDataForNetworkTask);
@@ -63,19 +63,19 @@ public class AccessTypeDataDAO extends BaseDAO {
     }
 
     public List<AccessTypeData> readAllAccessTypeData() {
-        Log.d(AccessTypeDataDAO.class.getName(), "Reading all accessTypeData");
+        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeData");
         List<AccessTypeData> accessTypeDataList = executeDBOperationInTransaction((AccessTypeData) null, this::readAllAccessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "Number of accessTypeData read: " + accessTypeDataList.size());
         return accessTypeDataList;
     }
 
     public Map<Long, AccessTypeData> readAllAccessTypeDataForNetworkTasks() {
-        Log.d(AccessTypeDataDAO.class.getName(), "Reading all accessTypeData for all network tasks");
+        Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeDataForNetworkTasks");
         return executeDBOperationInTransaction((AccessTypeData) null, this::readAllAccessTypeDataForNetworkTasks);
     }
 
     public void deleteAccessTypeDataForNetworkTask(long networkTaskId) {
-        Log.d(AccessTypeDataDAO.class.getName(), "Deleting all accessTypeData for network task with id " + networkTaskId);
+        Log.d(AccessTypeDataDAO.class.getName(), "deleteAccessTypeDataForNetworkTask, network task id is " + networkTaskId);
         AccessTypeData accessTypeData = new AccessTypeData();
         accessTypeData.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(accessTypeData, this::deleteAccessTypeDataForNetworkTask);
@@ -83,13 +83,13 @@ public class AccessTypeDataDAO extends BaseDAO {
     }
 
     public void deleteAllOrphanAccessTypeData() {
-        Log.d(AccessTypeDataDAO.class.getName(), "Deleting all orphan accessTypeData");
+        Log.d(AccessTypeDataDAO.class.getName(), "deleteAllOrphanAccessTypeData");
         executeDBOperationInTransaction((AccessTypeData) null, this::deleteAllOrphanAccessTypeData);
         dumpDatabase("Dump after deleteAllOrphanAccessTypeData call");
     }
 
     public void deleteAllAccessTypeData() {
-        Log.d(AccessTypeDataDAO.class.getName(), "Deleting all accessTypeData");
+        Log.d(AccessTypeDataDAO.class.getName(), "deleteAllAccessTypeData");
         executeDBOperationInTransaction((AccessTypeData) null, this::deleteAllAccessTypeData);
         dumpDatabase("Dump after deleteAllAccessTypeData call");
     }

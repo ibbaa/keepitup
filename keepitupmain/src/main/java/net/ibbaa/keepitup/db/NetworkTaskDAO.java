@@ -38,7 +38,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public NetworkTask insertNetworkTask(NetworkTask networkTask) {
-        Log.d(NetworkTaskDAO.class.getName(), "Inserting task " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "insertNetworkTask, network task is " + networkTask);
         NetworkTask returnedTask = executeDBOperationInTransaction(networkTask, this::insertNetworkTask);
         Log.d(NetworkTaskDAO.class.getName(), "Inserted task is " + returnedTask);
         dumpDatabase("Dump after insertNetworkTask call");
@@ -46,19 +46,19 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void deleteNetworkTask(NetworkTask networkTask) {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting task with id " + networkTask.getId());
+        Log.d(NetworkTaskDAO.class.getName(), "deleteNetworkTask, network task is " + networkTask);
         executeDBOperationInTransaction(networkTask, this::deleteNetworkTask);
         dumpDatabase("Dump after deleteNetworkTask call");
     }
 
     public void deleteAllNetworkTasks() {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting all tasks");
+        Log.d(NetworkTaskDAO.class.getName(), "deleteAllNetworkTasks");
         executeDBOperationInTransaction((NetworkTask) null, this::deleteAllNetworkTasks);
         dumpDatabase("Dump after deleteAllNetworkTasks call");
     }
 
     public NetworkTask updateNetworkTask(NetworkTask networkTask) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating task with id " + networkTask.getId());
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTask, network task is " + networkTask);
         NetworkTask returnedTask = executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
         Log.d(NetworkTaskDAO.class.getName(), "Updated task is " + returnedTask);
         dumpDatabase("Dump after updateNetworkTask call");
@@ -66,7 +66,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void updateNetworkTaskRunning(long taskId, boolean running) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating running status to " + running + " of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTaskRunning, updating running status to " + running + " for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         networkTask.setRunning(running);
@@ -76,7 +76,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void updateNetworkTaskName(long taskId, String name) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating name to " + name + " of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTaskName, updating name to " + name + " for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         networkTask.setName(name);
@@ -85,14 +85,14 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public int readNetworkTasksRunning() {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading number of running tasks");
+        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTasksRunning");
         int runningTasks = executeDBOperationInTransaction((NetworkTask) null, this::readNetworkTasksRunning);
         Log.d(NetworkTaskDAO.class.getName(), "Number of running tasks " + runningTasks);
         return runningTasks;
     }
 
     public int readNetworkTaskInstances(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading instances value of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTaskInstances, network task id is " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         int readInstances = executeDBOperationInTransaction(networkTask, this::readNetworkTaskInstances);
@@ -101,7 +101,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void increaseNetworkTaskInstances(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Increasing instances of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "increaseNetworkTaskInstances, network task id is " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::increaseNetworkTaskInstances);
@@ -109,7 +109,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void decreaseNetworkTaskInstances(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Decreasing instances of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "decreaseNetworkTaskInstances, network task id is " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::decreaseNetworkTaskInstances);
@@ -117,7 +117,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void resetNetworkTaskInstances(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting instances of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskInstances, network task id is " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::resetNetworkTaskInstances);
@@ -125,13 +125,13 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void resetAllNetworkTaskInstances() {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting instances of all tasks");
+        Log.d(NetworkTaskDAO.class.getName(), "resetAllNetworkTaskInstances");
         executeDBOperationInTransaction((NetworkTask) null, this::resetAllNetworkTaskInstances);
         dumpDatabase("Dump after resetAllNetworkTaskInstances call");
     }
 
     public void updateNetworkTaskLastScheduled(long taskId, long lastScheduled) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating last scheduled timestamp to " + lastScheduled + " of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTaskLastScheduled, updating last scheduled timestamp to " + lastScheduled + " for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         networkTask.setLastScheduled(lastScheduled);
@@ -140,7 +140,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void resetNetworkTaskLastScheduled(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting last scheduled timestamp of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastScheduled, resetting last scheduled timestamp for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::resetNetworkTaskLastScheduled);
@@ -148,7 +148,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void resetNetworkTaskLastScheduledAndFailureCount(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting last scheduled timestamp and failure count of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastScheduledAndFailureCount, resetting last scheduled timestamp and failure count for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::resetNetworkTaskLastScheduledAndFailureCount);
@@ -156,7 +156,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public int readNetworkTaskFailureCount(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading failure count value of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTaskFailureCount, network task id is " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         int readFailureCount = executeDBOperationInTransaction(networkTask, this::readNetworkTaskFailureCount);
@@ -165,7 +165,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void increaseNetworkTaskFailureCount(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Increasing failure count of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "increaseNetworkTaskFailureCount, increasing failure count for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::increaseNetworkTaskFailureCount);
@@ -173,7 +173,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void resetNetworkTaskFailureCount(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting failure count of task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskFailureCount, resetting failure count for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::resetNetworkTaskFailureCount);
@@ -181,13 +181,13 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public void resetAllNetworkTaskFailureCount() {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting failure count of all tasks");
+        Log.d(NetworkTaskDAO.class.getName(), "resetAllNetworkTaskFailureCount");
         executeDBOperationInTransaction((NetworkTask) null, this::resetAllNetworkTaskFailureCount);
         dumpDatabase("Dump after resetAllNetworkTaskFailureCount call");
     }
 
     public NetworkTask readNetworkTask(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading task with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTask, network task id is " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         NetworkTask returnedTask = executeDBOperationInTransaction(networkTask, this::readNetworkTask);
@@ -196,7 +196,7 @@ public class NetworkTaskDAO extends BaseDAO {
     }
 
     public List<NetworkTask> readAllNetworkTasks() {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading all tasks");
+        Log.d(NetworkTaskDAO.class.getName(), "readAllNetworkTasks");
         List<NetworkTask> taskList = executeDBOperationInTransaction((NetworkTask) null, this::readAllNetworkTasks);
         Log.d(NetworkTaskDAO.class.getName(), "Number of tasks read: " + taskList.size());
         return taskList;

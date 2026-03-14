@@ -40,7 +40,7 @@ public class LogDAO extends BaseDAO {
     }
 
     public LogEntry insertAndDeleteLog(LogEntry logEntry) {
-        Log.d(LogDAO.class.getName(), "Inserting log entry " + logEntry + " and deleting oldest log entry");
+        Log.d(LogDAO.class.getName(), "insertAndDeleteLog, log entry is " + logEntry);
         LogEntry returnedEntry = executeDBOperationInTransaction(logEntry, this::insertAndDeleteLog);
         Log.d(LogDAO.class.getName(), "Inserted log entry is " + returnedEntry);
         dumpDatabase("Dump after insertAndDeleteLog call");
@@ -48,7 +48,7 @@ public class LogDAO extends BaseDAO {
     }
 
     public LogEntry readMostRecentLogForNetworkTask(long networkTaskId) {
-        Log.d(LogDAO.class.getName(), "Reading most recent log entry for network task with id " + networkTaskId);
+        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, network task id is " + networkTaskId);
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
         LogEntry returnedEntry = executeDBOperationInTransaction(entry, this::readMostRecentLogForNetworkTask);
@@ -57,12 +57,12 @@ public class LogDAO extends BaseDAO {
     }
 
     public Map<Long, LogEntry> readAllMostRecentLogsForNetworkTasks() {
-        Log.d(LogDAO.class.getName(), "Reading all most recent log entries for all network tasks");
+        Log.d(LogDAO.class.getName(), "readAllMostRecentLogsForNetworkTasks");
         return executeDBOperationInTransaction((LogEntry) null, this::readAllMostRecentLogsForNetworkTasks);
     }
 
     public List<LogEntry> readAllLogsForNetworkTask(long networkTaskId) {
-        Log.d(LogDAO.class.getName(), "Reading all log entries for network task with id " + networkTaskId);
+        Log.d(LogDAO.class.getName(), "readAllLogsForNetworkTask, network task id is " + networkTaskId);
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
         List<LogEntry> logEntries = executeDBOperationInTransaction(entry, this::readAllLogsForNetworkTask);
@@ -71,14 +71,14 @@ public class LogDAO extends BaseDAO {
     }
 
     public List<LogEntry> readAllLogs() {
-        Log.d(LogDAO.class.getName(), "Reading all log entries");
+        Log.d(LogDAO.class.getName(), "readAllLogs");
         List<LogEntry> logEntries = executeDBOperationInTransaction((LogEntry) null, this::readAllLogs);
         Log.d(LogDAO.class.getName(), "Number of log entries read: " + logEntries.size());
         return logEntries;
     }
 
     public void deleteAllLogsForNetworkTask(long networkTaskId) {
-        Log.d(LogDAO.class.getName(), "Deleting all log entries for network task with id " + networkTaskId);
+        Log.d(LogDAO.class.getName(), "deleteAllLogsForNetworkTask, network task id is " + networkTaskId);
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(entry, this::deleteAllLogsForNetworkTask);
@@ -86,13 +86,13 @@ public class LogDAO extends BaseDAO {
     }
 
     public void deleteAllOrphanLogs() {
-        Log.d(LogDAO.class.getName(), "Deleting all orphan log entries");
+        Log.d(LogDAO.class.getName(), "deleteAllOrphanLogs");
         executeDBOperationInTransaction((LogEntry) null, this::deleteAllOrphanLogs);
         dumpDatabase("Dump after deleteAllOrphanLogs call");
     }
 
     public void deleteAllLogs() {
-        Log.d(LogDAO.class.getName(), "Deleting all log entries");
+        Log.d(LogDAO.class.getName(), "deleteAllLogs");
         executeDBOperationInTransaction((LogEntry) null, this::deleteAllLogs);
         dumpDatabase("Dump after deleteAllLogs call");
     }
