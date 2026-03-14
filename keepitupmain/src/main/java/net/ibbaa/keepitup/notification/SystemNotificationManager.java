@@ -32,13 +32,13 @@ public class SystemNotificationManager implements INotificationManager {
 
     @Override
     public void notify(int id, Notification notification) {
-        Log.d(SystemNotificationManager.class.getName(), "Sending notification with id " + id);
+        Log.d(SystemNotificationManager.class.getName(), "notify, sending notification with id " + id);
         notificationManager.notify(id, notification);
     }
 
     @Override
     public void cancel(int id) {
-        Log.d(SystemNotificationManager.class.getName(), "Cancel notification with id " + id);
+        Log.d(SystemNotificationManager.class.getName(), "cancel, cancel notification with id " + id);
         notificationManager.cancel(id);
     }
 }

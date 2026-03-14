@@ -145,7 +145,7 @@ public class JSONSystemSetup {
     }
 
     private boolean isFileVersionHigherThanCurrentVersion(JSONObject root) {
-        Log.d(JSONSystemSetup.class.getName(), "isVersionValid");
+        Log.d(JSONSystemSetup.class.getName(), "isFileVersionHigherThanCurrentVersion");
         try {
             int dbVersionInFile = getJSONDbVersion(root);
             int dbVersion = getDbVersion();

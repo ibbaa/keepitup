@@ -100,7 +100,7 @@ public class PreferenceManager {
     }
 
     public void setPreferenceString(String key, String value) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceLong, key is " + key + ", value is " + value);
+        Log.d(PreferenceManager.class.getName(), "setPreferenceString, key is " + key + ", value is " + value);
         SharedPreferences.Editor editor = getDefaultSharedPreferencesEditor();
         editor.putString(key, value);
         editor.commit();
@@ -352,7 +352,7 @@ public class PreferenceManager {
     }
 
     public void setPreferenceNotificationAfterFailures(int notificationAfterFailures) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceNNotificationAfterFailures, notificationAfterFailures is " + notificationAfterFailures);
+        Log.d(PreferenceManager.class.getName(), "setPreferenceNotificationAfterFailures, notificationAfterFailures is " + notificationAfterFailures);
         setPreferenceInt(getResources().getString(R.string.notification_after_failures_key), notificationAfterFailures);
     }
 
@@ -592,12 +592,12 @@ public class PreferenceManager {
     }
 
     public void setPreferenceTheme(int theme) {
-        Log.d(PreferenceManager.class.getName(), "setTheme, theme is " + theme);
+        Log.d(PreferenceManager.class.getName(), "setPreferenceTheme, theme is " + theme);
         setPreferenceInt(getResources().getString(R.string.theme_key), theme);
     }
 
     public void removePreferenceTheme() {
-        Log.d(PreferenceManager.class.getName(), "removeTheme");
+        Log.d(PreferenceManager.class.getName(), "removePreferenceTheme");
         removePreferenceValue(getResources().getString(R.string.theme_key));
     }
 
