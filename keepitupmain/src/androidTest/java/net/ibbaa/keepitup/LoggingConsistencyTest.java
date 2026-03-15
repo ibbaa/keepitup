@@ -163,7 +163,6 @@ public class LoggingConsistencyTest {
                     return true;
                 }
             }
-
             for (int cc = 0; cc < lineContent.length(); cc++) {
                 char charAt = lineContent.charAt(cc);
                 if (charAt == '{') depth++;

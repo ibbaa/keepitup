@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,11 @@ import androidx.fragment.app.Fragment;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
+import net.ibbaa.keepitup.ui.support.BasicAuthSupport;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.HeaderEditSupport;
@@ -51,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class HeaderEditDialog extends DialogFragmentBase implements ContextOptionsSupport, ConfirmSupport {
+public class HeaderEditDialog extends DialogFragmentBase implements ContextOptionsSupport, ConfirmSupport, BasicAuthSupport {
 
     private View dialogView;
     private EditText nameEditText;
@@ -59,6 +63,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
     private CheckBox basicAuthCheckBox;
     private TextColorValidatingWatcher nameEditTextWatcher;
     private TextColorValidatingWatcher valueEditTextWatcher;
+    private String lastBasicAuthCredentials;
 
     private IClipboardManager clipboardManager;
 
@@ -87,11 +92,29 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         initEdgeToEdgeInsets(dialogView);
         Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
         Header header = headerBundle != null ? new Header(headerBundle) : new Header();
+        setLastBasicAuthCredentials(savedInstanceState, header);
         prepareNameTextField(header);
         prepareValueTextField(header);
-        prepareBasicAuthCheckBox();
+        prepareBasicAuthCheckBox(header);
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d(HeaderEditDialog.class.getName(), "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        if (lastBasicAuthCredentials != null) {
+            outState.putString(getLastBasicAuthCredentialsKey(), lastBasicAuthCredentials);
+        }
+    }
+
+    private void setLastBasicAuthCredentials(Bundle savedInstanceState, Header header) {
+        if (HTTPUtil.isBasicAuthHeader(header)) {
+            lastBasicAuthCredentials = header.getValue();
+        } else if (savedInstanceState != null) {
+            lastBasicAuthCredentials = savedInstanceState.getString(getLastBasicAuthCredentialsKey());
+        }
     }
 
     private void prepareNameTextField(Header header) {
@@ -130,9 +153,37 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         valueEditText.addTextChangedListener(valueEditTextWatcher);
     }
 
-    private void prepareBasicAuthCheckBox() {
+    private void prepareBasicAuthCheckBox(Header header) {
         Log.d(HeaderEditDialog.class.getName(), "prepareBasicAuthCheckBox");
         basicAuthCheckBox = dialogView.findViewById(R.id.checkbox_dialog_header_edit_basic_auth);
+        basicAuthCheckBox.setChecked(HTTPUtil.isBasicAuthHeader(header));
+        basicAuthCheckBox.setOnClickListener(this::onBasicAuthCheckBoxClicked);
+        prepareBasicAuthCheckBoxVisibility();
+    }
+
+    private void prepareBasicAuthCheckBoxVisibility() {
+        Log.d(HeaderEditDialog.class.getName(), "prepareBasicAuthCheckBoxVisibility");
+        if (basicAuthCheckBox.isChecked()) {
+            nameEditText.setEnabled(false);
+            valueEditText.setEnabled(false);
+            valueEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        } else {
+            nameEditText.setEnabled(true);
+            valueEditText.setEnabled(true);
+            valueEditText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        }
+    }
+
+    private void onBasicAuthCheckBoxClicked(@NonNull View checkBox) {
+        Log.d(HeaderEditDialog.class.getName(), "onBasicAuthCheckBoxClicked");
+        if (basicAuthCheckBox.isChecked()) {
+            basicAuthCheckBox.setChecked(false);
+            showBasicAuthDialog();
+        } else {
+            nameEditText.setText("");
+            valueEditText.setText("");
+            prepareBasicAuthCheckBoxVisibility();
+        }
     }
 
     private void prepareOkCancelImageButtons() {
@@ -151,6 +202,10 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         return HeaderEditDialog.class.getSimpleName() + ".Position";
     }
 
+    public String getLastBasicAuthCredentialsKey() {
+        return HeaderEditDialog.class.getSimpleName() + ".LastBasicAuthCredentials";
+    }
+
     public String getName() {
         return StringUtil.notNull(nameEditText.getText()).trim();
     }
@@ -165,7 +220,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         List<ValidationResult> validationResult = validateInput(position);
         if (!hasErrors(validationResult)) {
             Log.d(HeaderEditDialog.class.getName(), "Validation was successful");
-            if (HTTPUtil.isAuthorizationHeader(getContext(), getName())) {
+            if (HTTPUtil.isAuthorizationHeader(getContext(), getName()) && !HTTPUtil.isBasicAuthHeader(getHeader())) {
                 Log.d(HeaderEditDialog.class.getName(), "Header is an authorization header");
                 showConfirmDialog(position);
                 return;
@@ -216,12 +271,31 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         confirmDialog.dismiss();
     }
 
+    @Override
+    public void onBasicAuthDialogOkClicked(BasicAuthDialog basicAuthDialog) {
+        Log.d(HeaderEditDialog.class.getName(), "onBasicAuthDialogOkClicked");
+        basicAuthCheckBox.setChecked(true);
+        nameEditText.setText(getResources().getString(R.string.http_header_authorization));
+        lastBasicAuthCredentials = basicAuthDialog.getUsernameAndPassword();
+        valueEditText.setText(lastBasicAuthCredentials);
+        basicAuthDialog.dismiss();
+        prepareBasicAuthCheckBoxVisibility();
+    }
+
+    @Override
+    public void onBasicAuthDialogCancelClicked(BasicAuthDialog basicAuthDialog) {
+        Log.d(HeaderEditDialog.class.getName(), "onBasicAuthDialogCancelClicked");
+        basicAuthDialog.dismiss();
+        prepareBasicAuthCheckBoxVisibility();
+    }
+
     public Header getHeader() {
         Log.d(HeaderEditDialog.class.getName(), "getHeader");
         Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
         Header header = headerBundle != null ? new Header(headerBundle) : new Header();
         header.setName(getName());
         header.setValue(getValue());
+        header.setHeaderType(basicAuthCheckBox.isChecked() ? HeaderType.BASICAUTH : HeaderType.GENERIC);
         return header;
     }
 
@@ -299,6 +373,16 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         bundle.putInt(confirmDialog.getPositionKey(), position);
         confirmDialog.setArguments(bundle);
         confirmDialog.show(getParentFragmentManager(), ConfirmDialog.class.getName());
+    }
+
+    private void showBasicAuthDialog() {
+        Log.d(HeaderEditDialog.class.getName(), "showBasicAuthDialog");
+        BasicAuthDialog basicAuthDialog = new BasicAuthDialog();
+        if (lastBasicAuthCredentials != null) {
+            Bundle bundle = BundleUtil.stringToBundle(basicAuthDialog.getInitialUsernameAndPasswordKey(), lastBasicAuthCredentials);
+            basicAuthDialog.setArguments(bundle);
+        }
+        basicAuthDialog.show(getParentFragmentManager(), BasicAuthDialog.class.getName());
     }
 
     private boolean onNameEditTextLongClicked(View view) {

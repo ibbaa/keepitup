@@ -25,12 +25,12 @@ import net.ibbaa.keepitup.util.HTTPUtil;
 public class HeaderValueFieldValidator extends BaseStringValidator implements FieldValidator {
 
     public HeaderValueFieldValidator(String field, Context context) {
-        super(field, context);
+        super(field, context, true);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(HeaderValueFieldValidator.class.getName(), "validate, value is " + value);
+        Log.d(HeaderValueFieldValidator.class.getName(), "validate");
         int maximum = getResources().getInteger(R.integer.http_header_value_max_length);
         if (value == null) {
             value = "";

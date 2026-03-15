@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.io.UnsupportedEncodingException;
@@ -94,6 +95,10 @@ public class HTTPUtil {
             langValue.append(",en;q=0.8");
         }
         builder.header(headerName, langValue.toString());
+    }
+
+    public static boolean isBasicAuthHeader(Header header) {
+        return header != null && header.getHeaderType() != null && header.getHeaderType().isBasicAuth();
     }
 
     public static boolean isAuthorizationHeader(Context context, String header) {

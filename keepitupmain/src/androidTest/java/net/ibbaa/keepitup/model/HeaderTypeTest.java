@@ -34,12 +34,10 @@ public class HeaderTypeTest {
     @Test
     public void testValueMethods() {
         HeaderType type = HeaderType.GENERIC;
-        assertFalse(type.isFixed());
         assertFalse(type.isSecret());
         assertTrue(type.isGeneric());
         assertFalse(type.isBasicAuth());
         type = HeaderType.BASICAUTH;
-        assertTrue(type.isFixed());
         assertTrue(type.isSecret());
         assertFalse(type.isGeneric());
         assertTrue(type.isBasicAuth());

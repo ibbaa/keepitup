@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,7 +77,7 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
     private void bindHeaderText(@NonNull HeaderViewHolder headerViewHolder, Header header) {
         Log.d(HeadersAdapter.class.getName(), "bindHeaderText");
         headerViewHolder.setHeaderNameText(header.getName());
-        headerViewHolder.setHeaderValueText(header.getValue());
+        headerViewHolder.setHeaderValueText(StringUtil.maskSecret(header.getValue(), header.isValueSecret()));
     }
 
     public Bundle saveStateToBundle() {

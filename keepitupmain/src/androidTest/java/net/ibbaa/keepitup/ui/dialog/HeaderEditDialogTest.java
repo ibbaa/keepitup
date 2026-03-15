@@ -21,7 +21,11 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -60,9 +64,11 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -76,18 +82,22 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         rotateScreen(activityScenario);
         dialog = getDialog();
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         rotateScreen(activityScenario);
@@ -95,9 +105,11 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -116,6 +128,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -125,14 +138,15 @@ public class HeaderEditDialogTest extends BaseUITest {
     @Test
     public void testEditNameAndValueScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header(5));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("name"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("value"));
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
-        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(5, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         rotateScreen(activityScenario);
@@ -141,7 +155,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("value")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
-        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(5, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         rotateScreen(activityScenario);
@@ -150,7 +165,48 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("value")));
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
-        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(5, header.getNetworkTaskId());
+        assertEquals("name", header.getName());
+        assertEquals("value", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNetworkTaskIdSet() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header(5));
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("name"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("value"));
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(5, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertEquals("name", header.getName());
+        assertEquals("value", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNetworkTaskIdSetScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+         openHeaderEditDialog(new Header(5));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("name"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("value"));
+        rotateScreen(activityScenario);
+        HeaderEditDialog dialog = getDialog();
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(5, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -166,6 +222,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -181,6 +238,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         rotateScreen(activityScenario);
@@ -190,6 +248,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         rotateScreen(activityScenario);
@@ -199,6 +258,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -216,6 +276,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name2", header.getName());
         assertEquals("Name2", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -233,6 +294,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
         rotateScreen(activityScenario);
@@ -242,6 +304,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
         dialog = getDialog();
@@ -250,8 +313,180 @@ public class HeaderEditDialogTest extends BaseUITest {
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderCancel() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertEquals("", header.getName());
+        assertEquals("", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderCancelScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        HeaderEditDialog dialog = getDialog();
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertEquals("", header.getName());
+        assertEquals("", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderOk() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc:123", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderOkScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        HeaderEditDialog dialog = getDialog();
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc:123", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderSwitchBack() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isNotChecked()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("xyz"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("abc"));
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertEquals("xyz", header.getName());
+        assertEquals("abc", header.getValue());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc:123", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }

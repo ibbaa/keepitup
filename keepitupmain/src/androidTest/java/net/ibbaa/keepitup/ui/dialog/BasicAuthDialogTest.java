@@ -210,11 +210,11 @@ public class BasicAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog();
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         activityScenario.close();
     }
@@ -224,15 +224,15 @@ public class BasicAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog();
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         activityScenario.close();
     }

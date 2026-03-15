@@ -361,8 +361,8 @@ public abstract class BaseUITest {
         return new NumberPickerColorMatcher(expectedId);
     }
 
-    public static Matcher<View> withPasswordVisibility(boolean visible) {
-        return new PasswordVisibilityMatcher(visible);
+    public static Matcher<View> withPasswordVisibility(boolean hidden) {
+        return new PasswordVisibilityMatcher(hidden);
     }
 
     public static Matcher<View> withFontSize(float expectedSize) {

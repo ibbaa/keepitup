@@ -37,7 +37,6 @@ import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.support.BasicAuthSupport;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
-import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
 import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidator;
 import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
@@ -268,7 +267,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
         Log.d(BasicAuthDialog.class.getName(), "getBasicAuthSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof ExportEncryptSupport) {
+            if (fragment instanceof BasicAuthSupport) {
                 return (BasicAuthSupport) fragment;
             }
         }

@@ -27,17 +27,19 @@ import org.hamcrest.TypeSafeMatcher;
 
 public class PasswordVisibilityMatcher extends TypeSafeMatcher<View> {
 
-    private final boolean visible;
+    private final boolean hidden;
 
-    public PasswordVisibilityMatcher(boolean visible) {
-        this.visible = visible;
+    public PasswordVisibilityMatcher(boolean hidden) {
+        this.hidden = hidden;
     }
 
     @Override
     protected boolean matchesSafely(View view) {
-        if (!(view instanceof EditText)) return false;
+        if (!(view instanceof EditText)) {
+            return false;
+        }
         TransformationMethod method = ((EditText) view).getTransformationMethod();
-        if (visible) {
+        if (!hidden) {
             return method instanceof HideReturnsTransformationMethod;
         } else {
             return method instanceof PasswordTransformationMethod;
@@ -46,6 +48,6 @@ public class PasswordVisibilityMatcher extends TypeSafeMatcher<View> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("Has password visibility: " + visible);
+        description.appendText("Has password visibility: " + hidden);
     }
 }

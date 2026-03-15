@@ -687,11 +687,11 @@ public class ExportEncryptDialogTest extends BaseUITest {
     public void testPasswordToggle() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         activityScenario.close();
     }
@@ -700,14 +700,14 @@ public class ExportEncryptDialogTest extends BaseUITest {
     public void testPasswordToggleScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openExportEncryptDialog();
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(togglePassword());
-        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(true)));
-        rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(togglePassword());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         activityScenario.close();
     }

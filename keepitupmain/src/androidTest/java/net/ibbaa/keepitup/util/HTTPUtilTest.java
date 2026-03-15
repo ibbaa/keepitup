@@ -25,6 +25,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -146,6 +148,18 @@ public class HTTPUtilTest {
         assertTrue(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_OK));
         assertTrue(HTTPUtil.isHTTPReturnCodeOk(206));
         assertFalse(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_GONE));
+    }
+
+    @Test
+    public void testIsBasicAuthHeader() {
+        assertFalse(HTTPUtil.isBasicAuthHeader(null));
+        Header header = new Header();
+        header.setHeaderType(null);
+        assertFalse(HTTPUtil.isBasicAuthHeader(header));
+        header.setHeaderType(HeaderType.GENERIC);
+        assertFalse(HTTPUtil.isBasicAuthHeader(header));
+        header.setHeaderType(HeaderType.BASICAUTH);
+        assertTrue(HTTPUtil.isBasicAuthHeader(header));
     }
 
     @Test

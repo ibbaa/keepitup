@@ -377,7 +377,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         for (int ii = 0; ii < visibleCount; ii++) {
             Header header = headers.get(ii);
             TextView nameText = getGlobalHeadersTextView(header.getName() + ": ", textSize, Typeface.BOLD, Integer.MAX_VALUE);
-            TextView valueText = getGlobalHeadersTextView(header.getValue(), textSize, Typeface.NORMAL, maxLines);
+            TextView valueText = getGlobalHeadersTextView(StringUtil.maskSecret(header.getValue(), header.isValueSecret()), textSize, Typeface.NORMAL, maxLines);
             GridLayout.LayoutParams nameTextParams = getGlobalHeaderTextViewLayoutParams(ii, 0);
             GridLayout.LayoutParams valueTextParams = getGlobalHeaderTextViewLayoutParams(ii, 1);
             gridLayout.addView(nameText, nameTextParams);

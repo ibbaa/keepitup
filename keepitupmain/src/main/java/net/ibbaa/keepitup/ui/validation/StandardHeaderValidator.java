@@ -52,7 +52,7 @@ public class StandardHeaderValidator implements HeaderValidator {
 
     @Override
     public ValidationResult validateValue(String value) {
-        Log.d(StandardHeaderValidator.class.getName(), "validateValue, value is " + value);
+        Log.d(StandardHeaderValidator.class.getName(), "validateValue");
         String fieldName = getResources().getString(R.string.header_value_field_name);
         ValidationResult result = new HeaderValueFieldValidator(fieldName, getContext()).validate(value);
         Log.d(StandardHeaderValidator.class.getName(), HeaderValueFieldValidator.class.getSimpleName() + " returned " + result);

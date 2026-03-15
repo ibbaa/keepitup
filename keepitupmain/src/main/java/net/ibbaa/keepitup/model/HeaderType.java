@@ -18,25 +18,19 @@ package net.ibbaa.keepitup.model;
 
 public enum HeaderType {
 
-    GENERIC(1, false, false),
-    BASICAUTH(2, true, true);
+    GENERIC(1, false),
+    BASICAUTH(2, true);
 
     private final int code;
-    private final boolean fixed;
     private final boolean secret;
 
-    HeaderType(int code, boolean fixed, boolean secret) {
+    HeaderType(int code, boolean secret) {
         this.code = code;
-        this.fixed = fixed;
         this.secret = secret;
     }
 
     public int getCode() {
         return code;
-    }
-
-    public boolean isFixed() {
-        return fixed;
     }
 
     public boolean isSecret() {
