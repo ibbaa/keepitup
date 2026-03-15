@@ -113,7 +113,7 @@ public class NetworkTaskHandler {
     }
 
     public void updateNetworkTaskName(NetworkTask task, String name) {
-        Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task + " and name " + name);
+        Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTaskName for task " + task + " and name " + name);
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             networkTaskDAO.updateNetworkTaskName(task.getId(), name);

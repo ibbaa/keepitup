@@ -41,7 +41,7 @@ public class PreferenceSetup {
     }
 
     public Map<String, ?> exportGlobalSettings() {
-        Log.d(PreferenceSetup.class.getName(), "exportGlobalSetting");
+        Log.d(PreferenceSetup.class.getName(), "exportGlobalSettings");
         Map<String, Object> globalSettings = new HashMap<>();
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
         globalSettings.put("preferenceNotificationType", preferenceManager.getPreferenceNotificationType() != null ? preferenceManager.getPreferenceNotificationType().getCode() : 1);
@@ -98,7 +98,7 @@ public class PreferenceSetup {
     }
 
     public void importGlobalSettings(Map<String, ?> globalSettings) {
-        Log.d(PreferenceSetup.class.getName(), "importGlobalSetting, globalSettings = " + globalSettings);
+        Log.d(PreferenceSetup.class.getName(), "importGlobalSettings, globalSettings = " + globalSettings);
         Object notificationInactiveNetwork = globalSettings.get("preferenceNotificationInactiveNetwork");
         if (isValidBoolean(notificationInactiveNetwork)) {
             preferenceManager.setPreferenceNotificationInactiveNetwork(Boolean.parseBoolean(notificationInactiveNetwork.toString()));

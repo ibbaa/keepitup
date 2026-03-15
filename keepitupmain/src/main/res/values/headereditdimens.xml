@@ -25,5 +25,8 @@
     <dimen name="linearlayout_dialog_header_edit_value_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_header_edit_value_margin_end">10dp</dimen>
     <dimen name="linearlayout_dialog_header_edit_value_margin_left">10dp</dimen>
+    <dimen name="linearlayout_dialog_header_edit_basic_auth_margin_left">10dp</dimen>
+    <dimen name="linearlayout_dialog_header_edit_basic_auth_margin_end">10dp</dimen>
+    <dimen name="linearlayout_dialog_header_edit_basic_auth_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_header_edit_ok_cancel_padding_top">10dp</dimen>
 </resources>

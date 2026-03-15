@@ -42,7 +42,7 @@ public class StartupService extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(StartupService.class.getName(), "onReceive.");
+        Log.d(StartupService.class.getName(), "onReceive");
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Log.d(StartupService.class.getName(), "Received system boot event.");
         } else {
@@ -51,6 +51,7 @@ public class StartupService extends BroadcastReceiver {
     }
 
     public void startup(Context context) {
+        Log.d(StartupService.class.getName(), "startup");
         Log.d(StartupService.class.getName(), "Starting application.");
         initializeDatabase(context);
         if (BuildConfig.DEBUG) {

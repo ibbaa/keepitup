@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -55,6 +56,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
     private View dialogView;
     private EditText nameEditText;
     private EditText valueEditText;
+    private CheckBox basicAuthCheckBox;
     private TextColorValidatingWatcher nameEditTextWatcher;
     private TextColorValidatingWatcher valueEditTextWatcher;
 
@@ -87,6 +89,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         Header header = headerBundle != null ? new Header(headerBundle) : new Header();
         prepareNameTextField(header);
         prepareValueTextField(header);
+        prepareBasicAuthCheckBox();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -125,6 +128,11 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         }
         valueEditTextWatcher = new TextColorValidatingWatcher(valueEditText, this::validateValue, getColor(R.color.textColor), getColor(R.color.textErrorColor));
         valueEditText.addTextChangedListener(valueEditTextWatcher);
+    }
+
+    private void prepareBasicAuthCheckBox() {
+        Log.d(HeaderEditDialog.class.getName(), "prepareBasicAuthCheckBox");
+        basicAuthCheckBox = dialogView.findViewById(R.id.checkbox_dialog_header_edit_basic_auth);
     }
 
     private void prepareOkCancelImageButtons() {
@@ -230,7 +238,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
     }
 
     private boolean validateValue(EditText editText) {
-        Log.d(HeaderEditDialog.class.getName(), "validateName");
+        Log.d(HeaderEditDialog.class.getName(), "validateValue");
         HeaderValidator validator = new StandardHeaderValidator(getContext());
         ValidationResult result = validator.validateValue(getValue());
         Log.d(HeaderEditDialog.class.getName(), "Validation result: " + result);
@@ -312,7 +320,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(HeaderEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        Log.d(HeaderEditDialog.class.getName(), "onContextOptionsDialogClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (nameEditText.getId() == sourceResourceId) {
             Log.e(HeaderEditDialog.class.getName(), "Source field is the name input field.");

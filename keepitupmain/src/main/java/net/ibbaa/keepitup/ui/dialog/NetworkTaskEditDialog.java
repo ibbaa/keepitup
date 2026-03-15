@@ -948,7 +948,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onCheckedChanged, new value is " + isChecked);
+        Log.d(NetworkTaskEditDialog.class.getName(), "onNotificationCheckedChanged, new value is " + isChecked);
         prepareNotificationOnOffText();
         prepareHighPrioVisibility();
     }
@@ -1206,7 +1206,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        Log.d(NetworkTaskEditDialog.class.getName(), "onContextOptionsDialogClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         EditText editText = null;
         if (addressEditText.getId() == sourceResourceId) {

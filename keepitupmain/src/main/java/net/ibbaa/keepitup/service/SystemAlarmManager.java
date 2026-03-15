@@ -46,7 +46,7 @@ public class SystemAlarmManager implements IAlarmManager {
 
     @Override
     public void setAlarm(long delay, PendingIntent pendingIntent) {
-        Log.d(SystemAlarmManager.class.getName(), "Setting alarm with a delay of " + delay);
+        Log.d(SystemAlarmManager.class.getName(), "setAlarm with a delay of " + delay);
         if (!canScheduleAlarms()) {
             Log.e(SystemAlarmManager.class.getName(), "Cannot set alarm because of missing permission.");
             return;
@@ -60,7 +60,7 @@ public class SystemAlarmManager implements IAlarmManager {
 
     @Override
     public void setRTCAlarm(long timestamp, PendingIntent pendingIntent) {
-        Log.d(SystemAlarmManager.class.getName(), "Setting alarm with a timestamp of " + timestamp);
+        Log.d(SystemAlarmManager.class.getName(), "setRTCAlarm with a timestamp of " + timestamp);
         if (!canScheduleAlarms()) {
             Log.e(SystemAlarmManager.class.getName(), "Cannot set alarm because of missing permission.");
             return;
@@ -74,7 +74,7 @@ public class SystemAlarmManager implements IAlarmManager {
 
     @Override
     public void cancelAlarm(PendingIntent pendingIntent) {
-        Log.d(SystemAlarmManager.class.getName(), "Canceling alarm");
+        Log.d(SystemAlarmManager.class.getName(), "cancelAlarm");
         alarmManager.cancel(pendingIntent);
     }
 }

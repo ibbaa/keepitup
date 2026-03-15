@@ -43,7 +43,7 @@ public class NullNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
-        Log.d(NullNetworkTaskWorker.class.getName(), "Executing NullNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
+        Log.d(NullNetworkTaskWorker.class.getName(), "execute, network task is " + networkTask + " and access type data is " + data);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(false);

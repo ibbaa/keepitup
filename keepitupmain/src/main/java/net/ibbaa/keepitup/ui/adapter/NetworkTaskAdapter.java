@@ -134,7 +134,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindInstances(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindStatus, networkTask is " + networkTask);
+        Log.d(NetworkTaskAdapter.class.getName(), "bindInstances, networkTask is " + networkTask);
         int instances = networkTask.getInstances();
         String formattedInstancesText = getResources().getString(R.string.list_item_network_task_instances, instances);
         Log.d(NetworkTaskAdapter.class.getName(), "binding instances text " + formattedInstancesText);

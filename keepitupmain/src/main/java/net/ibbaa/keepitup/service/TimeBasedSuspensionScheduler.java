@@ -217,7 +217,7 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public Interval findNextSuspendInterval(long now) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findStartupTime with timestamp " + now);
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findNextSuspendInterval with timestamp " + now);
         List<Interval> intervalList = getIntervals();
         for (Interval interval : intervalList) {
             long start = TimeUtil.getTimestampToday(interval.getStart(), now);

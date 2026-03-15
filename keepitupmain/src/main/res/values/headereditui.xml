@@ -20,6 +20,7 @@
     <string name="label_dialog_header_edit_title">HTTP Header</string>
     <string name="label_dialog_header_edit_name">Header name</string>
     <string name="label_dialog_header_edit_value">Header value</string>
+    <string name="label_dialog_header_edit_basic_auth">Basic auth header</string>
     <integer name="edittext_dialog_header_edit_name_max_lines">2</integer>
     <integer name="edittext_dialog_header_edit_value_max_lines">5</integer>
 </resources>

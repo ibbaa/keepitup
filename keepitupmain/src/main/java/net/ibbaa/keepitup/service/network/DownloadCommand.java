@@ -427,7 +427,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     private boolean deleteDownloadedFile(String fileName) {
-        Log.d(DownloadCommand.class.getName(), "deleteDownloadedFile. fileName is " + fileName);
+        Log.d(DownloadCommand.class.getName(), "deleteDownloadedFile, fileName is " + fileName);
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }
@@ -449,7 +449,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     private boolean downloadedFileExists(String fileName) {
-        Log.d(DownloadCommand.class.getName(), "downloadedFileExists. fileName is " + fileName);
+        Log.d(DownloadCommand.class.getName(), "downloadedFileExists, fileName is " + fileName);
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }

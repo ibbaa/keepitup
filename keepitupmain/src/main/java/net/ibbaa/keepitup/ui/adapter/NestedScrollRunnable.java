@@ -42,7 +42,7 @@ public class NestedScrollRunnable implements Runnable {
     }
 
     public void start(RecyclerView.ViewHolder viewHolder) {
-        Log.d(NestedScrollRunnable.class.getName(), "run, isRunning is " + isRunning);
+        Log.d(NestedScrollRunnable.class.getName(), "start, isRunning is " + isRunning);
         this.draggingViewHolder = viewHolder;
         if (!isRunning) {
             isRunning = true;
@@ -51,7 +51,7 @@ public class NestedScrollRunnable implements Runnable {
     }
 
     public void stop() {
-        Log.d(NestedScrollRunnable.class.getName(), "run, isRunning is " + isRunning);
+        Log.d(NestedScrollRunnable.class.getName(), "stop, isRunning is " + isRunning);
         isRunning = false;
         draggingViewHolder = null;
         handler.removeCallbacks(this);

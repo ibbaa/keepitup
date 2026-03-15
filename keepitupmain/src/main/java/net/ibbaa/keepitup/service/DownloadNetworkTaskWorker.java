@@ -68,7 +68,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "execute, network task is " + networkTask + " and access type data is " + data);
         List<Header> headers = getHeaders(networkTask, data);
         Resolve resolve = getResolve(networkTask);
         URL url = determineURL(networkTask.getAddress());
@@ -225,13 +225,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     private void prepareConnectError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectError");
         String downloadError = getResources().getString(R.string.text_download_error, downloadResult.url().toExternalForm());
         prepareError(downloadResult, timeout, folder, delete, logEntry, downloadError);
     }
 
     private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeError");
         String downloadError = getResources().getString(R.string.text_download_error, downloadResult.url().toExternalForm());
         String httpMessage;
         String actualReturnMessage = getActualReturnMessage(downloadResult);
@@ -257,7 +257,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     private void prepareUnknownError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareUnknownErrorMessage");
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareUnknownError");
         logEntry.setSuccess(false);
         Throwable exc = downloadResult.exception();
         String message;

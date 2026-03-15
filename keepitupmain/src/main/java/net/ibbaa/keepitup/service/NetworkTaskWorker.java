@@ -89,6 +89,7 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     @Override
     public void run() {
+        Log.d(NetworkTaskWorker.class.getName(), "run");
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
@@ -154,7 +155,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     private void writeLogEntry(NetworkTask task, LogEntry logEntry, boolean sendNotification) {
-        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendNotification is " + sendNotification);
+        Log.d(NetworkTaskWorker.class.getName(), "writeLogEntry, log entry is " + logEntry + ", sendNotification is " + sendNotification);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
         if (isNetworkTaskInvalid(databaseTask)) {

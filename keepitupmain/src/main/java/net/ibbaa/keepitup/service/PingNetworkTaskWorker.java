@@ -57,7 +57,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
+        Log.d(PingNetworkTaskWorker.class.getName(), "execute network task is " + networkTask + " and access type data is " + data);
         DNSExecutionResult dnsExecutionResult = executeDNSLookup(networkTask.getAddress(), getResources().getBoolean(R.bool.network_prefer_ipv4));
         if (dnsExecutionResult.getAddress() != null) {
             InetAddress address = dnsExecutionResult.getAddress();

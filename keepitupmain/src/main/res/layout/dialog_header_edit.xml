@@ -97,6 +97,28 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearlayout_dialog_header_basic_auth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/linearlayout_dialog_header_edit_basic_auth_margin_left"
+            android:layout_marginEnd="@dimen/linearlayout_dialog_header_edit_basic_auth_margin_end"
+            android:layout_marginTop="@dimen/linearlayout_dialog_header_edit_basic_auth_margin_top"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkbox_dialog_header_edit_basic_auth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:buttonTint="@drawable/checkbox_selector"
+                android:text="@string/label_dialog_header_edit_basic_auth"
+                android:textColor="@color/textColor"
+                android:checked="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearlayout_dialog_header_edit_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

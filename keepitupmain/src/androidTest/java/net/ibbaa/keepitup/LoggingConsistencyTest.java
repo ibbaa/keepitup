@@ -61,8 +61,8 @@ public class LoggingConsistencyTest {
         }
         if (!violations.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder("Logging violations found:\n");
-            for (String v : violations) {
-                stringBuilder.append(v).append("\n");
+            for (String violation : violations) {
+                stringBuilder.append(violation).append("\n");
             }
             fail(stringBuilder.toString());
         }
@@ -137,11 +137,11 @@ public class LoggingConsistencyTest {
 
     private boolean isControlFlowBrace(List<String> lines, int braceLineIndex) {
         StringBuilder sb = new StringBuilder();
-        for (int i = Math.max(0, braceLineIndex - 2); i <= braceLineIndex; i++) {
-            sb.append(lines.get(i)).append(" ");
+        for (int ii = Math.max(0, braceLineIndex - 2); ii <= braceLineIndex; ii++) {
+            sb.append(lines.get(ii)).append(" ");
         }
         String ctx = sb.toString();
-        if (ctx.matches("(?s).*\\belse\\s*\\{.*")) {
+        if (ctx.matches("(?s).*\\belse\\s*\\{.*") || ctx.matches("(?s).*\\bfinally\\s*\\{.*") || ctx.matches("(?s).*\\btry\\s*\\{.*")) {
             return true;
         }
         Matcher matcher = Pattern.compile("\\b([A-Za-z0-9_$]+)\\s*\\(").matcher(ctx);

@@ -716,7 +716,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(FileChooseDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        Log.d(FileChooseDialog.class.getName(), "onContextOptionsDialogClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (folderEditText.getId() == sourceResourceId) {
             Log.d(FileChooseDialog.class.getName(), "Source field is the folder input field.");
@@ -766,7 +766,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
     }
 
     private FileChooseSupport getFileChooseSupport() {
-        Log.d(FileChooseDialog.class.getName(), "getFolderChooseSupport");
+        Log.d(FileChooseDialog.class.getName(), "getFileChooseSupport");
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(FileChooseDialog.class.getName(), "getFolderChooseSupport, activity is null");

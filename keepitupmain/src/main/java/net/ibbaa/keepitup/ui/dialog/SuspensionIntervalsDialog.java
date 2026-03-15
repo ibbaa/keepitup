@@ -203,7 +203,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     }
 
     public void onDeleteSwiped(int index) {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalDeleteSwiped for index " + index);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onDeleteSwiped for index " + index);
         if (index < 0) {
             Log.e(SuspensionIntervalsDialog.class.getName(), "index " + index + " is invalid");
             return;
@@ -561,7 +561,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     }
 
     private void showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode mode, Time defaultTime, Time startTime) {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "showSuspensionIntervallSelectDialog with mode " + mode + " and defaultTime " + defaultTime);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "showSuspensionIntervalSelectDialog with mode " + mode + " and defaultTime " + defaultTime);
         SuspensionIntervalSelectDialog intervalSelectDialog = new SuspensionIntervalSelectDialog();
         Bundle bundle = BundleUtil.stringToBundle(intervalSelectDialog.getModeKey(), mode.name());
         bundle = BundleUtil.bundleToBundle(intervalSelectDialog.getDefaultTimeKey(), defaultTime.toBundle(), bundle);

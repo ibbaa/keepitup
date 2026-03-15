@@ -67,7 +67,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask start(NetworkTask networkTask) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Start network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "start network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
         networkTask.setFailureCount(0);
@@ -76,7 +76,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "schedule network task " + networkTask);
         if (shouldStartForegroundService()) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting foreground service...");
             startService(networkTask, Delay.IMMEDIATE);
@@ -155,7 +155,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask terminate(NetworkTask networkTask) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Terminating network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "terminate network task " + networkTask);
         if (hasPendingIntent(networkTask)) {
             PendingIntent pendingIntent = getPendingIntent(networkTask);
             alarmManager.cancelAlarm(pendingIntent);
@@ -166,6 +166,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public void startup() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startup");
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting all network tasks marked as running.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : networkTasks));
@@ -187,6 +188,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public void cancelAll() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "cancelAll");
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling all network tasks.");
         synchronized (TimeBasedSuspensionScheduler.LOCK) {
             List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
@@ -198,6 +200,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public void suspendAll() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "suspendAll");
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Suspending all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         for (NetworkTask currentTask : networkTasks) {

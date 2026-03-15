@@ -200,7 +200,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     }
 
     public void onDeleteSwiped(int index) {
-        Log.d(HeadersDialog.class.getName(), "onHeaderDeleteSwiped for index " + index);
+        Log.d(HeadersDialog.class.getName(), "onDeleteSwiped for index " + index);
         if (index < 0) {
             Log.e(HeadersDialog.class.getName(), "index " + index + " is invalid");
             return;
@@ -281,7 +281,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     @Override
     @SuppressWarnings("NotifyDataSetChanged")
     public void onHeaderEditDialogOkClicked(HeaderEditDialog headerEditDialog, int position) {
-        Log.d(HeadersDialog.class.getName(), "onGlobalHeaderEditDialogOkClicked with position " + position);
+        Log.d(HeadersDialog.class.getName(), "onHeaderEditDialogOkClicked with position " + position);
         if (position >= 0) {
             getAdapter().removeItem(position);
         }
@@ -295,7 +295,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     @Override
     public void onHeaderEditDialogCancelClicked(HeaderEditDialog headerEditDialog) {
-        Log.d(HeadersDialog.class.getName(), "onGlobalHeaderEditDialogCancelClicked");
+        Log.d(HeadersDialog.class.getName(), "onHeaderEditDialogCancelClicked");
         headerEditDialog.dismiss();
     }
 

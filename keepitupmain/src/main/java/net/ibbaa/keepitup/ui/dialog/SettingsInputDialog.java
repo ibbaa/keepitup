@@ -268,7 +268,7 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (valueEditText.getId() == sourceResourceId) {
             Log.e(SettingsInputDialog.class.getName(), "Source field is the correct value input field.");

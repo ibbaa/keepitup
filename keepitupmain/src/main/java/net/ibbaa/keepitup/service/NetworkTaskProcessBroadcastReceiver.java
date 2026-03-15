@@ -96,8 +96,9 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous, boolean addToPool, ExecutorService executorService) {
-        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Doing work for " + task);
-        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "doWork, task is " + task);
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "synchronous is " + synchronous);
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "addToPool is " + addToPool);
         if (isNetworkTaskInvalid(context, task)) {
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Network task has been marked as not running. Skipping execution");
             return;

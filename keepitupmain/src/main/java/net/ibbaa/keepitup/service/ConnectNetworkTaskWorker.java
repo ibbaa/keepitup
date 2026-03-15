@@ -54,7 +54,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
-        Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing ConnectNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
+        Log.d(ConnectNetworkTaskWorker.class.getName(), "execute, network task is " + networkTask + " and access type data is " + data);
         DNSExecutionResult dnsExecutionResult = executeDNSLookup(networkTask.getAddress(), getResources().getBoolean(R.bool.network_prefer_ipv4));
         if (dnsExecutionResult.getAddress() != null) {
             InetAddress address = dnsExecutionResult.getAddress();

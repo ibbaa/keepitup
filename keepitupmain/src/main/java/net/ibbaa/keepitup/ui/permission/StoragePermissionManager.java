@@ -45,7 +45,7 @@ public class StoragePermissionManager implements IStoragePermissionManager {
     }
 
     public boolean hasPersistentPermission(Context context, String folder) {
-        Log.d(StoragePermissionManager.class.getName(), "hasPermission for folder " + folder);
+        Log.d(StoragePermissionManager.class.getName(), "hasPersistentPermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return false;
         }
@@ -59,13 +59,13 @@ public class StoragePermissionManager implements IStoragePermissionManager {
     }
 
     public boolean hasAnyPersistentPermission(Context context) {
-        Log.d(StoragePermissionManager.class.getName(), "hasAnyPermission");
+        Log.d(StoragePermissionManager.class.getName(), "hasAnyPersistentPermission");
         List<UriPermission> permissions = getPermissions(context);
         return !permissions.isEmpty();
     }
 
     public void requestPersistentFolderPermission(PermissionLauncher launcher, String folder) {
-        Log.d(StoragePermissionManager.class.getName(), "requestPermission for folder " + folder);
+        Log.d(StoragePermissionManager.class.getName(), "requestPersistentFolderPermission for folder " + folder);
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -98,7 +98,7 @@ public class StoragePermissionManager implements IStoragePermissionManager {
     }
 
     public void revokePersistentPermission(FragmentActivity activity, String folder) {
-        Log.d(StoragePermissionManager.class.getName(), "revokePermission for folder " + folder);
+        Log.d(StoragePermissionManager.class.getName(), "revokePersistentPermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return;
         }
@@ -116,7 +116,7 @@ public class StoragePermissionManager implements IStoragePermissionManager {
     }
 
     public void revokeAllPersistentPermissions(FragmentActivity activity) {
-        Log.d(StoragePermissionManager.class.getName(), "revokeAllPermissions");
+        Log.d(StoragePermissionManager.class.getName(), "revokeAllPersistentPermissions");
         List<UriPermission> permissions = getPermissions(activity);
         for (UriPermission permission : permissions) {
             String currentPermission = permission.getUri().toString();
@@ -125,7 +125,7 @@ public class StoragePermissionManager implements IStoragePermissionManager {
     }
 
     public void revokeOrphanPersistentPermissions(FragmentActivity activity, Set<String> usedFolders) {
-        Log.d(StoragePermissionManager.class.getName(), "revokeOrphanPermissions");
+        Log.d(StoragePermissionManager.class.getName(), "revokeOrphanPersistentPermissions");
         List<UriPermission> permissions = getPermissions(activity);
         for (UriPermission permission : permissions) {
             String currentPermission = permission.getUri().toString();
