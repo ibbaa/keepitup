@@ -28,6 +28,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 
@@ -693,10 +694,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
@@ -710,8 +714,10 @@ public class HeadersDialogTest extends BaseUITest {
         header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
@@ -745,10 +751,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
@@ -762,8 +771,10 @@ public class HeadersDialogTest extends BaseUITest {
         header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
@@ -797,10 +808,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
@@ -815,8 +829,10 @@ public class HeadersDialogTest extends BaseUITest {
         header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -851,10 +867,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
@@ -869,8 +888,10 @@ public class HeadersDialogTest extends BaseUITest {
         header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -942,6 +963,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
@@ -972,6 +994,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
@@ -1058,12 +1081,16 @@ public class HeadersDialogTest extends BaseUITest {
         Header header4 = getDialog().getAdapter().getItem(3);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         assertEquals("Name4", header4.getName());
         assertEquals("Value4", header4.getValue());
+        assertEquals(HeaderType.GENERIC, header4.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1100,12 +1127,80 @@ public class HeadersDialogTest extends BaseUITest {
         Header header4 = getDialog().getAdapter().getItem(3);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         assertEquals("Name4", header4.getName());
         assertEquals("Value4", header4.getValue());
+        assertEquals(HeaderType.GENERIC, header4.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHeaderAddBasicAuth() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("abc:123", header1.getValue());
+        assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertEquals("User-Agent", header2.getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHeaderAddBasicAuthScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("abc:123", header1.getValue());
+        assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertEquals("User-Agent", header2.getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1139,10 +1234,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1178,10 +1276,132 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersAddAndDeleteWithBasicAuth() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Name2")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Value2")));
+        assertEquals(3, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        Header header3 = getDialog().getAdapter().getItem(2);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("abc:123", header1.getValue());
+        assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertEquals("Name1", header2.getName());
+        assertEquals("Value1", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertEquals("Name2", header3.getName());
+        assertEquals("Value2", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersAddAndDeleteWithBasicAuthScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Name2")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Value2")));
+        assertEquals(3, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        Header header3 = getDialog().getAdapter().getItem(2);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("abc:123", header1.getValue());
+        assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertEquals("Name1", header2.getName());
+        assertEquals("Value1", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertEquals("Name2", header3.getName());
+        assertEquals("Value2", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersAddBasicAuthAlreadyExists() {
+        Header header = getHeader(1);
+        header.setName("Authorization");
+        header.setValue("ABC");
+        getHeaderDAO().insertHeader(header);
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value already exists"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("ABC")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        header = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header.getName());
+        assertEquals("ABC", header.getValue());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1215,6 +1435,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("success", header.getName());
         assertEquals("success", header.getValue());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1248,6 +1469,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("success", header.getName());
         assertEquals("success", header.getValue());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1291,12 +1513,16 @@ public class HeadersDialogTest extends BaseUITest {
         Header header4 = getDialog().getAdapter().getItem(3);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         assertEquals("Success", header4.getName());
         assertEquals("Success", header4.getValue());
+        assertEquals(HeaderType.GENERIC, header4.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1362,6 +1588,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("Name", header.getName());
         assertEquals("Value", header.getValue());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1387,6 +1614,61 @@ public class HeadersDialogTest extends BaseUITest {
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("Name", header.getName());
         assertEquals("Value", header.getValue());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDefaultHeaderOpenBasicAuth() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc:123", header.getValue());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDefaultHeaderOpenBasicAuthScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header = getDialog().getAdapter().getItem(0);
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc:123", header.getValue());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1470,10 +1752,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1507,10 +1792,13 @@ public class HeadersDialogTest extends BaseUITest {
         Header header3 = getDialog().getAdapter().getItem(2);
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
+        assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1547,8 +1835,10 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1587,8 +1877,10 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1623,8 +1915,10 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1651,6 +1945,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1679,6 +1974,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1706,6 +2002,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1735,6 +2032,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1765,8 +2063,10 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1799,8 +2099,46 @@ public class HeadersDialogTest extends BaseUITest {
         Header header2 = getDialog().getAdapter().getItem(1);
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
+        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenAndDeleteWithBasicAuth() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Value1")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("abc:123", header1.getValue());
+        assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertEquals("Name1", header2.getName());
+        assertEquals("Value1", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
