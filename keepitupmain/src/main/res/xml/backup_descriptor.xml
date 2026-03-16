@@ -15,5 +15,5 @@
   -->
 
 <full-backup-content>
-
+    <exclude domain="sharedpref" path="master_key_prefs.xml"/>
 </full-backup-content>

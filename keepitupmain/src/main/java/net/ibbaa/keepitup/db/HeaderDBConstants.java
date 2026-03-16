@@ -29,6 +29,7 @@ public class HeaderDBConstants {
     private final String headerTypeColumnName;
     private final String nameColumnName;
     private final String valueColumnName;
+    private final String valueIVColumnName;
 
     public HeaderDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
@@ -38,6 +39,7 @@ public class HeaderDBConstants {
         headerTypeColumnName = context.getResources().getString(R.string.header_headertype_column_name);
         nameColumnName = context.getResources().getString(R.string.header_name_column_name);
         valueColumnName = context.getResources().getString(R.string.header_value_column_name);
+        valueIVColumnName = context.getResources().getString(R.string.header_value_iv_column_name);
     }
 
     public String getTableName() {
@@ -64,6 +66,10 @@ public class HeaderDBConstants {
         return valueColumnName;
     }
 
+    public String getValueIVColumnName() {
+        return valueIVColumnName;
+    }
+
     public String getAddHeaderTypeColumnStatement() {
         return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getHeaderTypeColumnName() + " INTEGER;";
     }
@@ -72,16 +78,25 @@ public class HeaderDBConstants {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getHeaderTypeColumnName() + ";";
     }
 
+    public String getAddValueIVColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getValueIVColumnName() + " TEXT;";
+    }
+
+    public String getDropValueIVColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getValueIVColumnName() + ";";
+    }
+
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER," +
                 getHeaderTypeColumnName() + " INTEGER," +
                 getNameColumnName() + " TEXT, " +
-                getValueColumnName() + " TEXT);";
+                getValueColumnName() + " TEXT, " +
+                getValueIVColumnName() + " TEXT);";
     }
 
-    public String getCreateTableStatementWithoutHeaderType() {
+    public String getCreateTableStatementWithoutHeaderTypeAndValueIV() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER," +

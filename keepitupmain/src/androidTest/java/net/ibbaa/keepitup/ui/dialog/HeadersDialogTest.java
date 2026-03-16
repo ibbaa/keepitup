@@ -28,7 +28,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 
@@ -1154,10 +1153,13 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(2, getDialog().getAdapter().getAllItems().size());
@@ -1168,6 +1170,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1187,10 +1190,13 @@ public class HeadersDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(2, getDialog().getAdapter().getAllItems().size());
@@ -1201,6 +1207,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1304,10 +1311,13 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Name1")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Value1")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Name2")));
@@ -1348,10 +1358,13 @@ public class HeadersDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Name1")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Value1")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Name2")));
@@ -1378,6 +1391,7 @@ public class HeadersDialogTest extends BaseUITest {
         Header header = getHeader(1);
         header.setName("Authorization");
         header.setValue("ABC");
+        header.setHeaderType(HeaderType.GENERICAUTH);
         getHeaderDAO().insertHeader(header);
         resetGlobalHeaderHandler();
         activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
@@ -1396,12 +1410,12 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("ABC")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         header = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header.getName());
         assertEquals("ABC", header.getValue());
-        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1632,10 +1646,13 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header.getName());
@@ -1660,10 +1677,13 @@ public class HeadersDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header.getName());
@@ -1940,12 +1960,12 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Value")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
-        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1969,12 +1989,12 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Value")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
-        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1997,12 +2017,12 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Value")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
-        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2027,12 +2047,12 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Value")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         Header header1 = getDialog().getAdapter().getItem(0);
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
-        assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2124,10 +2144,13 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText(startsWith("***"))));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Name1")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Value1")));
         assertEquals(2, getDialog().getAdapter().getAllItems().size());

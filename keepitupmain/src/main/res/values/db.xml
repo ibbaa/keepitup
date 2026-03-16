@@ -75,4 +75,5 @@
     <string name="header_headertype_column_name">HEADERTYPE</string>
     <string name="header_name_column_name">NAME</string>
     <string name="header_value_column_name">VALUE</string>
+    <string name="header_value_iv_column_name">VALUEIV</string>
 </resources>

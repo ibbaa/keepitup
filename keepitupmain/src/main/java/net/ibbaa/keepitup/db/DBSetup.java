@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -228,6 +229,7 @@ public class DBSetup {
         values.put(dbConstants.getNetworkTaskIdColumnName(), (Long) null);
         values.put(dbConstants.getNameColumnName(), getContext().getResources().getString(R.string.http_header_user_agent));
         values.put(dbConstants.getValueColumnName(), preferenceManager.getPreferenceHTTPUserAgent());
+        values.put(dbConstants.getHeaderTypeColumnName(), HeaderType.GENERIC.getCode());
         executeDBOperationInTransaction(db, database -> database.insert(dbConstants.getTableName(), null, values));
         preferenceManager.removePreferenceHTTPUserAgent();
     }
@@ -235,6 +237,11 @@ public class DBSetup {
     public void addHeaderTypeColumnToHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "addHeaderTypeColumnToHeaderTable, adding column " + headerDBConstants.getHeaderTypeColumnName() + " to table " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getAddHeaderTypeColumnStatement());
+    }
+
+    public void addValueIVColumnToHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addValueIVColumnToHeaderTable, adding column " + headerDBConstants.getValueIVColumnName() + " to table " + headerDBConstants.getTableName());
+        db.execSQL(headerDBConstants.getAddValueIVColumnStatement());
     }
 
     private void executeDBOperationInTransaction(SQLiteDatabase db, DBSetupOperation operation) {
@@ -408,6 +415,11 @@ public class DBSetup {
         db.execSQL(headerDBConstants.getDropHeaderTypeColumnStatement());
     }
 
+    public void dropValueIVColumnFromHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropValueIVColumnFromHeaderTable, dropping column " + headerDBConstants.getValueIVColumnName() + " from table " + headerDBConstants.getTableName());
+        db.execSQL(headerDBConstants.getDropValueIVColumnStatement());
+    }
+
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
         dropNetworkTaskTable(db);
@@ -542,6 +554,10 @@ public class DBSetup {
         addHeaderTypeColumnToHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addValueIVColumnToHeaderTable() {
+        addValueIVColumnToHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropTables() {
         dropTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -651,6 +667,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropHeaderTypeColumnFromHeaderTable() {
         dropHeaderTypeColumnFromHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropValueIVColumnFromHeaderTable() {
+        dropValueIVColumnFromHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void recreateNetworkTaskTable() {

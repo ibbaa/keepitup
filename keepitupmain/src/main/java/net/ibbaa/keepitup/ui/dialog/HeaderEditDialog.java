@@ -220,7 +220,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         List<ValidationResult> validationResult = validateInput(position);
         if (!hasErrors(validationResult)) {
             Log.d(HeaderEditDialog.class.getName(), "Validation was successful");
-            if (HTTPUtil.isAuthorizationHeader(getContext(), getName()) && !HTTPUtil.isBasicAuthHeader(getHeader())) {
+            if (getHeader().isValueSecret()) {
                 Log.d(HeaderEditDialog.class.getName(), "Header is an authorization header");
                 showConfirmDialog(position);
                 return;
@@ -295,8 +295,19 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         Header header = headerBundle != null ? new Header(headerBundle) : new Header();
         header.setName(getName());
         header.setValue(getValue());
-        header.setHeaderType(basicAuthCheckBox.isChecked() ? HeaderType.BASICAUTH : HeaderType.GENERIC);
+        HeaderType headerType = getHeaderType();
+        header.setHeaderType(headerType);
         return header;
+    }
+
+    private HeaderType getHeaderType() {
+        HeaderType headerType = HeaderType.GENERIC;
+        if (basicAuthCheckBox.isChecked()) {
+            headerType = HeaderType.BASICAUTH;
+        } else if (HTTPUtil.isAuthorizationHeader(getContext(), getName())) {
+            headerType = HeaderType.GENERICAUTH;
+        }
+        return headerType;
     }
 
     private boolean hasErrors(List<ValidationResult> validationResult) {

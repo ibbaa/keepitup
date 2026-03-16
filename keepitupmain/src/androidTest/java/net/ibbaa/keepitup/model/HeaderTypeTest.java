@@ -37,16 +37,24 @@ public class HeaderTypeTest {
         assertFalse(type.isSecret());
         assertTrue(type.isGeneric());
         assertFalse(type.isBasicAuth());
+        assertFalse(type.isGenericAuth());
         type = HeaderType.BASICAUTH;
         assertTrue(type.isSecret());
         assertFalse(type.isGeneric());
         assertTrue(type.isBasicAuth());
+        assertFalse(type.isGenericAuth());
+        type = HeaderType.GENERICAUTH;
+        assertTrue(type.isSecret());
+        assertFalse(type.isGeneric());
+        assertFalse(type.isBasicAuth());
+        assertTrue(type.isGenericAuth());
     }
 
     @Test
     public void testForCode() {
         assertEquals(HeaderType.GENERIC, HeaderType.forCode(HeaderType.GENERIC.getCode()));
         assertEquals(HeaderType.BASICAUTH, HeaderType.forCode(HeaderType.BASICAUTH.getCode()));
-        assertNull(HeaderType.forCode(HeaderType.BASICAUTH.getCode() + 1));
+        assertEquals(HeaderType.GENERICAUTH, HeaderType.forCode(HeaderType.GENERICAUTH.getCode()));
+        assertNull(HeaderType.forCode(HeaderType.GENERICAUTH.getCode() + 1));
     }
 }

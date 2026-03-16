@@ -377,8 +377,9 @@ public class DBSetupTest {
     public void testAddHeaderTypeColumnToHeaderTable() {
         setup.dropHeaderTable();
         HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderType());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
         setup.addHeaderTypeColumnToHeaderTable();
+        setup.addValueIVColumnToHeaderTable();
         Header header = new Header();
         headerDAO.insertHeader(header);
     }

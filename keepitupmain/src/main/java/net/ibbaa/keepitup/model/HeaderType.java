@@ -19,7 +19,8 @@ package net.ibbaa.keepitup.model;
 public enum HeaderType {
 
     GENERIC(1, false),
-    BASICAUTH(2, true);
+    BASICAUTH(2, true),
+    GENERICAUTH(3, true);
 
     private final int code;
     private final boolean secret;
@@ -43,6 +44,10 @@ public enum HeaderType {
 
     public boolean isBasicAuth() {
         return BASICAUTH.equals(this);
+    }
+
+    public boolean isGenericAuth() {
+        return GENERICAUTH.equals(this);
     }
 
     public static HeaderType forCode(int code) {

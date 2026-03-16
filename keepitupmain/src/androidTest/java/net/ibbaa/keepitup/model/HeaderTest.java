@@ -82,6 +82,8 @@ public class HeaderTest {
         assertFalse(header.isValueSecret());
         header.setHeaderType(HeaderType.BASICAUTH);
         assertTrue(header.isValueSecret());
+        header.setHeaderType(HeaderType.GENERICAUTH);
+        assertTrue(header.isValueSecret());
     }
 
     @Test
@@ -141,13 +143,13 @@ public class HeaderTest {
         Map<String, Object> map = new HashMap<>();
         map.put("id", "1");
         map.put("networktaskid", "2");
-        map.put("headerType", "2");
+        map.put("headerType", "3");
         map.put("name", "name");
         map.put("value", "value");
         Header header = new Header(map);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
-        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
     }

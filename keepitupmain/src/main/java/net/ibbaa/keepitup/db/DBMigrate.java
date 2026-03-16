@@ -204,6 +204,11 @@ public class DBMigrate {
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "addHeaderTypeColumnToHeaderTable failed ", exc);
         }
+        try {
+            setup.addValueIVColumnToHeaderTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addValueIVColumnToHeaderTable failed ", exc);
+        }
     }
 
     private void version7DowngradeTo6(SQLiteDatabase db) {
@@ -212,6 +217,11 @@ public class DBMigrate {
             setup.dropHeaderTypeColumnFromHeaderTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "dropHeaderTypeColumnFromHeaderTable failed ", exc);
+        }
+        try {
+            setup.dropValueIVColumnFromHeaderTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropValueIVColumnFromHeaderTable failed ", exc);
         }
     }
 

@@ -194,7 +194,7 @@ public class HeaderEditDialogTest extends BaseUITest {
     @Test
     public void testNetworkTaskIdSetScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-         openHeaderEditDialog(new Header(5));
+        openHeaderEditDialog(new Header(5));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
@@ -492,6 +492,47 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testAuthorizationHeaderOk() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("abc"));
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderOkScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(new Header());
+        onView(withId(R.id.textview_dialog_header_edit_title)).check(matches(withText("HTTP Header")));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("abc"));
+        rotateScreen(activityScenario);
+        HeaderEditDialog dialog = getDialog();
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testEditNameAndValueErrorColor() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1));
@@ -629,7 +670,47 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAuthorizationHeaderAddOk() {
+    public void testBasicAuthHeaderSecurityConfirmOk() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderSecurityConfirmOkScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderSecurityConfirmOk() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openHeaderEditDialog(getHeader(1));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
@@ -646,7 +727,7 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAuthorizationHeaderAddOkScreenRotation() {
+    public void testAuthorizationHeaderSecurityConfirmOkScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openHeaderEditDialog(getHeader(1));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
@@ -665,7 +746,7 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAuthorizationHeaderAddCancel() {
+    public void testAuthorizationHeaderSecurityConfirmCancel() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openHeaderEditDialog(getHeader(1));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
@@ -682,7 +763,7 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAuthorizationHeaderAddCancelScreenRotation() {
+    public void testAuthorizationHeaderSecurityConfirmCancelScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openHeaderEditDialog(getHeader(1));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));

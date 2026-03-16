@@ -53,6 +53,7 @@ import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
@@ -640,6 +641,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
     }
 
     @Test
@@ -671,6 +673,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
     }
 
     @Test
@@ -702,8 +705,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(2, headers.size());
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
     }
 
     @Test
@@ -737,8 +742,84 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(2, headers.size());
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+    }
+
+    @Test
+    public void testHeadersChangeBasicAuthOk() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("Authorization", headers.get(0).getName());
+        assertEquals("abc:123", headers.get(0).getValue());
+        assertEquals(HeaderType.BASICAUTH, headers.get(0).getHeaderType());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+    }
+
+    @Test
+    public void testHeadersChangeAuthorizationOk() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("Authorization", headers.get(0).getName());
+        assertEquals("authvalue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERICAUTH, headers.get(0).getHeaderType());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
     }
 
     @Test
@@ -772,6 +853,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
     }
 
     @Test
@@ -807,6 +889,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
     }
 
     @Test
@@ -925,8 +1008,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(2, headers.size());
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
         assertEquals("BName", headers.get(1).getName());
         assertEquals("BValue", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
     }
 
     @Test
@@ -961,8 +1046,43 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(2, headers.size());
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
         assertEquals("BName", headers.get(1).getName());
         assertEquals("BValue", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+    }
+
+    @Test
+    public void testHeadersAddedAuthorization() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("Authorization", headers.get(0).getName());
+        assertEquals("authvalue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERICAUTH, headers.get(0).getHeaderType());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
     }
 
     @Test

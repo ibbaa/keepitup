@@ -524,6 +524,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         activityScenario.close();
     }
 
@@ -542,8 +543,10 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         activityScenario.close();
     }
 
@@ -576,8 +579,10 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         activityScenario.close();
     }
 
@@ -605,14 +610,19 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(5, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         activityScenario.close();
     }
 
@@ -642,16 +652,22 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(6, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
         activityScenario.close();
     }
 
@@ -685,24 +701,34 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(10, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
         assertEquals("Name7", handler.getGlobalHeaders().get(6).getName());
         assertEquals("Value7", handler.getGlobalHeaders().get(6).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(6).getHeaderType());
         assertEquals("Name8", handler.getGlobalHeaders().get(7).getName());
         assertEquals("Value8", handler.getGlobalHeaders().get(7).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(7).getHeaderType());
         assertEquals("Name9", handler.getGlobalHeaders().get(8).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(8).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(8).getHeaderType());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(9).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(9).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(9).getHeaderType());
         activityScenario.close();
     }
 
@@ -894,6 +920,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         activityScenario.close();
     }
 
@@ -918,6 +945,111 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderAddBasicAuthOk() {
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
+        onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        assertEquals(1, handler.getGlobalHeaders().size());
+        assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("abc:123", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.BASICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderAddBasicAuthOkScreenRotation() {
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
+        onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        assertEquals(1, handler.getGlobalHeaders().size());
+        assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("abc:123", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.BASICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderAddAuthorizationOk() {
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
+        onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        assertEquals(1, handler.getGlobalHeaders().size());
+        assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderAddAuthorizationOkScreenRotation() {
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
+        onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        assertEquals(1, handler.getGlobalHeaders().size());
+        assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
         activityScenario.close();
     }
 
@@ -947,10 +1079,13 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         activityScenario.close();
     }
 
@@ -982,10 +1117,13 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         activityScenario.close();
     }
 
@@ -1017,12 +1155,16 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(4, handler.getGlobalHeaders().size());
         assertEquals("AName", handler.getGlobalHeaders().get(0).getName());
         assertEquals("AValue", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name1", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         activityScenario.close();
     }
 
@@ -1056,12 +1198,16 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(4, handler.getGlobalHeaders().size());
         assertEquals("AName", handler.getGlobalHeaders().get(0).getName());
         assertEquals("AValue", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name1", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         activityScenario.close();
     }
 
@@ -1105,16 +1251,22 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(6, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
         activityScenario.close();
     }
 
@@ -1160,16 +1312,22 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(6, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
         activityScenario.close();
     }
 
@@ -1280,8 +1438,10 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         activityScenario.close();
     }
 
@@ -1309,8 +1469,10 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(2, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         activityScenario.close();
     }
 
@@ -1367,22 +1529,31 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(9, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
         assertEquals("Name7", handler.getGlobalHeaders().get(6).getName());
         assertEquals("Value7", handler.getGlobalHeaders().get(6).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(6).getHeaderType());
         assertEquals("Name8", handler.getGlobalHeaders().get(7).getName());
         assertEquals("Value8", handler.getGlobalHeaders().get(7).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(7).getHeaderType());
         assertEquals("Name9", handler.getGlobalHeaders().get(8).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(8).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(8).getHeaderType());
         activityScenario.close();
     }
 
@@ -1523,10 +1694,13 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         activityScenario.close();
     }
 
@@ -1558,10 +1732,13 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         activityScenario.close();
     }
 
@@ -1621,14 +1798,19 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(5, handler.getGlobalHeaders().size());
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
         assertEquals("Name4", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
         assertEquals("Name8", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value8", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
         assertEquals("Name9", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
         activityScenario.close();
     }
 
@@ -1650,6 +1832,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
         activityScenario.close();
     }
 

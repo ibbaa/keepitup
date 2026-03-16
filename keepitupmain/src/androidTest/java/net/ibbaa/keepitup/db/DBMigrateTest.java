@@ -274,7 +274,7 @@ public class DBMigrateTest {
     public void testUpgradeFrom6To7() {
         setup.dropHeaderTable();
         HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderType());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
         migrate.doUpgrade(TestRegistry.getContext(), 6, 7);
         headerDAO.insertHeader(new Header());
         assertEquals(1, headerDAO.readAllHeaders().size());
@@ -344,7 +344,7 @@ public class DBMigrateTest {
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderType());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 7);
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
