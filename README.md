@@ -30,7 +30,9 @@ It checks network services periodically by sending a ping, connecting to a speci
 
 ## Installation
 
-The app requires Android 5.0 (API level 21) and should run with all subsequent versions, however it's not tested with all versions and devices. 
+Starting with version 1.11.0, the app requires Android 6.0 (API level 23). Version 1.10.0 and below support Android 5.0 (API level 21).
+
+The app should run with all subsequent versions, however it's not tested with all versions and devices. 
 
 The preferred way is the installation from F-Droid:
 

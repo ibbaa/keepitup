@@ -30,7 +30,6 @@
     <color name="checkboxColorDisabled">#EEEEEE</color>
     <color name="pickerDividerColor">#BBBBBB</color>
     <color name="colorAccent">#e0dde3</color>
-    <color name="statusBarColor">#666666</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="textErrorColor">#DD0000</color>
     <color name="textOkColor">#00DD00</color>

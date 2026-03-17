@@ -34,20 +34,16 @@ public class SystemPowerManager implements IPowerManager {
 
     @Override
     public boolean supportsBatteryOptimization() {
-        boolean supportsBatteryOptimization = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM;
+        boolean supportsBatteryOptimization = Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM;
         Log.d(SystemPowerManager.class.getName(), "supportsBatteryOptimization: " + supportsBatteryOptimization);
         return supportsBatteryOptimization;
     }
 
     @Override
     public boolean isBatteryOptimized() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            boolean isBatteryOptimized = !powerManager.isIgnoringBatteryOptimizations(packageName);
-            Log.d(SystemPowerManager.class.getName(), "isBatteryOptimized: " + isBatteryOptimized);
-            return isBatteryOptimized;
-        }
-        Log.d(SystemPowerManager.class.getName(), "isBatteryOptimized: false");
-        return false;
+        boolean isBatteryOptimized = !powerManager.isIgnoringBatteryOptimizations(packageName);
+        Log.d(SystemPowerManager.class.getName(), "isBatteryOptimized: " + isBatteryOptimized);
+        return isBatteryOptimized;
     }
 
     @Override

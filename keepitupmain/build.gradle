@@ -19,7 +19,7 @@ android {
     compileSdkVersion 36
     defaultConfig {
         applicationId "net.ibbaa.keepitup"
-        minSdkVersion 21
+        minSdkVersion 23
         //noinspection EditedTargetSdkVersion,OldTargetApi,ExpiredTargetSdkVersion
         targetSdkVersion 36
         versionCode 19
@@ -78,10 +78,8 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.preference:preference:1.2.1'
-    //noinspection GradleDependency
-    implementation 'androidx.core:core-ktx:1.17.0'
-    //noinspection GradleDependency
-    implementation 'androidx.core:core:1.17.0'
+    implementation 'androidx.core:core-ktx:1.18.0'
+    implementation 'androidx.core:core:1.18.0'
     implementation "androidx.documentfile:documentfile:1.1.0"
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'com.google.guava:guava:33.5.0-android'

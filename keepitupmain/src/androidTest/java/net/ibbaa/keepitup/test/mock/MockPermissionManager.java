@@ -72,11 +72,6 @@ public class MockPermissionManager implements IPermissionManager {
     }
 
     @Override
-    public boolean shouldAskForRuntimePermission() {
-        return shouldAskForRuntimePermission;
-    }
-
-    @Override
     public boolean hasPostNotificationsPermission(Context context) {
         return hasPostNotificationsPermission;
     }

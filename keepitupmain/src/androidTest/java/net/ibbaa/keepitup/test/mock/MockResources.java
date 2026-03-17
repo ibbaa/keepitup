@@ -189,6 +189,7 @@ public class MockResources extends Resources {
         return targetResources.getFraction(id, base, pbase);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Drawable getDrawable(int id) throws NotFoundException {
         return targetResources.getDrawable(id);
@@ -199,6 +200,7 @@ public class MockResources extends Resources {
         return targetResources.getDrawable(id, theme);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Drawable getDrawableForDensity(int id, int density) throws NotFoundException {
         return targetResources.getDrawableForDensity(id, density);
@@ -214,6 +216,7 @@ public class MockResources extends Resources {
         return targetResources.getMovie(id);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getColor(int id) throws NotFoundException {
         return targetResources.getColor(id);
@@ -225,6 +228,7 @@ public class MockResources extends Resources {
     }
 
     @NonNull
+    @SuppressWarnings("deprecation")
     @Override
     public ColorStateList getColorStateList(int id) throws NotFoundException {
         return targetResources.getColorStateList(id);

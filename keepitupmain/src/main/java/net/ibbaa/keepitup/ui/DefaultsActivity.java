@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui;
 
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -186,7 +185,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(this);
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
-            newRadioButton.setTextColor(getResources().getColor(R.color.textColor));
+            newRadioButton.setTextColor(getColor(R.color.textColor));
             newRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             newRadioButton.setId(View.generateViewId());
             if (type == null && ii == 0) {
@@ -467,14 +466,8 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
                 TextPaint tp = textView.getPaint();
                 int availWidth = textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
                 if (availWidth > 0 && text != null && text.length() > 0) {
-                    int realLines;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        StaticLayout staticLayout = StaticLayout.Builder.obtain(text, 0, text.length(), tp, availWidth).setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(textView.getLineSpacingExtra(), textView.getLineSpacingMultiplier()).setIncludePad(textView.getIncludeFontPadding()).build();
-                        realLines = staticLayout.getLineCount();
-                    } else {
-                        StaticLayout staticLayout = new StaticLayout(text, tp, availWidth, Layout.Alignment.ALIGN_NORMAL, textView.getLineSpacingMultiplier(), textView.getLineSpacingExtra(), textView.getIncludeFontPadding());
-                        realLines = staticLayout.getLineCount();
-                    }
+                    StaticLayout staticLayout = StaticLayout.Builder.obtain(text, 0, text.length(), tp, availWidth).setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(textView.getLineSpacingExtra(), textView.getLineSpacingMultiplier()).setIncludePad(textView.getIncludeFontPadding()).build();
+                    int realLines = staticLayout.getLineCount();
                     if (realLines > maxLines) {
                         overflow = true;
                     }

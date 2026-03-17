@@ -358,7 +358,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
-            newRadioButton.setTextColor(getResources().getColor(R.color.textColor));
+            newRadioButton.setTextColor(getColor(R.color.textColor));
             newRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             newRadioButton.setId(View.generateViewId());
             if (savedSelectedAccessType != null) {

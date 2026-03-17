@@ -232,11 +232,7 @@ public class NetworkTaskProcessServiceScheduler {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
         intent.putExtras(networkTask.toBundle());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE) != null;
-        } else {
-            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
-        }
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE) != null;
     }
 
     @SuppressWarnings("UnspecifiedImmutableFlag")
@@ -244,11 +240,7 @@ public class NetworkTaskProcessServiceScheduler {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
         intent.putExtras(networkTask.toBundle());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
-        } else {
-            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE);
-        }
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
     }
 
     @SuppressWarnings("UnspecifiedImmutableFlag")
@@ -256,11 +248,7 @@ public class NetworkTaskProcessServiceScheduler {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
         intent.putExtras(networkTask.toBundle());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
-        } else {
-            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        }
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {

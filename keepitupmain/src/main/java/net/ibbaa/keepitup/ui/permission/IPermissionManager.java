@@ -26,8 +26,6 @@ import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 @SuppressWarnings({"unused"})
 public interface IPermissionManager {
 
-    boolean shouldAskForRuntimePermission();
-
     boolean hasPostNotificationsPermission(Context context);
 
     void requestPostNotificationsPermission(FragmentActivity activity);

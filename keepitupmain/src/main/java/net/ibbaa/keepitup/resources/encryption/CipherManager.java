@@ -46,15 +46,35 @@ public class CipherManager {
     }
 
     public EncryptionResult encrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad, String plainText) {
-        Log.d(CipherManager.class.getName(), "encrypt for kdf algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad);
-        CryptoContext cryptoContext = prepareCryptoContext(kdfAlgorithmParam, cipherAlgorithmParam, password);
-        if (!cryptoContext.success()) {
-            String failureMessage = cryptoContext.message();
+        return encrypt(kdfAlgorithmParam, cipherAlgorithmParam, password, aad, plainText, true);
+    }
+
+    public EncryptionResult encrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad, String plainText, boolean compress) {
+        Log.d(CipherManager.class.getName(), "encrypt for kdf algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad + ", compress " + compress);
+        KeyDerivationResult keyDerivationResult = createKey(kdfAlgorithmParam, password);
+        if (!keyDerivationResult.success()) {
+            String failureMessage = keyDerivationResult.message();
             return new EncryptionResult(false, failureMessage, "");
         }
-        byte[] key = cryptoContext.key();
+        byte[] key = keyDerivationResult.key();
+        return encrypt(cipherAlgorithmParam, key, aad, plainText, compress);
+    }
+
+    public EncryptionResult encrypt(Map<String, String> cipherAlgorithmParam, byte[] key, String aad, String plainText) {
+        return encrypt(cipherAlgorithmParam, key, aad, plainText, true);
+    }
+
+    public EncryptionResult encrypt(Map<String, String> cipherAlgorithmParam, byte[] key, String aad, String plainText, boolean compress) {
+        Log.d(CipherManager.class.getName(), "encrypt for cipher algorithm " + cipherAlgorithmParam + ", aad " + aad + ", compress " + compress);
+        String cipherAlgorithmName = cipherAlgorithmParam.get(getResources().getString(R.string.algorithm_json_key));
+        AlgorithmData.Algorithm cipherAlgorithm = AlgorithmData.Algorithm.forName(cipherAlgorithmName);
+        if (!AlgorithmData.Algorithm.AES256GCM.equals(cipherAlgorithm)) {
+            Log.e(CipherManager.class.getName(), "Unsupported cipher algorithm: " + cipherAlgorithmName);
+            String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "cipher", cipherAlgorithmName);
+            return new EncryptionResult(false, failureMessage, "");
+        }
         try {
-            String cipherText = encryptWithAES256(cipherAlgorithmParam, key, aad, plainText);
+            String cipherText = encryptWithAES256(cipherAlgorithmParam, key, aad, plainText, compress);
             if (cipherText == null) {
                 String failureMessage = getResources().getString(R.string.aes_encryption_failed);
                 return new EncryptionResult(false, failureMessage, "");
@@ -69,15 +89,35 @@ public class CipherManager {
     }
 
     public DecryptionResult decrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad, String cipherText) {
-        Log.d(CipherManager.class.getName(), "decrypt for kdf algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad);
-        CryptoContext cryptoContext = prepareCryptoContext(kdfAlgorithmParam, cipherAlgorithmParam, password);
-        if (!cryptoContext.success()) {
-            String failureMessage = cryptoContext.message();
+        return decrypt(kdfAlgorithmParam, cipherAlgorithmParam, password, aad, cipherText, true);
+    }
+
+    public DecryptionResult decrypt(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password, String aad, String cipherText, boolean isCompressed) {
+        Log.d(CipherManager.class.getName(), "decrypt for kdf algorithm " + kdfAlgorithmParam.toString() + ", cipher algorithm " + cipherAlgorithmParam + ", password " + StringUtil.maskSecret(password, true) + ", aad " + aad + ", isCompressed " + isCompressed);
+        KeyDerivationResult keyDerivationResult = createKey(kdfAlgorithmParam, password);
+        if (!keyDerivationResult.success()) {
+            String failureMessage = keyDerivationResult.message();
             return new DecryptionResult(false, failureMessage, "");
         }
-        byte[] key = cryptoContext.key();
+        byte[] key = keyDerivationResult.key();
+        return decrypt(cipherAlgorithmParam, key, aad, cipherText, isCompressed);
+    }
+
+    public DecryptionResult decrypt(Map<String, String> cipherAlgorithmParam, byte[] key, String aad, String cipherText) {
+        return decrypt(cipherAlgorithmParam, key, aad, cipherText, true);
+    }
+
+    public DecryptionResult decrypt(Map<String, String> cipherAlgorithmParam, byte[] key, String aad, String cipherText, boolean isCompressed) {
+        Log.d(CipherManager.class.getName(), "decrypt for cipher algorithm " + cipherAlgorithmParam + ", aad " + aad + ", isCompressed " + isCompressed);
+        String cipherAlgorithmName = cipherAlgorithmParam.get(getResources().getString(R.string.algorithm_json_key));
+        AlgorithmData.Algorithm cipherAlgorithm = AlgorithmData.Algorithm.forName(cipherAlgorithmName);
+        if (!AlgorithmData.Algorithm.AES256GCM.equals(cipherAlgorithm)) {
+            Log.e(CipherManager.class.getName(), "Unsupported cipher algorithm: " + cipherAlgorithmName);
+            String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "cipher", cipherAlgorithmName);
+            return new DecryptionResult(false, failureMessage, "");
+        }
         try {
-            String plainText = decryptWithAES256(cipherAlgorithmParam, key, aad, cipherText);
+            String plainText = decryptWithAES256(cipherAlgorithmParam, key, aad, cipherText, isCompressed);
             if (plainText == null) {
                 String failureMessage = getResources().getString(R.string.aes_decryption_failed);
                 return new DecryptionResult(false, failureMessage, "");
@@ -95,27 +135,20 @@ public class CipherManager {
         }
     }
 
-    private CryptoContext prepareCryptoContext(Map<String, String> kdfAlgorithmParam, Map<String, String> cipherAlgorithmParam, String password) {
+    private KeyDerivationResult createKey(Map<String, String> kdfAlgorithmParam, String password) {
         String kdfAlgorithmName = kdfAlgorithmParam.get(getResources().getString(R.string.algorithm_json_key));
         AlgorithmData.Algorithm kdfAlgorithm = AlgorithmData.Algorithm.forName(kdfAlgorithmName);
         if (!AlgorithmData.Algorithm.ARGON2ID.equals(kdfAlgorithm)) {
             Log.e(CipherManager.class.getName(), "Unsupported kdf algorithm: " + kdfAlgorithmName);
             String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "kdf", kdfAlgorithmName);
-            return new CryptoContext(false, failureMessage, null, null);
+            return new KeyDerivationResult(false, failureMessage, null);
         }
         byte[] key = createKeyWithArgon2(kdfAlgorithmParam, password);
         if (key == null) {
             String failureMessage = getResources().getString(R.string.argon2_key_derivation_failed);
-            return new CryptoContext(false, failureMessage, null, null);
+            return new KeyDerivationResult(false, failureMessage, null);
         }
-        String cipherAlgorithmName = cipherAlgorithmParam.get(getResources().getString(R.string.algorithm_json_key));
-        AlgorithmData.Algorithm cipherAlgorithm = AlgorithmData.Algorithm.forName(cipherAlgorithmName);
-        if (!AlgorithmData.Algorithm.AES256GCM.equals(cipherAlgorithm)) {
-            Log.e(CipherManager.class.getName(), "Unsupported cipher algorithm: " + cipherAlgorithmName);
-            String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "cipher", cipherAlgorithmName);
-            return new CryptoContext(false, failureMessage, null, null);
-        }
-        return new CryptoContext(true, "Success", key, cipherAlgorithm);
+        return new KeyDerivationResult(true, "Success", key);
     }
 
     private byte[] createKeyWithArgon2(Map<String, String> kdfAlgorithm, String password) {
@@ -147,8 +180,8 @@ public class CipherManager {
     }
 
     @SuppressWarnings("deprecation")
-    private String encryptWithAES256(Map<String, String> cipherAlgorithm, byte[] key, String aad, String plainText) throws Exception {
-        Log.d(CipherManager.class.getName(), "encryptWithAES256 for cipher algorithm " + cipherAlgorithm.toString() + ", aad is " + aad);
+    private String encryptWithAES256(Map<String, String> cipherAlgorithm, byte[] key, String aad, String plainText, boolean compress) throws Exception {
+        Log.d(CipherManager.class.getName(), "encryptWithAES256 for cipher algorithm " + cipherAlgorithm.toString() + ", aad is " + aad + ", compress is " + compress);
         Log.d(CipherManager.class.getName(), "key length: " + Objects.requireNonNull(key).length);
         int tagLength = NumberUtil.getIntValue(cipherAlgorithm.get(getResources().getString(R.string.taglength_json_key)), -1);
         String iv = cipherAlgorithm.get(getResources().getString(R.string.iv_json_key));
@@ -159,7 +192,7 @@ public class CipherManager {
         byte[] ivBytes = StringUtil.base64ToByteArray(iv);
         byte[] aadBytes = StringUtil.notNull(aad).getBytes(StandardCharsets.UTF_8);
         byte[] plainTextBytes = StringUtil.notNull(plainText).getBytes(StandardCharsets.UTF_8);
-        byte[] compressedPlainTextBytes = StreamUtil.compressByteArray(plainTextBytes);
+        byte[] compressedPlainTextBytes = compress ? StreamUtil.compressByteArray(plainTextBytes) : plainTextBytes;
         Log.d(CipherManager.class.getName(), "ivBytes length: " + Objects.requireNonNull(ivBytes).length);
         Log.d(CipherManager.class.getName(), "aadBytes length: " + Objects.requireNonNull(aadBytes).length);
         Log.d(CipherManager.class.getName(), "plainTextBytes length: " + Objects.requireNonNull(plainTextBytes).length);
@@ -175,8 +208,8 @@ public class CipherManager {
     }
 
     @SuppressWarnings("deprecation")
-    private String decryptWithAES256(Map<String, String> cipherAlgorithm, byte[] key, String aad, String cipherText) throws Exception {
-        Log.d(CipherManager.class.getName(), "decryptWithAES256 for cipher algorithm " + cipherAlgorithm.toString() + ", aad is " + aad);
+    private String decryptWithAES256(Map<String, String> cipherAlgorithm, byte[] key, String aad, String cipherText, boolean isCompressed) throws Exception {
+        Log.d(CipherManager.class.getName(), "decryptWithAES256 for cipher algorithm " + cipherAlgorithm.toString() + ", aad is " + aad + ", isCompressed is " + isCompressed);
         Log.d(CipherManager.class.getName(), "key length: " + Objects.requireNonNull(key).length);
         int tagLength = NumberUtil.getIntValue(cipherAlgorithm.get(getResources().getString(R.string.taglength_json_key)), -1);
         String iv = cipherAlgorithm.get(getResources().getString(R.string.iv_json_key));
@@ -197,7 +230,7 @@ public class CipherManager {
         Log.d(CipherManager.class.getName(), "plainTextBytes length: " + Objects.requireNonNull(plainTextBytes).length);
         int offset = gcmCipher.processBytes(cipherTextBytes, 0, cipherTextBytes.length, plainTextBytes, 0);
         gcmCipher.doFinal(plainTextBytes, offset);
-        byte[] decompressedPlainTextBytes = StreamUtil.decompressByteArray(plainTextBytes);
+        byte[] decompressedPlainTextBytes = isCompressed ? StreamUtil.decompressByteArray(plainTextBytes) : plainTextBytes;
         Log.d(CipherManager.class.getName(), "decompressedPlainTextBytes length: " + Objects.requireNonNull(decompressedPlainTextBytes).length);
         return new String(decompressedPlainTextBytes, StandardCharsets.UTF_8);
     }
@@ -214,7 +247,7 @@ public class CipherManager {
 
     }
 
-    private record CryptoContext(boolean success, String message, byte[] key, AlgorithmData.Algorithm cipherAlgorithm) {
+    private record KeyDerivationResult(boolean success, String message, byte[] key) {
 
     }
 }

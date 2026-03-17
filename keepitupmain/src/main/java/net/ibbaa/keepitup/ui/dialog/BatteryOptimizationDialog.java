@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -86,11 +85,9 @@ public class BatteryOptimizationDialog extends DialogFragmentBase {
 
     private void onBatteryOptimizationLinkClicked(View view) {
         Log.d(BatteryOptimizationDialog.class.getName(), "onBatteryOptimizationLinkClicked");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-            startActivity(intent);
-        }
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        startActivity(intent);
     }
 
     private void onOkClicked(View view) {

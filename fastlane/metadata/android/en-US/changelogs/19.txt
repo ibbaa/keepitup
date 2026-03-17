@@ -1,3 +1,4 @@
+* New minimum API level is 23 (Android 6.0), current Android libraries dropped support for versions below 23
 * It is now possible to encrypt the file during export
 * HTTP headers can now be configured per network task
 * The info dialog was redesigned

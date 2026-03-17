@@ -238,11 +238,7 @@ public class NotificationHandler {
         Log.d(NotificationHandler.class.getName(), "createStopPendingIntent");
         Intent stopIntent = new Intent(getContext(), StopAlarmReceiver.class);
         stopIntent.setPackage(getContext().getPackageName());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        } else {
-            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
+        return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private Notification buildMessageNotificationForegroundStart() {
@@ -319,11 +315,7 @@ public class NotificationHandler {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addNextIntentWithParentStack(activityIntent);
         PendingIntent resultPendingIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            resultPendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        } else {
-            resultPendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
+        resultPendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
         builder.setAutoCancel(true);
     }

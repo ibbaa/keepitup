@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -33,10 +32,6 @@ import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 public class PermissionManager implements IPermissionManager {
-
-    public boolean shouldAskForRuntimePermission() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
-    }
 
     public boolean hasPostNotificationsPermission(Context context) {
         Log.d(PermissionManager.class.getName(), "hasPostNotificationsPermission");
@@ -67,7 +62,6 @@ public class PermissionManager implements IPermissionManager {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(FragmentActivity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(PermissionManager.class.getName(), "onRequestPermissionsResult for code " + requestCode);
         if (wasPermissionGranted(grantResults)) {

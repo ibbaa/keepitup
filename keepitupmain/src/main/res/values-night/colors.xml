@@ -29,7 +29,6 @@
     <color name="checkboxColorDisabled">#DDDDDD</color>
     <color name="pickerDividerColor">#888888</color>
     <color name="colorAccent">#666666</color>
-    <color name="statusBarColor">#AAAAAA</color>
     <color name="windowBackground">#444444</color>
     <color name="textErrorColor">#DD0000</color>
     <color name="cardBackgroundColor">#444444</color>

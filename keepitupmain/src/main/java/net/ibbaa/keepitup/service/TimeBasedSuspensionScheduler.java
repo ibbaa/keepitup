@@ -19,7 +19,6 @@ package net.ibbaa.keepitup.service;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.IntervalDAO;
@@ -306,11 +305,7 @@ public class TimeBasedSuspensionScheduler {
     private PendingIntent getPendingIntent() {
         Intent intent = new Intent(getContext(), TimeBasedSuspensionBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
-        } else {
-            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_NO_CREATE);
-        }
+        return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
     }
 
     @SuppressWarnings("UnspecifiedImmutableFlag")
@@ -321,11 +316,7 @@ public class TimeBasedSuspensionScheduler {
         if (restart) {
             intent.putExtra(getContext().getResources().getString(R.string.scheduler_restart_key), true);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
-        } else {
-            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        }
+        return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private void setSchedulerState(boolean state, long timestamp) {

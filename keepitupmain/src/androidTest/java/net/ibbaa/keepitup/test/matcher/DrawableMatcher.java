@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -51,7 +52,7 @@ public class DrawableMatcher extends TypeSafeMatcher<View> {
             return imageView.getDrawable() == null;
         }
         Resources resources = target.getContext().getResources();
-        Drawable expectedDrawable = resources.getDrawable(expectedId);
+        Drawable expectedDrawable = ContextCompat.getDrawable(target.getContext(), expectedId);
         resourceName = resources.getResourceEntryName(expectedId);
         if (expectedDrawable == null) {
             return false;
