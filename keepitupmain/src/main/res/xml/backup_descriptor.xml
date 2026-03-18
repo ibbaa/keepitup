@@ -15,5 +15,5 @@
   -->
 
 <full-backup-content>
-    <exclude domain="sharedpref" path="master_key_prefs.xml"/>
+    <exclude domain="sharedpref" path="net.ibbaa.keepitup_main_key_preferences.xml"/>
 </full-backup-content>

@@ -135,6 +135,7 @@ public class HeaderDAO extends BaseDAO {
         values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
         values.put(dbConstants.getNameColumnName(), header.getName());
         values.put(dbConstants.getValueColumnName(), header.getValue());
+        values.putNull(dbConstants.getValueIVColumnName());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(HeaderDAO.class.getName(), "Error inserting header into database. Insert returned -1.");
@@ -153,6 +154,7 @@ public class HeaderDAO extends BaseDAO {
             values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
             values.put(dbConstants.getNameColumnName(), header.getName());
             values.put(dbConstants.getValueColumnName(), header.getValue());
+            values.putNull(dbConstants.getValueIVColumnName());
             long rowid = db.insert(dbConstants.getTableName(), null, values);
             if (rowid < 0) {
                 Log.e(HeaderDAO.class.getName(), "Error inserting header into database.");
@@ -165,6 +167,7 @@ public class HeaderDAO extends BaseDAO {
         return new DBResult<>(true, count);
     }
 
+    @SuppressWarnings("ExtractMethodRecommender")
     private Header updateHeader(Header header, SQLiteDatabase db) {
         Log.d(HeaderDAO.class.getName(), "updateHeader, header is " + header);
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
@@ -175,6 +178,7 @@ public class HeaderDAO extends BaseDAO {
         values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
         values.put(dbConstants.getNameColumnName(), header.getName());
         values.put(dbConstants.getValueColumnName(), header.getValue());
+        values.putNull(dbConstants.getValueIVColumnName());
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return header;
     }

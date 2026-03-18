@@ -163,6 +163,17 @@ public class CipherManagerTest {
     }
 
     @Test
+    public void testEncryptDecryptEmptyString() {
+        CipherManager.EncryptionResult encryptResult = cipherManager.encrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", "");
+        assertTrue(encryptResult.success());
+        assertEquals("Encryption successful", encryptResult.message());
+        CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", encryptResult.ciphertext());
+        assertTrue(decryptResult.success());
+        assertEquals("Decryption successful", decryptResult.message());
+        assertEquals("", decryptResult.plaintext());
+    }
+
+    @Test
     public void testEncryptDecrypt() {
         String plainText = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
         CipherManager.EncryptionResult encryptResult = cipherManager.encrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", plainText);

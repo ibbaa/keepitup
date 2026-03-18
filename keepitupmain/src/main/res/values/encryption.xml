@@ -20,4 +20,9 @@
     <integer name="argon2_parallelism_default">2</integer>
     <integer name="argon2_key_size_bit_default">256</integer>
     <integer name="aes_tag_length_default">128</integer>
+    <integer name="main_key_size_byte_default">32</integer>
+    <string name="main_key_prefs_file">net.ibbaa.keepitup_main_key_preferences</string>
+    <string name="main_key_prefs_key">net.ibbaa.keepitup_main_key</string>
+    <string name="tink_keyset_prefs_key">net.ibbaa.keepitup_tink_keyset_key</string>
+    <string name="keystore_master_key_alias">net.ibbaa.keepitup_master_key</string>
 </resources>

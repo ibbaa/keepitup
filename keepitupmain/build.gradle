@@ -80,12 +80,13 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.core:core-ktx:1.18.0'
     implementation 'androidx.core:core:1.18.0'
-    implementation "androidx.documentfile:documentfile:1.1.0"
+    implementation 'androidx.documentfile:documentfile:1.1.0'
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'com.google.guava:guava:33.5.0-android'
+    implementation 'com.google.crypto.tink:tink-android:1.20.0'
     implementation 'net.ibbaa.phonelog:phonelog:2.1.2'
-    implementation('com.squareup.okhttp3:okhttp:5.3.2')
-    implementation("org.bouncycastle:bcprov-lts8on:2.73.10")
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+    implementation 'org.bouncycastle:bcprov-lts8on:2.73.10'
     testImplementation 'androidx.annotation:annotation:1.9.1'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.23.0'
