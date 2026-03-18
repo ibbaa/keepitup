@@ -92,6 +92,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindStopOnSuccess(networkTaskViewHolder, networkTask, accessTypeData);
         bindOnlyWifi(networkTaskViewHolder, networkTask);
         bindNotification(networkTaskViewHolder, networkTask);
+        networkTaskViewHolder.rearrangeDynamicRows();
     }
 
     private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

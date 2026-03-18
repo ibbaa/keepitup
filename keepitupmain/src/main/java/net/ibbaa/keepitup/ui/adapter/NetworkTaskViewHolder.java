@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.adapter;
 
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +27,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
@@ -218,5 +222,36 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private void onLogClicked(View view) {
         mainActivity.onMainLogClicked(getBindingAdapterPosition());
+    }
+
+    public void rearrangeDynamicRows() {
+        int row = 2;
+        List<View> views = Arrays.asList(
+                instancesText,
+                accessTypeText,
+                addressText,
+                connectToText,
+                headersText,
+                intervalText,
+                ignoreSSLErrorText,
+                stopOnSuccessText,
+                onlyWifiText,
+                notificationText,
+                lastExecTimestampText,
+                failureCountText,
+                lastExecMessageText
+        );
+        setRowNumbers(views, row);
+    }
+
+    private void setRowNumbers(List<View> views, int row) {
+        for (View view : views) {
+            if (view.getVisibility() != View.GONE) {
+                GridLayout.LayoutParams params = (GridLayout.LayoutParams) view.getLayoutParams();
+                params.rowSpec = GridLayout.spec(row);
+                view.setLayoutParams(params);
+                row++;
+            }
+        }
     }
 }
