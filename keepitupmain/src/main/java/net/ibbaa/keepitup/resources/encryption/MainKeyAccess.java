@@ -61,9 +61,13 @@ public class MainKeyAccess {
         synchronized (LOCK) {
             SharedPreferences mainKeyPrefs = getMainKeyPreferences();
             String mainKeyPrefsKey = getResources().getString(R.string.main_key_prefs_key);
+            byte[] mainKey;
             String encryptedMainKey = mainKeyPrefs.getString(mainKeyPrefsKey, null);
             if (encryptedMainKey != null) {
-                return decryptMainKey(encryptedMainKey);
+                mainKey = decryptMainKey(encryptedMainKey);
+                if (mainKey != null) {
+                    return new MainKey(mainKey, true, false, getResources().getString(R.string.existing_key_valid));
+                }
             }
             return generateAndStoreMainKey();
         }
@@ -81,26 +85,26 @@ public class MainKeyAccess {
             SharedPreferences.Editor mainKeyPreferences = getMainKeyPreferences().edit();
             mainKeyPreferences.putString(mainKeyPrefsKey, StringUtil.byteArrayToBase64(encryptedMainKeyBytes));
             mainKeyPreferences.commit();
-            return new MainKey(mainKey, true, false, "");
+            return new MainKey(mainKey, true, true, getResources().getString(R.string.created_key_valid));
         } catch (Exception exc) {
             Log.e(MainKeyAccess.class.getName(), "Encrypt failed because of unknown error", exc);
             return new MainKey(null, false, false, exc.getMessage());
         }
     }
 
-    private MainKey decryptMainKey(String encryptedMainKey) {
+    private byte[] decryptMainKey(String encryptedMainKey) {
         Log.d(MainKeyAccess.class.getName(), "decryptMainKey");
         try {
             byte[] encryptedMainKeyBytes = StringUtil.base64ToByteArray(encryptedMainKey);
-            return new MainKey(getAead().decrypt(encryptedMainKeyBytes, null), true, false, "");
+            return getAead().decrypt(encryptedMainKeyBytes, null);
         } catch (GeneralSecurityException exc) {
             Log.e(MainKeyAccess.class.getName(), "Decrypt failed because of wrong key", exc);
             invalidateMainKey();
-            return new MainKey(null, false, true, exc.getMessage());
+            return null;
         } catch (Exception exc) {
             Log.e(MainKeyAccess.class.getName(), "Decrypt failed because of unknown error", exc);
             invalidateMainKey();
-            return new MainKey(null, false, false, exc.getMessage());
+            return null;
         }
     }
 
@@ -118,6 +122,13 @@ public class MainKeyAccess {
         return context.getSharedPreferences(main_key_prefs_file, Context.MODE_PRIVATE);
     }
 
+    public void reset() {
+        synchronized (LOCK) {
+            invalidateMainKey();
+            aead = null;
+        }
+    }
+
     private static Aead getAead() {
         synchronized (LOCK) {
             return aead;
@@ -125,7 +136,7 @@ public class MainKeyAccess {
     }
 
     private static void initAead(Context context) throws Exception {
-        Log.d(MainKeyAccess.class.getName(), "getAead");
+        Log.d(MainKeyAccess.class.getName(), "initAead");
         synchronized (LOCK) {
             if (aead == null) {
                 AeadConfig.register();
@@ -151,7 +162,7 @@ public class MainKeyAccess {
         return getContext().getResources();
     }
 
-    public record MainKey(byte[] key, boolean success, boolean keyDecryptError, String message) {
+    public record MainKey(byte[] key, boolean keyValid, boolean keyNew, String message) {
 
     }
 }

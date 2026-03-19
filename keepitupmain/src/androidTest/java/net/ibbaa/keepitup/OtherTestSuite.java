@@ -63,7 +63,7 @@ import net.ibbaa.keepitup.resources.SystemWorkerFactoryTest;
 import net.ibbaa.keepitup.resources.encryption.AlgorithmDataTest;
 import net.ibbaa.keepitup.resources.encryption.CipherManagerTest;
 import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetupTest;
-import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
+import net.ibbaa.keepitup.resources.encryption.MainKeyAccessTest;
 import net.ibbaa.keepitup.service.ConnectNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.NetworkTaskProcessBroadcastReceiverTest;
@@ -207,7 +207,7 @@ import org.junit.runners.Suite;
         AlgorithmDataTest.class,
         CipherManagerTest.class,
         JSONEncryptSetupTest.class,
-        MainKeyAccess.class,
+        MainKeyAccessTest.class,
         //net.ibbaa.keepitup.service
         ConnectNetworkTaskWorkerTest.class,
         DownloadNetworkTaskWorkerTest.class,

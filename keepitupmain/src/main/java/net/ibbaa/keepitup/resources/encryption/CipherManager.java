@@ -97,7 +97,7 @@ public class CipherManager {
         KeyDerivationResult keyDerivationResult = createKey(kdfAlgorithmParam, password);
         if (!keyDerivationResult.success()) {
             String failureMessage = keyDerivationResult.message();
-            return new DecryptionResult(false, failureMessage, "");
+            return new DecryptionResult(false, false, failureMessage, "");
         }
         byte[] key = keyDerivationResult.key();
         return decrypt(cipherAlgorithmParam, key, aad, cipherText, isCompressed);
@@ -114,24 +114,24 @@ public class CipherManager {
         if (!AlgorithmData.Algorithm.AES256GCM.equals(cipherAlgorithm)) {
             Log.e(CipherManager.class.getName(), "Unsupported cipher algorithm: " + cipherAlgorithmName);
             String failureMessage = getResources().getString(R.string.unsupported_algorithm_message, "cipher", cipherAlgorithmName);
-            return new DecryptionResult(false, failureMessage, "");
+            return new DecryptionResult(false, false, failureMessage, "");
         }
         try {
             String plainText = decryptWithAES256(cipherAlgorithmParam, key, aad, cipherText, isCompressed);
             if (plainText == null) {
                 String failureMessage = getResources().getString(R.string.aes_decryption_failed);
-                return new DecryptionResult(false, failureMessage, "");
+                return new DecryptionResult(false, false, failureMessage, "");
             }
             String successMessage = getResources().getString(R.string.decryption_success);
-            return new DecryptionResult(true, successMessage, plainText);
+            return new DecryptionResult(true, false, successMessage, plainText);
         } catch (InvalidCipherTextException exc) {
             Log.e(CipherManager.class.getName(), "InvalidCipherTextException during aes encryption", exc);
             String failureMessage = getResources().getString(R.string.aes_decryption_wrong_password_or_file_corrupt);
-            return new DecryptionResult(false, failureMessage, "");
+            return new DecryptionResult(false, true, failureMessage, "");
         } catch (Exception exc) {
             Log.e(CipherManager.class.getName(), "Exception during aes encryption", exc);
             String failureMessage = getResources().getString(R.string.aes_decryption_failed);
-            return new DecryptionResult(false, failureMessage, "");
+            return new DecryptionResult(false, false, failureMessage, "");
         }
     }
 
@@ -243,7 +243,7 @@ public class CipherManager {
 
     }
 
-    public record DecryptionResult(boolean success, String message, String plaintext) {
+    public record DecryptionResult(boolean success, boolean keyInvalid, String message, String plaintext) {
 
     }
 

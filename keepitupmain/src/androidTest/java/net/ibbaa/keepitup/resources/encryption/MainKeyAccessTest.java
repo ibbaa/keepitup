@@ -17,8 +17,8 @@
 package net.ibbaa.keepitup.resources.encryption;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -31,50 +31,59 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class MainKeyAccessTest {
+
+    @Before
+    public void beforeEachTestMethod() {
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        mainKeyAccess.reset();
+    }
 
     @Test
     public void testGetMainKey() {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         byte[] mainKey1Key = mainKey1.key();
-        assertTrue(mainKey1.success());
-        assertFalse(mainKey1.keyDecryptError());
-        assertTrue(StringUtil.isEmpty(mainKey1.message()));
+        assertTrue(mainKey1.keyValid());
+        assertTrue(mainKey1.keyNew());
+        assertEquals("New key valid", mainKey1.message());
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         byte[] mainKey2Key = mainKey2.key();
-        assertTrue(mainKey2.success());
-        assertFalse(mainKey2.keyDecryptError());
-        assertTrue(StringUtil.isEmpty(mainKey2.message()));
+        assertTrue(mainKey2.keyValid());
+        assertFalse(mainKey2.keyNew());
+        assertEquals("Existing key valid", mainKey2.message());
         assertArrayEquals(mainKey1Key, mainKey2Key);
     }
 
     @Test
-    public void testGetMainKeyFailure() {
+    public void testGetMainKeyFailureCreateNew() {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
-        mainKeyAccess.getMainKey();
-        corruptKey();
-        MainKeyAccess.MainKey mainKey = mainKeyAccess.getMainKey();
-        assertNull(mainKey.key());
-        assertFalse(mainKey.success());
-        assertTrue(mainKey.keyDecryptError());
-        assertFalse(StringUtil.isEmpty(mainKey.message()));
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         byte[] mainKey1Key = mainKey1.key();
-        assertTrue(mainKey1.success());
-        assertFalse(mainKey1.keyDecryptError());
-        assertTrue(StringUtil.isEmpty(mainKey1.message()));
+        assertTrue(mainKey1.keyValid());
+        assertTrue(mainKey1.keyNew());
+        assertEquals("New key valid", mainKey1.message());
+        corruptKey();
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         byte[] mainKey2Key = mainKey2.key();
-        assertTrue(mainKey2.success());
-        assertFalse(mainKey2.keyDecryptError());
-        assertTrue(StringUtil.isEmpty(mainKey2.message()));
-        assertArrayEquals(mainKey1Key, mainKey2Key);
+        assertTrue(mainKey2.keyValid());
+        assertTrue(mainKey2.keyNew());
+        assertEquals("New key valid", mainKey2.message());
+        assertFalse(Arrays.equals(mainKey1Key, mainKey2Key));
+        MainKeyAccess.MainKey mainKey3 = mainKeyAccess.getMainKey();
+        byte[] mainKey3Key = mainKey3.key();
+        assertTrue(mainKey3.keyValid());
+        assertFalse(mainKey3.keyNew());
+        assertEquals("Existing key valid", mainKey3.message());
+        assertArrayEquals(mainKey2Key, mainKey3Key);
     }
 
     private void corruptKey() {

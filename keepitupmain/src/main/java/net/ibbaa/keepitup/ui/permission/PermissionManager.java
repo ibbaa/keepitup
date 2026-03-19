@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
@@ -73,12 +74,16 @@ public class PermissionManager implements IPermissionManager {
             Log.d(PermissionManager.class.getName(), "Post notifications permission was requested");
             if (shouldShowPostNotificationsRationale(activity)) {
                 Log.d(PermissionManager.class.getName(), "Showing permission explain dialog for post notifications");
-                PermissionExplainDialog permissionExplainDialog = new PermissionExplainDialog();
-                String message = activity.getResources().getString(R.string.text_dialog_permission_explain_post_notifications);
-                PermissionExplainDialog.Permission permission = PermissionExplainDialog.Permission.POST_NOTIFICATIONS;
-                Bundle bundle = BundleUtil.stringsToBundle(new String[]{permissionExplainDialog.getMessageKey(), PermissionExplainDialog.Permission.class.getSimpleName()}, new String[]{message, permission.name()});
-                permissionExplainDialog.setArguments(bundle);
-                permissionExplainDialog.show(activity.getSupportFragmentManager(), PermissionExplainDialog.class.getName());
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                String tag = PermissionExplainDialog.class.getName();
+                if (fragmentManager.findFragmentByTag(tag) == null) {
+                    PermissionExplainDialog permissionExplainDialog = new PermissionExplainDialog();
+                    String message = activity.getResources().getString(R.string.text_dialog_permission_explain_post_notifications);
+                    PermissionExplainDialog.Permission permission = PermissionExplainDialog.Permission.POST_NOTIFICATIONS;
+                    Bundle bundle = BundleUtil.stringsToBundle(new String[]{permissionExplainDialog.getMessageKey(), PermissionExplainDialog.Permission.class.getSimpleName()}, new String[]{message, permission.name()});
+                    permissionExplainDialog.setArguments(bundle);
+                    permissionExplainDialog.show(fragmentManager, tag);
+                }
             } else {
                 Log.d(PermissionManager.class.getName(), "shouldShowPostNotificationsRationale returned false, not showing explain dialog again");
                 Log.d(PermissionManager.class.getName(), "Post notifications permission was denied permanently");

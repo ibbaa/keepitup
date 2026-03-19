@@ -76,8 +76,8 @@ public abstract class BaseDAO {
     protected EncryptResult encrypt(ContentValues values, String valueColumn, String ivColumn, String value, String aad) {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(getContext());
         MainKeyAccess.MainKey mainKey = mainKeyAccess.getMainKey();
-        if (!mainKey.success()) {
-            return new EncryptResult(false, mainKey.keyDecryptError(), mainKey.message());
+        if (!mainKey.keyValid()) {
+            return new EncryptResult(false, mainKey.message());
         }
         byte[] mainKeyBytes = mainKey.key();
         AlgorithmData algorithmData = new AlgorithmData(getContext());
@@ -85,19 +85,19 @@ public abstract class BaseDAO {
         CipherManager cipherManager = new CipherManager(getContext());
         CipherManager.EncryptionResult encryptionResult = cipherManager.encrypt(algorithmParam, mainKeyBytes, aad, value, false);
         if (!encryptionResult.success()) {
-            return new EncryptResult(false, false, encryptionResult.message());
+            return new EncryptResult(false, encryptionResult.message());
         }
         values.put(valueColumn, encryptionResult.ciphertext());
         String iv = algorithmParam.get(getResources().getString(R.string.iv_json_key));
         values.put(ivColumn, iv);
-        return new EncryptResult(true, false, encryptionResult.message());
+        return new EncryptResult(true, encryptionResult.message());
     }
 
     protected DecryptResult decrypt(Cursor cursor, String valueColumn, String ivColumn, String aad) {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(getContext());
         MainKeyAccess.MainKey mainKey = mainKeyAccess.getMainKey();
-        if (!mainKey.success()) {
-            return new DecryptResult(false, mainKey.keyDecryptError(), mainKey.message(), null);
+        if (!mainKey.keyValid()) {
+            return new DecryptResult(false, false, mainKey.message(), null);
         }
         byte[] mainKeyBytes = mainKey.key();
         int indexValueColumn = cursor.getColumnIndex(valueColumn);
@@ -110,7 +110,7 @@ public abstract class BaseDAO {
         CipherManager cipherManager = new CipherManager(getContext());
         CipherManager.DecryptionResult decryptionResult = cipherManager.decrypt(algorithmParam, mainKeyBytes, aad, value, false);
         if (!decryptionResult.success()) {
-            return new DecryptResult(false, false, decryptionResult.message(), null);
+            return new DecryptResult(false, decryptionResult.keyInvalid(), decryptionResult.message(), null);
         }
         return new DecryptResult(true, false, decryptionResult.message(), decryptionResult.plaintext());
     }
@@ -123,10 +123,10 @@ public abstract class BaseDAO {
         return getContext().getResources();
     }
 
-    protected record EncryptResult(boolean success, boolean keyDecryptError, String message) {
+    protected record EncryptResult(boolean success, String message) {
     }
 
-    protected record DecryptResult(boolean success, boolean keyDecryptError, String message, String plainText) {
+    protected record DecryptResult(boolean success, boolean keyInvalid, String message, String plainText) {
     }
 
     protected record DBResult<T>(boolean success, T value) {

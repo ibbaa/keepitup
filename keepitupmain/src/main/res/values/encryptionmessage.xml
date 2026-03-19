@@ -22,4 +22,6 @@
     <string name="aes_decryption_wrong_password_or_file_corrupt">Decryption failed. The password is incorrect or the file has been modified or damaged.</string>
     <string name="encryption_success">Encryption successful</string>
     <string name="decryption_success">Decryption successful</string>
+    <string name="existing_key_valid">Existing key valid</string>
+    <string name="created_key_valid">New key valid</string>
 </resources>

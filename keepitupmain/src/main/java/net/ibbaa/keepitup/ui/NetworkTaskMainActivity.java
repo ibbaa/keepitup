@@ -29,6 +29,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -246,7 +247,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "checkActiveAlarm");
         if (AlarmService.isRunning()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Alarm is active");
-            showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_dismiss_active_alarm), getResources().getString(R.string.text_dialog_confirm_dismiss_active_alarm_description), ConfirmDialog.Type.DISMISSALARM);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            String tag = ConfirmDialog.class.getName();
+            if (fragmentManager.findFragmentByTag(tag) == null) {
+                showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_dismiss_active_alarm), getResources().getString(R.string.text_dialog_confirm_dismiss_active_alarm_description), ConfirmDialog.Type.DISMISSALARM);
+            }
         }
     }
 
@@ -291,8 +296,12 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private void showAlarmPermissionDialog() {
         Log.d(NetworkTaskMainActivity.class.getName(), "showAlarmPermissionDialog");
-        AlarmPermissionDialog alarmPermissionDialog = new AlarmPermissionDialog();
-        alarmPermissionDialog.show(getSupportFragmentManager(), AlarmPermissionDialog.class.getName());
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        String tag = AlarmPermissionDialog.class.getName();
+        if (fragmentManager.findFragmentByTag(tag) == null) {
+            AlarmPermissionDialog alarmPermissionDialog = new AlarmPermissionDialog();
+            alarmPermissionDialog.show(getSupportFragmentManager(), AlarmPermissionDialog.class.getName());
+        }
     }
 
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {

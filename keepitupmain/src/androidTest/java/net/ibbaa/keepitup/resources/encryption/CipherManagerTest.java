@@ -121,6 +121,7 @@ public class CipherManagerTest {
         aesParam.put("iv", createTestAESIV());
         CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "password", "aad", "Vgc+SaNGsEwvRGKmbjEsHWN9YKHfPMHpgEwwNt6uyyruN7gzS4s0Cy0EqdUi");
         assertTrue(result.success());
+        assertFalse(result.keyInvalid());
         assertEquals("Decryption successful", result.message());
         assertEquals("plaintext", result.plaintext());
     }
@@ -130,6 +131,7 @@ public class CipherManagerTest {
         aesParam.put("iv", createTestAESIV());
         CipherManager.DecryptionResult result = cipherManager.decrypt(aesParam, createTestAESKey(), "aad", "plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lValWBNV3cLqQWshRpPclFo");
         assertTrue(result.success());
+        assertFalse(result.keyInvalid());
         assertEquals("Decryption successful", result.message());
         assertEquals("plaintext", result.plaintext());
     }
@@ -140,6 +142,7 @@ public class CipherManagerTest {
         aesParam.put("iv", createTestAESIV());
         CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "wrong", "aad", "OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==");
         assertFalse(result.success());
+        assertTrue(result.keyInvalid());
         assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", result.message());
     }
 
@@ -150,6 +153,7 @@ public class CipherManagerTest {
         aesParam.put("iv", createTestAESIV());
         CipherManager.DecryptionResult result = cipherManager.decrypt(aesParam, wrongKey, "aad", "plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lValWBNV3cLqQWshRpPclFo");
         assertFalse(result.success());
+        assertTrue(result.keyInvalid());
         assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", result.message());
     }
 
@@ -159,6 +163,7 @@ public class CipherManagerTest {
         aesParam.put("iv", createTestAESIV());
         CipherManager.DecryptionResult result = cipherManager.decrypt(argon2Param, aesParam, "password", "wrong", "OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==");
         assertFalse(result.success());
+        assertTrue(result.keyInvalid());
         assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", result.message());
     }
 
@@ -169,6 +174,7 @@ public class CipherManagerTest {
         assertEquals("Encryption successful", encryptResult.message());
         CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", encryptResult.ciphertext());
         assertTrue(decryptResult.success());
+        assertFalse(decryptResult.keyInvalid());
         assertEquals("Decryption successful", decryptResult.message());
         assertEquals("", decryptResult.plaintext());
     }
@@ -181,6 +187,7 @@ public class CipherManagerTest {
         assertEquals("Encryption successful", encryptResult.message());
         CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", encryptResult.ciphertext());
         assertTrue(decryptResult.success());
+        assertFalse(decryptResult.keyInvalid());
         assertEquals("Decryption successful", decryptResult.message());
         assertEquals(plainText, decryptResult.plaintext());
     }
@@ -193,6 +200,7 @@ public class CipherManagerTest {
         assertEquals("Encryption successful", encryptResult.message());
         CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "test123testpassword", "xyz=1;abc=3", encryptResult.ciphertext(), false);
         assertTrue(decryptResult.success());
+        assertFalse(decryptResult.keyInvalid());
         assertEquals("Decryption successful", decryptResult.message());
         assertEquals(plainText, decryptResult.plaintext());
     }
@@ -205,6 +213,7 @@ public class CipherManagerTest {
         assertEquals("Encryption successful", encryptResult.message());
         CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(aesParam, createTestAESKey(), "xyz=1;abc=3", encryptResult.ciphertext());
         assertTrue(decryptResult.success());
+        assertFalse(decryptResult.keyInvalid());
         assertEquals("Decryption successful", decryptResult.message());
         assertEquals(plainText, decryptResult.plaintext());
     }
@@ -217,6 +226,7 @@ public class CipherManagerTest {
         assertEquals("Encryption successful", encryptResult.message());
         CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(aesParam, createTestAESKey(), "xyz=1;abc=3", encryptResult.ciphertext(), false);
         assertTrue(decryptResult.success());
+        assertFalse(decryptResult.keyInvalid());
         assertEquals("Decryption successful", decryptResult.message());
         assertEquals(plainText, decryptResult.plaintext());
     }
@@ -229,6 +239,7 @@ public class CipherManagerTest {
         assertEquals("Encryption successful", encryptResult.message());
         CipherManager.DecryptionResult decryptResult = cipherManager.decrypt(argon2Param, aesParam, "xyz", "123", encryptResult.ciphertext());
         assertFalse(decryptResult.success());
+        assertTrue(decryptResult.keyInvalid());
         assertEquals("Decryption failed. The password is incorrect or the file has been modified or damaged.", decryptResult.message());
     }
 

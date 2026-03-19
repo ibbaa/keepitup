@@ -52,6 +52,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemFileManager;
@@ -106,6 +107,8 @@ public abstract class BaseUITest {
     public void beforeEachTestMethod() {
         Log.initialize(null);
         Dump.initialize(null);
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        mainKeyAccess.reset();
         networkTaskProcessServiceScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         timeBasedSuspensionScheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
         timeBasedSuspensionScheduler.setNetworkTaskScheduler(networkTaskProcessServiceScheduler);
@@ -149,6 +152,8 @@ public abstract class BaseUITest {
     public void afterEachTestMethod() {
         Log.initialize(null);
         Dump.initialize(null);
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        mainKeyAccess.reset();
         networkTaskProcessServiceScheduler.cancelAll();
         networkTaskProcessServiceScheduler.reset();
         timeBasedSuspensionScheduler.reset();
