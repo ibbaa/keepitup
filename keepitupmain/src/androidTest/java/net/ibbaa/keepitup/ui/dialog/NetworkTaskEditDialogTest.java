@@ -642,6 +642,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
     }
 
     @Test
@@ -674,6 +675,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
     }
 
     @Test
@@ -706,9 +708,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test
@@ -743,9 +747,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test
@@ -781,9 +787,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("Authorization", headers.get(0).getName());
         assertEquals("abc:123", headers.get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test
@@ -817,9 +825,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("Authorization", headers.get(0).getName());
         assertEquals("authvalue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test
@@ -854,6 +864,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
     }
 
     @Test
@@ -890,6 +901,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
     }
 
     @Test
@@ -1009,9 +1021,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("BName", headers.get(1).getName());
         assertEquals("BValue", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test
@@ -1047,9 +1061,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("BName", headers.get(1).getName());
         assertEquals("BValue", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test
@@ -1080,9 +1096,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("Authorization", headers.get(0).getName());
         assertEquals("authvalue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("User-Agent", headers.get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
     }
 
     @Test

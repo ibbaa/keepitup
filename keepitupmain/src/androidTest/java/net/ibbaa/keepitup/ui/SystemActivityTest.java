@@ -4985,6 +4985,7 @@ public class SystemActivityTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
+        header.setValueValid(true);
         return header;
     }
 

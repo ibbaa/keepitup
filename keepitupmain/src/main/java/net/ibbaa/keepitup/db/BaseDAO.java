@@ -73,7 +73,7 @@ public abstract class BaseDAO {
         return result.value();
     }
 
-    protected EncryptResult encrypt(ContentValues values, String valueColumn, String ivColumn, String value, String aad) {
+    protected EncryptResult encrypt(ContentValues values, String valueColumn, String ivColumn, String value) {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(getContext());
         MainKeyAccess.MainKey mainKey = mainKeyAccess.getMainKey();
         if (!mainKey.keyValid()) {
@@ -83,7 +83,7 @@ public abstract class BaseDAO {
         AlgorithmData algorithmData = new AlgorithmData(getContext());
         Map<String, String> algorithmParam = algorithmData.getAlgorithmDefaultParam(AlgorithmData.Algorithm.AES256GCM);
         CipherManager cipherManager = new CipherManager(getContext());
-        CipherManager.EncryptionResult encryptionResult = cipherManager.encrypt(algorithmParam, mainKeyBytes, aad, value, false);
+        CipherManager.EncryptionResult encryptionResult = cipherManager.encrypt(algorithmParam, mainKeyBytes, null, value, false);
         if (!encryptionResult.success()) {
             return new EncryptResult(false, encryptionResult.message());
         }
@@ -93,7 +93,7 @@ public abstract class BaseDAO {
         return new EncryptResult(true, encryptionResult.message());
     }
 
-    protected DecryptResult decrypt(Cursor cursor, String valueColumn, String ivColumn, String aad) {
+    protected DecryptResult decrypt(Cursor cursor, String valueColumn, String ivColumn) {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(getContext());
         MainKeyAccess.MainKey mainKey = mainKeyAccess.getMainKey();
         if (!mainKey.keyValid()) {
@@ -108,7 +108,7 @@ public abstract class BaseDAO {
         Map<String, String> algorithmParam = algorithmData.getAlgorithmDefaultParam(AlgorithmData.Algorithm.AES256GCM);
         algorithmParam.put(getResources().getString(R.string.iv_json_key), iv);
         CipherManager cipherManager = new CipherManager(getContext());
-        CipherManager.DecryptionResult decryptionResult = cipherManager.decrypt(algorithmParam, mainKeyBytes, aad, value, false);
+        CipherManager.DecryptionResult decryptionResult = cipherManager.decrypt(algorithmParam, mainKeyBytes, null, value, false);
         if (!decryptionResult.success()) {
             return new DecryptResult(false, decryptionResult.keyInvalid(), decryptionResult.message(), null);
         }

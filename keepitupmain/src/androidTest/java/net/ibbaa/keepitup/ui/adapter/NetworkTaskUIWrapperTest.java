@@ -148,6 +148,7 @@ public class NetworkTaskUIWrapperTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name1");
         header.setValue("value1");
+        header.setValueValid(true);
         return header;
     }
 
@@ -158,6 +159,7 @@ public class NetworkTaskUIWrapperTest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name2");
         header.setValue("value2");
+        header.setValueValid(true);
         return header;
     }
 }

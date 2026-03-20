@@ -69,6 +69,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -87,6 +88,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         rotateScreen(activityScenario);
@@ -98,6 +100,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         rotateScreen(activityScenario);
@@ -110,6 +113,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -129,6 +133,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -147,6 +152,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(5, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         rotateScreen(activityScenario);
@@ -157,6 +163,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(5, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         rotateScreen(activityScenario);
@@ -166,6 +173,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(5, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -185,6 +194,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(5, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -207,6 +217,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(5, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -223,6 +234,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -239,6 +251,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         rotateScreen(activityScenario);
@@ -249,6 +262,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         rotateScreen(activityScenario);
@@ -259,6 +273,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name1", header.getName());
         assertEquals("Value1", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -277,6 +292,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name2", header.getName());
         assertEquals("Name2", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -295,6 +311,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
         rotateScreen(activityScenario);
@@ -305,6 +322,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
         dialog = getDialog();
@@ -314,6 +332,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Name2", header.getName());
         assertEquals("Value2", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -342,6 +361,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -373,6 +393,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("", header.getName());
         assertEquals("", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -401,6 +422,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Authorization", header.getName());
         assertEquals("abc:123", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -432,6 +454,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Authorization", header.getName());
         assertEquals("abc:123", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -469,6 +492,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("xyz", header.getName());
         assertEquals("abc", header.getValue());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
@@ -485,6 +509,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Authorization", header.getName());
         assertEquals("abc:123", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -504,6 +529,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Authorization", header.getName());
         assertEquals("abc", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -526,6 +552,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("Authorization", header.getName());
         assertEquals("abc", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -555,6 +582,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("NameTest", header.getName());
         assertEquals("TestMore", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -591,6 +620,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         Header header = dialog.getHeader();
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         assertEquals("NameTest", header.getName());
         assertEquals("TestMore", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
@@ -1219,6 +1250,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
+        header.setValueValid(true);
         return header;
     }
 }

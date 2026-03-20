@@ -154,7 +154,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
-        assertFalse(data.isUseDefaultHeaders());
+        assertTrue(data.isUseDefaultHeaders());
     }
 
     @Test

@@ -114,7 +114,8 @@ public class HeaderDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
-                getValueColumnName() +
+                getValueColumnName() + ", " +
+                getValueIVColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " IS NULL" +
                 " ORDER BY " + getNameColumnName() + " ASC";
@@ -126,7 +127,8 @@ public class HeaderDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
-                getValueColumnName() +
+                getValueColumnName() + ", " +
+                getValueIVColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " IS NOT NULL" +
                 " ORDER BY " + getNameColumnName() + " ASC";
@@ -138,7 +140,8 @@ public class HeaderDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
-                getValueColumnName() +
+                getValueColumnName() + ", " +
+                getValueIVColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
                 " ORDER BY " + getNameColumnName() + " ASC";
@@ -150,9 +153,18 @@ public class HeaderDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getHeaderTypeColumnName() + ", " +
                 getNameColumnName() + ", " +
-                getValueColumnName() +
+                getValueColumnName() + ", " +
+                getValueIVColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getNameColumnName() + " ASC";
+    }
+
+    public String getReadEncryptedValueAndValueIV() {
+        return "SELECT " +
+                getValueColumnName() + ", " +
+                getValueIVColumnName() +
+                " FROM " + getTableName() +
+                " WHERE " + getIdColumnName() + " = ?";
     }
 
     public String getDeleteGlobalHeadersStatement() {

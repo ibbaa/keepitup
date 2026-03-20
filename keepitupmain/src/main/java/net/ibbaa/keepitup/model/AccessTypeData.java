@@ -112,7 +112,7 @@ public class AccessTypeData {
             this.ignoreSSLError = Boolean.parseBoolean(Objects.requireNonNull(map.get("ignoreSSLError")).toString());
         }
         if (map.get("useDefaultHeaders") != null) {
-            this.useDefaultHeaders = Boolean.parseBoolean(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
+            this.useDefaultHeaders = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
         }
     }
 

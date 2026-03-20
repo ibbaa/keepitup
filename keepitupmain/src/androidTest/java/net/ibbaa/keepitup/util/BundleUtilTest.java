@@ -663,6 +663,7 @@ public class BundleUtilTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName(name);
         header.setValue(value);
+        header.setValueValid(true);
         return header;
     }
 }

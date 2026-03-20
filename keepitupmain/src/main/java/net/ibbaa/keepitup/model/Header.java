@@ -35,6 +35,7 @@ public class Header implements Syncable<Header> {
     private HeaderType headerType;
     private String name;
     private String value;
+    private boolean valueValid;
 
     public Header() {
         this.id = -1;
@@ -42,6 +43,7 @@ public class Header implements Syncable<Header> {
         this.headerType = null;
         this.name = null;
         this.value = null;
+        this.valueValid = true;
     }
 
     public Header(long networktaskid) {
@@ -50,6 +52,7 @@ public class Header implements Syncable<Header> {
         this.headerType = null;
         this.name = null;
         this.value = null;
+        this.valueValid = true;
     }
 
     public Header(Header other) {
@@ -57,6 +60,7 @@ public class Header implements Syncable<Header> {
         this.headerType = other.getHeaderType();
         this.name = other.getName();
         this.value = other.getValue();
+        this.valueValid = true;
     }
 
     public Header(PersistableBundle bundle) {
@@ -72,6 +76,7 @@ public class Header implements Syncable<Header> {
         }
         this.name = bundle.getString("name");
         this.value = bundle.getString("value");
+        this.valueValid = bundle.getInt("valueValid") >= 1;
     }
 
     public Header(Map<String, ?> map) {
@@ -90,6 +95,9 @@ public class Header implements Syncable<Header> {
         }
         if (map.get("value") != null) {
             this.value = Objects.requireNonNull(map.get("value")).toString();
+        }
+        if (map.get("valueValid") != null) {
+            this.valueValid = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("valueValid")).toString());
         }
     }
 
@@ -137,6 +145,14 @@ public class Header implements Syncable<Header> {
         return headerType != null && headerType.isSecret();
     }
 
+    public boolean isValueValid() {
+        return valueValid;
+    }
+
+    public void setValueValid(boolean valueValid) {
+        this.valueValid = valueValid;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -150,6 +166,7 @@ public class Header implements Syncable<Header> {
         if (value != null) {
             bundle.putString("value", value);
         }
+        bundle.putInt("valueValid", valueValid ? 1 : 0);
         return bundle;
     }
 
@@ -170,6 +187,7 @@ public class Header implements Syncable<Header> {
         if (value != null) {
             map.put("value", value);
         }
+        map.put("valueValid", valueValid);
         return map;
     }
 
@@ -189,6 +207,9 @@ public class Header implements Syncable<Header> {
         if (!Objects.equals(name, other.name)) {
             return false;
         }
+        if (valueValid != other.valueValid) {
+            return false;
+        }
         return Objects.equals(value, other.value);
     }
 
@@ -205,11 +226,14 @@ public class Header implements Syncable<Header> {
         if (!Objects.equals(name, other.name)) {
             return false;
         }
+        if (valueValid != other.valueValid) {
+            return false;
+        }
         return Objects.equals(value, other.value);
     }
 
-    @Override
     @NonNull
+    @Override
     public String toString() {
         return "Header{" +
                 "id=" + id +
@@ -217,6 +241,7 @@ public class Header implements Syncable<Header> {
                 ", headerType=" + headerType +
                 ", name='" + name + '\'' +
                 ", value='" + StringUtil.maskSecret(value, isValueSecret()) + '\'' +
+                ", valueValid=" + valueValid +
                 '}';
     }
 }

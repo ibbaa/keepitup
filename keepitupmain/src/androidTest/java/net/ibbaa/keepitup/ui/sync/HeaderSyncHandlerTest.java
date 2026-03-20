@@ -294,6 +294,7 @@ public class HeaderSyncHandlerTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name1");
         header.setValue("value1");
+        header.setValueValid(true);
         return header;
     }
 
@@ -304,6 +305,7 @@ public class HeaderSyncHandlerTest extends BaseUITest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name2");
         header.setValue("value2");
+        header.setValueValid(true);
         return header;
     }
 
@@ -315,6 +317,7 @@ public class HeaderSyncHandlerTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name3");
         header.setValue("value3");
+        header.setValueValid(true);
         return header;
     }
 }

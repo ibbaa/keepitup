@@ -370,6 +370,7 @@ public class DBSetupTest {
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("User-Agent", header.getName());
         assertEquals("Test", header.getValue());
+        assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", constantPreferenceManager.getPreferenceHTTPUserAgent());
     }
 
@@ -1347,6 +1348,7 @@ public class DBSetupTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name" + number);
         header.setValue("value" + number);
+        header.setValueValid(true);
         return header;
     }
 }

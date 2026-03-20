@@ -888,6 +888,7 @@ public class ImportTaskTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("bname");
         header.setValue("value");
+        header.setValueValid(true);
         return header;
     }
 
@@ -899,6 +900,7 @@ public class ImportTaskTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("aname");
         header.setValue("value");
+        header.setValueValid(true);
         return header;
     }
 

@@ -2079,6 +2079,7 @@ public class DownloadNetworkTaskWorkerTest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name" + number);
         header.setValue("value" + number);
+        header.setValueValid(true);
         return header;
     }
 }

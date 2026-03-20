@@ -525,6 +525,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -544,9 +545,11 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         activityScenario.close();
     }
 
@@ -580,9 +583,11 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         activityScenario.close();
     }
 
@@ -611,18 +616,23 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         activityScenario.close();
     }
 
@@ -653,21 +663,27 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(5).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(5).isValueValid());
         activityScenario.close();
     }
 
@@ -702,33 +718,43 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(5).isValueValid());
         assertEquals("Name7", handler.getGlobalHeaders().get(6).getName());
         assertEquals("Value7", handler.getGlobalHeaders().get(6).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(6).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(6).isValueValid());
         assertEquals("Name8", handler.getGlobalHeaders().get(7).getName());
         assertEquals("Value8", handler.getGlobalHeaders().get(7).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(7).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(7).isValueValid());
         assertEquals("Name9", handler.getGlobalHeaders().get(8).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(8).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(8).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(8).isValueValid());
         assertEquals("User-Agent", handler.getGlobalHeaders().get(9).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(9).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(9).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(9).isValueValid());
         activityScenario.close();
     }
 
@@ -921,6 +947,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -946,6 +973,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -972,6 +1000,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
         assertEquals("abc:123", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1000,6 +1029,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
         assertEquals("abc:123", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1024,6 +1054,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1050,6 +1081,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1080,12 +1112,15 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         activityScenario.close();
     }
 
@@ -1118,12 +1153,15 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         activityScenario.close();
     }
 
@@ -1156,15 +1194,19 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("AName", handler.getGlobalHeaders().get(0).getName());
         assertEquals("AValue", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name1", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         activityScenario.close();
     }
 
@@ -1199,15 +1241,19 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("AName", handler.getGlobalHeaders().get(0).getName());
         assertEquals("AValue", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name1", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         activityScenario.close();
     }
 
@@ -1252,21 +1298,27 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(5).isValueValid());
         activityScenario.close();
     }
 
@@ -1313,21 +1365,27 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(5).isValueValid());
         activityScenario.close();
     }
 
@@ -1439,9 +1497,11 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         activityScenario.close();
     }
 
@@ -1470,9 +1530,11 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         activityScenario.close();
     }
 
@@ -1530,30 +1592,39 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
         assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(5).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(5).isValueValid());
         assertEquals("Name7", handler.getGlobalHeaders().get(6).getName());
         assertEquals("Value7", handler.getGlobalHeaders().get(6).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(6).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(6).isValueValid());
         assertEquals("Name8", handler.getGlobalHeaders().get(7).getName());
         assertEquals("Value8", handler.getGlobalHeaders().get(7).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(7).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(7).isValueValid());
         assertEquals("Name9", handler.getGlobalHeaders().get(8).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(8).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(8).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(8).isValueValid());
         activityScenario.close();
     }
 
@@ -1695,12 +1766,15 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         activityScenario.close();
     }
 
@@ -1733,12 +1807,15 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         activityScenario.close();
     }
 
@@ -1799,18 +1876,23 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         assertEquals("Name3", handler.getGlobalHeaders().get(1).getName());
         assertEquals("Value3", handler.getGlobalHeaders().get(1).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(1).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(1).isValueValid());
         assertEquals("Name4", handler.getGlobalHeaders().get(2).getName());
         assertEquals("Value4", handler.getGlobalHeaders().get(2).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(2).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(2).isValueValid());
         assertEquals("Name8", handler.getGlobalHeaders().get(3).getName());
         assertEquals("Value8", handler.getGlobalHeaders().get(3).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(3).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(3).isValueValid());
         assertEquals("Name9", handler.getGlobalHeaders().get(4).getName());
         assertEquals("Value9", handler.getGlobalHeaders().get(4).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(4).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(4).isValueValid());
         activityScenario.close();
     }
 
@@ -1833,6 +1915,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.GENERIC, handler.getGlobalHeaders().get(0).getHeaderType());
+        assertTrue(handler.getGlobalHeaders().get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -3126,6 +3209,7 @@ public class DefaultsActivityTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
+        header.setValueValid(true);
         return header;
     }
 }

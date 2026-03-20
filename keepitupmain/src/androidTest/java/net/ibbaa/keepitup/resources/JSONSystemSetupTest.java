@@ -1439,6 +1439,7 @@ public class JSONSystemSetupTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("bname");
         header.setValue("value");
+        header.setValueValid(true);
         return header;
     }
 
@@ -1449,6 +1450,7 @@ public class JSONSystemSetupTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("aname");
         header.setValue("value");
+        header.setValueValid(true);
         return header;
     }
 
@@ -1459,6 +1461,7 @@ public class JSONSystemSetupTest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("cname");
         header.setValue("value");
+        header.setValueValid(true);
         return header;
     }
 }

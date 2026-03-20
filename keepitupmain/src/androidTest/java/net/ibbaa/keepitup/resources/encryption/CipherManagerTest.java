@@ -116,6 +116,15 @@ public class CipherManagerTest {
     }
 
     @Test
+    public void testEncryptWithKeyWithoutAAD() {
+        aesParam.put("iv", createTestAESIV());
+        CipherManager.EncryptionResult result = cipherManager.encrypt(aesParam, createTestAESKey(), null, "plaintext");
+        assertTrue(result.success());
+        assertEquals("Encryption successful", result.message());
+        assertEquals("plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lUzGqjrdJ9Yhc5A3K15MIR1", result.ciphertext());
+    }
+
+    @Test
     public void testDecrypt() {
         argon2Param.put("salt", createTestArgon2Salt());
         aesParam.put("iv", createTestAESIV());
@@ -130,6 +139,16 @@ public class CipherManagerTest {
     public void testDecryptWithKey() {
         aesParam.put("iv", createTestAESIV());
         CipherManager.DecryptionResult result = cipherManager.decrypt(aesParam, createTestAESKey(), "aad", "plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lValWBNV3cLqQWshRpPclFo");
+        assertTrue(result.success());
+        assertFalse(result.keyInvalid());
+        assertEquals("Decryption successful", result.message());
+        assertEquals("plaintext", result.plaintext());
+    }
+
+    @Test
+    public void testDecryptWithKeyWithoutAAD() {
+        aesParam.put("iv", createTestAESIV());
+        CipherManager.DecryptionResult result = cipherManager.decrypt(aesParam, createTestAESKey(), null, "plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lUzGqjrdJ9Yhc5A3K15MIR1");
         assertTrue(result.success());
         assertFalse(result.keyInvalid());
         assertEquals("Decryption successful", result.message());

@@ -1235,11 +1235,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1271,11 +1273,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1312,11 +1316,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1355,11 +1361,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1394,6 +1402,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1433,6 +1442,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
@@ -1472,11 +1482,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1520,14 +1532,17 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("CName", headers.get(1).getName());
         assertEquals("CValue", headers.get(1).getValue());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1573,14 +1588,17 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         assertEquals("CName", headers.get(1).getName());
         assertEquals("CValue", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1602,11 +1620,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
@@ -1621,11 +1641,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1647,11 +1669,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
@@ -1668,11 +1692,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("AName", headers.get(0).getName());
         assertEquals("AValue", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.GENERIC, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1706,11 +1732,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("Authorization", headers.get(0).getName());
         assertEquals("abc:123", headers.get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
         assertEquals(1, globalHeaders.size());
         assertEquals("Authorization", globalHeaders.get(0).getName());
         assertEquals("abc:123", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, globalHeaders.get(0).getHeaderType());
+        assertTrue(globalHeaders.get(0).isValueValid());
         activityScenario.close();
     }
 
@@ -1856,6 +1884,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
+        header.setValueValid(true);
         return header;
     }
 

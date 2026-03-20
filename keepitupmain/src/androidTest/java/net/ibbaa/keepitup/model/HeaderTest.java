@@ -46,6 +46,7 @@ public class HeaderTest {
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
         PersistableBundle persistableBundle = header.toPersistableBundle();
         assertNotNull(persistableBundle);
         header = new Header(persistableBundle);
@@ -54,6 +55,7 @@ public class HeaderTest {
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
         Bundle bundle = header.toBundle();
         assertNotNull(bundle);
         header = new Header(bundle);
@@ -62,6 +64,7 @@ public class HeaderTest {
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
         Map<String, ?> map = header.toMap();
         assertNotNull(map);
         header = new Header(map);
@@ -70,6 +73,7 @@ public class HeaderTest {
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
     }
 
     @Test
@@ -94,6 +98,7 @@ public class HeaderTest {
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
     }
 
     @Test
@@ -104,12 +109,14 @@ public class HeaderTest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name");
         header.setValue("value");
+        header.setValueValid(false);
         Header copyHeader = new Header(header);
         assertEquals(-1, copyHeader.getId());
         assertEquals(-1, copyHeader.getNetworkTaskId());
         assertEquals(HeaderType.BASICAUTH, copyHeader.getHeaderType());
         assertEquals("name", copyHeader.getName());
         assertEquals("value", copyHeader.getValue());
+        assertTrue(copyHeader.isValueValid());
     }
 
     @Test
@@ -120,6 +127,7 @@ public class HeaderTest {
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
     }
 
     @Test
@@ -130,12 +138,14 @@ public class HeaderTest {
         map.put("headerType", 5);
         map.put("name", null);
         map.put("value", null);
+        map.put("valueValid", "123");
         Header header = new Header(map);
         assertEquals(-1, header.getId());
         assertEquals(-1, header.getNetworkTaskId());
         assertNull(header.getHeaderType());
         assertNull(header.getName());
         assertNull(header.getValue());
+        assertTrue(header.isValueValid());
     }
 
     @Test
@@ -146,12 +156,14 @@ public class HeaderTest {
         map.put("headerType", "3");
         map.put("name", "name");
         map.put("value", "value");
+        map.put("valueValid", "false");
         Header header = new Header(map);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
+        assertFalse(header.isValueValid());
     }
 
     @Test
@@ -162,11 +174,13 @@ public class HeaderTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name");
         header.setValue("value");
+        header.setValueValid(false);
         assertEquals(1, header.getId());
         assertEquals(2, header.getNetworkTaskId());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
+        assertFalse(header.isValueValid());
         PersistableBundle persistableBundle = header.toPersistableBundle();
         assertNotNull(persistableBundle);
         header = new Header(persistableBundle);
@@ -175,6 +189,7 @@ public class HeaderTest {
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
+        assertFalse(header.isValueValid());
         Bundle bundle = header.toBundle();
         assertNotNull(bundle);
         header = new Header(bundle);
@@ -183,6 +198,7 @@ public class HeaderTest {
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
+        assertFalse(header.isValueValid());
     }
 
     @Test
@@ -193,6 +209,7 @@ public class HeaderTest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name");
         header.setValue("value");
+        header.setValueValid(false);
         Map<String, ?> map = header.toMap();
         assertNotNull(map);
         header = new Header(map);
@@ -201,6 +218,7 @@ public class HeaderTest {
         assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
         assertEquals("name", header.getName());
         assertEquals("value", header.getValue());
+        assertFalse(header.isValueValid());
     }
 
     @Test

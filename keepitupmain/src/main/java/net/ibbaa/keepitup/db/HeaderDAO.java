@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,6 +90,13 @@ public class HeaderDAO extends BaseDAO {
         return headerList;
     }
 
+    public Map<String, String> readEncryptedValueAndValueIV(long id) {
+        Log.d(HeaderDAO.class.getName(), "readEncryptedValueAndValueIV");
+        Header header = new Header();
+        header.setId(id);
+        return executeDBOperationInTransaction(header, this::readEncryptedValueAndValueIV);
+    }
+
     public void deleteGlobalHeaders() {
         Log.d(HeaderDAO.class.getName(), "deleteGlobalHeaders");
         executeDBOperationInTransaction((Header) null, this::deleteGlobalHeaders);
@@ -127,6 +135,47 @@ public class HeaderDAO extends BaseDAO {
         }
     }
 
+    private boolean encryptIfSecret(ContentValues values, Header header) {
+        Log.d(HeaderDAO.class.getName(), "encryptIfSecret, header is " + header);
+        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+        String valueColumn = dbConstants.getValueColumnName();
+        if (header.isValueSecret()) {
+            String ivColumn = dbConstants.getValueIVColumnName();
+            String value = StringUtil.notNull(header.getValue());
+            EncryptResult result = encrypt(values, valueColumn, ivColumn, value);
+            header.setValueValid(result.success());
+            if (!result.success()) {
+                values.put(valueColumn, "");
+            }
+            return result.success();
+        }
+        header.setValueValid(true);
+        values.put(valueColumn, header.getValue());
+        return true;
+    }
+
+    private void decryptIfSecret(Cursor cursor, Header header) {
+        Log.d(HeaderDAO.class.getName(), "decryptIfSecret, header is " + header);
+        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+        String valueColumn = dbConstants.getValueColumnName();
+        String ivColumn = dbConstants.getValueIVColumnName();
+        int indexIVColumn = cursor.getColumnIndex(ivColumn);
+        if (!cursor.isNull(indexIVColumn)) {
+            DecryptResult result = decrypt(cursor, valueColumn, ivColumn);
+            if (result.success()) {
+                header.setValue(result.plainText());
+                header.setValueValid(true);
+            } else {
+                header.setValue("");
+                header.setValueValid(false);
+            }
+            return;
+        }
+        int indexValueColumn = cursor.getColumnIndex(valueColumn);
+        header.setValue(cursor.getString(indexValueColumn));
+        header.setValueValid(true);
+    }
+
     private Header insertHeader(Header header, SQLiteDatabase db) {
         Log.d(HeaderDAO.class.getName(), "insertHeader, header is " + header);
         ContentValues values = new ContentValues();
@@ -134,13 +183,18 @@ public class HeaderDAO extends BaseDAO {
         values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
         values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
         values.put(dbConstants.getNameColumnName(), header.getName());
-        values.put(dbConstants.getValueColumnName(), header.getValue());
         values.putNull(dbConstants.getValueIVColumnName());
-        long rowid = db.insert(dbConstants.getTableName(), null, values);
-        if (rowid < 0) {
-            Log.e(HeaderDAO.class.getName(), "Error inserting header into database. Insert returned -1.");
+        boolean encryptSuccess = encryptIfSecret(values, header);
+        Log.d(HeaderDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
+        if (encryptSuccess) {
+            long rowid = db.insert(dbConstants.getTableName(), null, values);
+            if (rowid < 0) {
+                Log.e(HeaderDAO.class.getName(), "Error inserting header into database. Insert returned -1.");
+            }
+            header.setId(rowid);
+        } else {
+            header.setId(-1);
         }
-        header.setId(rowid);
         return header;
     }
 
@@ -153,21 +207,25 @@ public class HeaderDAO extends BaseDAO {
             values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
             values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
             values.put(dbConstants.getNameColumnName(), header.getName());
-            values.put(dbConstants.getValueColumnName(), header.getValue());
             values.putNull(dbConstants.getValueIVColumnName());
-            long rowid = db.insert(dbConstants.getTableName(), null, values);
-            if (rowid < 0) {
-                Log.e(HeaderDAO.class.getName(), "Error inserting header into database.");
-                return new DBResult<>(false, -1);
+            boolean encryptSuccess = encryptIfSecret(values, header);
+            Log.d(HeaderDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
+            if (encryptSuccess) {
+                long rowid = db.insert(dbConstants.getTableName(), null, values);
+                if (rowid < 0) {
+                    Log.e(HeaderDAO.class.getName(), "Error inserting header into database.");
+                } else {
+                    count++;
+                }
+                header.setId(rowid);
             } else {
                 count++;
+                header.setId(-1);
             }
-            header.setId(rowid);
         }
-        return new DBResult<>(true, count);
+        return new DBResult<>(count == headers.size(), count);
     }
 
-    @SuppressWarnings("ExtractMethodRecommender")
     private Header updateHeader(Header header, SQLiteDatabase db) {
         Log.d(HeaderDAO.class.getName(), "updateHeader, header is " + header);
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
@@ -177,8 +235,9 @@ public class HeaderDAO extends BaseDAO {
         values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
         values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
         values.put(dbConstants.getNameColumnName(), header.getName());
-        values.put(dbConstants.getValueColumnName(), header.getValue());
         values.putNull(dbConstants.getValueIVColumnName());
+        boolean encryptSuccess = encryptIfSecret(values, header);
+        Log.d(HeaderDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return header;
     }
@@ -227,6 +286,32 @@ public class HeaderDAO extends BaseDAO {
         List<Header> result = new ArrayList<>();
         readHeadersInternal(db, dbConstants.getReadAllHeadersStatement(), null, result::add);
         Log.d(HeaderDAO.class.getName(), "readAllHeaders, returning " + result);
+        return result;
+    }
+
+    @SuppressWarnings("TryFinallyCanBeTryWithResources")
+    private Map<String, String> readEncryptedValueAndValueIV(Header header, SQLiteDatabase db) {
+        Log.d(HeaderDAO.class.getName(), "readEncryptedValueAndValueIV, header is " + header);
+        Map<String, String> result = new HashMap<>();
+        Cursor cursor = null;
+        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+        try {
+            cursor = db.rawQuery(dbConstants.getReadEncryptedValueAndValueIV(), new String[]{String.valueOf(header.getId())});
+            while (cursor.moveToNext()) {
+                int indexValueColumn = cursor.getColumnIndex(dbConstants.getValueColumnName());
+                int indexIVColumn = cursor.getColumnIndex(dbConstants.getValueIVColumnName());
+                result.put(dbConstants.getValueColumnName(), cursor.getString(indexValueColumn));
+                result.put(dbConstants.getValueIVColumnName(), cursor.getString(indexIVColumn));
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(HeaderDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
         return result;
     }
 
@@ -299,7 +384,6 @@ public class HeaderDAO extends BaseDAO {
         int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
         int indexHeaderTypeColumn = cursor.getColumnIndex(dbConstants.getHeaderTypeColumnName());
         int indexNameColumn = cursor.getColumnIndex(dbConstants.getNameColumnName());
-        int indexValueColumn = cursor.getColumnIndex(dbConstants.getValueColumnName());
         header.setId(cursor.getLong(indexIdColumn));
         header.setNetworkTaskId(cursor.isNull(indexNetworkTaskIdColumn) ? -1 : cursor.getLong(indexNetworkTaskIdColumn));
         if (cursor.isNull(indexHeaderTypeColumn)) {
@@ -308,7 +392,7 @@ public class HeaderDAO extends BaseDAO {
             header.setHeaderType(HeaderType.forCode(cursor.getInt(indexHeaderTypeColumn)));
         }
         header.setName(cursor.getString(indexNameColumn));
-        header.setValue(cursor.getString(indexValueColumn));
+        decryptIfSecret(cursor, header);
         return header;
     }
 

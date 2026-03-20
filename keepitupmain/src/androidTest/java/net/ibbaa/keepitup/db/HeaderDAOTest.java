@@ -18,7 +18,9 @@ package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -29,6 +31,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -50,6 +53,8 @@ public class HeaderDAOTest {
     @Before
     public void beforeEachTestMethod() {
         Dump.initialize(null);
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        mainKeyAccess.reset();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
@@ -107,6 +112,68 @@ public class HeaderDAOTest {
         assertTrue(header1.isTechnicallyEqual(readHeaderList.get(0)));
         assertTrue(header2.isTechnicallyEqual(readHeaderList.get(1)));
         assertTrue(header3.isTechnicallyEqual(readHeaderList.get(2)));
+    }
+
+    @Test
+    public void testInsertReadEncrypted() {
+        Header header = getHeader4();
+        header = headerDAO.insertHeader(header);
+        assertTrue(header.getId() > 0);
+        assertTrue(header.isTechnicallyEqual(getHeader4()));
+        Map<String, String> encryptedValues = headerDAO.readEncryptedValueAndValueIV(header.getId());
+        assertNotNull(encryptedValues.get("VALUE"));
+        assertNotNull(encryptedValues.get("VALUEIV"));
+        assertNotEquals("value4", encryptedValues.get("VALUE"));
+        Header readHeader = headerDAO.readAllHeaders().get(0);
+        assertTrue(header.isTechnicallyEqual(readHeader));
+    }
+
+    @Test
+    public void testBulkInsertReadEncrypted() {
+        Header header1 = getHeader1();
+        Header header2 = getHeader2();
+        Header header3 = getHeader3();
+        Header header4 = getHeader4();
+        int count = headerDAO.insertHeaders(List.of(header1, header2, header3, header4));
+        assertEquals(4, count);
+        List<Header> readHeaderList = headerDAO.readAllHeaders();
+        assertEquals(4, readHeaderList.size());
+        assertTrue(header1.isTechnicallyEqual(readHeaderList.get(0)));
+        assertTrue(header2.isTechnicallyEqual(readHeaderList.get(1)));
+        assertTrue(header3.isTechnicallyEqual(readHeaderList.get(2)));
+        assertTrue(header4.isTechnicallyEqual(readHeaderList.get(3)));
+        Map<String, String> encryptedValues1 = headerDAO.readEncryptedValueAndValueIV(header1.getId());
+        Map<String, String> encryptedValues2 = headerDAO.readEncryptedValueAndValueIV(header2.getId());
+        Map<String, String> encryptedValues3 = headerDAO.readEncryptedValueAndValueIV(header3.getId());
+        Map<String, String> encryptedValues4 = headerDAO.readEncryptedValueAndValueIV(header4.getId());
+        assertEquals("value1", encryptedValues1.get("VALUE"));
+        assertNull(encryptedValues1.get("VALUEIV"));
+        assertNotEquals("value2", encryptedValues2.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUEIV"));
+        assertEquals("value3", encryptedValues3.get("VALUE"));
+        assertNull(encryptedValues3.get("VALUEIV"));
+        assertNotEquals("value4", encryptedValues4.get("VALUE"));
+        assertNotNull(encryptedValues4.get("VALUE"));
+        assertNotNull(encryptedValues4.get("VALUEIV"));
+    }
+
+    @Test
+    public void testUpdateEncrypted() {
+        Header header = getHeader1();
+        header = headerDAO.insertHeader(header);
+        assertTrue(header.isTechnicallyEqual(getHeader1()));
+        header.setHeaderType(HeaderType.GENERICAUTH);
+        header.setValue("secret");
+        headerDAO.updateHeader(header);
+        header = headerDAO.readAllHeaders().get(0);
+        assertEquals("name1", header.getName());
+        assertEquals("secret", header.getValue());
+        assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
+        Map<String, String> encryptedValues = headerDAO.readEncryptedValueAndValueIV(header.getId());
+        assertNotNull(encryptedValues.get("VALUE"));
+        assertNotNull(encryptedValues.get("VALUEIV"));
+        assertNotEquals("secret", encryptedValues.get("VALUE"));
     }
 
     @Test
@@ -236,6 +303,41 @@ public class HeaderDAOTest {
     }
 
     @Test
+    public void testReadGlobalEncrypted() {
+        Header headerGlobal1 = getHeader1();
+        headerGlobal1.setNetworkTaskId(-1);
+        Header headerGlobal2 = getHeader2();
+        headerGlobal2.setNetworkTaskId(-1);
+        Header header3 = getHeader3();
+        Header header4 = getHeader4();
+        headerDAO.insertHeaders(List.of(headerGlobal1, headerGlobal2, header3, header4));
+        List<Header> globalHeaders = headerDAO.readGlobalHeaders();
+        List<Header> allHeaders = headerDAO.readAllHeaders();
+        assertEquals(2, globalHeaders.size());
+        assertEquals(4, allHeaders.size());
+        assertTrue(headerGlobal1.isTechnicallyEqual(globalHeaders.get(0)));
+        assertTrue(headerGlobal2.isTechnicallyEqual(globalHeaders.get(1)));
+        assertTrue(headerGlobal1.isTechnicallyEqual(allHeaders.get(0)));
+        assertTrue(headerGlobal2.isTechnicallyEqual(allHeaders.get(1)));
+        assertTrue(header3.isTechnicallyEqual(allHeaders.get(2)));
+        assertTrue(header4.isTechnicallyEqual(allHeaders.get(3)));
+        Map<String, String> encryptedValues1 = headerDAO.readEncryptedValueAndValueIV(headerGlobal1.getId());
+        Map<String, String> encryptedValues2 = headerDAO.readEncryptedValueAndValueIV(headerGlobal2.getId());
+        Map<String, String> encryptedValues3 = headerDAO.readEncryptedValueAndValueIV(header3.getId());
+        Map<String, String> encryptedValues4 = headerDAO.readEncryptedValueAndValueIV(header4.getId());
+        assertEquals("value1", encryptedValues1.get("VALUE"));
+        assertNull(encryptedValues1.get("VALUEIV"));
+        assertNotEquals("value2", encryptedValues2.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUEIV"));
+        assertEquals("value3", encryptedValues3.get("VALUE"));
+        assertNull(encryptedValues3.get("VALUEIV"));
+        assertNotEquals("value4", encryptedValues4.get("VALUE"));
+        assertNotNull(encryptedValues4.get("VALUE"));
+        assertNotNull(encryptedValues4.get("VALUEIV"));
+    }
+
+    @Test
     public void testUpdate() {
         Header header1 = getHeader1();
         Header header2 = getHeader2();
@@ -317,6 +419,7 @@ public class HeaderDAOTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name1");
         header.setValue("value1");
+        header.setValueValid(true);
         return header;
     }
 
@@ -327,6 +430,7 @@ public class HeaderDAOTest {
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("name2");
         header.setValue("value2");
+        header.setValueValid(true);
         return header;
     }
 
@@ -337,6 +441,18 @@ public class HeaderDAOTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("name3");
         header.setValue("value3");
+        header.setValueValid(true);
+        return header;
+    }
+
+    private Header getHeader4() {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(1);
+        header.setHeaderType(HeaderType.GENERICAUTH);
+        header.setName("name4");
+        header.setValue("value4");
+        header.setValueValid(true);
         return header;
     }
 }

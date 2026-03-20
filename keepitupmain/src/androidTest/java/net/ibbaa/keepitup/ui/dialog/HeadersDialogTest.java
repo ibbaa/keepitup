@@ -30,6 +30,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import android.os.Bundle;
 
@@ -694,12 +695,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
@@ -714,9 +718,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
@@ -751,12 +757,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
@@ -771,9 +780,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
@@ -808,12 +819,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
@@ -829,9 +843,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -867,12 +883,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
@@ -888,9 +907,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -963,8 +984,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -994,8 +1018,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
+        assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1081,15 +1108,19 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         assertEquals("Name4", header4.getName());
         assertEquals("Value4", header4.getValue());
         assertEquals(HeaderType.GENERIC, header4.getHeaderType());
+        assertTrue(header4.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1127,15 +1158,19 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         assertEquals("Name4", header4.getName());
         assertEquals("Value4", header4.getValue());
         assertEquals(HeaderType.GENERIC, header4.getHeaderType());
+        assertTrue(header4.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1168,9 +1203,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("abc:123", header1.getValue());
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1205,9 +1242,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("abc:123", header1.getValue());
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("User-Agent", header2.getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1242,12 +1281,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1284,12 +1326,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1329,12 +1374,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("abc:123", header1.getValue());
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name2", header3.getName());
         assertEquals("Value2", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1376,12 +1424,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("abc:123", header1.getValue());
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name2", header3.getName());
         assertEquals("Value2", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1392,6 +1443,7 @@ public class HeadersDialogTest extends BaseUITest {
         header.setName("Authorization");
         header.setValue("ABC");
         header.setHeaderType(HeaderType.GENERICAUTH);
+        header.setValueValid(true);
         getHeaderDAO().insertHeader(header);
         resetGlobalHeaderHandler();
         activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
@@ -1416,6 +1468,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header.getName());
         assertEquals("ABC", header.getValue());
         assertEquals(HeaderType.GENERICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1450,6 +1503,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("success", header.getName());
         assertEquals("success", header.getValue());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1484,6 +1538,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("success", header.getName());
         assertEquals("success", header.getValue());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1528,15 +1583,19 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name2", header2.getName());
         assertEquals("Value2", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         assertEquals("Success", header4.getName());
         assertEquals("Success", header4.getValue());
         assertEquals(HeaderType.GENERIC, header4.getHeaderType());
+        assertTrue(header4.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1603,6 +1662,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name", header.getName());
         assertEquals("Value", header.getValue());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1629,6 +1689,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name", header.getName());
         assertEquals("Value", header.getValue());
         assertEquals(HeaderType.GENERIC, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1658,6 +1719,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header.getName());
         assertEquals("abc:123", header.getValue());
         assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1689,6 +1751,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header.getName());
         assertEquals("abc:123", header.getValue());
         assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1773,12 +1836,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1813,12 +1879,15 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("AName", header1.getName());
         assertEquals("AValue", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         assertEquals("Name3", header3.getName());
         assertEquals("Value3", header3.getValue());
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
+        assertTrue(header3.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1856,9 +1925,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1898,9 +1969,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1936,9 +2009,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Success", header2.getName());
         assertEquals("Success", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1966,6 +2041,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
         assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -1995,6 +2071,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
         assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2023,6 +2100,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
         assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2053,6 +2131,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("Value", header1.getValue());
         assertEquals(HeaderType.GENERICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2084,9 +2163,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2120,9 +2201,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Name1", header1.getName());
         assertEquals("Value1", header1.getValue());
         assertEquals(HeaderType.GENERIC, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name3", header2.getName());
         assertEquals("Value3", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2159,9 +2242,11 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals("Authorization", header1.getName());
         assertEquals("abc:123", header1.getValue());
         assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertTrue(header1.isValueValid());
         assertEquals("Name1", header2.getName());
         assertEquals("Value1", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
+        assertTrue(header2.isValueValid());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         activityScenario.close();
     }
@@ -2197,6 +2282,7 @@ public class HeadersDialogTest extends BaseUITest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
+        header.setValueValid(true);
         return header;
     }
 }
