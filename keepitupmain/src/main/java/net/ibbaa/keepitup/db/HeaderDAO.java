@@ -90,13 +90,6 @@ public class HeaderDAO extends BaseDAO {
         return headerList;
     }
 
-    public Map<String, String> readEncryptedValueAndValueIV(long id) {
-        Log.d(HeaderDAO.class.getName(), "readEncryptedValueAndValueIV");
-        Header header = new Header();
-        header.setId(id);
-        return executeDBOperationInTransaction(header, this::readEncryptedValueAndValueIV);
-    }
-
     public void deleteGlobalHeaders() {
         Log.d(HeaderDAO.class.getName(), "deleteGlobalHeaders");
         executeDBOperationInTransaction((Header) null, this::deleteGlobalHeaders);
@@ -286,32 +279,6 @@ public class HeaderDAO extends BaseDAO {
         List<Header> result = new ArrayList<>();
         readHeadersInternal(db, dbConstants.getReadAllHeadersStatement(), null, result::add);
         Log.d(HeaderDAO.class.getName(), "readAllHeaders, returning " + result);
-        return result;
-    }
-
-    @SuppressWarnings("TryFinallyCanBeTryWithResources")
-    private Map<String, String> readEncryptedValueAndValueIV(Header header, SQLiteDatabase db) {
-        Log.d(HeaderDAO.class.getName(), "readEncryptedValueAndValueIV, header is " + header);
-        Map<String, String> result = new HashMap<>();
-        Cursor cursor = null;
-        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
-        try {
-            cursor = db.rawQuery(dbConstants.getReadEncryptedValueAndValueIV(), new String[]{String.valueOf(header.getId())});
-            while (cursor.moveToNext()) {
-                int indexValueColumn = cursor.getColumnIndex(dbConstants.getValueColumnName());
-                int indexIVColumn = cursor.getColumnIndex(dbConstants.getValueIVColumnName());
-                result.put(dbConstants.getValueColumnName(), cursor.getString(indexValueColumn));
-                result.put(dbConstants.getValueIVColumnName(), cursor.getString(indexIVColumn));
-            }
-        } finally {
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (Throwable exc) {
-                    Log.e(HeaderDAO.class.getName(), "Error closing result cursor", exc);
-                }
-            }
-        }
         return result;
     }
 

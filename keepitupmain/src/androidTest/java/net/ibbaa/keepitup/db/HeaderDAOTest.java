@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
+import net.ibbaa.keepitup.test.mock.TestHeaderDAO;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -47,7 +48,7 @@ import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class HeaderDAOTest {
 
-    private HeaderDAO headerDAO;
+    private TestHeaderDAO headerDAO;
     private NetworkTaskDAO networkTaskDAO;
 
     @Before
@@ -55,7 +56,7 @@ public class HeaderDAOTest {
         Dump.initialize(null);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         mainKeyAccess.reset();
-        headerDAO = new HeaderDAO(TestRegistry.getContext());
+        headerDAO = new TestHeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
@@ -126,6 +127,24 @@ public class HeaderDAOTest {
         assertNotEquals("value4", encryptedValues.get("VALUE"));
         Header readHeader = headerDAO.readAllHeaders().get(0);
         assertTrue(header.isTechnicallyEqual(readHeader));
+    }
+
+    @Test
+    public void testInsertReadUnencryptedAuthorization() {
+        Header header1 = getHeader2();
+        Header header2 = getHeader4();
+        header1 = headerDAO.insertHeader(header1);
+        header2 = headerDAO.insertHeaderUnencrypted(header2);
+        Header readHeader1 = headerDAO.readAllHeaders().get(0);
+        Header readHeader2 = headerDAO.readAllHeaders().get(1);
+        assertTrue(header1.isTechnicallyEqual(readHeader1));
+        assertTrue(header2.isTechnicallyEqual(readHeader2));
+        Map<String, String> encryptedValues1 = headerDAO.readEncryptedValueAndValueIV(header1.getId());
+        Map<String, String> encryptedValues2 = headerDAO.readEncryptedValueAndValueIV(header2.getId());
+        assertNotNull(encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues1.get("VALUEIV"));
+        assertEquals("value4", encryptedValues2.get("VALUE"));
+        assertNull(encryptedValues2.get("VALUEIV"));
     }
 
     @Test
