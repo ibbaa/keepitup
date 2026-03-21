@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerId;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.DebugUtil;
 
@@ -71,7 +72,10 @@ public class StartupService extends BroadcastReceiver {
             Log.d(StartupService.class.getName(), "Cleanup files");
             cleanupFiles(context);
         }
-        Log.d(StartupService.class.getName(), "Cleanup logs");
+        Log.d(StartupService.class.getName(), "Initialize main key");
+        MainKeyAccess keyAccess = new MainKeyAccess(context);
+        keyAccess.getMainKey();
+        Log.d(StartupService.class.getName(), "Cleanup data");
         cleanupAccessTypeData(context);
         cleanupResolve(context);
         cleanupHeaders(context);

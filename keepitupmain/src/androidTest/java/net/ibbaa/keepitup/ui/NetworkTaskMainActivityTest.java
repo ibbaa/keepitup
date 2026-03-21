@@ -58,6 +58,7 @@ import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
+import net.ibbaa.keepitup.test.mock.TestHeaderDAO;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestUtil;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -72,6 +73,7 @@ import org.junit.runner.RunWith;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
@@ -1739,6 +1741,80 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("abc:123", globalHeaders.get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, globalHeaders.get(0).getHeaderType());
         assertTrue(globalHeaders.get(0).isValueValid());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMultipleHeadersChangedAndInsertedEncrypted() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headers.size());
+        assertEquals("Authorization", headers.get(0).getName());
+        assertEquals("AValue", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
+        assertEquals("Name", headers.get(1).getName());
+        assertEquals("Test", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
+        TestHeaderDAO testHeaderDAO = new TestHeaderDAO(TestRegistry.getContext());
+        Map<String, String> encryptedValues1 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(0).getId());
+        assertNotEquals("AValue", encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues1.get("VALUEIV"));
+        Map<String, String> encryptedValues2 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(1).getId());
+        assertEquals("Test", encryptedValues2.get("VALUE"));
+        assertNull(encryptedValues2.get("VALUEIV"));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headers.size());
+        assertEquals("Authorization", headers.get(0).getName());
+        assertEquals("abc:123", headers.get(0).getValue());
+        assertEquals(HeaderType.BASICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
+        assertEquals("Name", headers.get(1).getName());
+        assertEquals("Test", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
+        encryptedValues1 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(0).getId());
+        assertNotEquals("abc:123", encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues1.get("VALUEIV"));
+        encryptedValues2 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(1).getId());
+        assertEquals("Test", encryptedValues2.get("VALUE"));
+        assertNull(encryptedValues2.get("VALUEIV"));
         activityScenario.close();
     }
 

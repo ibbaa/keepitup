@@ -23,9 +23,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
@@ -34,6 +38,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.test.mock.TestHeaderDAO;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -178,6 +183,29 @@ public class HeaderDAOTest {
     }
 
     @Test
+    public void testBulkInsertReadEncryptedKeyInvalid() {
+        Header header1 = getHeader1();
+        Header header2 = getHeader2();
+        Header header3 = getHeader3();
+        Header header4 = getHeader4();
+        int count = headerDAO.insertHeaders(List.of(header1, header2, header3, header4));
+        assertEquals(4, count);
+        corruptKey();
+        List<Header> readHeaderList = headerDAO.readAllHeaders();
+        assertEquals(4, readHeaderList.size());
+        Header readHeader2 = readHeaderList.get(1);
+        Header readHeader4 = readHeaderList.get(3);
+        assertFalse(readHeader2.isValueValid());
+        assertFalse(readHeader4.isValueValid());
+        assertEquals("", readHeader2.getValue());
+        assertEquals("", readHeader4.getValue());
+        assertEquals("name2", readHeader2.getName());
+        assertEquals("name4", readHeader4.getName());
+        assertTrue(header1.isTechnicallyEqual(readHeaderList.get(0)));
+        assertTrue(header3.isTechnicallyEqual(readHeaderList.get(2)));
+    }
+
+    @Test
     public void testUpdateEncrypted() {
         Header header = getHeader1();
         header = headerDAO.insertHeader(header);
@@ -233,6 +261,38 @@ public class HeaderDAOTest {
         assertTrue(header2.isTechnicallyEqual(headerList2.get(0)));
         assertTrue(header2.isTechnicallyEqual(headerList2.get(1)));
         assertTrue(header6.isTechnicallyEqual(headerList3.get(0)));
+    }
+
+    @Test
+    public void testReadAllHeadersForNetworkTasksEncryptedKeyInvalid() {
+        Header header1 = getHeader1();
+        Header header2 = getHeader2();
+        Header header3 = getHeader1();
+        Header header4 = getHeader2();
+        header1.setNetworkTaskId(1);
+        header2.setNetworkTaskId(1);
+        header3.setNetworkTaskId(3);
+        header4.setNetworkTaskId(3);
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(header2);
+        headerDAO.insertHeader(header3);
+        headerDAO.insertHeader(header4);
+        corruptKey();
+        Map<Long, List<Header>> result = headerDAO.readAllHeadersForNetworkTasks();
+        assertEquals(2, result.size());
+        List<Header> headerList1 = result.get(1L);
+        List<Header> headerList2 = result.get(3L);
+        assertNotNull(headerList1);
+        assertNotNull(headerList2);
+        assertTrue(headerList1.get(0).isValueValid());
+        assertFalse(headerList1.get(1).isValueValid());
+        assertTrue(headerList2.get(0).isValueValid());
+        assertFalse(headerList2.get(1).isValueValid());
+        assertEquals("", headerList1.get(1).getValue());
+        assertEquals("", headerList2.get(1).getValue());
+        List<Header> readHeaders = headerDAO.readHeadersForNetworkTask(3);
+        assertTrue(readHeaders.get(0).isTechnicallyEqual(headerList2.get(0)));
+        assertTrue(readHeaders.get(1).isTechnicallyEqual(headerList2.get(1)));
     }
 
     @Test
@@ -357,6 +417,24 @@ public class HeaderDAOTest {
     }
 
     @Test
+    public void testReadGlobalEncryptedKeyInvalid() {
+        Header headerGlobal1 = getHeader1();
+        headerGlobal1.setNetworkTaskId(-1);
+        Header headerGlobal2 = getHeader2();
+        headerGlobal2.setNetworkTaskId(-1);
+        headerDAO.insertHeaders(List.of(headerGlobal1, headerGlobal2));
+        corruptKey();
+        List<Header> globalHeaders = headerDAO.readGlobalHeaders();
+        assertEquals(2, globalHeaders.size());
+        Header readHeader1 = globalHeaders.get(0);
+        Header readHeader2 = globalHeaders.get(1);
+        assertFalse(readHeader2.isValueValid());
+        assertEquals("", readHeader2.getValue());
+        assertEquals("name2", readHeader2.getName());
+        assertTrue(headerGlobal1.isTechnicallyEqual(readHeader1));
+    }
+
+    @Test
     public void testUpdate() {
         Header header1 = getHeader1();
         Header header2 = getHeader2();
@@ -409,6 +487,14 @@ public class HeaderDAOTest {
             }
         }
         return false;
+    }
+
+    private void corruptKey() {
+        String main_key_prefs_file = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_file);
+        String mainKeyPrefsKey = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_key);
+        SharedPreferences.Editor mainKeyPreferences = TestRegistry.getContext().getSharedPreferences(main_key_prefs_file, Context.MODE_PRIVATE).edit();
+        mainKeyPreferences.putString(mainKeyPrefsKey, StringUtil.byteArrayToBase64(new byte[32]));
+        mainKeyPreferences.commit();
     }
 
     private NetworkTask getNetworkTask() {
