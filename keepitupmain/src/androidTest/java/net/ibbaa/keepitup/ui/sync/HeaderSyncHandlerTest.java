@@ -72,6 +72,19 @@ public class HeaderSyncHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testGetInvalidHeaders() {
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        assertTrue(handler.getInvalidHeaders(Collections.emptyList()).isEmpty());
+        Header header1 = getHeader1(-1);
+        Header header2 = getHeader2(-1);
+        Header header3 = getHeader3(-1);
+        header2.setValueValid(false);;
+        List<Header> headers = handler.getInvalidHeaders(List.of(header1, header2, header3));
+        assertEquals(1, headers.size());
+        assertTrue(headers.get(0).isTechnicallyEqual(header2));
+    }
+
+    @Test
     public void testGetGlobalHeadersCopyForNetworkTask() {
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         handler.reset();

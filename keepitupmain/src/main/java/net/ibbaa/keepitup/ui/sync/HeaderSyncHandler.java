@@ -44,13 +44,19 @@ public class HeaderSyncHandler {
 
     public List<Header> removeInvalidHeaders(List<Header> headers) {
         Log.d(HeaderSyncHandler.class.getName(), "removeInvalidHeaders");
+        List<Header> invalidHeaders = getInvalidHeaders(headers);
+        headers.removeAll(invalidHeaders);
+        return invalidHeaders;
+    }
+
+    public List<Header> getInvalidHeaders(List<Header> headers) {
+        Log.d(HeaderSyncHandler.class.getName(), "getInvalidHeaders");
         List<Header> invalidHeaders = new ArrayList<>(headers.size());
         for (Header currentHeader : headers) {
             if (!currentHeader.isValueValid()) {
                 invalidHeaders.add(currentHeader);
             }
         }
-        headers.removeAll(invalidHeaders);
         return invalidHeaders;
     }
 
