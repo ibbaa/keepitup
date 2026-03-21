@@ -576,7 +576,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
         Log.d(SuspensionIntervalsDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult);
-        bundle = BundleUtil.integerToBundle(errorDialog.getMessageWidthKey(), getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_message_width), bundle);
+        bundle = BundleUtil.integerToBundle(errorDialog.getMessageWidthKey(), getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_error_message_width), bundle);
         errorDialog.setArguments(bundle);
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }

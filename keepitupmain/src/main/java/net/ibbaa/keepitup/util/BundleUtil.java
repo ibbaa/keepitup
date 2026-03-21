@@ -22,6 +22,7 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
+import net.ibbaa.keepitup.ui.validation.DecryptionResult;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
 import java.util.ArrayList;
@@ -193,7 +194,7 @@ public class BundleUtil {
         if (baseKey == null || bundle == null) {
             return Collections.emptyList();
         }
-        List<Bundle> resultList = new ArrayList<>();
+        List<Bundle> resultList = new ArrayList<>(bundle.size());
         for (int ii = 0; ii < bundle.size(); ii++) {
             Bundle currentBundle = bundle.getBundle(baseKey + ii);
             if (currentBundle != null) {
@@ -203,11 +204,33 @@ public class BundleUtil {
         return resultList;
     }
 
+    public static Bundle decryptionResultListToBundle(String baseKey, List<DecryptionResult> decryptionResultList) {
+        if (baseKey == null || decryptionResultList == null) {
+            return new Bundle();
+        }
+        List<Bundle> bundleList = new ArrayList<>(decryptionResultList.size());
+        for (DecryptionResult result : decryptionResultList) {
+            bundleList.add(result.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList);
+    }
+
+    public static List<DecryptionResult> decryptionResultListFromBundle(String baseKey, Bundle bundle) {
+        List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
+        List<DecryptionResult> decryptionResultList = new ArrayList<>(bundleList.size());
+        for (Bundle currentBundle : bundleList) {
+            if (currentBundle != null) {
+                decryptionResultList.add(new DecryptionResult(currentBundle));
+            }
+        }
+        return decryptionResultList;
+    }
+
     public static Bundle validationResultListToBundle(String baseKey, List<ValidationResult> validationResultList) {
         if (baseKey == null || validationResultList == null) {
             return new Bundle();
         }
-        List<Bundle> bundleList = new ArrayList<>();
+        List<Bundle> bundleList = new ArrayList<>(validationResultList.size());
         for (ValidationResult result : validationResultList) {
             bundleList.add(result.toBundle());
         }
@@ -216,7 +239,7 @@ public class BundleUtil {
 
     public static List<ValidationResult> validationResultListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<ValidationResult> validationResultList = new ArrayList<>();
+        List<ValidationResult> validationResultList = new ArrayList<>(bundleList.size());
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
                 validationResultList.add(new ValidationResult(currentBundle));
@@ -229,7 +252,7 @@ public class BundleUtil {
         if (baseKey == null || fileEntryList == null) {
             return new Bundle();
         }
-        List<Bundle> bundleList = new ArrayList<>();
+        List<Bundle> bundleList = new ArrayList<>(fileEntryList.size());
         for (FileEntry entry : fileEntryList) {
             bundleList.add(entry.toBundle());
         }
@@ -238,7 +261,7 @@ public class BundleUtil {
 
     public static List<FileEntry> fileEntryListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<FileEntry> entryList = new ArrayList<>();
+        List<FileEntry> entryList = new ArrayList<>(bundleList.size());
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
                 entryList.add(new FileEntry(currentBundle));
@@ -251,7 +274,7 @@ public class BundleUtil {
         if (baseKey == null || contextOptionList == null) {
             return new Bundle();
         }
-        List<Bundle> bundleList = new ArrayList<>();
+        List<Bundle> bundleList = new ArrayList<>(contextOptionList.size());
         for (ContextOption contextOption : contextOptionList) {
             bundleList.add(contextOption.toBundle());
         }
@@ -260,7 +283,7 @@ public class BundleUtil {
 
     public static List<ContextOption> contextOptionListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<ContextOption> contextOptionList = new ArrayList<>();
+        List<ContextOption> contextOptionList = new ArrayList<>(bundleList.size());
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
                 ContextOption contextOption = ContextOption.fromBundle(currentBundle);
@@ -276,7 +299,7 @@ public class BundleUtil {
         if (baseKey == null || intervalList == null) {
             return new Bundle();
         }
-        List<Bundle> bundleList = new ArrayList<>();
+        List<Bundle> bundleList = new ArrayList<>(intervalList.size());
         for (Interval interval : intervalList) {
             bundleList.add(interval.toBundle());
         }
@@ -285,7 +308,7 @@ public class BundleUtil {
 
     public static List<Interval> suspensionIntervalListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<Interval> intervalList = new ArrayList<>();
+        List<Interval> intervalList = new ArrayList<>(bundleList.size());
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
                 intervalList.add(new Interval(currentBundle));
@@ -302,7 +325,7 @@ public class BundleUtil {
         if (baseKey == null || headerList == null) {
             return bundle;
         }
-        List<Bundle> bundleList = new ArrayList<>();
+        List<Bundle> bundleList = new ArrayList<>(headerList.size());
         for (Header header : headerList) {
             bundleList.add(header.toBundle());
         }
@@ -311,7 +334,7 @@ public class BundleUtil {
 
     public static List<Header> headerListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<Header> headerList = new ArrayList<>();
+        List<Header> headerList = new ArrayList<>(bundleList.size());
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
                 headerList.add(new Header(currentBundle));

@@ -28,49 +28,49 @@ import androidx.fragment.app.DialogFragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.validation.ValidationResult;
+import net.ibbaa.keepitup.ui.validation.DecryptionResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidatorErrorDialog extends GridBasedErrorDialogBase {
+public class DecryptionErrorDialog extends GridBasedErrorDialogBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(ValidatorErrorDialog.class.getName(), "onCreate");
+        Log.d(DecryptionErrorDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(ValidatorErrorDialog.class.getName(), "onCreateView");
-        View view = inflater.inflate(R.layout.dialog_validator_error, container);
+        Log.d(DecryptionErrorDialog.class.getName(), "onCreateView");
+        View view = inflater.inflate(R.layout.dialog_decryption_error, container);
         initEdgeToEdgeInsets(view);
-        List<ValidationResult> resultList = BundleUtil.validationResultListFromBundle(getValidationResultBaseKey(), requireArguments());
+        List<DecryptionResult> resultList = BundleUtil.decryptionResultListFromBundle(getDecryptionResultBaseKey(), requireArguments());
         prepareErrorMessages(view, toErrorMessageList(resultList));
         prepareOkButton(view, resultList.size() + 1);
         return view;
     }
 
-    public String getValidationResultBaseKey() {
-        return ValidatorErrorDialog.class.getSimpleName() + "ValidationResult";
+    public String getDecryptionResultBaseKey() {
+        return DecryptionErrorDialog.class.getSimpleName() + "DecryptionResult";
     }
 
-    private List<ErrorMessage> toErrorMessageList(List<ValidationResult> resultList) {
+    private List<ErrorMessage> toErrorMessageList(List<DecryptionResult> resultList) {
         List<ErrorMessage> messages = new ArrayList<>(resultList.size());
-        for (ValidationResult currentResult : resultList) {
-            messages.add(new ErrorMessage(currentResult.getFieldName(), currentResult.getMessage()));
+        for (DecryptionResult currentResult : resultList) {
+            messages.add(new ErrorMessage(currentResult.getNetworkTask(), currentResult.getMessage()));
         }
         return messages;
     }
 
     protected GridLayout getErrorGridLayout(View view) {
-        return view.findViewById(R.id.gridlayout_dialog_validator_error);
+        return view.findViewById(R.id.gridlayout_dialog_decryption_error);
     }
 
     protected ImageView getOkImageView(View view) {
-        return view.findViewById(R.id.imageview_dialog_validator_error_ok);
+        return view.findViewById(R.id.imageview_dialog_decryption_error_ok);
     }
 }

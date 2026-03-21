@@ -103,6 +103,7 @@ import net.ibbaa.keepitup.ui.sync.NetworkTaskUIBroadcastReceiverTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.DecryptionResultTest;
 import net.ibbaa.keepitup.ui.validation.FilenameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameExistsFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidatorTest;
@@ -255,6 +256,7 @@ import org.junit.runners.Suite;
         BasicAuthPasswordFieldValidatorTest.class,
         BasicAuthUsernameFieldValidatorTest.class,
         ConnectCountFieldValidatorTest.class,
+        DecryptionResultTest.class,
         FilenameFieldValidatorTest.class,
         HeaderNameExistsFieldValidatorTest.class,
         HeaderNameFieldValidatorTest.class,

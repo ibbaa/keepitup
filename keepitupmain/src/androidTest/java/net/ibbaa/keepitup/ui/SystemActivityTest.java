@@ -1107,6 +1107,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1114,7 +1115,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1160,7 +1161,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1252,7 +1253,10 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -1310,6 +1314,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1317,7 +1322,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1371,7 +1376,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1462,7 +1467,10 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -1519,6 +1527,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1526,7 +1535,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1574,7 +1583,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1668,7 +1677,10 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -1725,6 +1737,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1732,7 +1745,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1782,7 +1795,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1876,7 +1889,10 @@ public class SystemActivityTest extends BaseUITest {
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -3322,6 +3338,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3329,7 +3346,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3433,7 +3450,10 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -3492,6 +3512,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3499,7 +3520,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3605,7 +3626,10 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -3664,6 +3688,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3671,7 +3696,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3779,7 +3804,10 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -3838,6 +3866,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3845,7 +3874,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3956,7 +3985,10 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
-        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
+        assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
+        assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -4983,6 +5015,16 @@ public class SystemActivityTest extends BaseUITest {
         Header header = new Header();
         header.setNetworkTaskId(-1);
         header.setHeaderType(HeaderType.GENERIC);
+        header.setName("Name" + number);
+        header.setValue("Value" + number);
+        header.setValueValid(true);
+        return header;
+    }
+
+    private Header getHeader(long networktaskId, int number) {
+        Header header = new Header();
+        header.setNetworkTaskId(networktaskId);
+        header.setHeaderType(HeaderType.GENERICAUTH);
         header.setName("Name" + number);
         header.setValue("Value" + number);
         header.setValueValid(true);
