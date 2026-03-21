@@ -1818,6 +1818,56 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
+    @Test
+    public void testCopyEncryptedHeader() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task1 = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        NetworkTask task2 = getNetworkTaskDAO().readAllNetworkTasks().get(1);
+        List<Header> headers1 = getHeaderDAO().readHeadersForNetworkTask(task1.getId());
+        List<Header> headers2 = getHeaderDAO().readHeadersForNetworkTask(task2.getId());
+        assertEquals(1, headers1.size());
+        assertEquals(1, headers2.size());
+        Header header1 = headers1.get(0);
+        Header header2 = headers2.get(0);
+        assertEquals("Authorization", header1.getName());
+        assertEquals("abc:123", header1.getValue());
+        assertEquals(HeaderType.BASICAUTH, header1.getHeaderType());
+        assertEquals(task1.getId(), header1.getNetworkTaskId());
+        assertTrue(header1.isValueValid());
+        assertEquals("Authorization", header2.getName());
+        assertEquals("abc:123", header2.getValue());
+        assertEquals(HeaderType.BASICAUTH, header2.getHeaderType());
+        assertEquals(task2.getId(), header2.getNetworkTaskId());
+        assertTrue(header2.isValueValid());
+        TestHeaderDAO testHeaderDAO = new TestHeaderDAO(TestRegistry.getContext());
+        Map<String, String> encryptedValues1 = testHeaderDAO.readEncryptedValueAndValueIV(header1.getId());
+        assertNotNull(encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues1.get("VALUEIV"));
+        Map<String, String> encryptedValues2 = testHeaderDAO.readEncryptedValueAndValueIV(header2.getId());
+        assertNotNull(encryptedValues2.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUEIV"));
+        assertNotEquals(encryptedValues1.get("VALUE"), encryptedValues2.get("VALUE"));
+        activityScenario.close();
+    }
+
     private void startAlarmService(NetworkTask task) {
         if (AlarmService.isRunning()) {
             return;

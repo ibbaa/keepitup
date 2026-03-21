@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,6 +52,23 @@ public class HeaderSyncHandlerTest extends BaseUITest {
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
         getHeaderDAO().deleteAllHeaders();
+    }
+
+    @Test
+    public void testRemoveInvalidHeaders() {
+        HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
+        assertTrue(handler.removeInvalidHeaders(Collections.emptyList()).isEmpty());
+        Header header1 = getHeader1(-1);
+        Header header2 = getHeader2(-1);
+        Header header3 = getHeader3(-1);
+        header2.setValueValid(false);
+        List<Header> originalList = new ArrayList<>(List.of(header1, header2, header3));
+        List<Header> headers = handler.removeInvalidHeaders(originalList);
+        assertEquals(1, headers.size());
+        assertTrue(headers.get(0).isTechnicallyEqual(header2));
+        assertEquals(2, originalList.size());
+        assertTrue(header1.isTechnicallyEqual(originalList.get(0)));
+        assertTrue(header3.isTechnicallyEqual(originalList.get(1)));
     }
 
     @Test

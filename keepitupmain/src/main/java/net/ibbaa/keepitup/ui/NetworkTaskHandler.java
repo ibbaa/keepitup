@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkTaskHandler {
@@ -100,8 +101,15 @@ public class NetworkTaskHandler {
                     }
                     HeaderDAO headerDAO = new HeaderDAO(mainActivity);
                     int count = headerDAO.insertHeaders(headers);
+                    headers = new ArrayList<>(headers);
                     if (count < 0) {
                         mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_headers));
+                    } else {
+                        HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
+                        if (!syncHandler.removeInvalidHeaders(headers).isEmpty()) {
+                            Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
+                            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption_insert));
+                        }
                     }
                 }
                 getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolve, headers, null));
@@ -164,6 +172,11 @@ public class NetworkTaskHandler {
             if (headers != null) {
                 HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
                 syncHandler.synchronizeHeaders(task.getId(), headers);
+                headers = new ArrayList<>(headers);
+                if (!syncHandler.removeInvalidHeaders(headers).isEmpty()) {
+                    Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption_update));
+                }
             }
             getAdapter().replaceNetworkTask(task, data, resolve, headers, null);
         } catch (Exception exc) {
