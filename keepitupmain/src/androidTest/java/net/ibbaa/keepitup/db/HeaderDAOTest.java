@@ -342,6 +342,51 @@ public class HeaderDAOTest {
     }
 
     @Test
+    public void testBulkDelete() {
+        Header headerGlobal1 = getHeader1();
+        headerGlobal1.setNetworkTaskId(-1);
+        Header headerGlobal2 = getHeader1();
+        headerGlobal2.setNetworkTaskId(-1);
+        Header headerNetworkTask1 = getHeader2();
+        headerNetworkTask1.setNetworkTaskId(1);
+        Header headerNetworkTask2 = getHeader2();
+        headerNetworkTask2.setNetworkTaskId(1);
+        headerDAO.insertHeaders(List.of(headerGlobal1, headerGlobal2, headerNetworkTask1, headerNetworkTask2));
+        headerDAO.deleteHeaders(List.of(headerGlobal1, headerGlobal2, headerNetworkTask1));
+        List<Header> readHeaders = headerDAO.readAllHeaders();
+        assertEquals(1, readHeaders.size());
+        assertTrue(doesHeaderListContain(readHeaders, headerNetworkTask2));
+        headerDAO.deleteHeaders(List.of(headerNetworkTask2));
+        readHeaders = headerDAO.readAllHeaders();
+        assertEquals(0, readHeaders.size());
+    }
+
+    @Test
+    public void testDeleteNotExisting() {
+        Header header1 = getHeader1();
+        headerDAO.insertHeader(header1);
+        Header header2 = getHeader2();
+        header2.setId(header1.getId() + 1);
+        Header header3 = getHeader3();
+        header3.setId(header1.getId() + 2);
+        headerDAO.deleteHeaders(List.of(header1, header2, header3));
+        List<Header> readHeaders = headerDAO.readAllHeaders();
+        assertEquals(0, readHeaders.size());
+        header1 = getHeader1();
+        header1.setNetworkTaskId(1);
+        header2 = getHeader2();
+        header2.setNetworkTaskId(1);
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(header2);
+        header3 = getHeader3();
+        header3.setNetworkTaskId(1);
+        header3.setId(header2.getId() + 10);
+        headerDAO.deleteHeadersForNetworkTask(1);
+        readHeaders = headerDAO.readAllHeaders();
+        assertEquals(0, readHeaders.size());
+    }
+
+    @Test
     public void testMultipleInsertReadDelete() {
         Header headerGlobal1 = getHeader1();
         headerGlobal1.setNetworkTaskId(-1);

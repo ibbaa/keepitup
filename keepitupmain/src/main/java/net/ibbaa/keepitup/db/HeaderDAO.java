@@ -102,6 +102,12 @@ public class HeaderDAO extends BaseDAO {
         dumpDatabase("Dump after deleteInterval call");
     }
 
+    public void deleteHeaders(List<Header> headers) {
+        Log.d(HeaderDAO.class.getName(), "deleteHeaders, headers is " + headers);
+        executeDBOperationInTransaction(headers, this::deleteHeaders);
+        dumpDatabase("Dump after deleteInterval call");
+    }
+
     public void deleteHeadersForNetworkTask(long networkTaskId) {
         Log.d(HeaderDAO.class.getName(), "deleteHeadersForNetworkTask, network task id is " + networkTaskId);
         Header header = new Header();
@@ -312,6 +318,17 @@ public class HeaderDAO extends BaseDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(header.getId())};
         return db.delete(dbConstants.getTableName(), selection, selectionArgs);
+    }
+
+    private int deleteHeaders(List<Header> headers, SQLiteDatabase db) {
+        Log.d(HeaderDAO.class.getName(), "deleteHeaders, headers is " + headers);
+        if (headers == null) {
+            return -1;
+        }
+        for (Header currentHeader : headers) {
+            deleteHeader(currentHeader, db);
+        }
+        return -1;
     }
 
     private int deleteGlobalHeaders(Header header, SQLiteDatabase db) {
