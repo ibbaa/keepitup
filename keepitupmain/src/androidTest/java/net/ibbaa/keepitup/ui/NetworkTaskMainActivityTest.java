@@ -1157,6 +1157,27 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testHeadersDialogTitleText() {
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task 1")));
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testHeadersEmpty() {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);

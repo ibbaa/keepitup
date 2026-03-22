@@ -213,7 +213,7 @@ public class NotificationHandler {
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
         String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
         String text;
-        String networkTaskTitle = UIUtil.getTextForNamedTask(context, task);
+        String networkTaskTitle = UIUtil.getNetworkTaskTitleName(context, task, true, true);
         if (logEntry.isSuccess()) {
             text = String.format(getResources().getString(R.string.notification_success_text), networkTaskTitle, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
         } else {

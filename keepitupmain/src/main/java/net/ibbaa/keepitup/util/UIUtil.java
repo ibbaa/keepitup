@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.util;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -34,15 +35,21 @@ import net.ibbaa.keepitup.model.NetworkTask;
 
 public class UIUtil {
 
-    public static String getNetworkTaskName(Context context, NetworkTask networkTask, boolean lowerCase) {
-        String defaultName = context.getResources().getString(R.string.task_name_default);
-        String name = StringUtil.isEmpty(networkTask.getName()) ? defaultName : networkTask.getName();
-        if (name.equals(defaultName)) {
+    public static String getNetworkTaskTitleName(Context context, NetworkTask task, boolean lowerCase, boolean appendDefaultSuffix) {
+        Resources resources = context.getResources();
+        String defaultName = resources.getString(R.string.task_title_normal);
+        String name = StringUtil.isEmpty(task.getName()) ? defaultName : task.getName();
+        boolean isDefault = name.equals(defaultName);
+        if (isDefault) {
             if (lowerCase) {
                 name = name.toLowerCase();
             }
-            if (networkTask.getIndex() >= 0) {
-                name += " " + (networkTask.getIndex() + 1);
+            if (task.getIndex() >= 0) {
+                name += " " + (task.getIndex() + 1);
+            }
+        } else {
+            if (appendDefaultSuffix && task.getIndex() >= 0) {
+                return resources.getString(R.string.task_title_named, name, task.getIndex() + 1);
             }
         }
         return name;
@@ -73,17 +80,6 @@ public class UIUtil {
     public static String getNotSetIfNegative(Context context, int value) {
         String notSetValue = context.getResources().getString(R.string.string_not_set);
         return value < 0 ? notSetValue : String.valueOf(value);
-    }
-
-    public static String getTextForNamedTask(Context context, NetworkTask task) {
-        String name = StringUtil.isEmpty(task.getName()) ? context.getResources().getString(R.string.task_name_default) : task.getName();
-        String formattedTitleText;
-        if (name.equals(context.getResources().getString(R.string.task_name_default))) {
-            formattedTitleText = context.getResources().getString(R.string.task_title_normal, task.getIndex() + 1);
-        } else {
-            formattedTitleText = context.getResources().getString(R.string.task_title_named, name, task.getIndex() + 1);
-        }
-        return formattedTitleText;
     }
 
     public static void drawSwipeTrashcan(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView, @NonNull View itemView, float dX, @DrawableRes int iconRes, float marginDp, float startSizeDp, float endSizeDp) {

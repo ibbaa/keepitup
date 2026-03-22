@@ -120,6 +120,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         headersText.setText(headers);
     }
 
+    public void setHeadersColor(int color) {
+        headersText.setTextColor(color);
+    }
+
     public void setInterval(String interval) {
         intervalText.setText(interval);
     }

@@ -622,6 +622,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -631,6 +632,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
@@ -653,6 +655,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -664,6 +667,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
         rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
@@ -686,6 +690,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -695,6 +700,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AValue")));
@@ -723,6 +729,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
@@ -733,6 +740,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AValue")));
@@ -762,6 +770,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
@@ -774,6 +783,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
@@ -802,6 +812,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
@@ -812,6 +823,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));

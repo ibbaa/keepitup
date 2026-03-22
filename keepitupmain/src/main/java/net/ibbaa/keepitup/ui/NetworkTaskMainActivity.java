@@ -377,7 +377,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             return;
         }
         NetworkTask networkTask = uiWrapper.getNetworkTask();
-        String name = StringUtil.isEmpty(networkTask.getName()) ? getResources().getString(R.string.task_name_default) : networkTask.getName();
+        String name = StringUtil.isEmpty(networkTask.getName()) ? getResources().getString(R.string.task_title_normal) : networkTask.getName();
         String title = getResources().getString(R.string.label_dialog_settings_change_task_name);
         List<String> validators = Collections.singletonList(NetworkTaskNameFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.TASKNAME, title, name, getResources().getString(R.string.task_name_field_name), position, validators);
@@ -648,7 +648,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
             Log.d(NetworkTaskMainActivity.class.getName(), "onInputDialogOkClicked for network task " + networkTask + " and access type data " + accessTypeData);
             NetworkTaskHandler handler = new NetworkTaskHandler(this);
-            String name = StringUtil.isEmpty(inputDialog.getValue()) ? getResources().getString(R.string.task_name_default) : inputDialog.getValue();
+            String name = StringUtil.isEmpty(inputDialog.getValue()) ? getResources().getString(R.string.task_title_normal) : inputDialog.getValue();
             Log.d(NetworkTaskMainActivity.class.getName(), "new name is " + name);
             handler.updateNetworkTaskName(networkTask, name);
             getAdapter().notifyItemChanged(type.getPosition());

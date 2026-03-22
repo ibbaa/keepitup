@@ -39,6 +39,8 @@ import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.ui.validation.DecryptionResult;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
 import net.ibbaa.keepitup.util.URLUtil;
@@ -49,15 +51,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
     private final List<NetworkTaskUIWrapper> networkTaskWrapperList;
     private final NetworkTaskMainActivity mainActivity;
+    private final Map<Integer, DecryptionResult> invalidHeaders;
 
     public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTaskWrapperList, NetworkTaskMainActivity mainActivity) {
         this.networkTaskWrapperList = new ArrayList<>();
         this.mainActivity = mainActivity;
+        this.invalidHeaders = new TreeMap<>();
         replaceItems(networkTaskWrapperList);
     }
 
@@ -83,7 +89,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
         bindConnectTo(networkTaskViewHolder, networkTask, resolve);
-        bindHeaders(networkTaskViewHolder, networkTask, accessTypeData, headers);
+        bindHeaders(position, networkTaskViewHolder, networkTask, accessTypeData, headers);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
         bindFailureCount(networkTaskViewHolder, networkTask, logEntry);
@@ -97,7 +103,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindTitle, networkTask is " + networkTask);
-        String name = UIUtil.getNetworkTaskName(getContext(), networkTask, false);
+        String name = UIUtil.getNetworkTaskTitleName(getContext(), networkTask, false, false);
         int color = getColor(R.color.textColor);
         if (AlarmService.isPlayingAlarm(networkTask)) {
             name += " " + getResources().getString(R.string.list_item_network_task_title_alarm);
@@ -201,10 +207,11 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     }
 
-    private void bindHeaders(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData, List<Header> headers) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindHeaders, networkTask is " + networkTask + ". accessTypeData is " + accessTypeData + ", headers is " + headers);
+    private void bindHeaders(int position, @NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData, List<Header> headers) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindHeaders, position is " + position + ",networkTask is " + networkTask + ", accessTypeData is " + accessTypeData + ", headers is " + headers);
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
-            networkTaskViewHolder.showHeadersTextView();
+            HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
+            List<Header> invalidHeaders = syncHandler.getInvalidHeaders(headers);
             String headersText;
             if (accessTypeData != null && !accessTypeData.isUseDefaultHeaders()) {
                 int headerCount = headers != null ? headers.size() : 0;
@@ -213,11 +220,25 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 headersText = getResources().getString(R.string.string_default);
             }
             String formattedHeaderText = getResources().getString(R.string.list_item_network_task_headers, headersText);
+            int color = invalidHeaders.isEmpty() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor);
             networkTaskViewHolder.setHeaders(formattedHeaderText);
+            networkTaskViewHolder.setHeadersColor(color);
+            networkTaskViewHolder.showHeadersTextView();
         } else {
             networkTaskViewHolder.hideHeadersTextView();
         }
     }
+
+    /*private void syncInvalidHeaders(int position, NetworkTask networkTask, List<Header> invalidHeaders) {
+        if (invalidHeaders.isEmpty()) {
+            this.invalidHeaders.remove(position);
+        } else {
+            for (Header currentHeader : invalidHeaders){
+                String networkTaskName = UIUtil.getNetworkTaskName(getContext(), networkTask, false);
+                DecryptionResult decryptionResult = new DecryptionResult(networkTaskName)
+            }
+        }
+    }*/
 
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindInterval, networkTask is " + networkTask);

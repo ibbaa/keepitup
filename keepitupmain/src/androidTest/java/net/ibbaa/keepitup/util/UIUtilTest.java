@@ -37,21 +37,32 @@ import org.junit.runner.RunWith;
 public class UIUtilTest {
 
     @Test
-    public void testGetNetworkTaskName() {
-        assertEquals("Network task", UIUtil.getNetworkTaskName(TestRegistry.getContext(), new NetworkTask(), false));
-        assertEquals("network task", UIUtil.getNetworkTaskName(TestRegistry.getContext(), new NetworkTask(), true));
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setIndex(0);
-        assertEquals("Network task 1", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, false));
-        assertEquals("network task 1", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, true));
-        networkTask = new NetworkTask();
-        networkTask.setIndex(1);
-        assertEquals("Network task 2", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, false));
-        assertEquals("network task 2", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, true));
-        networkTask = new NetworkTask();
-        networkTask.setName("Xyz");
-        assertEquals("Xyz", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, false));
-        assertEquals("Xyz", UIUtil.getNetworkTaskName(TestRegistry.getContext(), networkTask, true));
+    public void testGetNetworkTaskTitle() {
+        NetworkTask task = new NetworkTask();
+        task.setName(null);
+        task.setIndex(-1);
+        assertEquals("Network task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
+        task.setName("");
+        assertEquals("Network task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
+        task.setName("Network task");
+        assertEquals("Network task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
+        task.setName(null);
+        assertEquals("network task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, true, false));
+        task.setIndex(0);
+        task.setName(null);
+        assertEquals("Network task 1", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
+        assertEquals("network task 1", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, true, false));
+        task.setName("Network task");
+        assertEquals("network task 1", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, true, false));
+        task.setName("My Task");
+        task.setIndex(-1);
+        assertEquals("My Task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
+        assertEquals("My Task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, true, false));
+        assertEquals("My Task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, true));
+        task.setIndex(2);
+        assertEquals("My Task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
+        assertEquals("My Task (network task 3)", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, true));
+        assertEquals("My Task (network task 3)", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, true, true));
     }
 
     @Test
@@ -86,14 +97,5 @@ public class UIUtilTest {
         assertEquals("not set", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), -5));
         assertEquals("123", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), 123));
         assertEquals("0", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), 0));
-    }
-
-    @Test
-    public void testGetTextForNamedTask() {
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setIndex(1);
-        assertEquals("network task 2", UIUtil.getTextForNamedTask(TestRegistry.getContext(), networkTask));
-        networkTask.setName("name");
-        assertEquals("name (network task 2)", UIUtil.getTextForNamedTask(TestRegistry.getContext(), networkTask));
     }
 }

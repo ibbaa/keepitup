@@ -90,14 +90,14 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     private void bindNoLog(@NonNull LogEntryViewHolder logEntryViewHolder) {
         Log.d(LogEntryAdapter.class.getName(), "bindNoLog");
-        String networkTaskTitle = UIUtil.getTextForNamedTask(context, networkTask);
+        String networkTaskTitle = UIUtil.getNetworkTaskTitleName(context, networkTask, true, true);
         String formattedNoLogText = getContext().getResources().getString(R.string.list_item_log_entry_no_log, networkTaskTitle);
         logEntryViewHolder.setNoLogText(formattedNoLogText);
     }
 
     private void bindTitle(@NonNull LogEntryViewHolder logEntryViewHolder) {
         Log.d(LogEntryAdapter.class.getName(), "bindTitle");
-        String networkTaskTitle = UIUtil.getTextForNamedTask(context, networkTask);
+        String networkTaskTitle = UIUtil.getNetworkTaskTitleName(context, networkTask, true, true);
         String formattedTitleText = getContext().getResources().getString(R.string.list_item_log_entry_title, networkTaskTitle);
         logEntryViewHolder.setTitleText(formattedTitleText);
     }

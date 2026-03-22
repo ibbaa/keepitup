@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HeaderSyncHandler {
@@ -51,6 +52,7 @@ public class HeaderSyncHandler {
 
     public List<Header> getInvalidHeaders(List<Header> headers) {
         Log.d(HeaderSyncHandler.class.getName(), "getInvalidHeaders");
+        headers = headers != null ? headers : Collections.emptyList();
         List<Header> invalidHeaders = new ArrayList<>(headers.size());
         for (Header currentHeader : headers) {
             if (!currentHeader.isValueValid()) {

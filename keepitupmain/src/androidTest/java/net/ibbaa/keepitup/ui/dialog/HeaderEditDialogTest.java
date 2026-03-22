@@ -711,7 +711,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -731,7 +731,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -749,7 +749,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -767,7 +767,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
@@ -785,7 +785,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -803,7 +803,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security risk")));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText(containsString("Authorization headers often include credentials"))));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         rotateScreen(activityScenario);

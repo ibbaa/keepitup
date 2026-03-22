@@ -15,7 +15,6 @@
   -->
 
 <resources>
-    <string name="task_name_default">Network task</string>
     <integer name="task_name_max_length">100</integer>
     <integer name="task_accesstype_default">1</integer>
     <string name="task_accesstype_key">task_accesstype_key</string>

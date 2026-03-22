@@ -83,7 +83,7 @@ public class NetworkTask {
         this();
         Resources resources = context.getResources();
         PreferenceManager preferenceManager = new PreferenceManager(context);
-        this.name = resources.getString(R.string.task_name_default);
+        this.name = resources.getString(R.string.task_title_normal);
         this.address = preferenceManager.getPreferenceAddress();
         this.port = preferenceManager.getPreferencePort();
         this.accessType = preferenceManager.getPreferenceAccessType();

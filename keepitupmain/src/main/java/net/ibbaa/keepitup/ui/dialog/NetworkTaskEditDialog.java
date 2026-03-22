@@ -1182,7 +1182,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Bundle bundle = BundleUtil.headerListToBundle(headersDialog.getInitialHeadersKey(), currentHeaders != null ? currentHeaders : Collections.emptyList());
         BundleUtil.longToBundle(headersDialog.getNetworkTaskIdKey(), task.getId(), bundle);
         String title = getResources().getString(R.string.label_dialog_headers_headers_network_task);
-        title += " " + UIUtil.getNetworkTaskName(requireContext(), task, true);
+        title += " " + UIUtil.getNetworkTaskTitleName(requireContext(), task, true, false);
         BundleUtil.stringToBundle(headersDialog.getHeadersTitleKey(), title, bundle);
         BundleUtil.booleanToBundle(headersDialog.getSupportsRestoreDefaultHeadersKey(), true, bundle);
         headersDialog.setArguments(bundle);

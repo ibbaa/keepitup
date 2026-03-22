@@ -15,6 +15,6 @@
   -->
 
 <resources>
-    <string name="task_title_normal">network task %d</string>
+    <string name="task_title_normal">Network task</string>
     <string name="task_title_named">%1$s (network task %2$d)</string>
 </resources>

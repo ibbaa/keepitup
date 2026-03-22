@@ -102,8 +102,8 @@ public class LogUtil {
     public static String getLogFileName(Context context, IFileManager fileManager, NetworkTask networkTask) {
         String baseFileName = context.getResources().getString(R.string.networktask_file_logger_log_file_base_name_default);
         String extension = context.getResources().getString(R.string.networktask_file_logger_log_file_base_extension_default);
-        String name = StringUtil.isEmpty(networkTask.getName()) ? context.getResources().getString(R.string.task_name_default) : networkTask.getName();
-        if (name.equals(context.getResources().getString(R.string.task_name_default))) {
+        String name = StringUtil.isEmpty(networkTask.getName()) ? context.getResources().getString(R.string.task_title_normal) : networkTask.getName();
+        if (name.equals(context.getResources().getString(R.string.task_title_normal))) {
             name = null;
         }
         return fileManager.getLogFileName(baseFileName, name, extension, networkTask.getSchedulerId(), networkTask.getIndex(), networkTask.getAddress());
@@ -115,7 +115,7 @@ public class LogUtil {
     }
 
     public static String formatLogEntryLog(Context context, NetworkTask task, LogEntry entry) {
-        String networkTaskTitle = UIUtil.getTextForNamedTask(context, task);
+        String networkTaskTitle = UIUtil.getNetworkTaskTitleName(context, task, true, true);
         String formattedTitleText = context.getResources().getString(R.string.list_item_log_entry_title, networkTaskTitle);
         String successText = entry.isSuccess() ? context.getResources().getString(R.string.string_successful) : context.getResources().getString(R.string.string_not_successful);
         String formattedSuccessText = context.getResources().getString(R.string.list_item_log_entry_success, successText);
