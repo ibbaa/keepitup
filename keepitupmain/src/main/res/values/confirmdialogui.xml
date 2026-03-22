@@ -24,13 +24,13 @@
     <string name="text_dialog_confirm_config_reset">Reset configuration</string>
     <string name="text_dialog_confirm_config_import">Import configuration</string>
     <string name="text_dialog_confirm_dismiss_active_alarm">Dismiss alarm?</string>
-    <string name="text_dialog_confirm_confirm_authorization_header">Confirm security risk</string>
+    <string name="text_dialog_confirm_confirm_authorization_header">Confirm security notice</string>
     <string name="text_dialog_confirm_config_export_existing_file">Export configuration</string>
     <string name="text_dialog_confirm_restore_default_headers">Restore headers?</string>
     <string name="text_dialog_confirm_config_reset_description">This will delete all network tasks and log entries, reset the configuration to default settings and cannot be undone.</string>
     <string name="text_dialog_confirm_config_import_description">The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.</string>
     <string name="text_dialog_confirm_config_export_existing_file_description">The specified file exists and will be overwritten.</string>
     <string name="text_dialog_confirm_dismiss_active_alarm_description">An alarm sound is playing because of a failed high priority task. Dismiss the alarm now?</string>
-    <string name="text_dialog_confirm_add_authorization_header_description">Authorization headers often include credentials. To increase security, authorization headers are automatically encrypted when written to the internal database. The encryption key is bound to the device and cannot be transferred to another device. If you want to transfer the authorization headers to another device, please export the configuration encrypted and reimport it on the other device. A new key is created on the new device.</string>
+    <string name="text_dialog_confirm_add_authorization_header_description">Authorization headers often include credentials. To increase security, authorization headers are automatically encrypted when written to the internal database. The encryption key is bound to the device, cannot be transferred to another device and is removed when the app is uninstalled. If you want to transfer the authorization headers to another device or want to restore them after reinstalling the app, please export the configuration encrypted and reimport it, which creates a new key.</string>
     <string name="text_dialog_confirm_restore_default_headers_description">This overwrites the current headers with the default headers.</string>
 </resources>
