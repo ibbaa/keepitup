@@ -31,7 +31,13 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class UIUtil {
 
@@ -53,6 +59,18 @@ public class UIUtil {
             }
         }
         return name;
+    }
+
+    public static List<DecryptionResult> toDecryptionResultList(Context context, NetworkTask task, List<Header> headers) {
+        if (headers == null || task == null) {
+            return Collections.emptyList();
+        }
+        List<DecryptionResult> decryptionResultList = new ArrayList<>(headers.size());
+        for (Header currentHeader : headers) {
+            DecryptionResult decryptionResult = new DecryptionResult(getNetworkTaskTitleName(context, task, false, false), currentHeader.getName());
+            decryptionResultList.add(decryptionResult);
+        }
+        return decryptionResultList;
     }
 
     public static boolean isInputTypeNumber(int inputType) {

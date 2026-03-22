@@ -40,7 +40,6 @@ import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
 import net.ibbaa.keepitup.util.URLUtil;
@@ -58,7 +57,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private final List<NetworkTaskUIWrapper> networkTaskWrapperList;
     private final NetworkTaskMainActivity mainActivity;
-    private final Map<Integer, DecryptionResult> invalidHeaders;
+    private final Map<Integer, List<Header>> invalidHeaders;
 
     public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTaskWrapperList, NetworkTaskMainActivity mainActivity) {
         this.networkTaskWrapperList = new ArrayList<>();
@@ -212,6 +211,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
             HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
             List<Header> invalidHeaders = syncHandler.getInvalidHeaders(headers);
+            syncInvalidHeaders(position, networkTask, invalidHeaders);
             String headersText;
             if (accessTypeData != null && !accessTypeData.isUseDefaultHeaders()) {
                 int headerCount = headers != null ? headers.size() : 0;
@@ -229,16 +229,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    /*private void syncInvalidHeaders(int position, NetworkTask networkTask, List<Header> invalidHeaders) {
+    private void syncInvalidHeaders(int position, NetworkTask networkTask, List<Header> invalidHeaders) {
         if (invalidHeaders.isEmpty()) {
             this.invalidHeaders.remove(position);
         } else {
-            for (Header currentHeader : invalidHeaders){
-                String networkTaskName = UIUtil.getNetworkTaskName(getContext(), networkTask, false);
-                DecryptionResult decryptionResult = new DecryptionResult(networkTaskName)
-            }
+            this.invalidHeaders.put(position, invalidHeaders);
         }
-    }*/
+    }
 
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindInterval, networkTask is " + networkTask);
@@ -446,6 +443,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     public List<NetworkTaskUIWrapper> getAllItems() {
         return Collections.unmodifiableList(networkTaskWrapperList);
+    }
+
+    public Map<Integer, List<Header>> getInvalidHeaders() {
+        return invalidHeaders;
     }
 
     public NetworkTaskUIWrapper getItem(int position) {

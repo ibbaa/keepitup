@@ -26,11 +26,16 @@ import android.text.InputType;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.validation.DecryptionResult;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Collections;
+import java.util.List;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -63,6 +68,25 @@ public class UIUtilTest {
         assertEquals("My Task", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, false));
         assertEquals("My Task (network task 3)", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, false, true));
         assertEquals("My Task (network task 3)", UIUtil.getNetworkTaskTitleName(TestRegistry.getContext(), task, true, true));
+    }
+
+    @Test
+    public void testToDecryptionResultList() {
+        NetworkTask task = new NetworkTask();
+        task.setName("My Task");
+        assertTrue(UIUtil.toDecryptionResultList(TestRegistry.getContext(), null, Collections.emptyList()).isEmpty());
+        assertTrue(UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, null).isEmpty());
+        assertTrue(UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, Collections.emptyList()).isEmpty());
+        Header header1 = new Header();
+        Header header2 = new Header();
+        header1.setName("header1");
+        header2.setName("header2");
+        List<DecryptionResult> resultList = UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, List.of(header1, header2));
+        assertEquals(2, resultList.size());
+        assertEquals("My Task", resultList.get(0).getNetworkTask());
+        assertEquals("header1", resultList.get(0).getMessage());
+        assertEquals("My Task", resultList.get(1).getNetworkTask());
+        assertEquals("header2", resultList.get(1).getMessage());
     }
 
     @Test
