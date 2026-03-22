@@ -25,7 +25,7 @@ import net.ibbaa.keepitup.model.Header;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class HeaderBulkDeleteTask implements Callable<Header>  {
+public class HeaderBulkDeleteTask implements Callable<Header> {
 
     private final Context context;
     private final List<Header> headers;

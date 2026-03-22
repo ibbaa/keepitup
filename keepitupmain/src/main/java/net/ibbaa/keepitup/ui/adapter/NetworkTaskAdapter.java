@@ -57,12 +57,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private final List<NetworkTaskUIWrapper> networkTaskWrapperList;
     private final NetworkTaskMainActivity mainActivity;
-    private final Map<Integer, List<Header>> invalidHeaders;
 
     public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTaskWrapperList, NetworkTaskMainActivity mainActivity) {
         this.networkTaskWrapperList = new ArrayList<>();
         this.mainActivity = mainActivity;
-        this.invalidHeaders = new TreeMap<>();
         replaceItems(networkTaskWrapperList);
     }
 
@@ -209,31 +207,24 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindHeaders(int position, @NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData, List<Header> headers) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindHeaders, position is " + position + ",networkTask is " + networkTask + ", accessTypeData is " + accessTypeData + ", headers is " + headers);
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
-            HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
-            List<Header> invalidHeaders = syncHandler.getInvalidHeaders(headers);
-            syncInvalidHeaders(position, networkTask, invalidHeaders);
             String headersText;
+            HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
+            boolean containsInvalidHeader;
             if (accessTypeData != null && !accessTypeData.isUseDefaultHeaders()) {
                 int headerCount = headers != null ? headers.size() : 0;
                 headersText = headerCount + " " + getResources().getString(R.string.string_defined);
+                containsInvalidHeader = syncHandler.containsInvalidHeaders(headers);
             } else {
                 headersText = getResources().getString(R.string.string_default);
+                containsInvalidHeader = syncHandler.containsInvalidHeaders(syncHandler.getGlobalHeaders());
             }
             String formattedHeaderText = getResources().getString(R.string.list_item_network_task_headers, headersText);
-            int color = invalidHeaders.isEmpty() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor);
+            int color = containsInvalidHeader ? getColor(R.color.textErrorColor) : getColor(R.color.textColor);
             networkTaskViewHolder.setHeaders(formattedHeaderText);
             networkTaskViewHolder.setHeadersColor(color);
             networkTaskViewHolder.showHeadersTextView();
         } else {
             networkTaskViewHolder.hideHeadersTextView();
-        }
-    }
-
-    private void syncInvalidHeaders(int position, NetworkTask networkTask, List<Header> invalidHeaders) {
-        if (invalidHeaders.isEmpty()) {
-            this.invalidHeaders.remove(position);
-        } else {
-            this.invalidHeaders.put(position, invalidHeaders);
         }
     }
 
@@ -445,7 +436,16 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return Collections.unmodifiableList(networkTaskWrapperList);
     }
 
-    public Map<Integer, List<Header>> getInvalidHeaders() {
+    public Map<Long, List<Header>> getInvalidHeaders() {
+        Map<Long, List<Header>> invalidHeaders = new TreeMap<>();
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            List<Header> currentInvalidHeaders = syncHandler.getInvalidHeaders(currentWrapper.getHeaders());
+            if (!currentInvalidHeaders.isEmpty()) {
+                invalidHeaders.put(currentWrapper.getNetworkTask().getId(), currentInvalidHeaders);
+            }
+        }
         return invalidHeaders;
     }
 

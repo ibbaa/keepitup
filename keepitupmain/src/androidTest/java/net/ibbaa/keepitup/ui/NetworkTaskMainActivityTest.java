@@ -1797,6 +1797,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("Test", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
         assertTrue(headers.get(1).isValueValid());
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(0).isEqual(headers.get(0)));
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(1).isEqual(headers.get(1)));
         TestHeaderDAO testHeaderDAO = new TestHeaderDAO(TestRegistry.getContext());
         Map<String, String> encryptedValues1 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(0).getId());
         assertNotEquals("AValue", encryptedValues1.get("VALUE"));
@@ -1829,6 +1831,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("Test", headers.get(1).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
         assertTrue(headers.get(1).isValueValid());
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(0).isEqual(headers.get(0)));
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(1).isEqual(headers.get(1)));
         encryptedValues1 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(0).getId());
         assertNotEquals("abc:123", encryptedValues1.get("VALUE"));
         assertNotNull(encryptedValues1.get("VALUE"));
@@ -1836,6 +1840,61 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         encryptedValues2 = testHeaderDAO.readEncryptedValueAndValueIV(headers.get(1).getId());
         assertEquals("Test", encryptedValues2.get("VALUE"));
         assertNull(encryptedValues2.get("VALUEIV"));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHeaderRemovedAndAdded() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("ABC"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headers.size());
+        assertEquals("ABC", headers.get(0).getName());
+        assertEquals("Test", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(0).isEqual(headers.get(0)));
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(1).isEqual(headers.get(1)));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("ABC"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(2, headers.size());
+        assertEquals("ABC", headers.get(0).getName());
+        assertEquals("Test", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(0).isEqual(headers.get(0)));
+        assertTrue(getAdapter(activityScenario).getItem(0).getHeaders().get(1).isEqual(headers.get(1)));
         activityScenario.close();
     }
 

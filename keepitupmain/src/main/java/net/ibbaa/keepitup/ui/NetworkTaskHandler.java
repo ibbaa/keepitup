@@ -108,7 +108,7 @@ public class NetworkTaskHandler {
                         HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
                         if (!syncHandler.removeInvalidHeaders(headers).isEmpty()) {
                             Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
-                            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption_insert));
+                            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
                         }
                     }
                 }
@@ -172,10 +172,11 @@ public class NetworkTaskHandler {
             if (headers != null) {
                 HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
                 syncHandler.synchronizeHeaders(task.getId(), headers);
-                headers = new ArrayList<>(headers);
-                if (!syncHandler.removeInvalidHeaders(headers).isEmpty()) {
+                if (syncHandler.containsInvalidHeaders(headers)) {
                     Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
-                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption_update));
+                    HeaderDAO headerDAO = new HeaderDAO(mainActivity);
+                    headers = headerDAO.readHeadersForNetworkTask(task.getId());
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
                 }
             }
             getAdapter().replaceNetworkTask(task, data, resolve, headers, null);

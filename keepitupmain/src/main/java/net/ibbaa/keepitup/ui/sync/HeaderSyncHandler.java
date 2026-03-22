@@ -43,15 +43,27 @@ public class HeaderSyncHandler {
         return headerDAO.readHeadersForNetworkTask(networkTaskId);
     }
 
+    public boolean containsInvalidHeaders(List<Header> headers) {
+        Log.d(HeaderSyncHandler.class.getName(), "containsInvalidHeaders, headers is " + headers);
+        if (headers != null) {
+            for (Header currentHeader : headers) {
+                if (!currentHeader.isValueValid()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public List<Header> removeInvalidHeaders(List<Header> headers) {
-        Log.d(HeaderSyncHandler.class.getName(), "removeInvalidHeaders");
+        Log.d(HeaderSyncHandler.class.getName(), "removeInvalidHeaders, headers is " + headers);
         List<Header> invalidHeaders = getInvalidHeaders(headers);
         headers.removeAll(invalidHeaders);
         return invalidHeaders;
     }
 
     public List<Header> getInvalidHeaders(List<Header> headers) {
-        Log.d(HeaderSyncHandler.class.getName(), "getInvalidHeaders");
+        Log.d(HeaderSyncHandler.class.getName(), "getInvalidHeaders, headers is " + headers);
         headers = headers != null ? headers : Collections.emptyList();
         List<Header> invalidHeaders = new ArrayList<>(headers.size());
         for (Header currentHeader : headers) {
@@ -63,7 +75,7 @@ public class HeaderSyncHandler {
     }
 
     public List<Header> getGlobalHeadersCopyForNetworkTask(long networkTaskId) {
-        Log.d(HeaderSyncHandler.class.getName(), "getGlobalHeadersCopyForNetworkTask");
+        Log.d(HeaderSyncHandler.class.getName(), "getGlobalHeadersCopyForNetworkTask for networkTaskId " + networkTaskId);
         List<Header> globalHeaders = getGlobalHeaders();
         List<Header> copyGlobalHeaders = new ArrayList<>(globalHeaders.size());
         for (Header currentHeader : globalHeaders) {
