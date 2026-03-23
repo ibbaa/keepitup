@@ -209,17 +209,17 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
             String headersText;
             HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
-            boolean containsInvalidHeader;
+            boolean containsInvalidHeaders;
             if (accessTypeData != null && !accessTypeData.isUseDefaultHeaders()) {
                 int headerCount = headers != null ? headers.size() : 0;
                 headersText = headerCount + " " + getResources().getString(R.string.string_defined);
-                containsInvalidHeader = syncHandler.containsInvalidHeaders(headers);
+                containsInvalidHeaders = syncHandler.containsInvalidHeaders(headers);
             } else {
                 headersText = getResources().getString(R.string.string_default);
-                containsInvalidHeader = syncHandler.containsInvalidHeaders(syncHandler.getGlobalHeaders());
+                containsInvalidHeaders = syncHandler.containsInvalidHeaders(syncHandler.getGlobalHeaders());
             }
             String formattedHeaderText = getResources().getString(R.string.list_item_network_task_headers, headersText);
-            int color = containsInvalidHeader ? getColor(R.color.textErrorColor) : getColor(R.color.textColor);
+            int color = containsInvalidHeaders ? getColor(R.color.textErrorColor) : getColor(R.color.textColor);
             networkTaskViewHolder.setHeaders(formattedHeaderText);
             networkTaskViewHolder.setHeadersColor(color);
             networkTaskViewHolder.showHeadersTextView();

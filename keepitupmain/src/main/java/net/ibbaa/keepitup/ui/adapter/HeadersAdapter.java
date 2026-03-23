@@ -16,12 +16,14 @@
 
 package net.ibbaa.keepitup.ui.adapter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
@@ -76,8 +78,11 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
 
     private void bindHeaderText(@NonNull HeaderViewHolder headerViewHolder, Header header) {
         Log.d(HeadersAdapter.class.getName(), "bindHeaderText");
+        int color = header.isValueValid() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor);
         headerViewHolder.setHeaderNameText(header.getName());
         headerViewHolder.setHeaderValueText(StringUtil.maskSecret(header.getValue(), header.isValueSecret()));
+        headerViewHolder.setHeaderNameColor(color);
+        headerViewHolder.setHeaderValueColor(color);
     }
 
     public Bundle saveStateToBundle() {
@@ -134,5 +139,13 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
 
     public List<Header> getAllItems() {
         return Collections.unmodifiableList(headers);
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(getContext(), colorid);
+    }
+
+    public Context getContext() {
+        return headersDialog.getContext();
     }
 }

@@ -43,6 +43,8 @@ import net.ibbaa.keepitup.ui.support.BasicAuthSupport;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.HeaderEditSupport;
+import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidator;
+import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidator;
 import net.ibbaa.keepitup.ui.validation.HeaderValidator;
 import net.ibbaa.keepitup.ui.validation.StandardHeaderValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
@@ -338,6 +340,21 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         ValidationResult valueResult = validator.validateValue(getValue());
         if (!nameResult.isValidationSuccessful()) {
             validationResults.add(nameResult);
+        }
+        if (getHeaderType().isBasicAuth()) {
+            String[] usernameAndPassword = StringUtil.splitAtFirstColon(getValue());
+            String username = usernameAndPassword[0];
+            String password = usernameAndPassword[1];
+            BasicAuthUsernameFieldValidator usernameValidator = new BasicAuthUsernameFieldValidator(getResources().getString(R.string.basic_auth_username_field_name), getContext());
+            ValidationResult usernameResult = usernameValidator.validate(username);
+            if (!usernameResult.isValidationSuccessful()) {
+                validationResults.add(usernameResult);
+            }
+            BasicAuthPasswordFieldValidator passwordValidator = new BasicAuthPasswordFieldValidator(getResources().getString(R.string.basic_auth_password_field_name), getContext());
+            ValidationResult passwordResult = passwordValidator.validate(password);
+            if (!passwordResult.isValidationSuccessful()) {
+                validationResults.add(passwordResult);
+            }
         }
         HeaderEditSupport headerEditSupport = getGlobalHeaderEditSupport();
         if (headerEditSupport != null) {

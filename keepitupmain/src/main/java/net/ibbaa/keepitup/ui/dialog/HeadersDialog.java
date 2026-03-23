@@ -286,6 +286,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
             getAdapter().removeItem(position);
         }
         Header header = headerEditDialog.getHeader();
+        header.setValueValid(true);
         getAdapter().addItem(header);
         List<Header> headers = sortHeaderList(getAdapter().getAllItems());
         getAdapter().replaceItems(headers);

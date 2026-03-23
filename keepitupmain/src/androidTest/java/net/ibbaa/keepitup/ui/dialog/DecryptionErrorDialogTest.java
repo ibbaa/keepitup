@@ -24,6 +24,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.startsWith;
 
 import android.os.Bundle;
 import android.widget.GridLayout;
@@ -62,6 +63,7 @@ public class DecryptionErrorDialogTest extends BaseUITest {
     public void testErrorMessage() {
         openDecryptionErrorDialog();
         onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Reenter credentials")));
+        onView(withId(R.id.textview_dialog_decryption_error_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -74,6 +76,7 @@ public class DecryptionErrorDialogTest extends BaseUITest {
     public void testErrorMessageScreenRotation() {
         openDecryptionErrorDialog();
         onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Reenter credentials")));
+        onView(withId(R.id.textview_dialog_decryption_error_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));

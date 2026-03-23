@@ -46,5 +46,7 @@
             android:focusable="true"
             android:contentDescription="@string/label_dialog_validator_error_ok"
             app:srcCompat="@drawable/icon_ok_selector" />
+
     </GridLayout>
+
 </ScrollView>

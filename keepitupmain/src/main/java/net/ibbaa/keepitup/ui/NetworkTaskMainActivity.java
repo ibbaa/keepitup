@@ -53,6 +53,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskDragAndDropCallback;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
+import net.ibbaa.keepitup.ui.dialog.DecryptionErrorDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
@@ -63,18 +64,24 @@ import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
 import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
+import net.ibbaa.keepitup.ui.sync.HeaderBulkDeleteTask;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
+import net.ibbaa.keepitup.ui.validation.DecryptionResult;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskNameFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.CollectionUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
+import net.ibbaa.keepitup.util.UIUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -85,6 +92,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private IPermissionManager permissionManager;
     private ItemTouchHelper itemTouchHelper;
+    private boolean decryptionErrorDialogShown;
 
     public void injectPermissionManager(IPermissionManager permissionManager) {
         this.permissionManager = permissionManager;
@@ -118,6 +126,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initDragAndDrop();
         prepareAddImageButton();
         startForegroundServiceDelayed();
+        checkInvalidHeaders();
     }
 
     private void initDragAndDrop() {
@@ -157,6 +166,47 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
+    private void checkInvalidHeaders() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkInvalidHeaders");
+        NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
+        Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
+        if (invalidHeaders.isEmpty()) {
+            return;
+        }
+        List<Header> toDelete = new ArrayList<>();
+        List<DecryptionResult> toDisplay = new ArrayList<>();
+        prepareInvalidHeadersActionLists(adapter, invalidHeaders, toDelete, toDisplay);
+        if (!decryptionErrorDialogShown && !toDisplay.isEmpty()) {
+            String tag = DecryptionErrorDialog.class.getName();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (fragmentManager.findFragmentByTag(tag) == null) {
+                showDecryptionErrorDialog(toDisplay);
+            }
+        }
+        if (!toDelete.isEmpty()) {
+            HeaderBulkDeleteTask bulkDeleteTask = new HeaderBulkDeleteTask(this, toDelete);
+            ThreadUtil.execute(bulkDeleteTask);
+        }
+    }
+
+    private void prepareInvalidHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> invalidHeaders, List<Header> toDelete, List<DecryptionResult> toDisplay) {
+        List<NetworkTaskUIWrapper> items = adapter.getAllItems();
+        for (NetworkTaskUIWrapper currentItem : items) {
+            NetworkTask task = currentItem.getNetworkTask();
+            long networkTaskId = task.getId();
+            List<Header> taskInvalidHeaders = invalidHeaders.get(networkTaskId);
+            if (taskInvalidHeaders != null) {
+                boolean useDefaultHeaders = currentItem.getAccessTypeData() == null || currentItem.getAccessTypeData().isUseDefaultHeaders();
+                if (useDefaultHeaders) {
+                    toDelete.addAll(taskInvalidHeaders);
+                } else {
+                    List<DecryptionResult> decryptionResults = UIUtil.toDecryptionResultList(this, task, taskInvalidHeaders);
+                    toDisplay.addAll(decryptionResults);
+                }
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         Log.d(NetworkTaskMainActivity.class.getName(), "onResume");
@@ -167,6 +217,24 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         checkPermissions();
         checkActiveAlarm();
         scrollToProvidedEntry();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NotNull Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putBoolean(getDecryptionErrorDialogKey(), decryptionErrorDialogShown);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NotNull Bundle state) {
+        super.onRestoreInstanceState(state);
+        if (state.containsKey(getDecryptionErrorDialogKey())) {
+            decryptionErrorDialogShown = state.getBoolean(getDecryptionErrorDialogKey());
+        }
+    }
+
+    private String getDecryptionErrorDialogKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + "DecryptionErrorDialogKey";
     }
 
     private void scrollToProvidedEntry() {
@@ -662,6 +730,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onInputDialogCancelClicked");
         inputDialog.dismiss();
+    }
+
+    private void showDecryptionErrorDialog(List<DecryptionResult> decryptionResult) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showDecryptionErrorDialog");
+        DecryptionErrorDialog errorDialog = new DecryptionErrorDialog();
+        errorDialog.setArguments(BundleUtil.decryptionResultListToBundle(errorDialog.getDecryptionResultBaseKey(), decryptionResult));
+        errorDialog.show(getSupportFragmentManager(), DecryptionErrorDialog.class.getName());
     }
 
     @Override

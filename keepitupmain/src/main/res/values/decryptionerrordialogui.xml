@@ -16,5 +16,6 @@
 
 <resources>
     <string name="text_dialog_decryption_error_title">Reenter credentials</string>
+    <string name="text_dialog_decryption_error_message">The following credentials could not be decrypted and must be re-entered. The most likely cause is that the app was reinstalled or transferred to a new device.</string>
     <string name="label_dialog_decryption_error_ok">@android:string/ok</string>
 </resources>

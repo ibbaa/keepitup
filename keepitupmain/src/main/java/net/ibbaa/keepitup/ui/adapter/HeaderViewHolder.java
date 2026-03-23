@@ -57,6 +57,14 @@ public class HeaderViewHolder extends RecyclerView.ViewHolder {
         headerValue.setText(text);
     }
 
+    public void setHeaderNameColor(int color) {
+        headerName.setTextColor(color);
+    }
+
+    public void setHeaderValueColor(int color) {
+        headerValue.setTextColor(color);
+    }
+
     public void onHeaderOpenClicked(View view) {
         headersDialog.onHeaderOpenClicked(view, getBindingAdapterPosition());
     }

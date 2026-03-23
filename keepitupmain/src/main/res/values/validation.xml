@@ -28,6 +28,8 @@
     <string name="resolve_port_field_name">Connect-to port</string>
     <string name="header_name_field_name">Header name</string>
     <string name="header_value_field_name">Header value</string>
+    <string name="basic_auth_username_field_name">Basic auth username</string>
+    <string name="basic_auth_password_field_name">Basic auth password</string>
     <string name="username_field_name">Username</string>
     <string name="password_field_name">Password</string>
     <string name="password_confirm_field_name">Confirm password</string>

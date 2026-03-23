@@ -693,8 +693,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeadersText");
         headersText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
         int size = CollectionUtil.getSize(currentHeaders);
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
+        boolean containsInvalidHeaders = syncHandler.containsInvalidHeaders(currentHeaders);
         String formattedHeaderText = getResources().getQuantityString(R.plurals.text_dialog_network_task_edit_headers_value, size, size);
+        int color = containsInvalidHeaders ? getColor(R.color.textErrorColor) : getColor(R.color.textColor);
         headersText.setText(formattedHeaderText);
+        headersText.setTextColor(color);
     }
 
     private void prepareIgnoreSSLErrorSwitch() {
