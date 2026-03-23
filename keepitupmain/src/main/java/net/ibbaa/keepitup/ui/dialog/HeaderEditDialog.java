@@ -166,14 +166,47 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
     private void prepareBasicAuthCheckBoxVisibility() {
         Log.d(HeaderEditDialog.class.getName(), "prepareBasicAuthCheckBoxVisibility");
         if (basicAuthCheckBox.isChecked()) {
-            nameEditText.setEnabled(false);
-            valueEditText.setEnabled(false);
+            disableNameAndValueFields();
+            nameEditText.setOnClickListener(this::onBasicAuthFieldsClicked);
+            valueEditText.setOnClickListener(this::onBasicAuthFieldsClicked);
             valueEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
         } else {
-            nameEditText.setEnabled(true);
-            valueEditText.setEnabled(true);
+            nameEditText.setOnClickListener(null);
+            valueEditText.setOnClickListener(null);
+            enableNameAndValueFields();
             valueEditText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         }
+    }
+
+    private void disableNameAndValueFields() {
+        Log.d(HeaderEditDialog.class.getName(), "disableNameAndValueFields");
+        nameEditText.setFocusable(false);
+        nameEditText.setClickable(true);
+        nameEditText.setCursorVisible(false);
+        nameEditText.setAlpha(0.5f);
+        valueEditText.setFocusable(false);
+        valueEditText.setClickable(true);
+        valueEditText.setCursorVisible(false);
+        valueEditText.setAlpha(0.5f);
+    }
+
+    private void enableNameAndValueFields() {
+        Log.d(HeaderEditDialog.class.getName(), "enableNameAndValueFields");
+        nameEditText.setFocusable(true);
+        nameEditText.setFocusableInTouchMode(true);
+        nameEditText.setClickable(true);
+        nameEditText.setCursorVisible(true);
+        nameEditText.setAlpha(1.0f);
+        valueEditText.setFocusable(true);
+        valueEditText.setFocusableInTouchMode(true);
+        valueEditText.setClickable(true);
+        valueEditText.setCursorVisible(true);
+        valueEditText.setAlpha(1.0f);
+    }
+
+    private void onBasicAuthFieldsClicked(@NonNull View checkBox) {
+        Log.d(HeaderEditDialog.class.getName(), "onBasicAuthFieldsClicked");
+        showBasicAuthDialog();
     }
 
     private void onBasicAuthCheckBoxClicked(@NonNull View checkBox) {

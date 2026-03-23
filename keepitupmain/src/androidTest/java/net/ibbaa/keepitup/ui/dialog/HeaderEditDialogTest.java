@@ -24,13 +24,14 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.isFocusable;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -412,8 +413,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
@@ -443,8 +444,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
@@ -473,15 +474,15 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isEnabled()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isFocusable()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isFocusable()));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(false)));
@@ -499,8 +500,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(isNotEnabled()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(isNotEnabled()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(withText("Authorization")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText("abc:123")));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withPasswordVisibility(true)));
@@ -512,6 +513,77 @@ public class HeaderEditDialogTest extends BaseUITest {
         assertTrue(header.isValueValid());
         assertEquals("Authorization", header.getName());
         assertEquals("abc:123", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderOpenOnNameValueClick() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("abc"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
+        assertEquals("Authorization", header.getName());
+        assertEquals("123:abc", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderOpenOnNameValueClickScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(new Header());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("abc"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
+        HeaderEditDialog dialog = getDialog();
+        Header header = dialog.getHeader();
+        assertEquals(-1, header.getId());
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertTrue(header.isValueValid());
+        assertEquals("Authorization", header.getName());
+        assertEquals("123:abc", header.getValue());
         onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         activityScenario.close();
     }
