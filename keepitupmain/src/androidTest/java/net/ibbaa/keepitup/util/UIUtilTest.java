@@ -83,10 +83,16 @@ public class UIUtilTest {
         header2.setName("header2");
         List<DecryptionResult> resultList = UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, List.of(header1, header2));
         assertEquals(2, resultList.size());
-        assertEquals("My Task", resultList.get(0).getNetworkTask());
-        assertEquals("header1", resultList.get(0).getMessage());
-        assertEquals("My Task", resultList.get(1).getNetworkTask());
-        assertEquals("header2", resultList.get(1).getMessage());
+        assertEquals("My Task", resultList.get(0).getName());
+        assertEquals("header1 (header)", resultList.get(0).getMessage());
+        assertEquals("My Task", resultList.get(1).getName());
+        assertEquals("header2 (header)", resultList.get(1).getMessage());
+        resultList = UIUtil.toDecryptionResultList(TestRegistry.getContext(), null, List.of(header1, header2));
+        assertEquals(2, resultList.size());
+        assertEquals("Default", resultList.get(0).getName());
+        assertEquals("header1 (header)", resultList.get(0).getMessage());
+        assertEquals("Default", resultList.get(1).getName());
+        assertEquals("header2 (header)", resultList.get(1).getMessage());
     }
 
     @Test

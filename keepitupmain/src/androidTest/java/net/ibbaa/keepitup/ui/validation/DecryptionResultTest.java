@@ -38,34 +38,34 @@ public class DecryptionResultTest {
     @Test
     public void testToBundleNullValues() {
         DecryptionResult result = new DecryptionResult(null, null);
-        assertNull(result.getNetworkTask());
+        assertNull(result.getName());
         assertNull(result.getMessage());
         PersistableBundle persistableBundle = result.toPersistableBundle();
         assertNotNull(persistableBundle);
         result = new DecryptionResult(persistableBundle);
-        assertNull(result.getNetworkTask());
+        assertNull(result.getName());
         assertNull(result.getMessage());
         Bundle bundle = result.toBundle();
         assertNotNull(bundle);
         result = new DecryptionResult(bundle);
-        assertNull(result.getNetworkTask());
+        assertNull(result.getName());
         assertNull(result.getMessage());
     }
 
     @Test
     public void testToBundle() {
         DecryptionResult result = new DecryptionResult("testtask", "testmessage");
-        assertEquals("testtask", result.getNetworkTask());
+        assertEquals("testtask", result.getName());
         assertEquals("testmessage", result.getMessage());
         PersistableBundle persistableBundle = result.toPersistableBundle();
         assertNotNull(persistableBundle);
         result = new DecryptionResult(persistableBundle);
-        assertEquals("testtask", result.getNetworkTask());
+        assertEquals("testtask", result.getName());
         assertEquals("testmessage", result.getMessage());
         Bundle bundle = result.toBundle();
         assertNotNull(bundle);
         result = new DecryptionResult(bundle);
-        assertEquals("testtask", result.getNetworkTask());
+        assertEquals("testtask", result.getName());
         assertEquals("testmessage", result.getMessage());
     }
 

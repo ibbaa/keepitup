@@ -359,7 +359,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     private void prepareGlobalHeadersTextFieldsSingleLayout(String text) {
         Log.d(DefaultsActivity.class.getName(), "prepareGlobalHeadersTextFieldsSingleLayout with text " + text);
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_defaults_global_headers_value);
-        TextView globalHeaderText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
+        TextView globalHeaderText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), getColor(R.color.textColor), Typeface.NORMAL, Integer.MAX_VALUE);
         GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
         gridLayout.addView(globalHeaderText, globalHeaderTextParams);
     }
@@ -375,8 +375,9 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         Log.d(DefaultsActivity.class.getName(), "Visible count is " + visibleCount);
         for (int ii = 0; ii < visibleCount; ii++) {
             Header header = headers.get(ii);
-            TextView nameText = getGlobalHeadersTextView(header.getName() + ": ", textSize, Typeface.BOLD, Integer.MAX_VALUE);
-            TextView valueText = getGlobalHeadersTextView(StringUtil.maskSecret(header.getValue(), header.isValueSecret()), textSize, Typeface.NORMAL, maxLines);
+            int color = header.isValueValid() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor);
+            TextView nameText = getGlobalHeadersTextView(header.getName() + ": ", textSize, color, Typeface.BOLD, Integer.MAX_VALUE);
+            TextView valueText = getGlobalHeadersTextView(StringUtil.maskSecret(header.getValue(), header.isValueSecret()), textSize, color, Typeface.NORMAL, maxLines);
             GridLayout.LayoutParams nameTextParams = getGlobalHeaderTextViewLayoutParams(ii, 0);
             GridLayout.LayoutParams valueTextParams = getGlobalHeaderTextViewLayoutParams(ii, 1);
             gridLayout.addView(nameText, nameTextParams);
@@ -386,7 +387,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         if (headers.size() > maxVisibleHeaders) {
             String more = getResources().getString(R.string.text_activity_defaults_global_headers_more, headers.size() - maxVisibleHeaders);
             String less = getResources().getString(R.string.text_activity_defaults_global_headers_less);
-            TextView toggleText = getGlobalHeadersTextView(globalHeadersExpanded ? less : more, getGlobalHeadersTextSize(headers.size()), Typeface.ITALIC, Integer.MAX_VALUE);
+            TextView toggleText = getGlobalHeadersTextView(globalHeadersExpanded ? less : more, getGlobalHeadersTextSize(headers.size()), getColor(R.color.textColor), Typeface.ITALIC, Integer.MAX_VALUE);
             GridLayout.LayoutParams toggleParams = getGlobalHeaderTextViewLayoutParams(visibleCount, 0);
             GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
             gridLayout.addView(toggleText, toggleParams);
@@ -397,11 +398,12 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         }
     }
 
-    private TextView getGlobalHeadersTextView(String text, int textSize, int typeface, int maxLines) {
+    private TextView getGlobalHeadersTextView(String text, int textSize, int color, int typeface, int maxLines) {
         Log.d(DefaultsActivity.class.getName(), "getGlobalHeadersTextView, text is " + text + ", textSize is " + textSize + ", maxLines is " + maxLines);
         TextView headerText = new TextView(this);
         headerText.setId(View.generateViewId());
         headerText.setText(text);
+        headerText.setTextColor(color);
         headerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
         headerText.setTypeface(null, typeface);
         if (maxLines < Integer.MAX_VALUE) {

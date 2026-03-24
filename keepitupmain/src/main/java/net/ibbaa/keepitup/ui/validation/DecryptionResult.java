@@ -25,11 +25,11 @@ import java.util.Objects;
 
 public class DecryptionResult {
 
-    private final String networkTask;
+    private final String name;
     private final String message;
 
-    public DecryptionResult(String networkTask, String message) {
-        this.networkTask = networkTask;
+    public DecryptionResult(String name, String message) {
+        this.name = name;
         this.message = message;
     }
 
@@ -38,12 +38,12 @@ public class DecryptionResult {
     }
 
     public DecryptionResult(Bundle bundle) {
-        this.networkTask = bundle.getString("networkTask");
+        this.name = bundle.getString("name");
         this.message = bundle.getString("message");
     }
 
-    public String getNetworkTask() {
-        return networkTask;
+    public String getName() {
+        return name;
     }
 
     public String getMessage() {
@@ -52,7 +52,7 @@ public class DecryptionResult {
 
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
-        bundle.putString("networkTask", networkTask);
+        bundle.putString("name", name);
         bundle.putString("message", message);
         return bundle;
     }
@@ -68,14 +68,14 @@ public class DecryptionResult {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        return Objects.equals(networkTask, other.networkTask) && Objects.equals(message, other.message);
+        return Objects.equals(name, other.name) && Objects.equals(message, other.message);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "DecryptionResult{" +
-                "networkTask='" + networkTask + '\'' +
+                "name='" + name + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }

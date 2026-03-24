@@ -62,7 +62,7 @@ public class DecryptionErrorDialogTest extends BaseUITest {
     @Test
     public void testErrorMessage() {
         openDecryptionErrorDialog();
-        onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Reenter credentials")));
+        onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Re-enter credentials")));
         onView(withId(R.id.textview_dialog_decryption_error_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
@@ -75,7 +75,7 @@ public class DecryptionErrorDialogTest extends BaseUITest {
     @Test
     public void testErrorMessageScreenRotation() {
         openDecryptionErrorDialog();
-        onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Reenter credentials")));
+        onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Re-enter credentials")));
         onView(withId(R.id.textview_dialog_decryption_error_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));

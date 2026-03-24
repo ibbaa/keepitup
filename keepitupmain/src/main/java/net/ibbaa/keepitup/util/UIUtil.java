@@ -62,12 +62,19 @@ public class UIUtil {
     }
 
     public static List<DecryptionResult> toDecryptionResultList(Context context, NetworkTask task, List<Header> headers) {
-        if (headers == null || task == null) {
+        if (headers == null) {
             return Collections.emptyList();
         }
         List<DecryptionResult> decryptionResultList = new ArrayList<>(headers.size());
         for (Header currentHeader : headers) {
-            DecryptionResult decryptionResult = new DecryptionResult(getNetworkTaskTitleName(context, task, false, false), currentHeader.getName());
+            String headerText = context.getResources().getString(R.string.text_dialog_decryption_error_header);
+            String name;
+            if (task == null) {
+                name = context.getResources().getString(R.string.text_dialog_decryption_error_default);
+            } else {
+                name = getNetworkTaskTitleName(context, task, false, false);
+            }
+            DecryptionResult decryptionResult = new DecryptionResult(name, currentHeader.getName() + " (" + headerText + ")");
             decryptionResultList.add(decryptionResult);
         }
         return decryptionResultList;

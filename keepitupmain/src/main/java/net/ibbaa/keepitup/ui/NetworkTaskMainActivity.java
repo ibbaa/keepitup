@@ -65,6 +65,7 @@ import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
 import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
 import net.ibbaa.keepitup.ui.sync.HeaderBulkDeleteTask;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import net.ibbaa.keepitup.ui.validation.DecryptionResult;
@@ -190,6 +191,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     private void prepareInvalidHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> invalidHeaders, List<Header> toDelete, List<DecryptionResult> toDisplay) {
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
+        List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
+        List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
+        List<DecryptionResult> decryptionResults = UIUtil.toDecryptionResultList(this, null, invalidDefaultHeaders);
+        toDisplay.addAll(decryptionResults);
         List<NetworkTaskUIWrapper> items = adapter.getAllItems();
         for (NetworkTaskUIWrapper currentItem : items) {
             NetworkTask task = currentItem.getNetworkTask();
@@ -200,7 +206,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 if (useDefaultHeaders) {
                     toDelete.addAll(taskInvalidHeaders);
                 } else {
-                    List<DecryptionResult> decryptionResults = UIUtil.toDecryptionResultList(this, task, taskInvalidHeaders);
+                    decryptionResults = UIUtil.toDecryptionResultList(this, task, taskInvalidHeaders);
                     toDisplay.addAll(decryptionResults);
                 }
             }

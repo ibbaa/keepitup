@@ -61,7 +61,7 @@ public class DecryptionErrorDialog extends GridBasedErrorDialogBase {
     private List<ErrorMessage> toErrorMessageList(List<DecryptionResult> resultList) {
         List<ErrorMessage> messages = new ArrayList<>(resultList.size());
         for (DecryptionResult currentResult : resultList) {
-            messages.add(new ErrorMessage(currentResult.getNetworkTask(), currentResult.getMessage()));
+            messages.add(new ErrorMessage(currentResult.getName(), currentResult.getMessage()));
         }
         return messages;
     }
