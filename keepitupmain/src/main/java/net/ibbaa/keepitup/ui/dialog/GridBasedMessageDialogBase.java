@@ -29,7 +29,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.List;
 
-public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
+public abstract class GridBasedMessageDialogBase extends DialogFragmentBase {
 
     public String getMessageWidthKey() {
         return ValidatorErrorDialog.class.getSimpleName() + "MessageWidth";
@@ -42,12 +42,12 @@ public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
         return GridLayout.LayoutParams.WRAP_CONTENT;
     }
 
-    protected void prepareErrorMessages(View view, List<ErrorMessage> errorMessages) {
-        Log.d(GridBasedErrorDialogBase.class.getName(), "prepareErrorMessages");
+    protected void prepareErrorMessages(View view, List<GridMessage> gridMessages) {
+        Log.d(GridBasedMessageDialogBase.class.getName(), "prepareErrorMessages");
         GridLayout gridLayout = getErrorGridLayout(view);
-        for (int ii = 0; ii < errorMessages.size(); ii++) {
-            ErrorMessage currentMessage = errorMessages.get(ii);
-            Log.d(GridBasedErrorDialogBase.class.getName(), "prepareErrorMessages, result with index " + ii + " is " + currentMessage);
+        for (int ii = 0; ii < gridMessages.size(); ii++) {
+            GridMessage currentMessage = gridMessages.get(ii);
+            Log.d(GridBasedMessageDialogBase.class.getName(), "prepareErrorMessages, result with index " + ii + " is " + currentMessage);
             TextView labelText = new TextView(requireContext());
             labelText.setId(View.generateViewId());
             labelText.setText(currentMessage.name());
@@ -56,8 +56,8 @@ public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
             labelTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.setGravity(Gravity.CENTER);
-            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_error_label_margin_right);
-            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_error_label_margin_top);
+            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_message_label_margin_right);
+            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_message_label_margin_top);
             labelTextParams.columnSpec = GridLayout.spec(0, 1, GridLayout.LEFT);
             labelTextParams.rowSpec = GridLayout.spec(ii + 1, 1, GridLayout.LEFT);
             gridLayout.addView(labelText, labelTextParams);
@@ -69,8 +69,8 @@ public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
             messageTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             messageTextParams.width = getMessageWidth();
             messageTextParams.setGravity(Gravity.CENTER);
-            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_error_message_margin_left);
-            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_error_message_margin_top);
+            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_message_margin_left);
+            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_message_margin_top);
             messageTextParams.columnSpec = GridLayout.spec(1, 1, GridLayout.LEFT);
             messageTextParams.rowSpec = GridLayout.spec(ii + 1, 1, GridLayout.LEFT);
             gridLayout.addView(messageText, messageTextParams);
@@ -78,7 +78,7 @@ public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
     }
 
     protected void prepareOkButton(View view, int row) {
-        Log.d(GridBasedErrorDialogBase.class.getName(), "prepareOkButton");
+        Log.d(GridBasedMessageDialogBase.class.getName(), "prepareOkButton");
         ImageView okImage = getOkImageView(view);
         GridLayout.LayoutParams okImageParams = new GridLayout.LayoutParams();
         okImageParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -86,14 +86,14 @@ public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
         okImageParams.columnSpec = GridLayout.spec(0, 2, GridLayout.CENTER);
         okImageParams.rowSpec = GridLayout.spec(row, 1, GridLayout.CENTER);
         okImageParams.setGravity(Gravity.CENTER);
-        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_grid_based_error_ok_margin_top);
+        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_grid_based_message_ok_margin_top);
         okImage.setLayoutParams(okImageParams);
         okImage.setOnClickListener(this::onOkClicked);
     }
 
     @SuppressWarnings({"unused"})
     protected void onOkClicked(View view) {
-        Log.d(GridBasedErrorDialogBase.class.getName(), "onOkClicked");
+        Log.d(GridBasedMessageDialogBase.class.getName(), "onOkClicked");
         dismiss();
     }
 
@@ -101,6 +101,6 @@ public abstract class GridBasedErrorDialogBase extends DialogFragmentBase {
 
     protected abstract ImageView getOkImageView(View view);
 
-    public record ErrorMessage(String name, String message) {
+    public record GridMessage(String name, String message) {
     }
 }

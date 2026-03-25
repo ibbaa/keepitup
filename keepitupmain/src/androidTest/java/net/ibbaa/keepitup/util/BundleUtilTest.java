@@ -33,7 +33,7 @@ import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
 import org.junit.Test;
@@ -369,22 +369,22 @@ public class BundleUtilTest {
 
     @Test
     public void testDecryptionResultListFromEmptyBundle() {
-        List<DecryptionResult> decryptionResultList = BundleUtil.decryptionResultListFromBundle("key", null);
-        assertNotNull(decryptionResultList);
-        assertTrue(decryptionResultList.isEmpty());
+        List<CredentialInfo> credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", null);
+        assertNotNull(credentialInfoList);
+        assertTrue(credentialInfoList.isEmpty());
         Bundle bundle = new Bundle();
-        decryptionResultList = BundleUtil.decryptionResultListFromBundle("key", bundle);
-        assertNotNull(decryptionResultList);
-        assertTrue(decryptionResultList.isEmpty());
+        credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", bundle);
+        assertNotNull(credentialInfoList);
+        assertTrue(credentialInfoList.isEmpty());
     }
 
     @Test
     public void testDecryptionResultListToBundle() {
-        DecryptionResult result1 = new DecryptionResult("task1", "message1");
-        DecryptionResult result2 = new DecryptionResult("task2", "message2");
+        CredentialInfo result1 = new CredentialInfo("task1", "message1");
+        CredentialInfo result2 = new CredentialInfo("task2", "message2");
         Bundle bundle = BundleUtil.decryptionResultListToBundle("key", Arrays.asList(result1, result2));
-        DecryptionResult otherResult1 = new DecryptionResult(Objects.requireNonNull(bundle.getBundle("key0")));
-        DecryptionResult otherResult2 = new DecryptionResult(Objects.requireNonNull(bundle.getBundle("key1")));
+        CredentialInfo otherResult1 = new CredentialInfo(Objects.requireNonNull(bundle.getBundle("key0")));
+        CredentialInfo otherResult2 = new CredentialInfo(Objects.requireNonNull(bundle.getBundle("key1")));
         assertTrue(result1.isEqual(otherResult1));
         assertTrue(result2.isEqual(otherResult2));
     }
@@ -392,23 +392,23 @@ public class BundleUtilTest {
     @Test
     public void testDecryptionResultListFromBundle() {
         Bundle bundle = new Bundle();
-        DecryptionResult result1 = new DecryptionResult("task1", "message1");
-        DecryptionResult result2 = new DecryptionResult("task2", "message2");
+        CredentialInfo result1 = new CredentialInfo("task1", "message1");
+        CredentialInfo result2 = new CredentialInfo("task2", "message2");
         bundle.putBundle("key0", result1.toBundle());
         bundle.putBundle("key1", result2.toBundle());
-        List<DecryptionResult> decryptionResultList = BundleUtil.decryptionResultListFromBundle("key", bundle);
-        assertTrue(result1.isEqual(decryptionResultList.get(0)));
-        assertTrue(result2.isEqual(decryptionResultList.get(1)));
+        List<CredentialInfo> credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", bundle);
+        assertTrue(result1.isEqual(credentialInfoList.get(0)));
+        assertTrue(result2.isEqual(credentialInfoList.get(1)));
     }
 
     @Test
     public void testDecryptionResultListToAndFromBundle() {
-        DecryptionResult result1 = new DecryptionResult("task1", "message1");
-        DecryptionResult result2 = new DecryptionResult("task2", "message2");
+        CredentialInfo result1 = new CredentialInfo("task1", "message1");
+        CredentialInfo result2 = new CredentialInfo("task2", "message2");
         Bundle bundle = BundleUtil.decryptionResultListToBundle("key", Arrays.asList(result1, result2));
-        List<DecryptionResult> decryptionResultList = BundleUtil.decryptionResultListFromBundle("key", bundle);
-        assertTrue(result1.isEqual(decryptionResultList.get(0)));
-        assertTrue(result2.isEqual(decryptionResultList.get(1)));
+        List<CredentialInfo> credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", bundle);
+        assertTrue(result1.isEqual(credentialInfoList.get(0)));
+        assertTrue(result2.isEqual(credentialInfoList.get(1)));
     }
 
     @Test

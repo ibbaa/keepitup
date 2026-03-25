@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,23 +61,23 @@ public class UIUtil {
         return name;
     }
 
-    public static List<DecryptionResult> toDecryptionResultList(Context context, NetworkTask task, List<Header> headers) {
+    public static List<CredentialInfo> toCredentialInfoList(Context context, NetworkTask task, List<Header> headers) {
         if (headers == null) {
             return Collections.emptyList();
         }
-        List<DecryptionResult> decryptionResultList = new ArrayList<>(headers.size());
+        List<CredentialInfo> credentialInfoList = new ArrayList<>(headers.size());
         for (Header currentHeader : headers) {
-            String headerText = context.getResources().getString(R.string.text_dialog_decryption_error_header);
+            String headerText = context.getResources().getString(R.string.text_dialog_credential_info_header);
             String name;
             if (task == null) {
-                name = context.getResources().getString(R.string.text_dialog_decryption_error_default);
+                name = context.getResources().getString(R.string.text_dialog_credential_info_default);
             } else {
                 name = getNetworkTaskTitleName(context, task, false, false);
             }
-            DecryptionResult decryptionResult = new DecryptionResult(name, currentHeader.getName() + " (" + headerText + ")");
-            decryptionResultList.add(decryptionResult);
+            CredentialInfo credentialInfo = new CredentialInfo(name, currentHeader.getName() + " (" + headerText + ")");
+            credentialInfoList.add(credentialInfo);
         }
-        return decryptionResultList;
+        return credentialInfoList;
     }
 
     public static boolean isInputTypeNumber(int inputType) {

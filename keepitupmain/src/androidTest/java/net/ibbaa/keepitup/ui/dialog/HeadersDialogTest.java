@@ -290,6 +290,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Value3")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name4"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value4"));
@@ -306,6 +307,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Value4")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withTextColor(R.color.textColor)));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withTextColor(R.color.textColor)));
+        onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name5"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value5"));
@@ -322,6 +324,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withText("Value5")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withTextColor(R.color.textColor)));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 2))).check(matches(withTextColor(R.color.textColor)));
+        onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name6"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value6"));

@@ -29,7 +29,7 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,28 +71,28 @@ public class UIUtilTest {
     }
 
     @Test
-    public void testToDecryptionResultList() {
+    public void testToCredentialInfoList() {
         NetworkTask task = new NetworkTask();
         task.setName("My Task");
-        assertTrue(UIUtil.toDecryptionResultList(TestRegistry.getContext(), null, Collections.emptyList()).isEmpty());
-        assertTrue(UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, null).isEmpty());
-        assertTrue(UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, Collections.emptyList()).isEmpty());
+        assertTrue(UIUtil.toCredentialInfoList(TestRegistry.getContext(), null, Collections.emptyList()).isEmpty());
+        assertTrue(UIUtil.toCredentialInfoList(TestRegistry.getContext(), task, null).isEmpty());
+        assertTrue(UIUtil.toCredentialInfoList(TestRegistry.getContext(), task, Collections.emptyList()).isEmpty());
         Header header1 = new Header();
         Header header2 = new Header();
         header1.setName("header1");
         header2.setName("header2");
-        List<DecryptionResult> resultList = UIUtil.toDecryptionResultList(TestRegistry.getContext(), task, List.of(header1, header2));
-        assertEquals(2, resultList.size());
-        assertEquals("My Task", resultList.get(0).getName());
-        assertEquals("header1 (header)", resultList.get(0).getMessage());
-        assertEquals("My Task", resultList.get(1).getName());
-        assertEquals("header2 (header)", resultList.get(1).getMessage());
-        resultList = UIUtil.toDecryptionResultList(TestRegistry.getContext(), null, List.of(header1, header2));
-        assertEquals(2, resultList.size());
-        assertEquals("Default", resultList.get(0).getName());
-        assertEquals("header1 (header)", resultList.get(0).getMessage());
-        assertEquals("Default", resultList.get(1).getName());
-        assertEquals("header2 (header)", resultList.get(1).getMessage());
+        List<CredentialInfo> credentialInfoList = UIUtil.toCredentialInfoList(TestRegistry.getContext(), task, List.of(header1, header2));
+        assertEquals(2, credentialInfoList.size());
+        assertEquals("My Task", credentialInfoList.get(0).getName());
+        assertEquals("header1 (header)", credentialInfoList.get(0).getMessage());
+        assertEquals("My Task", credentialInfoList.get(1).getName());
+        assertEquals("header2 (header)", credentialInfoList.get(1).getMessage());
+        credentialInfoList = UIUtil.toCredentialInfoList(TestRegistry.getContext(), null, List.of(header1, header2));
+        assertEquals(2, credentialInfoList.size());
+        assertEquals("Default", credentialInfoList.get(0).getName());
+        assertEquals("header1 (header)", credentialInfoList.get(0).getMessage());
+        assertEquals("Default", credentialInfoList.get(1).getName());
+        assertEquals("header2 (header)", credentialInfoList.get(1).getMessage());
     }
 
     @Test

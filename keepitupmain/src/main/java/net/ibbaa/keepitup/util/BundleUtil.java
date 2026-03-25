@@ -22,7 +22,7 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
 import java.util.ArrayList;
@@ -204,26 +204,26 @@ public class BundleUtil {
         return resultList;
     }
 
-    public static Bundle decryptionResultListToBundle(String baseKey, List<DecryptionResult> decryptionResultList) {
-        if (baseKey == null || decryptionResultList == null) {
+    public static Bundle decryptionResultListToBundle(String baseKey, List<CredentialInfo> credentialInfoList) {
+        if (baseKey == null || credentialInfoList == null) {
             return new Bundle();
         }
-        List<Bundle> bundleList = new ArrayList<>(decryptionResultList.size());
-        for (DecryptionResult result : decryptionResultList) {
+        List<Bundle> bundleList = new ArrayList<>(credentialInfoList.size());
+        for (CredentialInfo result : credentialInfoList) {
             bundleList.add(result.toBundle());
         }
         return bundleListToBundle(baseKey, bundleList);
     }
 
-    public static List<DecryptionResult> decryptionResultListFromBundle(String baseKey, Bundle bundle) {
+    public static List<CredentialInfo> decryptionResultListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<DecryptionResult> decryptionResultList = new ArrayList<>(bundleList.size());
+        List<CredentialInfo> credentialInfoList = new ArrayList<>(bundleList.size());
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
-                decryptionResultList.add(new DecryptionResult(currentBundle));
+                credentialInfoList.add(new CredentialInfo(currentBundle));
             }
         }
-        return decryptionResultList;
+        return credentialInfoList;
     }
 
     public static Bundle validationResultListToBundle(String baseKey, List<ValidationResult> validationResultList) {

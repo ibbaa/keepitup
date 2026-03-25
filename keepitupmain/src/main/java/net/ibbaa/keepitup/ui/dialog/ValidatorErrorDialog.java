@@ -34,7 +34,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidatorErrorDialog extends GridBasedErrorDialogBase {
+public class ValidatorErrorDialog extends GridBasedMessageDialogBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,10 +58,10 @@ public class ValidatorErrorDialog extends GridBasedErrorDialogBase {
         return ValidatorErrorDialog.class.getSimpleName() + "ValidationResult";
     }
 
-    private List<ErrorMessage> toErrorMessageList(List<ValidationResult> resultList) {
-        List<ErrorMessage> messages = new ArrayList<>(resultList.size());
+    private List<GridMessage> toErrorMessageList(List<ValidationResult> resultList) {
+        List<GridMessage> messages = new ArrayList<>(resultList.size());
         for (ValidationResult currentResult : resultList) {
-            messages.add(new ErrorMessage(currentResult.getFieldName(), currentResult.getMessage()));
+            messages.add(new GridMessage(currentResult.getFieldName(), currentResult.getMessage()));
         }
         return messages;
     }

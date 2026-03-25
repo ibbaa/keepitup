@@ -28,49 +28,49 @@ import androidx.fragment.app.DialogFragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DecryptionErrorDialog extends GridBasedErrorDialogBase {
+public class CredentialInfoDialog extends GridBasedMessageDialogBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(DecryptionErrorDialog.class.getName(), "onCreate");
+        Log.d(CredentialInfoDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(DecryptionErrorDialog.class.getName(), "onCreateView");
-        View view = inflater.inflate(R.layout.dialog_decryption_error, container);
+        Log.d(CredentialInfoDialog.class.getName(), "onCreateView");
+        View view = inflater.inflate(R.layout.dialog_credential_info, container);
         initEdgeToEdgeInsets(view);
-        List<DecryptionResult> resultList = BundleUtil.decryptionResultListFromBundle(getDecryptionResultBaseKey(), requireArguments());
+        List<CredentialInfo> resultList = BundleUtil.decryptionResultListFromBundle(getDecryptionResultBaseKey(), requireArguments());
         prepareErrorMessages(view, toErrorMessageList(resultList));
         prepareOkButton(view, resultList.size() + 1);
         return view;
     }
 
     public String getDecryptionResultBaseKey() {
-        return DecryptionErrorDialog.class.getSimpleName() + "DecryptionResult";
+        return CredentialInfoDialog.class.getSimpleName() + "DecryptionResult";
     }
 
-    private List<ErrorMessage> toErrorMessageList(List<DecryptionResult> resultList) {
-        List<ErrorMessage> messages = new ArrayList<>(resultList.size());
-        for (DecryptionResult currentResult : resultList) {
-            messages.add(new ErrorMessage(currentResult.getName(), currentResult.getMessage()));
+    private List<GridMessage> toErrorMessageList(List<CredentialInfo> resultList) {
+        List<GridMessage> messages = new ArrayList<>(resultList.size());
+        for (CredentialInfo currentResult : resultList) {
+            messages.add(new GridMessage(currentResult.getName(), currentResult.getMessage()));
         }
         return messages;
     }
 
     protected GridLayout getErrorGridLayout(View view) {
-        return view.findViewById(R.id.gridlayout_dialog_decryption_error);
+        return view.findViewById(R.id.gridlayout_dialog_credential_info);
     }
 
     protected ImageView getOkImageView(View view) {
-        return view.findViewById(R.id.imageview_dialog_decryption_error_ok);
+        return view.findViewById(R.id.imageview_dialog_credential_info_ok);
     }
 }

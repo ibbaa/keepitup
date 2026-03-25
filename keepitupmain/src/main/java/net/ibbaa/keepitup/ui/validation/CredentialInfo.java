@@ -23,21 +23,21 @@ import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
-public class DecryptionResult {
+public class CredentialInfo {
 
     private final String name;
     private final String message;
 
-    public DecryptionResult(String name, String message) {
+    public CredentialInfo(String name, String message) {
         this.name = name;
         this.message = message;
     }
 
-    public DecryptionResult(PersistableBundle bundle) {
+    public CredentialInfo(PersistableBundle bundle) {
         this(new Bundle(bundle));
     }
 
-    public DecryptionResult(Bundle bundle) {
+    public CredentialInfo(Bundle bundle) {
         this.name = bundle.getString("name");
         this.message = bundle.getString("message");
     }
@@ -61,7 +61,7 @@ public class DecryptionResult {
         return new Bundle(toPersistableBundle());
     }
 
-    public boolean isEqual(DecryptionResult other) {
+    public boolean isEqual(CredentialInfo other) {
         if (this == other) {
             return true;
         }

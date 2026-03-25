@@ -34,7 +34,7 @@ import androidx.test.core.app.ActivityScenario;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
-import net.ibbaa.keepitup.ui.validation.DecryptionResult;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import org.junit.After;
@@ -43,7 +43,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-public class DecryptionErrorDialogTest extends BaseUITest {
+public class CredentialInfoDialogTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
 
@@ -60,23 +60,23 @@ public class DecryptionErrorDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testErrorMessage() {
-        openDecryptionErrorDialog();
-        onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Re-enter credentials")));
-        onView(withId(R.id.textview_dialog_decryption_error_message)).check(matches(withText(startsWith("The following"))));
+    public void testMessage() {
+        openCredentialInfoDialog();
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_decryption_error_ok)).check(matches(withGridLayoutPositionAndSpan(3, 1, GridLayout.CENTER, 0, 2, GridLayout.CENTER)));
-        onView(withId(R.id.imageview_dialog_decryption_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).check(matches(withGridLayoutPositionAndSpan(3, 1, GridLayout.CENTER, 0, 2, GridLayout.CENTER)));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
     }
 
     @Test
-    public void testErrorMessageScreenRotation() {
-        openDecryptionErrorDialog();
-        onView(withId(R.id.textview_dialog_decryption_error_title)).check(matches(withText("Re-enter credentials")));
-        onView(withId(R.id.textview_dialog_decryption_error_message)).check(matches(withText(startsWith("The following"))));
+    public void testMessageScreenRotation() {
+        openCredentialInfoDialog();
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -91,16 +91,16 @@ public class DecryptionErrorDialogTest extends BaseUITest {
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_decryption_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
     }
 
-    private void openDecryptionErrorDialog() {
-        DecryptionErrorDialog errorDialog = new DecryptionErrorDialog();
-        DecryptionResult result1 = new DecryptionResult("task1", "message1");
-        DecryptionResult result2 = new DecryptionResult("task2", "message2");
-        Bundle bundle = BundleUtil.decryptionResultListToBundle(errorDialog.getDecryptionResultBaseKey(), Arrays.asList(result1, result2));
-        errorDialog.setArguments(bundle);
-        errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), DecryptionErrorDialog.class.getName());
+    private void openCredentialInfoDialog() {
+        CredentialInfoDialog infoDialog = new CredentialInfoDialog();
+        CredentialInfo info1 = new CredentialInfo("task1", "message1");
+        CredentialInfo info2 = new CredentialInfo("task2", "message2");
+        Bundle bundle = BundleUtil.decryptionResultListToBundle(infoDialog.getDecryptionResultBaseKey(), Arrays.asList(info1, info2));
+        infoDialog.setArguments(bundle);
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), CredentialInfoDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
     }
 }
