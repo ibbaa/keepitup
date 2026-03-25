@@ -171,12 +171,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "checkInvalidHeaders");
         NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
         Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
-        if (invalidHeaders.isEmpty()) {
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
+        List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
+        List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
+        if (invalidHeaders.isEmpty() && invalidDefaultHeaders.isEmpty()) {
             return;
         }
         List<Header> toDelete = new ArrayList<>();
         List<DecryptionResult> toDisplay = new ArrayList<>();
-        prepareInvalidHeadersActionLists(adapter, invalidHeaders, toDelete, toDisplay);
+        prepareInvalidHeadersActionLists(adapter, invalidHeaders, invalidDefaultHeaders, toDelete, toDisplay);
         if (!decryptionErrorDialogShown && !toDisplay.isEmpty()) {
             String tag = DecryptionErrorDialog.class.getName();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -190,24 +193,25 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
-    private void prepareInvalidHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> invalidHeaders, List<Header> toDelete, List<DecryptionResult> toDisplay) {
-        HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
-        List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
-        List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
-        List<DecryptionResult> decryptionResults = UIUtil.toDecryptionResultList(this, null, invalidDefaultHeaders);
-        toDisplay.addAll(decryptionResults);
-        List<NetworkTaskUIWrapper> items = adapter.getAllItems();
-        for (NetworkTaskUIWrapper currentItem : items) {
-            NetworkTask task = currentItem.getNetworkTask();
-            long networkTaskId = task.getId();
-            List<Header> taskInvalidHeaders = invalidHeaders.get(networkTaskId);
-            if (taskInvalidHeaders != null) {
-                boolean useDefaultHeaders = currentItem.getAccessTypeData() == null || currentItem.getAccessTypeData().isUseDefaultHeaders();
-                if (useDefaultHeaders) {
-                    toDelete.addAll(taskInvalidHeaders);
-                } else {
-                    decryptionResults = UIUtil.toDecryptionResultList(this, task, taskInvalidHeaders);
-                    toDisplay.addAll(decryptionResults);
+    private void prepareInvalidHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> invalidHeaders, List<Header> invalidDefaultHeaders, List<Header> toDelete, List<DecryptionResult> toDisplay) {
+        if (invalidDefaultHeaders != null && !invalidDefaultHeaders.isEmpty()) {
+            List<DecryptionResult> decryptionResults = UIUtil.toDecryptionResultList(this, null, invalidDefaultHeaders);
+            toDisplay.addAll(decryptionResults);
+        }
+        if (invalidHeaders != null && !invalidHeaders.isEmpty()) {
+            List<NetworkTaskUIWrapper> items = adapter.getAllItems();
+            for (NetworkTaskUIWrapper currentItem : items) {
+                NetworkTask task = currentItem.getNetworkTask();
+                long networkTaskId = task.getId();
+                List<Header> taskInvalidHeaders = invalidHeaders.get(networkTaskId);
+                if (taskInvalidHeaders != null) {
+                    boolean useDefaultHeaders = currentItem.getAccessTypeData() == null || currentItem.getAccessTypeData().isUseDefaultHeaders();
+                    if (useDefaultHeaders) {
+                        toDelete.addAll(taskInvalidHeaders);
+                    } else {
+                        List<DecryptionResult> decryptionResults = UIUtil.toDecryptionResultList(this, task, taskInvalidHeaders);
+                        toDisplay.addAll(decryptionResults);
+                    }
                 }
             }
         }
