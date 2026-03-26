@@ -29,10 +29,12 @@ public class PasswordToggleTouchListener implements View.OnTouchListener {
     private final EditText editText;
 
     private boolean visible;
+    private boolean enabled;
 
     public PasswordToggleTouchListener(EditText editText) {
         this.editText = editText;
         this.visible = false;
+        this.enabled = true;
     }
 
     public boolean isVisible() {
@@ -40,11 +42,28 @@ public class PasswordToggleTouchListener implements View.OnTouchListener {
     }
 
     public void setVisible(boolean visible) {
-        this.visible = visible;
+        if (enabled) {
+            this.visible = visible;
+            applyVisibility();
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
         applyVisibility();
     }
 
     private void applyVisibility() {
+        if (!enabled) {
+            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility_off, 0);
+            return;
+        }
         if (visible) {
             editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_visibility, 0);
@@ -63,8 +82,10 @@ public class PasswordToggleTouchListener implements View.OnTouchListener {
             }
             int iconStart = editText.getRight() - editText.getCompoundDrawables()[drawableEnd].getBounds().width() - editText.getPaddingEnd();
             if (event.getX() >= iconStart) {
-                toggle();
-                editText.performClick();
+                if (enabled) {
+                    toggle();
+                    editText.performClick();
+                }
                 return true;
             }
         }
@@ -72,6 +93,9 @@ public class PasswordToggleTouchListener implements View.OnTouchListener {
     }
 
     private void toggle() {
+        if (!enabled) {
+            return;
+        }
         visible = !visible;
         if (visible) {
             editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());

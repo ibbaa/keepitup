@@ -21,6 +21,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -260,7 +261,7 @@ public class BasicAuthDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testInitialUsernameAndPasswordScreeRotation() {
+    public void testInitialUsernameAndPasswordScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog("abc:123");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
@@ -280,6 +281,60 @@ public class BasicAuthDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testInitialUsernameAndPasswordToggle() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openBasicAuthDialog("abc:123");
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("456"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
+        BasicAuthDialog dialog = getDialog();
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals("abc", dialog.getUsername());
+        assertEquals("456", dialog.getPassword());
+        assertEquals("abc:456", dialog.getUsernameAndPassword());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testInitialUsernameAndPasswordEmptyReturnsInitialPassword() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openBasicAuthDialog("abc:123");
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("456"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText(""));
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
+        BasicAuthDialog dialog = getDialog();
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals("abc", dialog.getUsername());
+        assertEquals("", dialog.getPassword());
+        assertEquals("abc:123", dialog.getUsernameAndPassword());
         activityScenario.close();
     }
 

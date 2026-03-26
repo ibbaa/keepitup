@@ -55,6 +55,8 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
     private EditText passwordEditText;
     private TextColorValidatingWatcher usernameEditTextWatcher;
     private PasswordToggleTouchListener passwordToggleTouchListener;
+    private String initialPassword;
+    private boolean passwordToggleOpen;
 
     private IClipboardManager clipboardManager;
 
@@ -83,7 +85,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
         initEdgeToEdgeInsets(dialogView);
         prepareUsernameTextField();
         preparePasswordTextField(savedInstanceState);
-        prepareInitialUsernameAndPassword();
+        prepareInitialUsernameAndPassword(savedInstanceState);
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -93,14 +95,26 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
         if (passwordToggleTouchListener != null) {
             outState.putBoolean(getPasswordVisibleKey(), passwordToggleTouchListener.isVisible());
         }
+        if (initialPassword != null) {
+            outState.putString(getInitialPasswordKey(), initialPassword);
+        }
+        outState.putBoolean(getPasswordToggleOpenKey(), passwordToggleOpen);
     }
 
     public String getPasswordVisibleKey() {
         return BasicAuthDialog.class.getSimpleName() + "PasswordVisible";
     }
 
+    private String getPasswordToggleOpenKey() {
+        return BasicAuthDialog.class.getSimpleName() + "PasswordToggleOpen";
+    }
+
+    private String getInitialPasswordKey() {
+        return BasicAuthDialog.class.getSimpleName() + "InitialPassword";
+    }
+
     public String getInitialUsernameAndPasswordKey() {
-        return BasicAuthDialog.class.getSimpleName() + "InitialUsernameAndPasswordKey";
+        return BasicAuthDialog.class.getSimpleName() + "InitialUsernameAndPassword";
     }
 
     private void prepareUsernameTextField() {
@@ -126,16 +140,48 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
         preparePasswordToggleTouchListener(savedInstanceState);
     }
 
-    private void prepareInitialUsernameAndPassword() {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            String initialUsernameAndPassword = BundleUtil.stringFromBundle(getInitialUsernameAndPasswordKey(), arguments);
-            if (initialUsernameAndPassword != null) {
+    private void prepareInitialUsernameAndPassword(Bundle savedInstanceState) {
+        Log.d(BasicAuthDialog.class.getName(), "prepareInitialUsernameAndPassword");
+        if (savedInstanceState == null) {
+            if (hasInitialUsernameAndPassword()) {
+                Log.d(BasicAuthDialog.class.getName(), "prepareInitialUsernameAndPassword, initializing dialog with provided data");
+                String initialUsernameAndPassword = BundleUtil.stringFromBundle(getInitialUsernameAndPasswordKey(), requireArguments());
                 String[] usernameAndPassword = StringUtil.splitAtFirstColon(initialUsernameAndPassword);
                 usernameEditText.setText(usernameAndPassword[0]);
-                passwordEditText.setText(usernameAndPassword[1]);
+                passwordEditText.setText(StringUtil.notNull(usernameAndPassword[1]));
+                initialPassword = StringUtil.isEmpty(usernameAndPassword[1]) ? null : usernameAndPassword[1];
+                passwordToggleOpen = initialPassword == null;
+                if (passwordToggleTouchListener != null) {
+                    passwordToggleTouchListener.setEnabled(passwordToggleOpen);
+                }
+            } else {
+                Log.d(BasicAuthDialog.class.getName(), "prepareInitialUsernameAndPassword, initializing dialog with empty data");
+                usernameEditText.setText("");
+                passwordEditText.setText("");
+                initialPassword = null;
+                passwordToggleOpen = true;
+                if (passwordToggleTouchListener != null) {
+                    passwordToggleTouchListener.setEnabled(true);
+                }
+            }
+        } else {
+            Log.d(BasicAuthDialog.class.getName(), "prepareInitialUsernameAndPassword, restoring dialog");
+            if (savedInstanceState.containsKey(getInitialPasswordKey())) {
+                initialPassword = savedInstanceState.getString(getInitialPasswordKey());
+            }
+            passwordToggleOpen = savedInstanceState.getBoolean(getPasswordToggleOpenKey());
+            if (passwordToggleTouchListener != null) {
+                passwordToggleTouchListener.setEnabled(passwordToggleOpen);
             }
         }
+    }
+
+    private boolean hasInitialUsernameAndPassword() {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            return arguments.containsKey(getInitialUsernameAndPasswordKey());
+        }
+        return false;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -147,6 +193,18 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
             passwordToggleTouchListener.setVisible(wasVisible);
         }
         passwordEditText.setOnTouchListener(passwordToggleTouchListener);
+        passwordEditText.setOnFocusChangeListener(this::onPasswordFieldClicked);
+    }
+
+    private void onPasswordFieldClicked(View view, boolean hasFocus) {
+        Log.d(BasicAuthDialog.class.getName(), "onPasswordFieldClicked, hasFocus is " + hasFocus);
+        if (!passwordToggleOpen) {
+            passwordEditText.setText("");
+        }
+        passwordToggleOpen = true;
+        if (passwordToggleTouchListener != null) {
+            passwordToggleTouchListener.setEnabled(true);
+        }
     }
 
     private void prepareOkCancelImageButtons() {
@@ -168,6 +226,9 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
     public String getUsernameAndPassword() {
         String username = getUsername();
         String password = getPassword();
+        if (StringUtil.isEmpty(password) && initialPassword != null) {
+            password = initialPassword;
+        }
         return username + ":" + password;
     }
 
@@ -225,10 +286,12 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
         if (!usernameResult.isValidationSuccessful()) {
             validationResults.add(usernameResult);
         }
-        BasicAuthPasswordFieldValidator passwordValidator = new BasicAuthPasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
-        ValidationResult passwordResult = passwordValidator.validate(getPassword());
-        if (!passwordResult.isValidationSuccessful()) {
-            validationResults.add(passwordResult);
+        if (!StringUtil.isEmpty(getPassword()) || StringUtil.isEmpty(initialPassword)) {
+            BasicAuthPasswordFieldValidator passwordValidator = new BasicAuthPasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
+            ValidationResult passwordResult = passwordValidator.validate(getPassword());
+            if (!passwordResult.isValidationSuccessful()) {
+                validationResults.add(passwordResult);
+            }
         }
         return validationResults;
     }

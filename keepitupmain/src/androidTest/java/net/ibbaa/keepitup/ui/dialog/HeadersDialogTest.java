@@ -20,6 +20,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -265,6 +266,35 @@ public class HeadersDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Mozilla/5.0 (Linux; Android) KeepItUp/-")));
         assertEquals(1, dialog.getNetworkTaskId());
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        activityScenario.close();
+    }
+
+
+    @Test
+    public void testBasicAuthHeaderAddAndOpenWithoutPasswordChange() {
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class, getBypassSystemSAFBundle());
+        HeadersDialog dialog = showHeadersDialog(List.of(getHeader(1), getHeader(2)), 1, "Custom title", true);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        Header header = dialog.getAdapter().getItem(0);
+        assertEquals("Authorization", header.getName());
+        assertEquals("abc:123", header.getValue());
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
         activityScenario.close();
     }
 
