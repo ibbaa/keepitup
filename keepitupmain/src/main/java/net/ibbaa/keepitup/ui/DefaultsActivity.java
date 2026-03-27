@@ -776,6 +776,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     }
 
     private String getGlobalHeadersExpandedKey() {
-        return DefaultsActivity.class.getSimpleName() + "GlobalHeadersExpanded";
+        return DefaultsActivity.class.getSimpleName() + ".GlobalHeadersExpanded";
     }
 }

@@ -178,8 +178,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             return;
         }
         List<Header> toDelete = new ArrayList<>();
-        List<CredentialInfo> toDisplay = new ArrayList<>();
-        prepareInvalidHeadersActionLists(adapter, invalidHeaders, invalidDefaultHeaders, toDelete, toDisplay);
+        List<CredentialInfo> toDisplay = collectHeadersActionLists(adapter, invalidHeaders, invalidDefaultHeaders, toDelete);
         if (!credentialInfoDialogShown && !toDisplay.isEmpty()) {
             String tag = CredentialInfoDialog.class.getName();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -193,21 +192,25 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
-    private void prepareInvalidHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> invalidHeaders, List<Header> invalidDefaultHeaders, List<Header> toDelete, List<CredentialInfo> toDisplay) {
-        if (invalidDefaultHeaders != null && !invalidDefaultHeaders.isEmpty()) {
-            List<CredentialInfo> credentialInfos = UIUtil.toCredentialInfoList(this, null, invalidDefaultHeaders);
+    private List<CredentialInfo> collectHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> headers, List<Header> defaultHeaders, List<Header> toDelete) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "collectHeadersActionLists");
+        List<CredentialInfo> toDisplay = new ArrayList<>();
+        if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
+            List<CredentialInfo> credentialInfos = UIUtil.toCredentialInfoList(this, null, defaultHeaders);
             toDisplay.addAll(credentialInfos);
         }
-        if (invalidHeaders != null && !invalidHeaders.isEmpty()) {
+        if (headers != null && !headers.isEmpty()) {
             List<NetworkTaskUIWrapper> items = adapter.getAllItems();
             for (NetworkTaskUIWrapper currentItem : items) {
                 NetworkTask task = currentItem.getNetworkTask();
                 long networkTaskId = task.getId();
-                List<Header> taskInvalidHeaders = invalidHeaders.get(networkTaskId);
+                List<Header> taskInvalidHeaders = headers.get(networkTaskId);
                 if (taskInvalidHeaders != null) {
                     boolean useDefaultHeaders = currentItem.getAccessTypeData() == null || currentItem.getAccessTypeData().isUseDefaultHeaders();
                     if (useDefaultHeaders) {
-                        toDelete.addAll(taskInvalidHeaders);
+                        if (toDelete != null) {
+                            toDelete.addAll(taskInvalidHeaders);
+                        }
                     } else {
                         List<CredentialInfo> credentialInfos = UIUtil.toCredentialInfoList(this, task, taskInvalidHeaders);
                         toDisplay.addAll(credentialInfos);
@@ -215,6 +218,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 }
             }
         }
+        return toDisplay;
     }
 
     @Override
@@ -232,19 +236,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     @Override
     protected void onSaveInstanceState(@NotNull Bundle state) {
         super.onSaveInstanceState(state);
-        state.putBoolean(getCredentialInfoDialogKey(), credentialInfoDialogShown);
+        state.putBoolean(getCredentialInfoDialogShownKey(), credentialInfoDialogShown);
     }
 
     @Override
     protected void onRestoreInstanceState(@NotNull Bundle state) {
         super.onRestoreInstanceState(state);
-        if (state.containsKey(getCredentialInfoDialogKey())) {
-            credentialInfoDialogShown = state.getBoolean(getCredentialInfoDialogKey());
+        if (state.containsKey(getCredentialInfoDialogShownKey())) {
+            credentialInfoDialogShown = state.getBoolean(getCredentialInfoDialogShownKey());
         }
     }
 
-    private String getCredentialInfoDialogKey() {
-        return NetworkTaskMainActivity.class.getSimpleName() + "CredentialInfoDialogKey";
+    private String getCredentialInfoDialogShownKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + ".CredentialInfoDialogShownKey";
     }
 
     private void scrollToProvidedEntry() {
@@ -254,7 +258,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, no intent present");
             return;
         }
-        Bundle taskBundle = intent.getBundleExtra(getNetworkTaskBundleKey());
+        Bundle taskBundle = intent.getBundleExtra(getNetworkTaskKey());
         if (taskBundle == null) {
             Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, no taskBundle present");
             return;
@@ -262,7 +266,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTask task = new NetworkTask(taskBundle);
         scrollToEntryByIndex(task.getIndex());
         Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, remove task bundle");
-        getIntent().removeExtra(getNetworkTaskBundleKey());
+        getIntent().removeExtra(getNetworkTaskKey());
     }
 
     private void scrollToEntryByIndex(int index) {
@@ -426,6 +430,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_system triggered");
             Intent intent = new Intent(this, SystemActivity.class);
             intent.setPackage(getPackageName());
+            Bundle bundle = prepareSystemActivityCredentionInfoBundle();
+            if (bundle != null) {
+                intent.putExtra(SystemActivity.getCredentialsKey(), bundle);
+            }
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_action_activity_main_info) {
@@ -435,6 +443,25 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private Bundle prepareSystemActivityCredentionInfoBundle() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "prepareSystemActivityCredentionInfoBundle");
+        NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
+        Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
+        Map<Long, List<Header>> secretHeaders = adapter.getSecretHeaders();
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
+        List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
+        List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
+        List<Header> secretDefaultHeaders = syncHandler.getSecretHeaders(defaultHeaders);
+        List<CredentialInfo> toDisplayInvalid = collectHeadersActionLists(adapter, invalidHeaders, invalidDefaultHeaders, null);
+        List<CredentialInfo> toDisplaySecret = collectHeadersActionLists(adapter, secretHeaders, secretDefaultHeaders, null);
+        if (!toDisplayInvalid.isEmpty() || !toDisplaySecret.isEmpty()) {
+            Bundle bundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), toDisplayInvalid);
+            BundleUtil.credentialInfoListToBundle(SystemActivity.getCredentialsBaseKey(), toDisplaySecret, bundle);
+            return bundle;
+        }
+        return null;
     }
 
     @Override
@@ -745,7 +772,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private void showCredentialInfoDialog(List<CredentialInfo> credentialInfo) {
         Log.d(NetworkTaskMainActivity.class.getName(), "showCredentialInfoDialog");
         CredentialInfoDialog infoDialog = new CredentialInfoDialog();
-        infoDialog.setArguments(BundleUtil.decryptionResultListToBundle(infoDialog.getDecryptionResultBaseKey(), credentialInfo));
+        Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), credentialInfo);
+        String message = getResources().getString(R.string.text_dialog_credential_info_message);
+        BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
+        infoDialog.setArguments(bundle);
         infoDialog.show(getSupportFragmentManager(), CredentialInfoDialog.class.getName());
     }
 
@@ -764,8 +794,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
-    public static String getNetworkTaskBundleKey() {
-        return NetworkTaskMainActivity.class + ".NetworkTaskBundleKey";
+    public static String getNetworkTaskKey() {
+        return NetworkTaskMainActivity.class + ".NetworkTaskKey";
     }
 
     private NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {

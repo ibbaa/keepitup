@@ -71,7 +71,7 @@ public class PermissionExplainDialog extends DialogFragmentBase {
     }
 
     public String getMessageKey() {
-        return PermissionExplainDialog.class.getSimpleName() + "Message";
+        return PermissionExplainDialog.class.getSimpleName() + ".Message";
     }
 
     private void prepareExplainMessage(View view, String message) {

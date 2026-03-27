@@ -437,6 +437,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public Map<Long, List<Header>> getInvalidHeaders() {
+        Log.d(NetworkTaskAdapter.class.getName(), "getInvalidHeaders");
         Map<Long, List<Header>> invalidHeaders = new TreeMap<>();
         List<NetworkTaskUIWrapper> allItems = getAllItems();
         HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
@@ -447,6 +448,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             }
         }
         return invalidHeaders;
+    }
+
+    public Map<Long, List<Header>> getSecretHeaders() {
+        Log.d(NetworkTaskAdapter.class.getName(), "getSecretHeaders");
+        Map<Long, List<Header>> secretHeaders = new TreeMap<>();
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            List<Header> currentSecretHeaders = syncHandler.getSecretHeaders(currentWrapper.getHeaders());
+            if (!currentSecretHeaders.isEmpty()) {
+                secretHeaders.put(currentWrapper.getNetworkTask().getId(), currentSecretHeaders);
+            }
+        }
+        return secretHeaders;
     }
 
     public NetworkTaskUIWrapper getItem(int position) {

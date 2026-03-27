@@ -76,19 +76,19 @@ public class ConfirmDialog extends DialogFragmentBase {
     }
 
     public String getPositionKey() {
-        return ConfirmDialog.class.getSimpleName() + "Position";
+        return ConfirmDialog.class.getSimpleName() + ".Position";
     }
 
     public String getExtraDataKey() {
-        return ConfirmDialog.class.getSimpleName() + "ExtraData";
+        return ConfirmDialog.class.getSimpleName() + ".ExtraData";
     }
 
     public String getMessageKey() {
-        return ConfirmDialog.class.getSimpleName() + "Message";
+        return ConfirmDialog.class.getSimpleName() + ".Message";
     }
 
     public String getDescriptionKey() {
-        return ConfirmDialog.class.getSimpleName() + "Description";
+        return ConfirmDialog.class.getSimpleName() + ".Description";
     }
 
     public String getTypeKey() {

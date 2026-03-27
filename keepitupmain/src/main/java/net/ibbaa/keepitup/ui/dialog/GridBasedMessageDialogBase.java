@@ -32,7 +32,7 @@ import java.util.List;
 public abstract class GridBasedMessageDialogBase extends DialogFragmentBase {
 
     public String getMessageWidthKey() {
-        return ValidatorErrorDialog.class.getSimpleName() + "MessageWidth";
+        return ValidatorErrorDialog.class.getSimpleName() + ".MessageWidth";
     }
 
     public int getMessageWidth() {
@@ -44,7 +44,7 @@ public abstract class GridBasedMessageDialogBase extends DialogFragmentBase {
 
     protected void prepareErrorMessages(View view, List<GridMessage> gridMessages) {
         Log.d(GridBasedMessageDialogBase.class.getName(), "prepareErrorMessages");
-        GridLayout gridLayout = getErrorGridLayout(view);
+        GridLayout gridLayout = getGridLayout(view);
         for (int ii = 0; ii < gridMessages.size(); ii++) {
             GridMessage currentMessage = gridMessages.get(ii);
             Log.d(GridBasedMessageDialogBase.class.getName(), "prepareErrorMessages, result with index " + ii + " is " + currentMessage);
@@ -97,7 +97,7 @@ public abstract class GridBasedMessageDialogBase extends DialogFragmentBase {
         dismiss();
     }
 
-    protected abstract GridLayout getErrorGridLayout(View view);
+    protected abstract GridLayout getGridLayout(View view);
 
     protected abstract ImageView getOkImageView(View view);
 

@@ -194,7 +194,7 @@ public class BundleUtil {
         if (baseKey == null || bundle == null) {
             return Collections.emptyList();
         }
-        List<Bundle> resultList = new ArrayList<>(bundle.size());
+        List<Bundle> resultList = new ArrayList<>();
         for (int ii = 0; ii < bundle.size(); ii++) {
             Bundle currentBundle = bundle.getBundle(baseKey + ii);
             if (currentBundle != null) {
@@ -204,20 +204,31 @@ public class BundleUtil {
         return resultList;
     }
 
-    public static Bundle decryptionResultListToBundle(String baseKey, List<CredentialInfo> credentialInfoList) {
+    public static Bundle credentialInfoListToBundle(String baseKey, List<CredentialInfo> credentialInfoList) {
         if (baseKey == null || credentialInfoList == null) {
             return new Bundle();
         }
         List<Bundle> bundleList = new ArrayList<>(credentialInfoList.size());
-        for (CredentialInfo result : credentialInfoList) {
-            bundleList.add(result.toBundle());
+        for (CredentialInfo credentialInfo : credentialInfoList) {
+            bundleList.add(credentialInfo.toBundle());
         }
         return bundleListToBundle(baseKey, bundleList);
     }
 
-    public static List<CredentialInfo> decryptionResultListFromBundle(String baseKey, Bundle bundle) {
+    public static Bundle credentialInfoListToBundle(String baseKey, List<CredentialInfo> credentialInfoList, Bundle bundle) {
+        if (baseKey == null || credentialInfoList == null) {
+            return bundle;
+        }
+        List<Bundle> bundleList = new ArrayList<>(credentialInfoList.size());
+        for (CredentialInfo credentialInfo : credentialInfoList) {
+            bundleList.add(credentialInfo.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList, bundle);
+    }
+
+    public static List<CredentialInfo> credentialInfoListFromBundle(String baseKey, Bundle bundle) {
         List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
-        List<CredentialInfo> credentialInfoList = new ArrayList<>(bundleList.size());
+        List<CredentialInfo> credentialInfoList = new ArrayList<>();
         for (Bundle currentBundle : bundleList) {
             if (currentBundle != null) {
                 credentialInfoList.add(new CredentialInfo(currentBundle));

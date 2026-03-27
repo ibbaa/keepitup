@@ -91,11 +91,11 @@ public class ExportEncryptDialog extends DialogFragmentBase {
     }
 
     public String getPasswordVisibleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "PasswordVisible";
+        return GeneralMessageDialog.class.getSimpleName() + ".PasswordVisible";
     }
 
     public String getConfirmPasswordVisibleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "ConfirmPasswordVisible";
+        return GeneralMessageDialog.class.getSimpleName() + ".ConfirmPasswordVisible";
     }
 
     private void prepareEncryptCheckBox() {

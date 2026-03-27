@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -48,17 +49,32 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
         Log.d(CredentialInfoDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_credential_info, container);
         initEdgeToEdgeInsets(view);
-        List<CredentialInfo> resultList = BundleUtil.decryptionResultListFromBundle(getDecryptionResultBaseKey(), requireArguments());
-        prepareErrorMessages(view, toErrorMessageList(resultList));
+        List<CredentialInfo> resultList = BundleUtil.credentialInfoListFromBundle(getCredentialInfoBaseKey(), requireArguments());
+        String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
+        prepareErrorMessages(view, toGridMessageList(resultList));
+        prepareMessage(view, message);
         prepareOkButton(view, resultList.size() + 1);
         return view;
     }
 
-    public String getDecryptionResultBaseKey() {
-        return CredentialInfoDialog.class.getSimpleName() + "DecryptionResult";
+    private void prepareMessage(View view, String message) {
+        Log.d(CredentialInfoDialog.class.getName(), "prepareMessage");
+        TextView messageView = view.findViewById(R.id.textview_dialog_credential_info_message);
+        if (message == null) {
+            message = getResources().getString(R.string.text_dialog_credential_info_message);
+        }
+        messageView.setText(message);
     }
 
-    private List<GridMessage> toErrorMessageList(List<CredentialInfo> resultList) {
+    public String getCredentialInfoBaseKey() {
+        return CredentialInfoDialog.class.getSimpleName() + ".CredentialInfo";
+    }
+
+    public String getMessageKey() {
+        return CredentialInfoDialog.class.getSimpleName() + ".Message";
+    }
+
+    private List<GridMessage> toGridMessageList(List<CredentialInfo> resultList) {
         List<GridMessage> messages = new ArrayList<>(resultList.size());
         for (CredentialInfo currentResult : resultList) {
             messages.add(new GridMessage(currentResult.getName(), currentResult.getMessage()));
@@ -66,7 +82,7 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
         return messages;
     }
 
-    protected GridLayout getErrorGridLayout(View view) {
+    protected GridLayout getGridLayout(View view) {
         return view.findViewById(R.id.gridlayout_dialog_credential_info);
     }
 

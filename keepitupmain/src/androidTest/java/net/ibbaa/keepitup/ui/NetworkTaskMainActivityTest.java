@@ -2049,6 +2049,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
@@ -2135,6 +2136,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));

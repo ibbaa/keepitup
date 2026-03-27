@@ -97,7 +97,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private PermissionLauncher downloadFolderLauncher;
 
     public static String getBypassSystemSAFKey() {
-        return GlobalSettingsActivity.class.getSimpleName() + "BypassSystemSAF";
+        return GlobalSettingsActivity.class.getSimpleName() + ".BypassSystemSAF";
     }
 
     @Override

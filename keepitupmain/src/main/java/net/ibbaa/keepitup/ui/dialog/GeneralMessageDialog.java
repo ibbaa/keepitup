@@ -58,15 +58,15 @@ public class GeneralMessageDialog extends DialogFragmentBase {
     }
 
     public String getMessageKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "Message";
+        return GeneralMessageDialog.class.getSimpleName() + ".Message";
     }
 
     public String getTitleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "Title";
+        return GeneralMessageDialog.class.getSimpleName() + ".Title";
     }
 
     public String getExtraDataKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "ExtraData";
+        return GeneralMessageDialog.class.getSimpleName() + ".ExtraData";
     }
 
     public String getExtraData() {
@@ -74,7 +74,7 @@ public class GeneralMessageDialog extends DialogFragmentBase {
     }
 
     public String getTypefaceStyleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + "TypefaceStyle";
+        return GeneralMessageDialog.class.getSimpleName() + ".TypefaceStyle";
     }
 
     private void prepareTitle(View view, String title) {

@@ -231,7 +231,7 @@ public class NotificationHandler {
             PendingIntent stopPendingIntent = createStopPendingIntent();
             messageNotificationBuilder.addAction(R.drawable.icon_stop, getResources().getString(R.string.notification_stop_alarm_text), stopPendingIntent);
         }
-        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder, NetworkTaskMainActivity.getNetworkTaskBundleKey(), task);
+        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder, NetworkTaskMainActivity.getNetworkTaskKey(), task);
     }
 
     private PendingIntent createStopPendingIntent() {

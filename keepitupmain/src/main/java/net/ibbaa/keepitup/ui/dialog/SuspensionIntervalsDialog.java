@@ -113,19 +113,19 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     }
 
     private String getSuspensionIntervalsAdapterKey() {
-        return SuspensionIntervalsDialog.class.getSimpleName() + "SuspensionIntervalsAdapter";
+        return SuspensionIntervalsDialog.class.getSimpleName() + ".SuspensionIntervalsAdapter";
     }
 
     private String getCurrentSuspensionIntervalKey() {
-        return SuspensionIntervalsDialog.class.getSimpleName() + "CurrentSuspensionInterval";
+        return SuspensionIntervalsDialog.class.getSimpleName() + ".CurrentSuspensionInterval";
     }
 
     private String getPositionKey() {
-        return SuspensionIntervalsDialog.class.getSimpleName() + "Position";
+        return SuspensionIntervalsDialog.class.getSimpleName() + ".Position";
     }
 
     private String getKeepEndKey() {
-        return SuspensionIntervalsDialog.class.getSimpleName() + "KeepEnd";
+        return SuspensionIntervalsDialog.class.getSimpleName() + ".KeepEnd";
     }
 
     private void prepareIntervalsRecyclerView(Bundle adapterState) {

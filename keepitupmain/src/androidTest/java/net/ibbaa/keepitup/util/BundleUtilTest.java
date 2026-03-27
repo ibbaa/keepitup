@@ -358,57 +358,71 @@ public class BundleUtilTest {
     }
 
     @Test
-    public void testEmptyDecryptionResultListToBundle() {
-        Bundle bundle = BundleUtil.decryptionResultListToBundle("key", null);
+    public void testEmptyCredentialInfoListToBundle() {
+        Bundle bundle = BundleUtil.credentialInfoListToBundle("key", null);
         assertNotNull(bundle);
         assertTrue(bundle.isEmpty());
-        bundle = BundleUtil.decryptionResultListToBundle("key", Collections.emptyList());
+        bundle = BundleUtil.credentialInfoListToBundle("key", Collections.emptyList());
         assertNotNull(bundle);
         assertTrue(bundle.isEmpty());
     }
 
     @Test
-    public void testDecryptionResultListFromEmptyBundle() {
-        List<CredentialInfo> credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", null);
+    public void testCredentialInfoListFromEmptyBundle() {
+        List<CredentialInfo> credentialInfoList = BundleUtil.credentialInfoListFromBundle("key", null);
         assertNotNull(credentialInfoList);
         assertTrue(credentialInfoList.isEmpty());
         Bundle bundle = new Bundle();
-        credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", bundle);
+        credentialInfoList = BundleUtil.credentialInfoListFromBundle("key", bundle);
         assertNotNull(credentialInfoList);
         assertTrue(credentialInfoList.isEmpty());
     }
 
     @Test
-    public void testDecryptionResultListToBundle() {
-        CredentialInfo result1 = new CredentialInfo("task1", "message1");
-        CredentialInfo result2 = new CredentialInfo("task2", "message2");
-        Bundle bundle = BundleUtil.decryptionResultListToBundle("key", Arrays.asList(result1, result2));
+    public void testCredentialInfoListToBundle() {
+        CredentialInfo credentialInfo1 = new CredentialInfo("task1", "message1");
+        CredentialInfo credentialInfo2 = new CredentialInfo("task2", "message2");
+        Bundle bundle = BundleUtil.credentialInfoListToBundle("key", Arrays.asList(credentialInfo1, credentialInfo2));
         CredentialInfo otherResult1 = new CredentialInfo(Objects.requireNonNull(bundle.getBundle("key0")));
         CredentialInfo otherResult2 = new CredentialInfo(Objects.requireNonNull(bundle.getBundle("key1")));
-        assertTrue(result1.isEqual(otherResult1));
-        assertTrue(result2.isEqual(otherResult2));
+        assertTrue(credentialInfo1.isEqual(otherResult1));
+        assertTrue(credentialInfo2.isEqual(otherResult2));
     }
 
     @Test
-    public void testDecryptionResultListFromBundle() {
+    public void testCredentialInfoListToProvidedBundle() {
+        CredentialInfo credentialInfo1 = new CredentialInfo("task1", "message1");
+        CredentialInfo credentialInfo2 = new CredentialInfo("task2", "message2");
         Bundle bundle = new Bundle();
-        CredentialInfo result1 = new CredentialInfo("task1", "message1");
-        CredentialInfo result2 = new CredentialInfo("task2", "message2");
-        bundle.putBundle("key0", result1.toBundle());
-        bundle.putBundle("key1", result2.toBundle());
-        List<CredentialInfo> credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", bundle);
-        assertTrue(result1.isEqual(credentialInfoList.get(0)));
-        assertTrue(result2.isEqual(credentialInfoList.get(1)));
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.credentialInfoListToBundle("key", Arrays.asList(credentialInfo1, credentialInfo2), bundle);
+        CredentialInfo otherCredentialInfo1 = new CredentialInfo(Objects.requireNonNull(bundle.getBundle("key0")));
+        CredentialInfo otherCredentialInfo2 = new CredentialInfo(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(credentialInfo1.isEqual(otherCredentialInfo1));
+        assertTrue(credentialInfo2.isEqual(otherCredentialInfo2));
+        assertTrue(bundle.getBoolean("otherkey"));
     }
 
     @Test
-    public void testDecryptionResultListToAndFromBundle() {
-        CredentialInfo result1 = new CredentialInfo("task1", "message1");
-        CredentialInfo result2 = new CredentialInfo("task2", "message2");
-        Bundle bundle = BundleUtil.decryptionResultListToBundle("key", Arrays.asList(result1, result2));
-        List<CredentialInfo> credentialInfoList = BundleUtil.decryptionResultListFromBundle("key", bundle);
-        assertTrue(result1.isEqual(credentialInfoList.get(0)));
-        assertTrue(result2.isEqual(credentialInfoList.get(1)));
+    public void testCredentialInfoListFromBundle() {
+        Bundle bundle = new Bundle();
+        CredentialInfo credentialInfo1 = new CredentialInfo("task1", "message1");
+        CredentialInfo credentialInfo2 = new CredentialInfo("task2", "message2");
+        bundle.putBundle("key0", credentialInfo1.toBundle());
+        bundle.putBundle("key1", credentialInfo2.toBundle());
+        List<CredentialInfo> credentialInfoList = BundleUtil.credentialInfoListFromBundle("key", bundle);
+        assertTrue(credentialInfo1.isEqual(credentialInfoList.get(0)));
+        assertTrue(credentialInfo2.isEqual(credentialInfoList.get(1)));
+    }
+
+    @Test
+    public void testCredentialInfoListToAndFromBundle() {
+        CredentialInfo credentialInfo1 = new CredentialInfo("task1", "message1");
+        CredentialInfo credentialInfo2 = new CredentialInfo("task2", "message2");
+        Bundle bundle = BundleUtil.credentialInfoListToBundle("key", Arrays.asList(credentialInfo1, credentialInfo2));
+        List<CredentialInfo> credentialInfoList = BundleUtil.credentialInfoListFromBundle("key", bundle);
+        assertTrue(credentialInfo1.isEqual(credentialInfoList.get(0)));
+        assertTrue(credentialInfo2.isEqual(credentialInfoList.get(1)));
     }
 
     @Test

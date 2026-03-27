@@ -96,11 +96,11 @@ public class PasswordInputDialog extends DialogFragmentBase {
     }
 
     public String getPasswordVisibleKey() {
-        return PasswordInputDialog.class.getSimpleName() + "PasswordVisible";
+        return PasswordInputDialog.class.getSimpleName() + ".PasswordVisible";
     }
 
     public String getExtraDataKey() {
-        return PasswordInputDialog.class.getSimpleName() + "ExtraData";
+        return PasswordInputDialog.class.getSimpleName() + ".ExtraData";
     }
 
     public Bundle getExtraData() {

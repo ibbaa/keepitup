@@ -185,15 +185,15 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
     }
 
     public String getFolderRootKey() {
-        return FileChooseDialog.class.getSimpleName() + "Root";
+        return FileChooseDialog.class.getSimpleName() + ".FolderRoot";
     }
 
     public String getFolderKey() {
-        return FileChooseDialog.class.getSimpleName() + "Folder";
+        return FileChooseDialog.class.getSimpleName() + ".Folder";
     }
 
     public String getFileKey() {
-        return FileChooseDialog.class.getSimpleName() + "File";
+        return FileChooseDialog.class.getSimpleName() + ".File";
     }
 
     public String getFileModeKey() {
@@ -205,15 +205,15 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
     }
 
     private String getSelectionFolderKey() {
-        return FileChooseDialog.class.getSimpleName() + "SelectionFolder";
+        return FileChooseDialog.class.getSimpleName() + ".SelectionFolder";
     }
 
     private String getFileEntryAdapterKey() {
-        return FileChooseDialog.class.getSimpleName() + "FileEntryAdapter";
+        return FileChooseDialog.class.getSimpleName() + ".FileEntryAdapter";
     }
 
     public String getEncryptionInfoKey() {
-        return FileChooseDialog.class.getSimpleName() + "EncryptionInfo";
+        return FileChooseDialog.class.getSimpleName() + ".EncryptionInfo";
     }
 
     public boolean isFileMode() {

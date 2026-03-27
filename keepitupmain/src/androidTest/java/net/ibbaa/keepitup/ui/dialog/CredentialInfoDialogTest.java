@@ -60,8 +60,8 @@ public class CredentialInfoDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testMessage() {
-        openCredentialInfoDialog();
+    public void testDefaultMessage() {
+        openCredentialInfoDialog(null);
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -73,8 +73,8 @@ public class CredentialInfoDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testMessageScreenRotation() {
-        openCredentialInfoDialog();
+    public void testDefaultMessageScreenRotation() {
+        openCredentialInfoDialog(null);
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
         onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -94,11 +94,49 @@ public class CredentialInfoDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
     }
 
-    private void openCredentialInfoDialog() {
+    @Test
+    public void testMessage() {
+        openCredentialInfoDialog("abc");
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText("abc")));
+        onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).check(matches(withGridLayoutPositionAndSpan(3, 1, GridLayout.CENTER, 0, 2, GridLayout.CENTER)));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+    }
+
+    @Test
+    public void testMessageScreenRotation() {
+        openCredentialInfoDialog("abc");
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText("abc")));
+        onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("task1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("task2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+    }
+
+    private void openCredentialInfoDialog(String message) {
         CredentialInfoDialog infoDialog = new CredentialInfoDialog();
         CredentialInfo info1 = new CredentialInfo("task1", "message1");
         CredentialInfo info2 = new CredentialInfo("task2", "message2");
-        Bundle bundle = BundleUtil.decryptionResultListToBundle(infoDialog.getDecryptionResultBaseKey(), Arrays.asList(info1, info2));
+        Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), Arrays.asList(info1, info2));
+        if (message != null) {
+            BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
+        }
         infoDialog.setArguments(bundle);
         infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), CredentialInfoDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));

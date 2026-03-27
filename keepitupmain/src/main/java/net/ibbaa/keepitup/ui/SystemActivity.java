@@ -78,6 +78,7 @@ import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
 import net.ibbaa.keepitup.ui.sync.UITaskViewModel;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.DebugUtil;
 import net.ibbaa.keepitup.util.FileUtil;
@@ -90,6 +91,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -223,6 +225,34 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<CredentialInfo> getInvalidCredentials() {
+        Bundle bundle = getIntent().getBundleExtra(getCredentialsKey());
+        if (bundle != null) {
+            return BundleUtil.credentialInfoListFromBundle(getInvalidCredentialsBaseKey(), bundle);
+        }
+        return Collections.emptyList();
+    }
+
+    private List<CredentialInfo> getCredentials() {
+        Bundle bundle = getIntent().getBundleExtra(getCredentialsKey());
+        if (bundle != null) {
+            return BundleUtil.credentialInfoListFromBundle(getCredentialsBaseKey(), bundle);
+        }
+        return Collections.emptyList();
+    }
+
+    public static String getCredentialsKey() {
+        return SystemActivity.class.getSimpleName() + ".Credentials";
+    }
+
+    public static String getInvalidCredentialsBaseKey() {
+        return SystemActivity.class.getSimpleName() + ".InvalidCredentialsBase";
+    }
+
+    public static String getCredentialsBaseKey() {
+        return SystemActivity.class.getSimpleName() + ".CredentialsBase";
     }
 
     private void prepareConfigurationResetField() {

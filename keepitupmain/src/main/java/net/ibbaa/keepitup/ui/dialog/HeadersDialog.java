@@ -100,23 +100,23 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     }
 
     public String getHeadersTitleKey() {
-        return HeadersDialog.class.getSimpleName() + "HeadersTitle";
+        return HeadersDialog.class.getSimpleName() + ".HeadersTitle";
     }
 
     public String getSupportsRestoreDefaultHeadersKey() {
-        return HeadersDialog.class.getSimpleName() + "SupportsDefaultHeaders";
+        return HeadersDialog.class.getSimpleName() + ".SupportsDefaultHeaders";
     }
 
     public String getInitialHeadersKey() {
-        return HeadersDialog.class.getSimpleName() + "InitialHeaders";
+        return HeadersDialog.class.getSimpleName() + ".InitialHeaders";
     }
 
     public String getNetworkTaskIdKey() {
-        return HeadersDialog.class.getSimpleName() + "NetworkTaskId";
+        return HeadersDialog.class.getSimpleName() + ".NetworkTaskId";
     }
 
     private String getHeadersAdapterKey() {
-        return HeadersDialog.class.getSimpleName() + "HeadersAdapter";
+        return HeadersDialog.class.getSimpleName() + ".HeadersAdapter";
     }
 
     public long getNetworkTaskId() {

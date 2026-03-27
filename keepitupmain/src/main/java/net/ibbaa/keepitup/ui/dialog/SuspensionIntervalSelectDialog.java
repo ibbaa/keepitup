@@ -198,19 +198,19 @@ public class SuspensionIntervalSelectDialog extends DialogFragmentBase {
     }
 
     public String getModeKey() {
-        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + "Mode";
+        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + ".Mode";
     }
 
     public String getDefaultTimeKey() {
-        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + "DefaultTime";
+        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + ".DefaultTime";
     }
 
     public String getStartTimeKey() {
-        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + "StartTime";
+        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + ".StartTime";
     }
 
     public String getSavedTimeKey() {
-        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + "SavedTime";
+        return SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + ".SavedTime";
     }
 
     public Time getSelectedTime() {

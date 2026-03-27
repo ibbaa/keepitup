@@ -102,19 +102,19 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
     }
 
     public String getPasswordVisibleKey() {
-        return BasicAuthDialog.class.getSimpleName() + "PasswordVisible";
+        return BasicAuthDialog.class.getSimpleName() + ".PasswordVisible";
     }
 
     private String getPasswordToggleOpenKey() {
-        return BasicAuthDialog.class.getSimpleName() + "PasswordToggleOpen";
+        return BasicAuthDialog.class.getSimpleName() + ".PasswordToggleOpen";
     }
 
     private String getInitialPasswordKey() {
-        return BasicAuthDialog.class.getSimpleName() + "InitialPassword";
+        return BasicAuthDialog.class.getSimpleName() + ".InitialPassword";
     }
 
     public String getInitialUsernameAndPasswordKey() {
-        return BasicAuthDialog.class.getSimpleName() + "InitialUsernameAndPassword";
+        return BasicAuthDialog.class.getSimpleName() + ".InitialUsernameAndPassword";
     }
 
     private void prepareUsernameTextField() {

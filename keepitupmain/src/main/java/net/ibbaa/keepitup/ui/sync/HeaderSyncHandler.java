@@ -74,6 +74,18 @@ public class HeaderSyncHandler {
         return invalidHeaders;
     }
 
+    public List<Header> getSecretHeaders(List<Header> headers) {
+        Log.d(HeaderSyncHandler.class.getName(), "getSecretHeaders, headers is " + headers);
+        headers = headers != null ? headers : Collections.emptyList();
+        List<Header> secretHeaders = new ArrayList<>(headers.size());
+        for (Header currentHeader : headers) {
+            if (currentHeader.isValueSecret()) {
+                secretHeaders.add(currentHeader);
+            }
+        }
+        return secretHeaders;
+    }
+
     public List<Header> getGlobalHeadersCopyForNetworkTask(long networkTaskId) {
         Log.d(HeaderSyncHandler.class.getName(), "getGlobalHeadersCopyForNetworkTask for networkTaskId " + networkTaskId);
         List<Header> globalHeaders = getGlobalHeaders();

@@ -55,7 +55,7 @@ public class RawTextDialog extends DialogFragmentBase {
     }
 
     public String getResourceIdKey() {
-        return RawTextDialog.class.getSimpleName() + "ResourceId";
+        return RawTextDialog.class.getSimpleName() + ".ResourceId";
     }
 
     private void prepareContent(View view) {

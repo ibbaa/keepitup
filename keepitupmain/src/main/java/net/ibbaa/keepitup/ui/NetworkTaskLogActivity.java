@@ -236,7 +236,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     }
 
     private String getLogEntryAdapterKey() {
-        return NetworkTaskLogActivity.class.getSimpleName() + "LogEntryAdapter";
+        return NetworkTaskLogActivity.class.getSimpleName() + ".LogEntryAdapter";
     }
 
     private class MenuAdapterDataObserver extends RecyclerView.AdapterDataObserver {

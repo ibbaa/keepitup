@@ -55,7 +55,7 @@ public class ValidatorErrorDialog extends GridBasedMessageDialogBase {
     }
 
     public String getValidationResultBaseKey() {
-        return ValidatorErrorDialog.class.getSimpleName() + "ValidationResult";
+        return ValidatorErrorDialog.class.getSimpleName() + ".ValidationResult";
     }
 
     private List<GridMessage> toErrorMessageList(List<ValidationResult> resultList) {
@@ -66,7 +66,7 @@ public class ValidatorErrorDialog extends GridBasedMessageDialogBase {
         return messages;
     }
 
-    protected GridLayout getErrorGridLayout(View view) {
+    protected GridLayout getGridLayout(View view) {
         return view.findViewById(R.id.gridlayout_dialog_validator_error);
     }
 
