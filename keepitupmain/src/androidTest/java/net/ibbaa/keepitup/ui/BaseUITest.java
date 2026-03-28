@@ -108,7 +108,7 @@ public abstract class BaseUITest {
         Log.initialize(null);
         Dump.initialize(null);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
-        mainKeyAccess.reset();
+        mainKeyAccess.resetMainKey();
         networkTaskProcessServiceScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         timeBasedSuspensionScheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
         timeBasedSuspensionScheduler.setNetworkTaskScheduler(networkTaskProcessServiceScheduler);
@@ -153,7 +153,7 @@ public abstract class BaseUITest {
         Log.initialize(null);
         Dump.initialize(null);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
-        mainKeyAccess.reset();
+        mainKeyAccess.resetMainKey();
         networkTaskProcessServiceScheduler.cancelAll();
         networkTaskProcessServiceScheduler.reset();
         timeBasedSuspensionScheduler.reset();

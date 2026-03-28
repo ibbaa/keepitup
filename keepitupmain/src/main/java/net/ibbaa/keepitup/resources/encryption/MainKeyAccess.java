@@ -34,6 +34,7 @@ import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.SecureRandom;
 
 public class MainKeyAccess {
@@ -122,9 +123,31 @@ public class MainKeyAccess {
         return context.getSharedPreferences(main_key_prefs_file, Context.MODE_PRIVATE);
     }
 
-    public void reset() {
+    public void resetMainKey() {
         synchronized (LOCK) {
             invalidateMainKey();
+            aead = null;
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    public void reset() {
+        String tink_keyset_prefs_key = context.getResources().getString(R.string.tink_keyset_prefs_key);
+        String keystore_master_key_alias = context.getResources().getString(R.string.keystore_master_key_alias);
+        synchronized (LOCK) {
+            invalidateMainKey();
+            SharedPreferences.Editor mainKeyPreferences = getMainKeyPreferences().edit();
+            mainKeyPreferences.remove(tink_keyset_prefs_key);
+            mainKeyPreferences.commit();
+            try {
+                KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+                keyStore.load(null);
+                if (keyStore.containsAlias(keystore_master_key_alias)) {
+                    keyStore.deleteEntry(keystore_master_key_alias);
+                }
+            } catch (Exception exc) {
+                Log.e(MainKeyAccess.class.getName(), "Exception during keystore reset", exc);
+            }
             aead = null;
         }
     }

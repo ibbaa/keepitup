@@ -105,6 +105,8 @@ public class HeaderSyncHandlerTest extends BaseUITest {
         Header header1 = getHeader1(-1);
         Header header2 = getHeader2(-1);
         Header header3 = getHeader3(-1);
+        header3.setHeaderType(HeaderType.GENERICAUTH);
+        header3.setValueValid(false);
         List<Header> headers = handler.getSecretHeaders(List.of(header1, header2, header3));
         assertEquals(1, headers.size());
         assertTrue(headers.get(0).isTechnicallyEqual(header2));

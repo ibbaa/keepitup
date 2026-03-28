@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.ui.support.CredentialInfoSupport;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.util.BundleUtil;
 
@@ -82,11 +85,41 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
         return messages;
     }
 
+    @Override
+    protected void onOkClicked(View view) {
+        CredentialInfoSupport credentialInfoSupport = getCredentialInfoSupport();
+        if (credentialInfoSupport == null) {
+            dismiss();
+        } else {
+            credentialInfoSupport.onCredentialInfoDialogOkClicked(this);
+        }
+    }
+
     protected GridLayout getGridLayout(View view) {
         return view.findViewById(R.id.gridlayout_dialog_credential_info);
     }
 
     protected ImageView getOkImageView(View view) {
         return view.findViewById(R.id.imageview_dialog_credential_info_ok);
+    }
+
+    private CredentialInfoSupport getCredentialInfoSupport() {
+        Log.d(CredentialInfoDialog.class.getName(), "getCredentialInfoSupport");
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof CredentialInfoSupport) {
+                return (CredentialInfoSupport) fragment;
+            }
+        }
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.d(CredentialInfoDialog.class.getName(), "getCredentialInfoSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof CredentialInfoSupport)) {
+            Log.d(CredentialInfoDialog.class.getName(), "getCredentialInfoSupport, activity is not an instance of " + CredentialInfoSupport.class.getSimpleName());
+            return null;
+        }
+        return (CredentialInfoSupport) activity;
     }
 }

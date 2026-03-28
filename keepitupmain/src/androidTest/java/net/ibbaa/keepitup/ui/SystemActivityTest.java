@@ -66,6 +66,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
 import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
+import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockDBPurgeTask;
@@ -92,6 +93,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 @MediumTest
@@ -99,7 +101,6 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class SystemActivityTest extends BaseUITest {
 
-    private ActivityScenario<?> activityScenario;
     private MockAlarmManager alarmManager;
     private MockThemeManager themeManager;
     private MockStoragePermissionManager storagePermissionManager;
@@ -108,16 +109,11 @@ public class SystemActivityTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
-        ((SystemActivity) getActivity(activityScenario)).injectNetworkTaskProcessServiceScheduler(getNetworkTaskProcessServiceScheduler());
-        ((SystemActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         alarmManager = (MockAlarmManager) getNetworkTaskProcessServiceScheduler().getAlarmManager();
         alarmManager.reset();
         themeManager = new MockThemeManager();
         themeManager.reset();
-        ((SystemActivity) getActivity(activityScenario)).injectThemeManager(themeManager);
         storagePermissionManager = getMockStoragePermissionManager();
-        ((SystemActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
         permissionManager = new MockPermissionManager();
         addFolderPermission();
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
@@ -128,12 +124,15 @@ public class SystemActivityTest extends BaseUITest {
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        activityScenario.close();
         resetGlobalHeaderHandler();
     }
 
     @Test
     public void testResetConfigurationCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -222,10 +221,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testResetConfigurationCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -318,10 +322,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testResetConfiguration() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -365,6 +374,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -413,10 +424,19 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
+        assertNotNull(mainKey1.key());
+        assertNotNull(mainKey2.key());
+        assertFalse(Arrays.equals(mainKey1.key(), mainKey2.key()));
+        activityScenario.close();
     }
 
     @Test
     public void testResetConfigurationScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -459,6 +479,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -511,11 +533,20 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
+        assertNotNull(mainKey1.key());
+        assertNotNull(mainKey2.key());
+        assertFalse(Arrays.equals(mainKey1.key(), mainKey2.key()));
+        activityScenario.close();
     }
 
     @Test
     public void testResetConfigurationError() {
-        injectPurgeTask(getMockDBPurgeTask(false));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectPurgeTask(activityScenario, getMockDBPurgeTask(activityScenario, false));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -605,11 +636,16 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testResetConfigurationErrorScreenRotation() {
-        injectPurgeTask(getMockDBPurgeTask(false));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectPurgeTask(activityScenario, getMockDBPurgeTask(activityScenario, false));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -703,10 +739,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationEncryptCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -793,10 +834,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationEncryptCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -886,10 +932,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -981,10 +1032,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -1083,10 +1139,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfiguration() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -1289,10 +1350,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -1503,10 +1569,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationWithEncryption() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -1713,10 +1784,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationWithEncryptionScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -1925,10 +2001,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationWithEncryptionFileExistsCancel() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -2042,10 +2123,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationFileExistsCancelScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -2165,10 +2251,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationFileExistsOk() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -2374,10 +2465,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationWithEncryptionFileExistsOkScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -2593,11 +2689,16 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationError() {
-        injectExportTask(getMockExportTask(false));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectExportTask(activityScenario, getMockExportTask(activityScenario, false));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -2689,11 +2790,16 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationErrorScreenRotation() {
-        injectExportTask(getMockExportTask(false));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectExportTask(activityScenario, getMockExportTask(activityScenario, false));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -2789,10 +2895,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationFileSuggestion() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
@@ -2803,10 +2914,15 @@ public class SystemActivityTest extends BaseUITest {
         assertNotEquals("keepitup_config.json", fileText);
         assertTrue(fileText.startsWith("keepitup_config"));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationFileEmpty() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -2817,10 +2933,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationExternalStorageTypeFileAccess() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
@@ -2840,10 +2961,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationExternalStorageType() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         String exportFolderPrimary = getText(withId(R.id.textview_activity_system_config_export_folder));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         String exportFolderSdCard = getText(withId(R.id.textview_activity_system_config_export_folder));
@@ -2851,10 +2977,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
         String text = getText(withId(R.id.textview_activity_system_config_export_folder));
         assertEquals(exportFolderPrimary, text);
+        activityScenario.close();
     }
 
     @Test
     public void testExportConfigurationExternalStorageTypeScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         String exportFolderPrimary = getText(withId(R.id.textview_activity_system_config_export_folder));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         rotateScreen(activityScenario);
@@ -2872,10 +3003,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
         String text = getText(withId(R.id.textview_activity_system_config_export_folder));
         assertEquals(exportFolderPrimary, text);
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationCancel() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -2981,10 +3117,15 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationCancelScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -3090,10 +3231,15 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationConfirmCancel() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -3201,10 +3347,15 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationConfirmCancelScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -3314,10 +3465,15 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfiguration() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -3379,7 +3535,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
@@ -3488,10 +3644,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -3552,7 +3713,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
@@ -3664,10 +3825,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationWithEncryption() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -3728,7 +3894,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = systemSetup.exportData();
         assertTrue(result.success());
         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(TestRegistry.getContext());
@@ -3842,10 +4008,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationWithEncryptionScreenRotation() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
@@ -3906,7 +4077,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = systemSetup.exportData();
         assertTrue(result.success());
         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(TestRegistry.getContext());
@@ -4023,10 +4194,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationSchedulerRestarted() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
@@ -4052,11 +4228,16 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getTimeBasedSuspensionScheduler().getIntervals().size());
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationError() {
-        injectImportTask(getMockImportTask(false));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, false));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -4149,11 +4330,16 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationMismatchError() {
-        injectImportTask(getMockImportTask(false, true));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, false, true));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -4246,11 +4432,16 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationErrorScreenRotation() {
-        injectImportTask(getMockImportTask(false));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, false));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -4344,11 +4535,16 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationTasksTerminated() {
-        injectImportTask(getMockImportTask(true));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, true));
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -4370,10 +4566,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationFileEmpty() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
@@ -4381,10 +4582,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationExternalStorageTypeFileAccess() throws Exception {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
@@ -4398,10 +4604,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationExternalStorageType() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         String importFolderPrimary = getText(withId(R.id.textview_activity_system_config_import_folder));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         String importFolderSdCard = getText(withId(R.id.textview_activity_system_config_import_folder));
@@ -4409,10 +4620,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
         String text = getText(withId(R.id.textview_activity_system_config_import_folder));
         assertEquals(importFolderPrimary, text);
+        activityScenario.close();
     }
 
     @Test
     public void testImportConfigurationExternalStorageTypeScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         String exportFolderPrimary = getText(withId(R.id.textview_activity_system_config_import_folder));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         rotateScreen(activityScenario);
@@ -4430,11 +4646,16 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
         String text = getText(withId(R.id.textview_activity_system_config_import_folder));
         assertEquals(exportFolderPrimary, text);
+        activityScenario.close();
     }
 
 
     @Test
     public void testBatteryOptimizationDialog() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         MockPowerManager powerManager = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
@@ -4455,10 +4676,15 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        activityScenario.close();
     }
 
     @Test
     public void testBatteryOptimizationIrrelevant() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         MockPowerManager powerManager = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
@@ -4472,10 +4698,15 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(Matchers.not(isDisplayed())));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(Matchers.not(isDisplayed())));
+        activityScenario.close();
     }
 
     @Test
     public void testBatteryOptimizationDialogScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         final MockPowerManager powerManager1 = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager1));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
@@ -4501,10 +4732,15 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        activityScenario.close();
     }
 
     @Test
     public void testNotificationsAllowed() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         activityScenario.moveToState(Lifecycle.State.STARTED);
         permissionManager.setHasPostNotificationsPermission(true);
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
@@ -4517,10 +4753,15 @@ public class SystemActivityTest extends BaseUITest {
         activityScenario.moveToState(Lifecycle.State.RESUMED);
         onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        activityScenario.close();
     }
 
     @Test
     public void testNotificationsAllowedScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         activityScenario.moveToState(Lifecycle.State.STARTED);
         permissionManager.setHasPostNotificationsPermission(true);
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
@@ -4541,10 +4782,15 @@ public class SystemActivityTest extends BaseUITest {
         activityScenario.moveToState(Lifecycle.State.RESUMED);
         onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        activityScenario.close();
     }
 
     @Test
     public void testSwitchTheme() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
@@ -4555,10 +4801,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        activityScenario.close();
     }
 
     @Test
     public void testSwitchThemeScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         rotateScreen(activityScenario);
@@ -4573,10 +4824,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
+        activityScenario.close();
     }
 
     @Test
     public void testDisplayDefaultValues() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
@@ -4612,10 +4868,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(withText(endsWith("log"))));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(not(isEnabled())));
+        activityScenario.close();
     }
 
     @Test
     public void testDisplayValues() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
@@ -4644,10 +4905,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(withText(endsWith("log"))));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(not(isEnabled())));
+        activityScenario.close();
     }
 
     @Test
     public void testSwitchYesNoText() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4675,10 +4941,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
+        activityScenario.close();
     }
 
     @Test
     public void testSetPreferencesOk() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4691,10 +4962,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        activityScenario.close();
     }
 
     @Test
     public void testFileLoggerInitialized() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         assertNull(Log.getLogger());
         assertNull(Dump.getDump());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4709,10 +4985,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         assertNull(Log.getLogger());
         assertNull(Dump.getDump());
+        activityScenario.close();
     }
 
     @Test
     public void testResetValues() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4748,10 +5029,15 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        activityScenario.close();
     }
 
     @Test
     public void testPreserveValuesOnScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4789,10 +5075,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
+        activityScenario.close();
     }
 
     @Test
     public void testAlarmOnHighPrio() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
@@ -4807,10 +5098,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        activityScenario.close();
     }
 
     @Test
     public void testAlarmOnHighPrioScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
@@ -4827,10 +5123,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        activityScenario.close();
     }
 
     @Test
     public void testAlarmOnHighPrioReset() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
@@ -4851,10 +5152,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        activityScenario.close();
     }
 
     @Test
     public void testAlarmOnHighPrioConfigurationReset() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
@@ -4875,6 +5181,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        activityScenario.close();
     }
 
     private void insertAndScheduleNetworkTask() {
@@ -5024,23 +5331,23 @@ public class SystemActivityTest extends BaseUITest {
     private Header getHeader(long networktaskId, int number) {
         Header header = new Header();
         header.setNetworkTaskId(networktaskId);
-        header.setHeaderType(HeaderType.GENERICAUTH);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
         header.setValueValid(true);
         return header;
     }
 
-    private MockExportTask getMockExportTask(boolean success) {
+    private MockExportTask getMockExportTask(ActivityScenario<?> activityScenario, boolean success) {
         SystemActivity activity = (SystemActivity) getActivity(activityScenario);
         return new MockExportTask(activity.getTaskViewModel().getImportDispatcher(), TestRegistry.getContext(), new SystemSetupResult(success, "", ""));
     }
 
-    private MockImportTask getMockImportTask(boolean success) {
-        return getMockImportTask(success, false);
+    private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success) {
+        return getMockImportTask(activityScenario, success, false);
     }
 
-    private MockImportTask getMockImportTask(boolean success, boolean mismatch) {
+    private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success, boolean mismatch) {
         String message = "";
         if (mismatch) {
             message = TestRegistry.getContext().getResources().getString(R.string.text_dialog_general_message_config_import_version_mismatch);
@@ -5049,22 +5356,35 @@ public class SystemActivityTest extends BaseUITest {
         return new MockImportTask(activity.getTaskViewModel().getImportDispatcher(), TestRegistry.getContext(), new SystemSetupResult(success, message, ""));
     }
 
-    private MockDBPurgeTask getMockDBPurgeTask(boolean success) {
+    private MockDBPurgeTask getMockDBPurgeTask(ActivityScenario<?> activityScenario, boolean success) {
         SystemActivity activity = (SystemActivity) getActivity(activityScenario);
         return new MockDBPurgeTask(activity.getTaskViewModel().getPurgeDispatcher(), TestRegistry.getContext(), success);
     }
 
-    private void injectImportTask(ImportTask importTask) {
+    private void injectScheduler(ActivityScenario<?> activityScenario) {
+        ((SystemActivity) getActivity(activityScenario)).injectNetworkTaskProcessServiceScheduler(getNetworkTaskProcessServiceScheduler());
+        ((SystemActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+    }
+
+    private void injectStorageManager(ActivityScenario<?> activityScenario) {
+        ((SystemActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
+    }
+
+    private void injectThemeManager(ActivityScenario<?> activityScenario) {
+        ((SystemActivity) getActivity(activityScenario)).injectThemeManager(themeManager);
+    }
+
+    private void injectImportTask(ActivityScenario<?> activityScenario, ImportTask importTask) {
         SystemActivity activity = (SystemActivity) getActivity(activityScenario);
         activity.injectImportTask(importTask);
     }
 
-    private void injectExportTask(ExportTask exportTask) {
+    private void injectExportTask(ActivityScenario<?> activityScenario, ExportTask exportTask) {
         SystemActivity activity = (SystemActivity) getActivity(activityScenario);
         activity.injectExportTask(exportTask);
     }
 
-    private void injectPurgeTask(DBPurgeTask purgeTask) {
+    private void injectPurgeTask(ActivityScenario<?> activityScenario, DBPurgeTask purgeTask) {
         SystemActivity activity = (SystemActivity) getActivity(activityScenario);
         activity.injectPurgeTask(purgeTask);
     }

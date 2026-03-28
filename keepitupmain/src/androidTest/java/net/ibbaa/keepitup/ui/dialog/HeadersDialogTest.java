@@ -287,8 +287,8 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         Header header = dialog.getAdapter().getItem(0);

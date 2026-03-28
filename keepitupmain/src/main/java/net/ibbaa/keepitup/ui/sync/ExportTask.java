@@ -59,7 +59,7 @@ public class ExportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
         ParcelFileDescriptor fileDescriptor = null;
         FileOutputStream stream = null;
         try {
-            JSONSystemSetup setup = new JSONSystemSetup(getContext());
+            JSONSystemSetup setup = new JSONSystemSetup(getContext(), encryptionInfo.isEncrypt());
             SystemSetupResult setupResult = setup.exportData();
             Log.d(ExportTask.class.getName(), "Export returned " + setupResult);
             if (setupResult.success()) {

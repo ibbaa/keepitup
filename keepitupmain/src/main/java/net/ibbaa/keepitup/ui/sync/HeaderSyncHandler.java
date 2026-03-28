@@ -79,7 +79,7 @@ public class HeaderSyncHandler {
         headers = headers != null ? headers : Collections.emptyList();
         List<Header> secretHeaders = new ArrayList<>(headers.size());
         for (Header currentHeader : headers) {
-            if (currentHeader.isValueSecret()) {
+            if (currentHeader.isValueSecret() && currentHeader.isValueValid()) {
                 secretHeaders.add(currentHeader);
             }
         }

@@ -97,7 +97,9 @@ public class ExportTaskTest extends BaseUITest {
         Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
-        Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        getHeaderDAO().insertHeader(getHeader2(-1));
+        getHeaderDAO().insertHeader(getHeader3(task1.getId()));
+        Header header4 = getHeaderDAO().insertHeader(getHeader4(-1));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -208,7 +210,7 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
         Header readGlobalHeader = getHeaderDAO().readGlobalHeaders().get(0);
-        assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
+        assertTrue(readGlobalHeader.isTechnicallyEqual(header4));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -779,6 +781,29 @@ public class ExportTaskTest extends BaseUITest {
         header.setNetworkTaskId(networkTaskId);
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("aname");
+        header.setValue("value");
+        header.setValueValid(true);
+        return header;
+    }
+
+    private Header getHeader3(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERICAUTH);
+        header.setName("cname");
+        header.setValue("value");
+        header.setValueValid(true);
+        return header;
+    }
+
+    @SuppressWarnings({"SameParameterValue"})
+    private Header getHeader4(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERIC);
+        header.setName("dname");
         header.setValue("value");
         header.setValueValid(true);
         return header;

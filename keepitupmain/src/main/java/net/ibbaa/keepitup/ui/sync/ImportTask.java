@@ -154,7 +154,7 @@ public class ImportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
 
     private SystemSetupResult doImportCheck(String data) throws Exception {
         Log.d(ImportTask.class.getName(), "doImportCheck");
-        JSONSystemSetup setup = new JSONSystemSetup(getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(getContext(), encryptionInfo.isEncrypt());
         SystemSetupResult result = setup.checkImportPossible(data);
         return new SystemSetupResult(result.success(), result.message(), data);
     }

@@ -22,6 +22,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -40,6 +43,7 @@ import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -582,18 +586,95 @@ public class DBSetupTest {
     }
 
     @Test
-    public void testExportGlobalHeaders() {
-        Header header1 = getHeader(-1, 2);
-        Header header2 = getHeader(-1, 1);
+    public void testExportHeadersForNetworkTask() {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        Header header1 = getHeader(task.getId(), 2);
+        Header header2 = getHeader(task.getId(), 1);
+        Header header3 = getHeader(task.getId(), 3);
+        header3.setHeaderType(HeaderType.GENERICAUTH);
         headerDAO.insertHeader(header1);
-        headerDAO.insertHeader(getHeader(0, 3));
+        headerDAO.insertHeader(getHeader(-1, 3));
         headerDAO.insertHeader(header2);
-        List<Map<String, ?>> headerList = setup.exportGlobalHeaders();
+        headerDAO.insertHeader(header3);
+        corruptKey();
+        List<Map<String, ?>> headerList = setup.exportHeadersForNetworkTask(task.getId(), true);
         assertEquals(2, headerList.size());
         Header exportedHeader1 = new Header(headerList.get(0));
         Header exportedHeader2 = new Header(headerList.get(1));
         assertTrue(exportedHeader2.isEqual(header1));
         assertTrue(exportedHeader1.isEqual(header2));
+    }
+
+    @Test
+    public void testExportSecretHeadersForNetworkTask() {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        Header header1 = getHeader(task.getId(), 2);
+        Header header2 = getHeader(task.getId(), 1);
+        Header header3 = getHeader(task.getId(), 3);
+        header3.setHeaderType(HeaderType.GENERICAUTH);
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(getHeader(-1, 3));
+        headerDAO.insertHeader(header2);
+        headerDAO.insertHeader(header3);
+        List<Map<String, ?>> headerList = setup.exportHeadersForNetworkTask(task.getId(), false);
+        assertEquals(2, headerList.size());
+        Header exportedHeader1 = new Header(headerList.get(0));
+        Header exportedHeader2 = new Header(headerList.get(1));
+        assertTrue(exportedHeader2.isEqual(header1));
+        assertTrue(exportedHeader1.isEqual(header2));
+        headerList = setup.exportHeadersForNetworkTask(task.getId(), true);
+        assertEquals(3, headerList.size());
+        exportedHeader1 = new Header(headerList.get(0));
+        exportedHeader2 = new Header(headerList.get(1));
+        Header exportedHeader3 = new Header(headerList.get(2));
+        assertTrue(exportedHeader2.isEqual(header1));
+        assertTrue(exportedHeader1.isEqual(header2));
+        assertTrue(exportedHeader3.isEqual(header3));
+    }
+
+    @Test
+    public void testExportGlobalHeaders() {
+        Header header1 = getHeader(-1, 2);
+        Header header2 = getHeader(-1, 1);
+        Header header3 = getHeader(-1, 3);
+        header3.setHeaderType(HeaderType.GENERICAUTH);
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(getHeader(0, 3));
+        headerDAO.insertHeader(header2);
+        headerDAO.insertHeader(header3);
+        corruptKey();
+        List<Map<String, ?>> headerList = setup.exportGlobalHeaders(true);
+        assertEquals(2, headerList.size());
+        Header exportedHeader1 = new Header(headerList.get(0));
+        Header exportedHeader2 = new Header(headerList.get(1));
+        assertTrue(exportedHeader2.isEqual(header1));
+        assertTrue(exportedHeader1.isEqual(header2));
+    }
+
+    @Test
+    public void testExportGlobalSecretHeaders() {
+        Header header1 = getHeader(-1, 2);
+        Header header2 = getHeader(-1, 1);
+        Header header3 = getHeader(-1, 3);
+        header3.setHeaderType(HeaderType.GENERICAUTH);
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(getHeader(0, 3));
+        headerDAO.insertHeader(header2);
+        headerDAO.insertHeader(header3);
+        List<Map<String, ?>> headerList = setup.exportGlobalHeaders(false);
+        assertEquals(2, headerList.size());
+        Header exportedHeader1 = new Header(headerList.get(0));
+        Header exportedHeader2 = new Header(headerList.get(1));
+        assertTrue(exportedHeader2.isEqual(header1));
+        assertTrue(exportedHeader1.isEqual(header2));
+        headerList = setup.exportGlobalHeaders(true);
+        assertEquals(3, headerList.size());
+        exportedHeader1 = new Header(headerList.get(0));
+        exportedHeader2 = new Header(headerList.get(1));
+        Header exportedHeader3 = new Header(headerList.get(2));
+        assertTrue(exportedHeader2.isEqual(header1));
+        assertTrue(exportedHeader1.isEqual(header2));
+        assertTrue(exportedHeader3.isEqual(header3));
     }
 
     @Test
@@ -944,7 +1025,9 @@ public class DBSetupTest {
         assertTrue(headerDAO.readAllHeaders().isEmpty());
         Header header1 = getHeader(0, 1);
         Header header2 = getHeader(0, 1);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap(), Arrays.asList(header1.toMap(), header2.toMap()));
+        Header header3 = getHeader(0, 2);
+        header3.setValueValid(false);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap(), Arrays.asList(header1.toMap(), header2.toMap(), header3.toMap()));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
@@ -1183,6 +1266,14 @@ public class DBSetupTest {
             }
         }
         return false;
+    }
+
+    private void corruptKey() {
+        String main_key_prefs_file = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_file);
+        String mainKeyPrefsKey = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_key);
+        SharedPreferences.Editor mainKeyPreferences = TestRegistry.getContext().getSharedPreferences(main_key_prefs_file, Context.MODE_PRIVATE).edit();
+        mainKeyPreferences.putString(mainKeyPrefsKey, StringUtil.byteArrayToBase64(new byte[32]));
+        mainKeyPreferences.commit();
     }
 
     private NetworkTask getNetworkTask1() {

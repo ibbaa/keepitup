@@ -44,7 +44,7 @@ public class MainKeyAccessTest {
     @Before
     public void beforeEachTestMethod() {
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
-        mainKeyAccess.reset();
+        mainKeyAccess.resetMainKey();
     }
 
     @Test
@@ -84,6 +84,23 @@ public class MainKeyAccessTest {
         assertFalse(mainKey3.keyNew());
         assertEquals("Existing key valid", mainKey3.message());
         assertArrayEquals(mainKey2Key, mainKey3Key);
+    }
+
+    @Test
+    public void testReset() {
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
+        MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
+        byte[] mainKey1Key = mainKey1.key();
+        assertTrue(mainKey1.keyValid());
+        assertTrue(mainKey1.keyNew());
+        assertEquals("New key valid", mainKey1.message());
+        mainKeyAccess.reset();
+        MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
+        byte[] mainKey2Key = mainKey2.key();
+        assertTrue(mainKey2.keyValid());
+        assertTrue(mainKey2.keyNew());
+        assertEquals("New key valid", mainKey2.message());
+        assertFalse(Arrays.equals(mainKey1Key, mainKey2Key));
     }
 
     private void corruptKey() {

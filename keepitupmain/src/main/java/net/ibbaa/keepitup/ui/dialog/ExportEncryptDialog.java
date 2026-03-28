@@ -33,10 +33,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.ui.support.CredentialInfoSupport;
 import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.ui.validation.PasswordConfirmFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PasswordFieldValidator;
 import net.ibbaa.keepitup.ui.validation.TextDescriptionColorValidatingWatcher;
@@ -45,10 +48,11 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class ExportEncryptDialog extends DialogFragmentBase {
+public class ExportEncryptDialog extends DialogFragmentBase implements CredentialInfoSupport {
 
     private View dialogView;
     private CheckBox encryptCheckBox;
@@ -91,11 +95,22 @@ public class ExportEncryptDialog extends DialogFragmentBase {
     }
 
     public String getPasswordVisibleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + ".PasswordVisible";
+        return ExportEncryptDialog.class.getSimpleName() + ".PasswordVisible";
     }
 
     public String getConfirmPasswordVisibleKey() {
-        return GeneralMessageDialog.class.getSimpleName() + ".ConfirmPasswordVisible";
+        return ExportEncryptDialog.class.getSimpleName() + ".ConfirmPasswordVisible";
+    }
+
+    private List<CredentialInfo> getCredentials() {
+        if (getArguments() != null) {
+            return BundleUtil.credentialInfoListFromBundle(getCredentialInfoBaseKey(), requireArguments());
+        }
+        return Collections.emptyList();
+    }
+
+    public String getCredentialInfoBaseKey() {
+        return ExportEncryptDialog.class.getSimpleName() + ".getCredentialInfo";
     }
 
     private void prepareEncryptCheckBox() {
@@ -111,6 +126,27 @@ public class ExportEncryptDialog extends DialogFragmentBase {
         int visibility = checked ? View.VISIBLE : View.GONE;
         passwordLayout.setVisibility(visibility);
         confirmPasswordLayout.setVisibility(visibility);
+        if (!checked) {
+            String tag = CredentialInfoDialog.class.getName();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            if (fragmentManager.findFragmentByTag(tag) == null) {
+                showCredentialInfoDialog();
+            }
+        }
+    }
+
+    private void showCredentialInfoDialog() {
+        Log.d(ExportEncryptDialog.class.getName(), "showCredentialInfoDialog");
+        List<CredentialInfo> credentials = getCredentials();
+        if (credentials.isEmpty()) {
+            return;
+        }
+        CredentialInfoDialog infoDialog = new CredentialInfoDialog();
+        Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), credentials);
+        String message = getResources().getString(R.string.text_dialog_credential_info_message_encrypt);
+        BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
+        infoDialog.setArguments(bundle);
+        infoDialog.show(getParentFragmentManager(), CredentialInfoDialog.class.getName());
     }
 
     private void preparePasswordTextField(Bundle savedInstanceState) {
@@ -286,6 +322,12 @@ public class ExportEncryptDialog extends DialogFragmentBase {
 
     private int getColor(int colorid) {
         return ContextCompat.getColor(requireContext(), colorid);
+    }
+
+    @Override
+    public void onCredentialInfoDialogOkClicked(CredentialInfoDialog credentialInfoDialog) {
+        Log.d(ExportEncryptDialog.class.getName(), "onCredentialInfoDialogOkClicked");
+        credentialInfoDialog.dismiss();
     }
 
     private ExportEncryptSupport getExportEncryptSupport() {

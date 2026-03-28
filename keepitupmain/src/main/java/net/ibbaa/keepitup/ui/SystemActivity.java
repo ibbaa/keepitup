@@ -52,6 +52,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
+import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.IPowerManager;
@@ -61,6 +62,7 @@ import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
+import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
 import net.ibbaa.keepitup.ui.dialog.ExportEncryptDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
@@ -70,6 +72,7 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
+import net.ibbaa.keepitup.ui.support.CredentialInfoSupport;
 import net.ibbaa.keepitup.ui.support.ExportEncryptSupport;
 import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.ui.support.PasswordInputSupport;
@@ -97,7 +100,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class SystemActivity extends SettingsInputActivity implements MessageSupport, ExportEncryptSupport, PasswordInputSupport {
+public class SystemActivity extends SettingsInputActivity implements MessageSupport, ExportEncryptSupport, PasswordInputSupport, CredentialInfoSupport {
 
     private enum Error {
         IMPORTERROR,
@@ -272,7 +275,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             String exportFolder = getExternalImportExportFolder(preferenceManager.getPreferenceExportFolder());
             setExportFolder(exportFolder);
         }
-        configurationExportView.setOnClickListener(this::showExportEncryptDialog);
+        configurationExportView.setOnClickListener(this::showCredentialInfoDialog);
     }
 
     private void prepareConfigurationImportField() {
@@ -858,9 +861,29 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         showImportExportFolderChooseDialog(root, exportFolder, file, FileChooseDialog.Type.EXPORTFOLDER, encryptionInfo);
     }
 
-    private void showExportEncryptDialog(View view) {
+    private void showCredentialInfoDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showCredentialInfoDialog");
+        List<CredentialInfo> invalidCredentials = getInvalidCredentials();
+        if (invalidCredentials.isEmpty()) {
+            showExportEncryptDialog();
+        } else {
+            CredentialInfoDialog infoDialog = new CredentialInfoDialog();
+            Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), invalidCredentials);
+            String message = getResources().getString(R.string.text_dialog_credential_info_message_export);
+            BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
+            infoDialog.setArguments(bundle);
+            infoDialog.show(getSupportFragmentManager(), CredentialInfoDialog.class.getName());
+        }
+    }
+
+    private void showExportEncryptDialog() {
         Log.d(SystemActivity.class.getName(), "showExportEncryptDialog");
         ExportEncryptDialog exportEncryptDialog = new ExportEncryptDialog();
+        List<CredentialInfo> credentials = getCredentials();
+        if (!credentials.isEmpty()) {
+            Bundle bundle = BundleUtil.credentialInfoListToBundle(exportEncryptDialog.getCredentialInfoBaseKey(), credentials);
+            exportEncryptDialog.setArguments(bundle);
+        }
         exportEncryptDialog.show(getSupportFragmentManager(), SystemActivity.class.getName());
     }
 
@@ -897,6 +920,13 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         }
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getSupportFragmentManager(), SystemActivity.class.getName());
+    }
+
+    @Override
+    public void onCredentialInfoDialogOkClicked(CredentialInfoDialog credentialInfoDialog) {
+        Log.d(SystemActivity.class.getName(), "onCredentialInfoDialogOkClicked");
+        credentialInfoDialog.dismiss();
+        showExportEncryptDialog();
     }
 
     @Override
@@ -1205,6 +1235,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         if (success) {
             resetPreferences();
             resetFolderPermissions();
+            resetKeystore();
             NetworkTaskLog.clear();
             resetActivity();
         } else {
@@ -1216,6 +1247,11 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         Log.d(SystemActivity.class.getName(), "resetPreferences");
         PreferenceSetup preferenceSetup = new PreferenceSetup(this);
         preferenceSetup.removeAllSettings();
+    }
+
+    private void resetKeystore() {
+        MainKeyAccess mainKeyAccess = new MainKeyAccess(this);
+        mainKeyAccess.reset();
     }
 
     @SuppressWarnings("RedundantIfStatement")

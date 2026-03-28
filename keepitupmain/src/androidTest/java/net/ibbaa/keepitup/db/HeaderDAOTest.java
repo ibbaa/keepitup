@@ -60,7 +60,7 @@ public class HeaderDAOTest {
     public void beforeEachTestMethod() {
         Dump.initialize(null);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
-        mainKeyAccess.reset();
+        mainKeyAccess.resetMainKey();
         headerDAO = new TestHeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());

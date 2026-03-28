@@ -800,13 +800,15 @@ public class DBSetup {
         return resolve != null ? resolve.toMap() : null;
     }
 
-    public List<Map<String, ?>> exportHeadersForNetworkTask(long networkTaskId) {
-        Log.d(DBSetup.class.getName(), "exportHeadersForNetworkTask, networkTaskId is " + networkTaskId);
+    public List<Map<String, ?>> exportHeadersForNetworkTask(long networkTaskId, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "exportHeadersForNetworkTask, networkTaskId is " + networkTaskId + ", encrypted is " + encrypted);
         HeaderDAO dao = new HeaderDAO(getContext());
         List<Header> headerList = dao.readHeadersForNetworkTask(networkTaskId);
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Header header : headerList) {
-            exportedList.add(header.toMap());
+            if (shouldExport(header, encrypted)) {
+                exportedList.add(header.toMap());
+            }
         }
         return exportedList;
     }
@@ -822,15 +824,28 @@ public class DBSetup {
         return exportedList;
     }
 
-    public List<Map<String, ?>> exportGlobalHeaders() {
-        Log.d(DBSetup.class.getName(), "exportGlobalHeaders");
+    public List<Map<String, ?>> exportGlobalHeaders(boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "exportGlobalHeaders, encrypted is " + encrypted);
         HeaderDAO dao = new HeaderDAO(getContext());
         List<Header> headerList = dao.readGlobalHeaders();
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Header header : headerList) {
-            exportedList.add(header.toMap());
+            if (shouldExport(header, encrypted)) {
+                exportedList.add(header.toMap());
+            }
         }
         return exportedList;
+    }
+
+    private boolean shouldExport(Header header, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExport, header is " + header + ", encrypted is " + encrypted);
+        if (!header.isValueValid()) {
+            return false;
+        }
+        if (!header.isValueSecret()) {
+            return true;
+        }
+        return encrypted;
     }
 
     public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headerList) {

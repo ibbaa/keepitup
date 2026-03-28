@@ -27,8 +27,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import android.os.Bundle;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -37,9 +40,14 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
+import net.ibbaa.keepitup.ui.validation.CredentialInfo;
+import net.ibbaa.keepitup.util.BundleUtil;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Collections;
+import java.util.List;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -113,6 +121,66 @@ public class ExportEncryptDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNoEncryptionWithCredentials() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        CredentialInfo credentialInfo1 = new CredentialInfo("name1", "value1");
+        CredentialInfo credentialInfo2 = new CredentialInfo("name2", "value2");
+        openExportEncryptDialog(List.of(credentialInfo1, credentialInfo2));
+        onView(withId(R.id.textview_dialog_export_encrypt_title)).check(matches(withText("Encryption")));
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).check(matches(withText("Encrypt file (recommended)")));
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("Confidential data"))));
+        onView(allOf(withText("name1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("value1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("name2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("value2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNoEncryptionWithCredentialsScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        CredentialInfo credentialInfo1 = new CredentialInfo("name1", "value1");
+        CredentialInfo credentialInfo2 = new CredentialInfo("name2", "value2");
+        openExportEncryptDialog(List.of(credentialInfo1, credentialInfo2));
+        onView(withId(R.id.textview_dialog_export_encrypt_title)).check(matches(withText("Encryption")));
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).check(matches(withText("Encrypt file (recommended)")));
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("Confidential data"))));
+        onView(allOf(withText("name1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("value1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("name2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("value2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_export_encrypt_password)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_export_encrypt_password_confirm)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -713,7 +781,15 @@ public class ExportEncryptDialogTest extends BaseUITest {
     }
 
     private ExportEncryptDialog openExportEncryptDialog() {
+        return openExportEncryptDialog(Collections.emptyList());
+    }
+
+    private ExportEncryptDialog openExportEncryptDialog(List<CredentialInfo> credentials) {
         ExportEncryptDialog exportEncryptDialog = new ExportEncryptDialog();
+        if (!credentials.isEmpty()) {
+            Bundle bundle = BundleUtil.credentialInfoListToBundle(exportEncryptDialog.getCredentialInfoBaseKey(), credentials);
+            exportEncryptDialog.setArguments(bundle);
+        }
         exportEncryptDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ExportEncryptDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
         return exportEncryptDialog;

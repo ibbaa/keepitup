@@ -21,6 +21,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -45,6 +48,7 @@ import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.util.JSONUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,6 +72,7 @@ public class JSONSystemSetupTest {
     private HeaderDAO headerDAO;
     private PreferenceManager preferenceManager;
     private JSONSystemSetup setup;
+    private JSONSystemSetup encryptedSetup;
 
     @Before
     public void beforeEachTestMethod() {
@@ -86,7 +91,8 @@ public class JSONSystemSetupTest {
         headerDAO.deleteAllHeaders();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
-        setup = new JSONSystemSetup(TestRegistry.getContext());
+        setup = new JSONSystemSetup(TestRegistry.getContext(), false);
+        encryptedSetup = new JSONSystemSetup(TestRegistry.getContext(), true);
     }
 
     @After
@@ -132,7 +138,7 @@ public class JSONSystemSetupTest {
         Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
         Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
         Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
-        SystemSetupResult result = setup.exportData();
+        SystemSetupResult result = encryptedSetup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject databaseData = (JSONObject) jsonData.get("database");
@@ -201,7 +207,7 @@ public class JSONSystemSetupTest {
         Header header1 = headerDAO.insertHeader(getHeader1(-1));
         Header header2 = headerDAO.insertHeader(getHeader2(-1));
         headerDAO.insertHeader(getHeader2(task1.getId()));
-        SystemSetupResult result = setup.exportData();
+        SystemSetupResult result = encryptedSetup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject databaseData = (JSONObject) jsonData.get("database");
@@ -238,7 +244,7 @@ public class JSONSystemSetupTest {
         Resolve resolve1 = getResolve1(task1.getId());
         resolve1.setTargetAddress("127.12..1.1.1.1");
         Resolve insertedResolve1 = resolveDAO.insertResolve(resolve1);
-        SystemSetupResult result = setup.exportData();
+        SystemSetupResult result = encryptedSetup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject databaseData = (JSONObject) jsonData.get("database");
@@ -259,25 +265,73 @@ public class JSONSystemSetupTest {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         Header header1 = getHeader1(task1.getId());
         Header header2 = getHeader2(-1);
+        Header header3 = getHeader3(-1);
+        Header header4 = getHeader4(task1.getId());
         header1 = headerDAO.insertHeader(header1);
         header2 = headerDAO.insertHeader(header2);
-        SystemSetupResult result = setup.exportData();
+        headerDAO.insertHeaders(List.of(header3, header4));
+        corruptKey();
+        SystemSetupResult result = encryptedSetup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONArray globalHeaderData = (JSONArray) databaseData.get("globalheader");
+        assertEquals(1, globalHeaderData.length());
         Header globalHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
+        assertEquals(1, task1HeaderJSON.length());
         Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
         assertTrue(task1Header.isEqual(header1));
         assertTrue(globalHeader1.isEqual(header2));
     }
 
     @Test
+    public void testExportDatabaseSecretHeaders() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        Header header1 = getHeader1(task1.getId());
+        Header header2 = getHeader2(-1);
+        Header header3 = getHeader3(-1);
+        Header header4 = getHeader4(task1.getId());
+        header1 = headerDAO.insertHeader(header1);
+        header2 = headerDAO.insertHeader(header2);
+        headerDAO.insertHeaders(List.of(header3, header4));
+        SystemSetupResult result = encryptedSetup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONArray globalHeaderData = (JSONArray) databaseData.get("globalheader");
+        assertEquals(2, globalHeaderData.length());
+        Header globalHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
+        Header globalHeader2 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(1)));
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
+        assertEquals(2, task1HeaderJSON.length());
+        Header task1Header1 = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
+        Header task1Header2 = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(1)));
+        assertTrue(task1Header1.isEqual(header1));
+        assertTrue(task1Header2.isEqual(header4));
+        assertTrue(globalHeader1.isEqual(header2));
+        assertTrue(globalHeader2.isEqual(header3));
+        result = setup.exportData();
+        assertTrue(result.success());
+        jsonData = new JSONObject(result.data());
+        databaseData = (JSONObject) jsonData.get("database");
+        globalHeaderData = (JSONArray) databaseData.get("globalheader");
+        assertEquals(1, globalHeaderData.length());
+        globalHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
+        task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        task1HeaderJSON = (JSONArray) task1Data.get("header");
+        assertEquals(1, task1HeaderJSON.length());
+        task1Header1 = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
+        assertTrue(task1Header1.isEqual(header1));
+        assertTrue(globalHeader1.isEqual(header2));
+    }
+
+    @Test
     public void testExportDatabaseInvalidInterval() throws Exception {
         Interval interval = intervalDAO.insertInterval(new Interval());
-        SystemSetupResult result = setup.exportData();
+        SystemSetupResult result = encryptedSetup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject databaseData = (JSONObject) jsonData.get("database");
@@ -463,7 +517,7 @@ public class JSONSystemSetupTest {
         Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
         Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
         Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
@@ -555,7 +609,7 @@ public class JSONSystemSetupTest {
         task3 = networkTaskDAO.insertNetworkTask(task3);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -577,7 +631,7 @@ public class JSONSystemSetupTest {
         NetworkTask task = getNetworkTask1();
         task.setName(null);
         networkTaskDAO.insertNetworkTask(task);
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -593,7 +647,7 @@ public class JSONSystemSetupTest {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
@@ -618,7 +672,7 @@ public class JSONSystemSetupTest {
         Header header1 = headerDAO.insertHeader(getHeader1(-1));
         Header header2 = headerDAO.insertHeader(getHeader2(-1));
         headerDAO.insertHeader(getHeader1(task1.getId()));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
@@ -671,7 +725,7 @@ public class JSONSystemSetupTest {
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         intervalDAO.deleteAllIntervals();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -692,7 +746,7 @@ public class JSONSystemSetupTest {
         logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolveDAO.insertResolve(getResolve1(task1.getId()));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
@@ -768,7 +822,7 @@ public class JSONSystemSetupTest {
         data1.setPingCount(11);
         accessTypeDataDAO.insertAccessTypeData(data1);
         resolveDAO.insertResolve(getResolve1(task1.getId()));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
@@ -847,7 +901,7 @@ public class JSONSystemSetupTest {
         Resolve resolve1 = getResolve1(task1.getId());
         resolve1.setTargetAddress("https://www.host.com");
         resolveDAO.insertResolve(resolve1);
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
@@ -887,7 +941,7 @@ public class JSONSystemSetupTest {
     @Test
     public void testImportDatabaseInvalidInterval() {
         intervalDAO.insertInterval(new Interval());
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         intervalDAO.deleteAllIntervals();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -919,7 +973,7 @@ public class JSONSystemSetupTest {
     @Test
     public void testImportDatabaseInvalidIntervalOverlap() {
         intervalDAO.insertInterval(new Interval());
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         intervalDAO.deleteAllIntervals();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -951,7 +1005,7 @@ public class JSONSystemSetupTest {
     @Test
     public void testImportDatabaseInvalidIntervalMinDuration() {
         intervalDAO.insertInterval(new Interval());
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         intervalDAO.deleteAllIntervals();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -994,7 +1048,7 @@ public class JSONSystemSetupTest {
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         intervalDAO.deleteAllIntervals();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -1019,7 +1073,7 @@ public class JSONSystemSetupTest {
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         intervalDAO.deleteAllIntervals();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -1032,16 +1086,32 @@ public class JSONSystemSetupTest {
 
     @Test
     public void testImportDatabaseInvalidHeaders() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
         Header header1 = getHeader1(-1);
         Header header2 = getHeader2(-1);
-        Header header3 = getHeader3(1);
+        Header header3 = getHeader3(task1.getId());
         header1.setName("");
         header2.setValue("Test\u007FMore");
         header3.setName(new String(new char[129]));
         headerDAO.insertHeaders(List.of(header1, header2, header3));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         headerDAO.deleteAllHeaders();
         SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+    }
+
+    @Test
+    public void testImportDatabaseInvalidHeaderValue() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        Header header1 = getHeader1(-1);
+        Header header2 = getHeader2(task1.getId());
+        headerDAO.insertHeaders(List.of(header1, header2));
+        SystemSetupResult exportResult = setup.exportData();
+        headerDAO.deleteAllHeaders();
+        SystemSetupResult importResult = setup.importData(exportResult.data().replaceAll("\"valueValid\":true", "\"valueValid\":false"));
         assertTrue(importResult.success());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
@@ -1053,7 +1123,7 @@ public class JSONSystemSetupTest {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         Header header3 = getHeader1(task1.getId());
         headerDAO.insertHeaders(List.of(header1, header2, header3));
-        SystemSetupResult exportResult = setup.exportData();
+        SystemSetupResult exportResult = encryptedSetup.exportData();
         headerDAO.deleteAllHeaders();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
@@ -1250,6 +1320,14 @@ public class JSONSystemSetupTest {
         result = setup.importData(jsonResult.toString());
         assertFalse(result.success());
         assertEquals(jsonResult.toString(), result.data());
+    }
+
+    private void corruptKey() {
+        String main_key_prefs_file = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_file);
+        String mainKeyPrefsKey = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_key);
+        SharedPreferences.Editor mainKeyPreferences = TestRegistry.getContext().getSharedPreferences(main_key_prefs_file, Context.MODE_PRIVATE).edit();
+        mainKeyPreferences.putString(mainKeyPrefsKey, StringUtil.byteArrayToBase64(new byte[32]));
+        mainKeyPreferences.commit();
     }
 
     private NetworkTask getNetworkTask1() {
@@ -1460,6 +1538,17 @@ public class JSONSystemSetupTest {
         header.setNetworkTaskId(networkTaskId);
         header.setHeaderType(HeaderType.BASICAUTH);
         header.setName("cname");
+        header.setValue("value");
+        header.setValueValid(true);
+        return header;
+    }
+
+    private Header getHeader4(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.GENERICAUTH);
+        header.setName("dname");
         header.setValue("value");
         header.setValueValid(true);
         return header;

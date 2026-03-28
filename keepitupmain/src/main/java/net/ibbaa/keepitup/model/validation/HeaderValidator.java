@@ -72,6 +72,9 @@ public class HeaderValidator {
 
     public boolean validateValue(Header header) {
         Log.d(HeaderValidator.class.getName(), "validateValue for header " + header);
+        if (!header.isValueValid()) {
+            return false;
+        }
         String value = header.getValue();
         if (value == null) {
             return false;

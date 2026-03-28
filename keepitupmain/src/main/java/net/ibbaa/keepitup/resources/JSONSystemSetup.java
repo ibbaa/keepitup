@@ -42,12 +42,18 @@ public class JSONSystemSetup {
     private final DBSetup dbSetup;
     private final JSONSystemMigrate jsonMigrate;
     private final PreferenceSetup preferenceSetup;
+    private final boolean encrypted;
 
     public JSONSystemSetup(Context context) {
+        this(context, false);
+    }
+
+    public JSONSystemSetup(Context context, boolean encrypted) {
         this.context = context;
         this.dbSetup = new DBSetup(context);
         this.jsonMigrate = new JSONSystemMigrate(context);
         this.preferenceSetup = new PreferenceSetup(context);
+        this.encrypted = encrypted;
     }
 
     public SystemSetupResult exportData() {
@@ -234,7 +240,7 @@ public class JSONSystemSetup {
                 List<Map<String, ?>> logs = dbSetup.exportLogsForNetworkTask(id);
                 Map<String, ?> acccessTypeDataMap = dbSetup.exportAccessTypeDataForNetworkTask(id);
                 Map<String, ?> resolveMap = dbSetup.exportResolveForNetworkTask(id);
-                List<Map<String, ?>> headers = dbSetup.exportHeadersForNetworkTask(id);
+                List<Map<String, ?>> headers = dbSetup.exportHeadersForNetworkTask(id, encrypted);
                 JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap, resolveMap, headers);
                 dbData.put(String.valueOf(id), task);
             }
@@ -242,7 +248,7 @@ public class JSONSystemSetup {
         List<Map<String, ?>> intervals = dbSetup.exportIntervals();
         String intervalKey = getResources().getString(R.string.interval_json_key);
         dbData.put(intervalKey, new JSONArray(intervals));
-        List<Map<String, ?>> globalHeaders = dbSetup.exportGlobalHeaders();
+        List<Map<String, ?>> globalHeaders = dbSetup.exportGlobalHeaders(encrypted);
         String globalHeaderKey = getResources().getString(R.string.globalheader_json_key);
         dbData.put(globalHeaderKey, new JSONArray(globalHeaders));
         return dbData;
