@@ -1116,6 +1116,49 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testShowConfirmAuthorizationHeaderNoticeOnlyOnce() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(4, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Confirm security notice")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertNull(dialog.getInitialHeaders());
+        List<Header> headers = dialog.getHeaders();
+        assertEquals(2, headers.size());
+        assertEquals("Authorization", headers.get(0).getName());
+        assertEquals("abc:123", headers.get(0).getValue());
+        assertEquals(HeaderType.BASICAUTH, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
+        assertEquals("User-Agent", headers.get(1).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(1).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(1).getHeaderType());
+        assertTrue(headers.get(1).isValueValid());
+    }
+
+    @Test
     public void testOnOkCancelClickedDialogDismissed() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());

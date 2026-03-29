@@ -141,6 +141,16 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
         return Collections.unmodifiableList(headers);
     }
 
+    public boolean containsSecretHeader() {
+        List<Header> headers = getAllItems();
+        for (Header currentHeader : headers) {
+            if (currentHeader.isValueSecret()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private int getColor(int colorid) {
         return ContextCompat.getColor(getContext(), colorid);
     }

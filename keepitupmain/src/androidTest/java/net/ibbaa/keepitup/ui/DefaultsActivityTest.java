@@ -2016,7 +2016,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textColor)));
@@ -2060,7 +2059,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textColor)));
@@ -2114,7 +2112,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textColor)));

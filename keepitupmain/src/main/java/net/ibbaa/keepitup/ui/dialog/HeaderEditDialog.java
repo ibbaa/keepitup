@@ -241,6 +241,18 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         return HeaderEditDialog.class.getSimpleName() + ".LastBasicAuthCredentials";
     }
 
+    public String getShowConfirmAuthorizationHeaderNoticeKey() {
+        return HeaderEditDialog.class.getSimpleName() + ".ShowConfirmAuthorizationHeaderNotice";
+    }
+
+    private boolean showConfirmAuthorizationHeaderNotice() {
+        Bundle arguments = getArguments();
+        if (arguments != null && arguments.containsKey(getShowConfirmAuthorizationHeaderNoticeKey())) {
+            return arguments.getBoolean(getShowConfirmAuthorizationHeaderNoticeKey());
+        }
+        return true;
+    }
+
     public String getName() {
         return StringUtil.notNull(nameEditText.getText()).trim();
     }
@@ -255,8 +267,8 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         List<ValidationResult> validationResult = validateInput(position);
         if (!hasErrors(validationResult)) {
             Log.d(HeaderEditDialog.class.getName(), "Validation was successful");
-            if (getHeader().isValueSecret()) {
-                Log.d(HeaderEditDialog.class.getName(), "Header is an authorization header");
+            if (getHeader().isValueSecret() && showConfirmAuthorizationHeaderNotice()) {
+                Log.d(HeaderEditDialog.class.getName(), "Showing authorization header notice");
                 showConfirmDialog(position);
                 return;
             }

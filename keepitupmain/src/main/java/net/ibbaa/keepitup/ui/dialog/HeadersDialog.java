@@ -58,6 +58,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
     private View dialogView;
     private RecyclerView headersRecyclerView;
     private ItemTouchHelper itemTouchHelper;
+    private boolean showConfirmAuthorizationHeaderNotice;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         prepareHeadersTitleField();
         prepareRestoreDefaultHeadersFields();
         prepareHeadersRecyclerView(adapterState);
+        prepareShowConfirmAuthorizationHeaderNotice(savedInstanceState);
         prepareAddImageButton();
         prepareOkCancelImageButtons();
         return dialogView;
@@ -88,6 +90,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         super.onSaveInstanceState(outState);
         Bundle adapterBundle = getAdapter().saveStateToBundle();
         outState.putBundle(getHeadersAdapterKey(), adapterBundle);
+        outState.putBoolean(getShowConfirmAuthorizationHeaderNoticeKey(), showConfirmAuthorizationHeaderNotice);
     }
 
     private boolean containsSavedState(Bundle savedInstanceState) {
@@ -117,6 +120,10 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
 
     private String getHeadersAdapterKey() {
         return HeadersDialog.class.getSimpleName() + ".HeadersAdapter";
+    }
+
+    public String getShowConfirmAuthorizationHeaderNoticeKey() {
+        return HeadersDialog.class.getSimpleName() + ".ShowConfirmAuthorizationHeaderNotice";
     }
 
     public long getNetworkTaskId() {
@@ -155,6 +162,14 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         headersRecyclerView.setAdapter(adapter);
         itemTouchHelper = new ItemTouchHelper(new DeleteSwipeCallback(this));
         itemTouchHelper.attachToRecyclerView(headersRecyclerView);
+    }
+
+    private void prepareShowConfirmAuthorizationHeaderNotice(Bundle savedState) {
+        if (savedState != null && savedState.containsKey(getShowConfirmAuthorizationHeaderNoticeKey())) {
+            showConfirmAuthorizationHeaderNotice = savedState.getBoolean(getShowConfirmAuthorizationHeaderNoticeKey());
+        } else {
+            showConfirmAuthorizationHeaderNotice = !getAdapter().containsSecretHeader();
+        }
     }
 
     private boolean noHeadersDefined() {
@@ -287,6 +302,9 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         }
         Header header = headerEditDialog.getHeader();
         header.setValueValid(true);
+        if (header.isValueSecret()) {
+            showConfirmAuthorizationHeaderNotice = false;
+        }
         getAdapter().addItem(header);
         List<Header> headers = sortHeaderList(getAdapter().getAllItems());
         getAdapter().replaceItems(headers);
@@ -390,6 +408,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         HeaderEditDialog headerEditDialog = new HeaderEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(headerEditDialog.getHeaderKey(), header.toBundle());
         bundle = BundleUtil.integerToBundle(headerEditDialog.getPositionKey(), position, bundle);
+        bundle = BundleUtil.booleanToBundle(headerEditDialog.getShowConfirmAuthorizationHeaderNoticeKey(), showConfirmAuthorizationHeaderNotice, bundle);
         headerEditDialog.setArguments(bundle);
         showDialog(headerEditDialog, HeaderEditDialog.class.getName());
     }

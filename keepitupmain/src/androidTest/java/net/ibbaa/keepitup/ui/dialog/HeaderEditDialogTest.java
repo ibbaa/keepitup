@@ -813,6 +813,36 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testBasicAuthHeaderSecurityConfirmNotShown() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1), false);
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderSecurityConfirmNotShownScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1), false);
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
     public void testAuthorizationHeaderSecurityConfirmOk() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openHeaderEditDialog(getHeader(1));
@@ -844,6 +874,32 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(isRoot()).perform(waitFor(500));
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderSecurityConfirmNotShown() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1), false);
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderSecurityConfirmNotShownScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1), false);
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("xyz"));
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -1302,9 +1358,14 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     private HeaderEditDialog openHeaderEditDialog(Header header) {
+        return openHeaderEditDialog(header, true);
+    }
+
+    private HeaderEditDialog openHeaderEditDialog(Header header, boolean showConfirmAuthorizationHeaderNotice) {
         HeaderEditDialog headerEditDialog = new HeaderEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(headerEditDialog.getHeaderKey(), header.toBundle());
         bundle = BundleUtil.integerToBundle(headerEditDialog.getPositionKey(), -1, bundle);
+        bundle = BundleUtil.booleanToBundle(headerEditDialog.getShowConfirmAuthorizationHeaderNoticeKey(), showConfirmAuthorizationHeaderNotice, bundle);
         headerEditDialog.setArguments(bundle);
         headerEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), HeaderEditDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));

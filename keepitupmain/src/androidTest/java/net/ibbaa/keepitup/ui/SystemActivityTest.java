@@ -1435,7 +1435,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
-        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("Confidential data"))));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The configuration"))));
         onView(allOf(withText("Default"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Network task 1"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -1882,7 +1882,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
-        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("Confidential data"))));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The configuration"))));
         onView(allOf(withText("Default"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Network task 1"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -5811,7 +5811,7 @@ public class SystemActivityTest extends BaseUITest {
 
     private void addInvalidCredentials(Bundle bundle, String... names) {
         List<CredentialInfo> credentialInfos = getCredentials(names);
-        Bundle credentialBundle =  BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), credentialInfos);
+        Bundle credentialBundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), credentialInfos);
         bundle.putBundle(SystemActivity.getCredentialsKey(), credentialBundle);
     }
 
