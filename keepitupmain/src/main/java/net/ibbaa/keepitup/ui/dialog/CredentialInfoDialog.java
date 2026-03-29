@@ -53,11 +53,22 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
         View view = inflater.inflate(R.layout.dialog_credential_info, container);
         initEdgeToEdgeInsets(view);
         List<CredentialInfo> resultList = BundleUtil.credentialInfoListFromBundle(getCredentialInfoBaseKey(), requireArguments());
+        String title = BundleUtil.stringFromBundle(getTitleKey(), requireArguments());
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         prepareErrorMessages(view, toGridMessageList(resultList));
+        prepareTitle(view, title);
         prepareMessage(view, message);
         prepareOkButton(view, resultList.size() + 1);
         return view;
+    }
+
+    private void prepareTitle(View view, String title) {
+        Log.d(CredentialInfoDialog.class.getName(), "prepareTitle");
+        TextView titleView = view.findViewById(R.id.textview_dialog_credential_info_title);
+        if (title == null) {
+            title = getResources().getString(R.string.text_dialog_credential_info_title);
+        }
+        titleView.setText(title);
     }
 
     private void prepareMessage(View view, String message) {
@@ -71,6 +82,10 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
 
     public String getCredentialInfoBaseKey() {
         return CredentialInfoDialog.class.getSimpleName() + ".CredentialInfo";
+    }
+
+    public String getTitleKey() {
+        return CredentialInfoDialog.class.getSimpleName() + ".Title";
     }
 
     public String getMessageKey() {

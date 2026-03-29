@@ -773,6 +773,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "showCredentialInfoDialog");
         CredentialInfoDialog infoDialog = new CredentialInfoDialog();
         Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), credentialInfo);
+        String title = getResources().getString(R.string.text_dialog_credential_info_title);
+        BundleUtil.stringToBundle(infoDialog.getTitleKey(), title, bundle);
         String message = getResources().getString(R.string.text_dialog_credential_info_message);
         BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
         infoDialog.setArguments(bundle);

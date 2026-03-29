@@ -143,6 +143,8 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
         }
         CredentialInfoDialog infoDialog = new CredentialInfoDialog();
         Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), credentials);
+        String title = getResources().getString(R.string.text_dialog_credential_info_title_encrypt);
+        BundleUtil.stringToBundle(infoDialog.getTitleKey(), title, bundle);
         String message = getResources().getString(R.string.text_dialog_credential_info_message_encrypt);
         BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
         infoDialog.setArguments(bundle);

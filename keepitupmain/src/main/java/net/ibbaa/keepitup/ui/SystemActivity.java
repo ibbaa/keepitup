@@ -869,6 +869,8 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         } else {
             CredentialInfoDialog infoDialog = new CredentialInfoDialog();
             Bundle bundle = BundleUtil.credentialInfoListToBundle(infoDialog.getCredentialInfoBaseKey(), invalidCredentials);
+            String title = getResources().getString(R.string.text_dialog_credential_info_title_export);
+            BundleUtil.stringToBundle(infoDialog.getTitleKey(), title, bundle);
             String message = getResources().getString(R.string.text_dialog_credential_info_message_export);
             BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
             infoDialog.setArguments(bundle);

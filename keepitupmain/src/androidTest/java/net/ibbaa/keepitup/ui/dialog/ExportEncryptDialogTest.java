@@ -134,7 +134,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_export_encrypt_title)).check(matches(withText("Encryption")));
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).check(matches(withText("Encrypt file (recommended)")));
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
-        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("Confidential data"))));
         onView(allOf(withText("name1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("value1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
@@ -164,7 +164,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).check(matches(withText("Encrypt file (recommended)")));
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("Confidential data"))));
         onView(allOf(withText("name1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("value1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
