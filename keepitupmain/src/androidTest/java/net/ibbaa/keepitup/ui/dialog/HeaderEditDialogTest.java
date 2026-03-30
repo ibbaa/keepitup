@@ -564,6 +564,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
         rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
         rotateScreen(activityScenario);
