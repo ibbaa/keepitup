@@ -278,14 +278,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     private List<Header> getInvalidHeaders() {
-        List<Header> headers = getActualHeaders();
-        List<Header> invalidHeaders = new ArrayList<>();
-        for (Header currentHeader : headers) {
-            if (!currentHeader.isValueValid()) {
-                invalidHeaders.add(currentHeader);
-            }
-        }
-        return invalidHeaders;
+        HeaderSyncHandler syncHandler = new HeaderSyncHandler(getContext());
+        return syncHandler.getInvalidHeaders(getActualHeaders());
     }
 
     private List<Header> getActualHeaders() {
