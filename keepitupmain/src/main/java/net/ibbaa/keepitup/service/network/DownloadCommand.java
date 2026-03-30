@@ -56,6 +56,7 @@ import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -69,6 +70,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -127,6 +129,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         long start = -1;
         int redirects = getResources().getInteger(R.integer.download_max_redirect);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        List<Header> invalidHeaders = getInvalidHeaders();
         try {
             boolean redirect;
             do {
@@ -139,10 +142,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 response = openResponse(downloadUrl, overrideConnect);
                 if (response == null) {
                     long end = timeService.getCurrentTimestamp();
-                    connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, false));
+                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideConnect, false));
                     return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
-                connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, true));
+                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideConnect, true));
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");
                 int httpCode = response.code();
@@ -217,7 +220,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             }
             long end = timeService.getCurrentTimestamp();
             if (!connectSuccess) {
-                connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, false));
+                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideConnect, false));
             }
             return createDownloadCommandResult(downloadUrl, connectResults, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
@@ -258,16 +261,43 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         Request.Builder requestBuilder = new Request.Builder().url(url.toString());
         HTTPUtil.setAcceptHeader(getContext(), requestBuilder);
         HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), requestBuilder);
+        List<Header> headers = getActualHeaders();
+        for (Header currentHeader : headers) {
+            if (currentHeader.isValueValid()) {
+                String value = currentHeader.getValue();
+                if (HTTPUtil.isBasicAuthHeader(currentHeader)) {
+                    String[] usernameAndPassword = StringUtil.splitAtFirstColon(value);
+                    String username = usernameAndPassword[0];
+                    String password = usernameAndPassword[1];
+                    value = Credentials.basic(username, password);
+                }
+                requestBuilder.header(currentHeader.getName(), value);
+            }
+        }
+        return requestBuilder;
+    }
+
+    private List<Header> getInvalidHeaders() {
+        List<Header> headers = getActualHeaders();
+        List<Header> invalidHeaders = new ArrayList<>();
+        for (Header currentHeader : headers) {
+            if (!currentHeader.isValueValid()) {
+                invalidHeaders.add(currentHeader);
+            }
+        }
+        return invalidHeaders;
+    }
+
+    private List<Header> getActualHeaders() {
+        Log.d(DownloadCommand.class.getName(), "getActualHeaders");
         List<Header> headers = this.headers;
         if (headers == null) {
             headers = new HeaderSyncHandler(getContext()).getGlobalHeaders();
         }
-        if (headers != null) {
-            for (Header currentHeader : headers) {
-                requestBuilder.header(currentHeader.getName(), currentHeader.getValue());
-            }
+        if (headers == null) {
+            headers = Collections.emptyList();
         }
-        return requestBuilder;
+        return headers;
     }
 
     private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError) {
@@ -470,10 +500,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, boolean hostOverridden, boolean success) {
+    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, List<Header> invalidHeaders, boolean hostOverridden, boolean success) {
         InetAddress connectToAddress = hostOverridden ? getConnectToAddress().resolvedAddress() : null;
         int connectToPort = hostOverridden ? getConnectToAddress().resolve().getTargetPort() : -1;
-        return new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, success);
+        return new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, invalidHeaders, success);
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {

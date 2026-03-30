@@ -1202,7 +1202,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. Exception: Test (protocol mismatch http to port 443).", logEntry.getMessage());
     }
 
     @Test
@@ -1216,21 +1216,21 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. (protocol mismatch http to port 443).", logEntry.getMessage());
     }
 
     @Test
     public void testDownloadWithExceptionAndProtocolMismatchHTTPTo443FromURL() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1:443"), List.of(getDownloadConnectResult("testhost", 443, null, -1, false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1:443"), List.of(getDownloadConnectResult("testhost", 443, null, -1, Collections.emptyList(), false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to testhost:443 failed. The download from http://127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to testhost:443 failed. The download from http://127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443).", logEntry.getMessage());
     }
 
     @Test
@@ -1244,7 +1244,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. Exception: Test (protocol mismatch https to port 80).", logEntry.getMessage());
     }
 
     @Test
@@ -1258,21 +1258,21 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:80 failed. The download from https://127.0.0.1 failed. (protocol mismatch https to port 80).", logEntry.getMessage());
     }
 
     @Test
     public void testDownloadWithExceptionAndProtocolMismatchHTTPSTo80FromURL() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("https://127.0.0.1:80"), List.of(getDownloadConnectResult("host", 80, null, -1, false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("https://127.0.0.1:80"), List.of(getDownloadConnectResult("host", 80, null, -1, Collections.emptyList(), false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:80 failed. The download from https://127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to host:80 failed. The download from https://127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80).", logEntry.getMessage());
     }
 
     @Test
@@ -1286,21 +1286,21 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to 127.0.0.1:443 failed. The download from http://127.0.0.1 failed. Exception: Test (protocol mismatch http to port 443).", logEntry.getMessage());
     }
 
     @Test
     public void testDownloadWithExceptionAndProtocolMismatchFromURLWithRedirect() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("https://127.0.0.1:80"), List.of(getDownloadConnectResult(true), getDownloadConnectResult("testhost", 80, null, -1, false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("https://127.0.0.1:80"), List.of(getDownloadConnectResult(true), getDownloadConnectResult("testhost", 80, null, -1, Collections.emptyList(), false)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to testhost:80 failed. The download from https://127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to testhost:80 failed. The download from https://127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80).", logEntry.getMessage());
     }
 
     @Test
@@ -2021,11 +2021,11 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     private DownloadConnectResult getDownloadConnectResult(InetAddress connectAddress, int connectPort, boolean success) {
-        return getDownloadConnectResult("host", 123, connectAddress, connectPort, success);
+        return getDownloadConnectResult("host", 123, connectAddress, connectPort, Collections.emptyList(), success);
     }
 
-    private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, boolean success) {
-        return new DownloadConnectResult(host, port, connectAddress, connectPort, success);
+    private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
+        return new DownloadConnectResult(host, port, connectAddress, connectPort, invalidHeader, success);
     }
 
     private NetworkTask getNetworkTask() {
@@ -2076,7 +2076,7 @@ public class DownloadNetworkTaskWorkerTest {
         Header header = new Header();
         header.setId(0);
         header.setNetworkTaskId(networkTaskId);
-        header.setHeaderType(HeaderType.BASICAUTH);
+        header.setHeaderType(HeaderType.GENERIC);
         header.setName("name" + number);
         header.setValue("value" + number);
         header.setValueValid(true);

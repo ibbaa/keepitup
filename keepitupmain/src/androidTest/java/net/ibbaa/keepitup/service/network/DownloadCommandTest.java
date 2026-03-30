@@ -22,6 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.util.Base64;
+
 import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -1396,6 +1398,28 @@ public class DownloadCommandTest {
         testResponse.close();
     }
 
+    @Test
+    public void testBasicAuthHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        headerDAO.deleteAllHeaders();
+        Header header = headerDAO.insertHeader(getBasicAuthHeader(task.getId()));
+        resetGlobalHeaderHandler();
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, List.of(header));
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
+        downloadCommand.call();
+        Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
+        Headers headers = request.headers();
+        assertEquals(3, headers.size());
+        assertEquals("Basic " + Base64.encodeToString("username:password".getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP), headers.get("Authorization"));
+        assertNotNull(headers.get("Accept"));
+        assertNotNull(headers.get("Accept-Language"));
+        testResponse.close();
+    }
+
     private void setNegativeTime(TestDownloadCommand downloadCommand) {
         MockTimeService timeService = (MockTimeService) downloadCommand.getTimeService();
         timeService.setTimestamp(getTestTimestamp2());
@@ -1458,6 +1482,16 @@ public class DownloadCommandTest {
         header.setHeaderType(HeaderType.GENERIC);
         header.setName("Name" + number);
         header.setValue("Value" + number);
+        header.setValueValid(true);
+        return header;
+    }
+
+    private Header getBasicAuthHeader(long networkTaskId) {
+        Header header = new Header();
+        header.setNetworkTaskId(networkTaskId);
+        header.setHeaderType(HeaderType.BASICAUTH);
+        header.setName("Authorization");
+        header.setValue("username:password");
         header.setValueValid(true);
         return header;
     }

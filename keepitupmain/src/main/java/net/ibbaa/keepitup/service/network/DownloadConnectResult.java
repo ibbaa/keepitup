@@ -16,7 +16,10 @@
 
 package net.ibbaa.keepitup.service.network;
 
-import java.net.InetAddress;
+import net.ibbaa.keepitup.model.Header;
 
-public record DownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, boolean success) {
+import java.net.InetAddress;
+import java.util.List;
+
+public record DownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
 }
