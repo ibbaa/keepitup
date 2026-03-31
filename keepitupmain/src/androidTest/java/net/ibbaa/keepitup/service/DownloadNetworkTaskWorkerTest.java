@@ -404,7 +404,7 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("Movies");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true, List.of(getInvalidHeader(1, 1), getInvalidHeader(1, 2)))), true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         MockDocumentManager documentManager = new MockDocumentManager();
         downloadNetworkTaskWorker.setDocumentManager(documentManager);
@@ -417,7 +417,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The following headers were not submitted because they are invalid: name1, name2. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -427,7 +427,7 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("Movies");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(InetAddress.getByName("127.0.0.1"), 22, true), getDownloadConnectResult(true)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("test", ""), "testfile", 999, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(InetAddress.getByName("127.0.0.1"), 22, true), getDownloadConnectResult(true, List.of(getInvalidHeader(1, 1), getInvalidHeader(1, 2)))), true, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("test", ""), "testfile", 999, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         MockDocumentManager documentManager = new MockDocumentManager();
         downloadNetworkTaskWorker.setDocumentManager(documentManager);
@@ -440,21 +440,35 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Request to 127.0.0.1:22 was successful. Server returned redirect 301 test. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:22 was successful. Server returned redirect 301 test. Request to host:123 was successful. The following headers were not submitted because they are invalid: name1, name2. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
     public void testConnectionFailed() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(false)), false, false, false, false, false, Collections.emptyList(), Collections.emptyList(), null, 0, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(false, List.of(getInvalidHeader(1, 1)))), false, false, false, false, false, Collections.emptyList(), Collections.emptyList(), null, 0, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 failed. The download from http://127.0.0.1 failed.", logEntry.getMessage());
+        assertEquals("Request to host:123 failed. The following headers were not submitted because they are invalid: name1. The download from http://127.0.0.1 failed.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testConnectionFailedWithInvalidHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(false, List.of(getInvalidHeader(1, 1)))), false, false, false, false, false, Collections.emptyList(), Collections.emptyList(), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to host:123 failed. The following headers were not submitted because they are invalid: name1. The download from http://127.0.0.1 failed.", logEntry.getMessage());
     }
 
     @Test
@@ -500,6 +514,20 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testHTTPResponseCodeNotOkWithRedirectAndInvalidHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true), getDownloadConnectResult(true, List.of(getInvalidHeader(1, 1)))), false, false, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_NOT_FOUND), List.of("test", "message"), null, 20, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 test. Request to host:123 was successful. The following headers were not submitted because they are invalid: name1. The download from http://127.0.0.1 failed. Server return code 404 message.", logEntry.getMessage());
+    }
+
+    @Test
     public void testHTTPResponseCodeNonHTTP() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
@@ -539,6 +567,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadStoppedFileDoesNotExistWithInvalidHeaders() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true, List.of(getInvalidHeader(1, 1), getInvalidHeader(1, 2)))), false, false, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "2", "3"), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to host:123 was successful. The following headers were not submitted because they are invalid: name1, name2. The download was stopped.", logEntry.getMessage());
     }
 
     @Test
@@ -604,7 +646,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistNotDeleteWithRedirect() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true)), false, true, false, false, true, List.of(HttpURLConnection.HTTP_OK), List.of("---", ""), "testfile", 1000, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true, List.of(getInvalidHeader(-1, 5)))), false, true, false, false, true, List.of(HttpURLConnection.HTTP_OK), List.of("---", ""), "testfile", 1000, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -614,7 +656,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The following headers were not submitted because they are invalid: name5. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -885,6 +927,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Request to host:123 was successful. Server returned redirect 302 3. Request to host:123 was successful. Server returned redirect 302 2. Request to 127.0.0.1:65000 was successful. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadInvalidFileDoesNotExistWithExceptionWithRedirectWithInvalidHeaders() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true), getDownloadConnectResult(true), getDownloadConnectResult(InetAddress.getByName("127.0.0.1"), 65000, true, List.of(getInvalidHeader(1, 1), getInvalidHeader(1, 2), getInvalidHeader(1, 3)))), false, false, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("3", "2", "1"), null, 0, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 3. Request to host:123 was successful. Server returned redirect 302 2. Request to 127.0.0.1:65000 was successful. The following headers were not submitted because they are invalid: name1, name2, name3. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -2020,8 +2076,16 @@ public class DownloadNetworkTaskWorkerTest {
         return getDownloadConnectResult(null, -1, success);
     }
 
+    private DownloadConnectResult getDownloadConnectResult(boolean success, List<Header> invalidHeader) {
+        return getDownloadConnectResult(null, -1, success, invalidHeader);
+    }
+
     private DownloadConnectResult getDownloadConnectResult(InetAddress connectAddress, int connectPort, boolean success) {
         return getDownloadConnectResult("host", 123, connectAddress, connectPort, Collections.emptyList(), success);
+    }
+
+    private DownloadConnectResult getDownloadConnectResult(InetAddress connectAddress, int connectPort, boolean success, List<Header> invalidHeader) {
+        return getDownloadConnectResult("host", 123, connectAddress, connectPort, invalidHeader, success);
     }
 
     private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
@@ -2080,6 +2144,12 @@ public class DownloadNetworkTaskWorkerTest {
         header.setName("name" + number);
         header.setValue("value" + number);
         header.setValueValid(true);
+        return header;
+    }
+
+    private Header getInvalidHeader(long networkTaskId, int number) {
+        Header header = getHeader(networkTaskId, number);
+        header.setValueValid(false);
         return header;
     }
 }

@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.service;
 import android.content.Context;
 import android.net.Uri;
 import android.os.PowerManager;
+import android.text.TextUtils;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.HeaderDAO;
@@ -42,6 +43,7 @@ import java.io.File;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -298,6 +300,10 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         if (!StringUtil.isEmpty(connectMessage) && !StringUtil.isEmpty(message)) {
             connectMessage += " ";
         }
+        String invalidHeaderMessage = getInvalidHeaderMessage(getActualConnectResult(downloadResult));
+        if (!StringUtil.isEmpty(invalidHeaderMessage)) {
+            connectMessage += invalidHeaderMessage + " ";
+        }
         Throwable exc = downloadResult.exception();
         String mismatchMessage = getProtocolMismatchMessage(downloadResult);
         if (exc == null) {
@@ -314,6 +320,10 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         String connectMessage = getConnectionMessage(getActualConnectResult(downloadResult));
         if (!StringUtil.isEmpty(connectMessage)) {
             successMessage += connectMessage + " ";
+        }
+        String invalidHeaderMessage = getInvalidHeaderMessage(getActualConnectResult(downloadResult));
+        if (!StringUtil.isEmpty(invalidHeaderMessage)) {
+            successMessage += invalidHeaderMessage + " ";
         }
         successMessage += getResources().getString(R.string.text_download_success, downloadResult.url().toExternalForm());
         String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
@@ -440,6 +450,25 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             return getResources().getString(R.string.text_download_connect_success, getHostAndPortMessage(connectResult));
         }
         return getResources().getString(R.string.text_download_connect_error, getHostAndPortMessage(connectResult));
+    }
+
+    private String getInvalidHeaderMessage(DownloadConnectResult connectResult) {
+        if (connectResult == null) {
+            return "";
+        }
+        List<Header> invalidHeaders = connectResult.invalidHeader();
+        if (invalidHeaders == null || invalidHeaders.isEmpty()) {
+            return "";
+        }
+        List<String> names = new ArrayList<>();
+        for (Header header : invalidHeaders) {
+            if (HTTPUtil.isBasicAuthHeader(header)) {
+                names.add(header.getName() + " (" + getResources().getString(R.string.label_dialog_basic_auth_title) + ")");
+            } else {
+                names.add(header.getName());
+            }
+        }
+        return getResources().getString(R.string.text_download_invalid_header, TextUtils.join(", ", names));
     }
 
     private String getHostAndPortMessage(DownloadConnectResult connectResult) {

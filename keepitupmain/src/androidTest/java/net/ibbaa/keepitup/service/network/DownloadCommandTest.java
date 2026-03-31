@@ -1332,7 +1332,8 @@ public class DownloadCommandTest {
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         downloadCommand.addResponse("http://www.host.com", testResponse);
-        downloadCommand.call();
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectResults().get(0).invalidHeader().isEmpty());
         Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
         Headers headers = request.headers();
         assertEquals(2, headers.size());
@@ -1361,7 +1362,8 @@ public class DownloadCommandTest {
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         downloadCommand.addResponse("http://www.host.com", testResponse);
-        downloadCommand.call();
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectResults().get(0).invalidHeader().isEmpty());
         Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
         Headers headers = request.headers();
         assertEquals(5, headers.size());
@@ -1387,7 +1389,8 @@ public class DownloadCommandTest {
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         downloadCommand.addResponse("http://www.host.com", testResponse);
-        downloadCommand.call();
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectResults().get(0).invalidHeader().isEmpty());
         Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
         Headers headers = request.headers();
         assertEquals(4, headers.size());
@@ -1410,11 +1413,36 @@ public class DownloadCommandTest {
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         downloadCommand.addResponse("http://www.host.com", testResponse);
-        downloadCommand.call();
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectResults().get(0).invalidHeader().isEmpty());
         Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
         Headers headers = request.headers();
         assertEquals(3, headers.size());
         assertEquals("Basic " + Base64.encodeToString("username:password".getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP), headers.get("Authorization"));
+        assertNotNull(headers.get("Accept"));
+        assertNotNull(headers.get("Accept-Language"));
+        testResponse.close();
+    }
+
+    @Test
+    public void testInvalidHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        headerDAO.deleteAllHeaders();
+        Header header = headerDAO.insertHeader(getBasicAuthHeader(task.getId()));
+        header.setValueValid(false);
+        resetGlobalHeaderHandler();
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, List.of(header));
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
+        DownloadCommandResult result = downloadCommand.call();
+        Header invalidHeader = result.connectResults().get(0).invalidHeader().get(0);
+        assertTrue(invalidHeader.isTechnicallyEqual(header));
+        Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
+        Headers headers = request.headers();
+        assertEquals(2, headers.size());
         assertNotNull(headers.get("Accept"));
         assertNotNull(headers.get("Accept-Language"));
         testResponse.close();
