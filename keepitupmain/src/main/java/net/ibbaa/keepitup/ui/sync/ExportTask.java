@@ -120,8 +120,11 @@ public class ExportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
         return getContext().getContentResolver().openFileDescriptor(documentFile.getUri(), "w");
     }
 
-    protected FileOutputStream getExportFileOutputStream(ParcelFileDescriptor documentFileDescriptor) {
-        return new FileOutputStream(documentFileDescriptor.getFileDescriptor());
+    @SuppressWarnings("resource")
+    protected FileOutputStream getExportFileOutputStream(ParcelFileDescriptor documentFileDescriptor) throws IOException {
+        FileOutputStream stream = new FileOutputStream(documentFileDescriptor.getFileDescriptor());
+        stream.getChannel().truncate(0);
+        return stream;
     }
 
     private Context getContext() {
