@@ -72,7 +72,7 @@
                     android:layout_toStartOf="@id/imageview_dialog_headers_restore"
                     android:layout_marginTop="@dimen/textview_dialog_headers_restore_margin_top"
                     android:textStyle="bold"
-                    android:singleLine="true"
+                    android:singleLine="false"
                     android:textSize="@dimen/textview_dialog_headers_restore_text_size"
                     android:text="@string/label_dialog_headers_restore" />
 
