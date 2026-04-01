@@ -20,6 +20,7 @@
     <color name="textColor">#DDDDDD</color>
     <color name="textColorDisabled">#AAAAAA</color>
     <color name="textColorPrimary">#DDDDDD</color>
+    <color name="textColorHint">#999999</color>
     <color name="switchColor">#BBBBBB</color>
     <color name="switchTrackColor">#999999</color>
     <color name="switchColorDisabled">#DDDDDD</color>
