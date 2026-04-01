@@ -71,7 +71,7 @@ public class PasswordInputDialog extends DialogFragmentBase {
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
         passwordEditText.requestFocus();
         Window window = getWindow();
         if (window != null) {

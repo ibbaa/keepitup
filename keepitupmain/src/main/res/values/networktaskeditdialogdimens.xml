@@ -83,4 +83,5 @@
     <dimen name="linearlayout_dialog_network_task_edit_ok_cancel_padding_top">10dp</dimen>
     <dimen name="edittext_network_task_edit_line_size">2dp</dimen>
     <dimen name="edittext_network_task_edit_line_height">4dp</dimen>
+    <dimen name="textview_dialog_network_task_label_max_width">100dp</dimen>
 </resources>
