@@ -74,6 +74,9 @@ Signer #1 public key SHA-256 digest: 2acba358e06962a9cdb106a1b788f131a5cb8ab0618
 Signer #1 public key SHA-1 digest: d8eeb46370f1ff2f0548d075319e07e90763117e
 Signer #1 public key MD5 digest: 0020b7336f5edb8b3a82d62d7c239842
 ```
+## Security
+
+The app stores credentials encrypted in the internal database. Currently, HTTP headers of type `Authorization`, including basic authentication, are considered credentials. The encryption key is generated at runtime and stored in the device's keystore. The key is non-transferable and cannot be read by any other means. It is removed when the app is uninstalled. To transfer the secret data to another device or restore it after a reinstallation, the configuration must be exported and then imported. Credentials are only exported if export encryption is enabled and a password is chosen during the export process. No credentials are included in the plaintext export.
 
 ## Power consumption
 

@@ -4,5 +4,5 @@
 * Added support for basic authentication
 * Authorization headers are now stored encrypted in the database
 * The info dialog was redesigned
-* UI handling was stabilized
+* UI handling was stabilized and improved for smaller devices
 * Some minor fixes
