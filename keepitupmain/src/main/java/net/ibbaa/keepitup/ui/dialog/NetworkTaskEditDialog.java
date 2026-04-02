@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +30,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
@@ -66,8 +64,6 @@ import net.ibbaa.keepitup.util.CollectionUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,23 +173,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareHighPrioSwitch();
         prepareOkCancelImageButtons();
         return dialogView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        view.post(view::requestLayout);
-        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            private int lastHeight = -1;
-            @Override
-            public void onGlobalLayout() {
-                int currentHeight = view.getHeight();
-                if (currentHeight != lastHeight) {
-                    lastHeight = currentHeight;
-                    view.post(view::requestLayout);
-                }
-            }
-        });
     }
 
     @Override
