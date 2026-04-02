@@ -66,6 +66,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -1440,6 +1441,26 @@ public class DownloadCommandTest {
         DownloadCommandResult result = downloadCommand.call();
         Header invalidHeader = result.connectResults().get(0).invalidHeader().get(0);
         assertTrue(invalidHeader.isTechnicallyEqual(header));
+        Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
+        Headers headers = request.headers();
+        assertEquals(2, headers.size());
+        assertNotNull(headers.get("Accept"));
+        assertNotNull(headers.get("Accept-Language"));
+        testResponse.close();
+    }
+
+    @Test
+    public void testNoHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        headerDAO.deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null, Collections.emptyList());
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
+        downloadCommand.call();
         Request request = downloadCommand.getRequest(new URL("http://www.host.com"));
         Headers headers = request.headers();
         assertEquals(2, headers.size());

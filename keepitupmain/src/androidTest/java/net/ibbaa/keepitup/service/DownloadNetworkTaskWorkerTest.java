@@ -281,6 +281,24 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testNoHeader() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com");
+        networkTask = networkTaskDAO.insertNetworkTask(networkTask);
+        AccessTypeData data = getAccessTypeData();
+        data.setNetworkTaskId(networkTask.getId());
+        data.setUseDefaultHeaders(false);
+        accessTypeDataDAO.insertAccessTypeData(data);
+        downloadNetworkTaskWorker.execute(networkTask, data);
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        List<Header> headers = downloadCommand.getHeaders();
+        assertEquals(0, headers.size());
+    }
+
+    @Test
     public void testInvalidURL() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
