@@ -26,6 +26,9 @@ public class UITaskViewModel extends ViewModel {
     private final UITaskResultDispatcher<SystemSetupResult> importDispatcher;
     private final UITaskResultDispatcher<Boolean> purgeDispatcher;
 
+    private boolean importRunning = false;
+    private boolean purgeRunning = false;
+
     public UITaskViewModel() {
         exportDispatcher = new UITaskResultDispatcher<>();
         importDispatcher = new UITaskResultDispatcher<>();
@@ -42,5 +45,21 @@ public class UITaskViewModel extends ViewModel {
 
     public UITaskResultDispatcher<Boolean> getPurgeDispatcher() {
         return purgeDispatcher;
+    }
+
+    public boolean isImportRunning() {
+        return importRunning;
+    }
+
+    public void setImportRunning(boolean importRunning) {
+        this.importRunning = importRunning;
+    }
+
+    public boolean isPurgeRunning() {
+        return purgeRunning;
+    }
+
+    public void setPurgeRunning(boolean purgeRunning) {
+        this.purgeRunning = purgeRunning;
     }
 }
