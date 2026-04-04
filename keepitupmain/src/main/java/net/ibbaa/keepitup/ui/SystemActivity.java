@@ -596,7 +596,9 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (isChecked && !preferenceManager.getPreferenceAlarmInfoShown()) {
             int alarmDuration = getResources().getInteger(R.integer.task_alarm_duration);
-            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_alarm_on_high_prio_notice, alarmDuration), Typeface.NORMAL);
+            if (!getTaskViewModel().isImportRunning() && !getTaskViewModel().isPurgeRunning()) {
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_alarm_on_high_prio_notice, alarmDuration), Typeface.NORMAL);
+            }
             preferenceManager.setPreferenceAlarmInfoShown(true);
         }
         preferenceManager.setPreferenceAlarmOnHighPrio(isChecked);
