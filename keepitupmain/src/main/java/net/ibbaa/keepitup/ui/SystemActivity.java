@@ -177,6 +177,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         }
         setContentView(R.layout.activity_system);
         initEdgeToEdgeInsets(R.id.layout_activity_system);
+        initViewModel();
         prepareConfigurationResetField();
         prepareConfigurationExportField();
         prepareConfigurationExportFileLauncher();
@@ -194,7 +195,6 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
         prepareLogFolderField();
-        initViewModel();
     }
 
     private void initViewModel() {
@@ -545,6 +545,10 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
 
     private void prepareArbitraryFolderPermissions() {
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderPermissions");
+        if (getTaskViewModel().isImportRunning() || getTaskViewModel().isPurgeRunning()) {
+            Log.d(SystemActivity.class.getName(), "Import or purge running, skipping folder permission check");
+            return;
+        }
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         if (arbitraryFileLocationSwitch.isChecked()) {
             if (!checkFolderPermissions()) {
@@ -1046,6 +1050,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         }
         showProgressDialog();
         ImportTask importTask = getImportTask(importFolder, file, encryptionInfo);
+        getTaskViewModel().setImportRunning(true);
         Future<SystemSetupResult> importFuture = ThreadUtil.execute(importTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
@@ -1220,6 +1225,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         getTimeBasedSuspensionScheduler().restart();
         HeaderSyncHandler handler = new HeaderSyncHandler(this);
         handler.reset();
+        getTaskViewModel().setImportRunning(false);
         if (success) {
             NetworkTaskLog.clear();
             resetActivity();
@@ -1243,6 +1249,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         } else {
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_db_purge), Typeface.BOLD, Error.PURGERROR.name());
         }
+        getTaskViewModel().setPurgeRunning(false);
     }
 
     private void resetPreferences() {
@@ -1294,6 +1301,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
     protected void purgeDatabase() {
         Log.d(SystemActivity.class.getName(), "purgeDatabase");
         DBPurgeTask purgeTask = getPurgeTask();
+        getTaskViewModel().setPurgeRunning(true);
         Future<Boolean> purgeFuture = ThreadUtil.execute(purgeTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
