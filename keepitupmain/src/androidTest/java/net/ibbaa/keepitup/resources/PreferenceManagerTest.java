@@ -196,6 +196,30 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceResolveMatchAddress() {
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        preferenceManager.setPreferenceResolveMatchAddress("www.host.com");
+        assertEquals("www.host.com", preferenceManager.getPreferenceResolveMatchAddress());
+        preferenceManager.removeAllPreferences();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        preferenceManager.setPreferenceResolveMatchAddress("www.host.com");
+        preferenceManager.removePreferenceResolveMatchAddress();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceResolveMatchPort() {
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        preferenceManager.setPreferenceResolveMatchPort(80);
+        assertEquals(80, preferenceManager.getPreferenceResolveMatchPort());
+        preferenceManager.removeAllPreferences();
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        preferenceManager.setPreferenceResolveMatchPort(80);
+        preferenceManager.removePreferenceResolveMatchPort();
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceResolveAddress() {
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         preferenceManager.setPreferenceResolveAddress("www.host.com");

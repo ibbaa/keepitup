@@ -169,14 +169,16 @@ public class ResolveTest {
     @Test
     public void testPreferenceValues() {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(25);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(12);
         Resolve resolve = new Resolve(TestRegistry.getContext());
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getIndex());
         assertEquals(-1, resolve.getNetworkTaskId());
-        assertEquals("", resolve.getSourceAddress());
-        assertEquals(-1, resolve.getSourcePort());
+        assertEquals("10.0.0.1", resolve.getSourceAddress());
+        assertEquals(25, resolve.getSourcePort());
         assertEquals("127.0.0.1", resolve.getTargetAddress());
         assertEquals(12, resolve.getTargetPort());
         preferenceManager.removeAllPreferences();

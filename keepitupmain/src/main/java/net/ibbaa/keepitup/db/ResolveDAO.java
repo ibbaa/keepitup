@@ -111,6 +111,14 @@ public class ResolveDAO extends BaseDAO {
         dumpDatabase("Dump after deleteAllResolve call");
     }
 
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean normalizeUIIndex() {
+        Log.d(ResolveDAO.class.getName(), "normalizeUIIndex");
+        boolean inconsistency = executeDBOperationInTransaction((Resolve) null, this::normalizeUIIndex);
+        dumpDatabase("Dump after normalizeUIIndex call");
+        return inconsistency;
+    }
+
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
             Dump.dump(ResolveDAO.class.getName(), message, Resolve.class.getSimpleName().toLowerCase(), this::readAllResolve);
@@ -247,6 +255,60 @@ public class ResolveDAO extends BaseDAO {
         Log.d(ResolveDAO.class.getName(), "Executing SQL " + dbConstants.getDeleteOrphanResolveStatement());
         db.execSQL(dbConstants.getDeleteOrphanResolveStatement());
         return -1;
+    }
+
+    @SuppressWarnings("unused")
+    private boolean normalizeUIIndex(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "normalizeUIIndex");
+        Cursor cursor = null;
+        List<ResolveDBConstants.IndexResolve> result = new ArrayList<>();
+        ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
+        boolean inconsistencyDetected = false;
+        try {
+            Log.d(ResolveDAO.class.getName(), "Executing SQL " + dbConstants.getReadResolveIndexStatement());
+            cursor = db.rawQuery(dbConstants.getReadResolveIndexStatement(), null);
+            while (cursor.moveToNext()) {
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
+                int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
+                int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
+                if (!cursor.isNull(indexIdColumn)) {
+                    result.add(new ResolveDBConstants.IndexResolve(cursor.getLong(indexIdColumn), cursor.getLong(indexNetworkTaskIdColumn), cursor.getInt(indexIndexColumn)));
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(ResolveDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        Log.d(ResolveDAO.class.getName(), "Database returned the following index resolve objects: " + (result.isEmpty() ? "no index resolve object" : ""));
+        if (BuildConfig.DEBUG) {
+            for (ResolveDBConstants.IndexResolve indexResolve : result) {
+                Log.d(ResolveDAO.class.getName(), indexResolve.toString());
+            }
+        }
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        long currentNetworkTaskId = -1;
+        int currentIndex = 0;
+        for (ResolveDBConstants.IndexResolve indexResolve : result) {
+            if (indexResolve.networkTaskId() != currentNetworkTaskId) {
+                currentNetworkTaskId = indexResolve.networkTaskId();
+                currentIndex = 0;
+            }
+            if (indexResolve.uiIndex() != currentIndex) {
+                Log.e(ResolveDAO.class.getName(), "Index resolve is inconsistent: " + indexResolve);
+                inconsistencyDetected = true;
+                ContentValues values = new ContentValues();
+                values.put(dbConstants.getIndexColumnName(), currentIndex);
+                String[] selectionArgs = {String.valueOf(indexResolve.id())};
+                db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+            }
+            currentIndex++;
+        }
+        return inconsistencyDetected;
     }
 
     private Resolve mapCursorToResolve(Cursor cursor) {

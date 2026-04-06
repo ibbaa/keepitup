@@ -75,6 +75,8 @@ public class PreferenceSetup {
         defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
         defaults.put("preferenceUseDefaultHeaders", preferenceManager.getPreferenceUseDefaultHeaders());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
+        defaults.put("preferenceResolveMatchAddress", preferenceManager.getPreferenceResolveMatchAddress());
+        defaults.put("preferenceResolveMatchPort", preferenceManager.getPreferenceResolveMatchPort());
         defaults.put("preferenceResolveAddress", preferenceManager.getPreferenceResolveAddress());
         defaults.put("preferenceResolvePort", preferenceManager.getPreferenceResolvePort());
         return defaults;
@@ -260,6 +262,21 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferencePingPackageSize();
         }
+        Object resolveMatchAddress = defaults.get("preferenceResolveMatchAddress");
+        if (isValidAddress(resolveMatchAddress)) {
+            preferenceManager.setPreferenceResolveMatchAddress(resolveMatchAddress.toString().trim());
+        } else {
+            preferenceManager.removePreferenceResolveMatchAddress();
+        }
+        Object resolveMatchPort = defaults.get("preferenceResolveMatchPort");
+        int resolveMatchPortMin = getResources().getInteger(R.integer.resolve_port_match_minimum);
+        int resolveMatchPortMax = getResources().getInteger(R.integer.resolve_port_match_maximum);
+        int resolveMatchPortDefault = getResources().getInteger(R.integer.resolve_port_match_default);
+        if (isValidInteger(resolveMatchPort, resolveMatchPortMin, resolveMatchPortMax)) {
+            preferenceManager.setPreferenceResolveMatchPort(NumberUtil.getIntValue(resolveMatchPort, resolveMatchPortDefault));
+        } else {
+            preferenceManager.removePreferenceResolveMatchPort();
+        }
         Object resolveAddress = defaults.get("preferenceResolveAddress");
         if (isValidAddress(resolveAddress)) {
             preferenceManager.setPreferenceResolveAddress(resolveAddress.toString().trim());
@@ -271,7 +288,7 @@ public class PreferenceSetup {
         int resolvePortMax = getResources().getInteger(R.integer.resolve_port_maximum);
         int resolvePortDefault = getResources().getInteger(R.integer.resolve_port_default);
         if (isValidInteger(resolvePort, resolvePortMin, resolvePortMax)) {
-            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(port, resolvePortDefault));
+            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(resolvePort, resolvePortDefault));
         } else {
             preferenceManager.removePreferenceResolvePort();
         }
@@ -443,6 +460,8 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceNotification();
         preferenceManager.removePreferenceHighPrio();
         preferenceManager.removePreferenceUseDefaultHeaders();
+        preferenceManager.removePreferenceResolveMatchAddress();
+        preferenceManager.removePreferenceResolveMatchPort();
         preferenceManager.removePreferenceResolveAddress();
         preferenceManager.removePreferenceResolvePort();
     }

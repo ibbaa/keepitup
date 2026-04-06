@@ -226,6 +226,36 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.use_default_headers_key));
     }
 
+    public String getPreferenceResolveMatchAddress() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceResolveMatchAddress");
+        return getPreferenceString(getResources().getString(R.string.resolve_address_match_key), "");
+    }
+
+    public void setPreferenceResolveMatchAddress(String address) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceResolveMatchAddress, address is " + address);
+        setPreferenceString(getResources().getString(R.string.resolve_address_match_key), address);
+    }
+
+    public void removePreferenceResolveMatchAddress() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceResolveMatchAddress");
+        removePreferenceValue(getResources().getString(R.string.resolve_address_match_key));
+    }
+
+    public int getPreferenceResolveMatchPort() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceResolveMatchPort");
+        return getPreferenceInt(getResources().getString(R.string.resolve_port_match_key), getResources().getInteger(R.integer.resolve_port_match_default));
+    }
+
+    public void setPreferenceResolveMatchPort(int port) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceResolveMatchPort, port is " + port);
+        setPreferenceInt(getResources().getString(R.string.resolve_port_match_key), port);
+    }
+
+    public void removePreferenceResolveMatchPort() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceResolveMatchPort");
+        removePreferenceValue(getResources().getString(R.string.resolve_port_match_key));
+    }
+
     public String getPreferenceResolveAddress() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceResolveAddress");
         return getPreferenceString(getResources().getString(R.string.resolve_address_key), "");

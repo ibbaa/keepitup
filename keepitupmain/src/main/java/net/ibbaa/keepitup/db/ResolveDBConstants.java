@@ -143,4 +143,16 @@ public class ResolveDBConstants {
     public String getDeleteOrphanResolveStatement() {
         return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
     }
+
+    public String getReadResolveIndexStatement() {
+        return "SELECT " +
+                getIdColumnName() + ", " +
+                getNetworkTaskIdColumnName() + ", " +
+                getIndexColumnName() +
+                " FROM " + getTableName() +
+                " ORDER BY " + getNetworkTaskIdColumnName() + " ASC, " + getIndexColumnName() + " ASC";
+    }
+
+    public record IndexResolve(long id, long networkTaskId, int uiIndex) {
+    }
 }

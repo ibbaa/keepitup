@@ -208,8 +208,10 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
         Map<String, ?> defaults = new HashMap<>();
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -225,6 +227,8 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
@@ -245,8 +249,10 @@ public class PreferenceSetupTest {
         defaults.put("preferenceHighPrio", true);
         defaults.put("preferenceUseDefaultHeaders", false);
         defaults.put("preferencePingPackageSize", 1234);
+        defaults.put("preferenceResolveMatchAddress", "10.0.0.1");
+        defaults.put("preferenceResolveMatchPort", 789);
         defaults.put("preferenceResolveAddress", "127.0.0.1");
-        defaults.put("preferenceResolvePort", 123);
+        defaults.put("preferenceResolvePort", 456);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -261,8 +267,10 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
     }
 
     @Test
@@ -281,8 +289,10 @@ public class PreferenceSetupTest {
         defaults.put("preferenceHighPrio", "true");
         defaults.put("preferenceUseDefaultHeaders", false);
         defaults.put("preferencePingPackageSize", "1234");
+        defaults.put("preferenceResolveMatchAddress", "10.0.0.1");
+        defaults.put("preferenceResolveMatchPort", "789");
         defaults.put("preferenceResolveAddress", "127.0.0.1");
-        defaults.put("preferenceResolvePort", "123");
+        defaults.put("preferenceResolvePort", "456");
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -297,8 +307,10 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
     }
 
     @Test
@@ -317,6 +329,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceHighPrio", 1);
         defaults.put("preferenceUseDefaultHeaders", 1);
         defaults.put("preferencePingPackageSize", 12345678);
+        defaults.put("preferenceResolveMatchAddress", "1.1.1.1.1.1");
+        defaults.put("preferenceResolveMatchPort", 12345678);
         defaults.put("preferenceResolveAddress", "1.1.1.1.1.1");
         defaults.put("preferenceResolvePort", 12345678);
         setup.importDefaults(defaults);
@@ -333,6 +347,8 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
@@ -530,6 +546,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
+        assertEquals(defaults.get("preferenceResolveMatchAddress"), preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
     }
@@ -549,8 +567,10 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
         Map<String, ?> defaults = setup.exportDefaults();
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -565,8 +585,10 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -580,6 +602,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
+        assertEquals(defaults.get("preferenceResolveMatchAddress"), preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
     }
@@ -696,8 +720,10 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
         Map<String, ?> defaults = setup.exportDefaults();
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -713,8 +739,10 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -728,6 +756,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
+        assertEquals(defaults.get("preferenceResolveMatchAddress"), preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
     }
@@ -845,8 +875,10 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
         setup.removeDefaults();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -861,6 +893,8 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
@@ -915,8 +949,10 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferencePingPackageSize(12);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -955,6 +991,8 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());

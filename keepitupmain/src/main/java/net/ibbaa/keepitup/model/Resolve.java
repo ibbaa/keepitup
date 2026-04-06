@@ -71,6 +71,8 @@ public class Resolve {
     public Resolve(Context context) {
         this();
         PreferenceManager preferenceManager = new PreferenceManager(context);
+        this.sourceAddress = preferenceManager.getPreferenceResolveMatchAddress();
+        this.sourcePort = preferenceManager.getPreferenceResolveMatchPort();
         this.targetAddress = preferenceManager.getPreferenceResolveAddress();
         this.targetPort = preferenceManager.getPreferenceResolvePort();
     }
