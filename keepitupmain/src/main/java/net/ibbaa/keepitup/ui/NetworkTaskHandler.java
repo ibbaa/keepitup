@@ -164,7 +164,7 @@ public class NetworkTaskHandler {
             if (resolve != null) {
                 ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
                 resolve.setNetworkTaskId(task.getId());
-                resolveDAO.deleteResolveForNetworkTask(task.getId());
+                resolveDAO.deleteAllResolveForNetworkTask(task.getId());
                 if (!resolve.isEmpty()) {
                     resolve = resolveDAO.insertResolve(resolve);
                 }
@@ -202,7 +202,7 @@ public class NetworkTaskHandler {
             }
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             headerDAO.deleteHeadersForNetworkTask(task.getId());
-            resolveDAO.deleteResolveForNetworkTask(task.getId());
+            resolveDAO.deleteAllResolveForNetworkTask(task.getId());
             accessTypeDataDAO.deleteAccessTypeDataForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);
             getAdapter().removeItem(new NetworkTaskUIWrapper(task, null, null, null, null));

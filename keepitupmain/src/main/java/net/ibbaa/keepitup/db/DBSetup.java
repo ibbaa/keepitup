@@ -215,6 +215,11 @@ public class DBSetup {
         db.execSQL(resolveDBConstants.getCreateTableStatement());
     }
 
+    public void addIndexColumnToResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addIndexColumnToResolveTable, adding column " + resolveDBConstants.getIndexColumnName() + " to table " + resolveDBConstants.getTableName());
+        db.execSQL(resolveDBConstants.getAddIndexColumnStatement());
+    }
+
     public void createHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "createHeaderTable, table is " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getCreateTableStatement());
@@ -397,6 +402,11 @@ public class DBSetup {
         }
     }
 
+    public void dropIndexColumnFromResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropIndexColumnFromResolveTable, dropping column " + resolveDBConstants.getIndexColumnName() + " from table " + resolveDBConstants.getTableName());
+        db.execSQL(resolveDBConstants.getDropIndexColumnStatement());
+    }
+
     public void dropHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropHeaderTable, table is " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getDropTableStatement());
@@ -542,6 +552,10 @@ public class DBSetup {
         createResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addIndexColumnToResolveTable() {
+        addIndexColumnToResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void createHeaderTable() {
         createHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -653,6 +667,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void tryDropResolveTable() {
         tryDropResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropIndexColumnFromResolveTable() {
+        dropIndexColumnFromResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropHeaderTable() {

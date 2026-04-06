@@ -1491,6 +1491,7 @@ public class JSONSystemSetupTest {
     private Resolve getResolve1(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(0);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);
         resolve.setNetworkTaskId(networkTaskId);
@@ -1502,6 +1503,7 @@ public class JSONSystemSetupTest {
     private Resolve getResolve2(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(1);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);
         resolve.setNetworkTaskId(networkTaskId);

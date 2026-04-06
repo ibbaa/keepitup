@@ -280,6 +280,15 @@ public class DBMigrateTest {
         assertEquals(1, headerDAO.readAllHeaders().size());
     }
 
+    @Test
+    public void testUpgradeFrom7To8() {
+        setup.dropResolveTable();
+        ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
+        migrate.doUpgrade(TestRegistry.getContext(), 7, 8);
+        resolveDAO.insertResolve(new Resolve());
+    }
+
     @Test(expected = SQLiteException.class)
     public void testDowngradeFrom6To5ResolveTable() {
         setup.createTables();
@@ -346,6 +355,46 @@ public class DBMigrateTest {
         HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 7);
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task1.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        Resolve resolve = new Resolve();
+        resolve.setNetworkTaskId(task1.getId());
+        resolveDAO.insertResolve(resolve);
+        Header header = new Header();
+        header.setNetworkTaskId(task1.getId());
+        headerDAO.insertHeader(header);
+        intervalDAO.insertInterval(new Interval());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(data.isTechnicallyEqual(data1));
+        Resolve resolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        assertTrue(resolve.isTechnicallyEqual(resolve1));
+        Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
+        assertTrue(header.isTechnicallyEqual(header1));
+    }
+
+    @Test
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    public void testUpgradeFrom0To8() {
+        setup.createTables();
+        setup.dropIntervalTable();
+        setup.dropNetworkTaskTable();
+        setup.dropAccessTypeDataTable();
+        setup.dropResolveTable();
+        setup.dropHeaderTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAddedColumns());
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
+        HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
+        ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
+        migrate.doUpgrade(TestRegistry.getContext(), 0, 8);
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
         data.setNetworkTaskId(task1.getId());

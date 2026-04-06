@@ -47,6 +47,8 @@ public class DBMigrate {
         versionDowngrades.put(6, this::version6DowngradeTo5);
         versionUpgrades.put(7, this::version7UpgradeFrom6);
         versionDowngrades.put(7, this::version7DowngradeTo6);
+        versionUpgrades.put(8, this::version8UpgradeFrom7);
+        versionDowngrades.put(8, this::version8DowngradeTo7);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -222,6 +224,24 @@ public class DBMigrate {
             setup.dropValueIVColumnFromHeaderTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "dropValueIVColumnFromHeaderTable failed ", exc);
+        }
+    }
+
+    private void version8UpgradeFrom7(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version8UpgradeFrom7");
+        try {
+            setup.addIndexColumnToResolveTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addIndexColumnToResolveTable failed ", exc);
+        }
+    }
+
+    private void version8DowngradeTo7(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version8DowngradeTo7");
+        try {
+            setup.dropIndexColumnFromResolveTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropIndexColumnFromResolveTable failed ", exc);
         }
     }
 

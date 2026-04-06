@@ -33,6 +33,7 @@ import java.util.Objects;
 public class Resolve {
 
     private long id;
+    private int index;
     private long networktaskid;
     private String sourceAddress;
     private int sourcePort;
@@ -41,6 +42,7 @@ public class Resolve {
 
     public Resolve() {
         this.id = -1;
+        this.index = -1;
         this.networktaskid = -1;
         this.sourceAddress = "";
         this.sourcePort = -1;
@@ -50,6 +52,7 @@ public class Resolve {
 
     public Resolve(long networktaskid) {
         this.id = -1;
+        this.index = -1;
         this.networktaskid = networktaskid;
         this.sourceAddress = "";
         this.sourcePort = -1;
@@ -79,6 +82,7 @@ public class Resolve {
     public Resolve(Bundle bundle) {
         this();
         this.id = bundle.getLong("id");
+        this.index = bundle.getInt("index");
         this.networktaskid = bundle.getLong("networktaskid");
         this.sourceAddress = bundle.getString("sourceAddress");
         this.sourcePort = bundle.getInt("sourcePort");
@@ -90,6 +94,9 @@ public class Resolve {
         this();
         if (NumberUtil.isValidLongValue(map.get("id"))) {
             this.id = NumberUtil.getLongValue(map.get("id"), -1);
+        }
+        if (NumberUtil.isValidIntValue(map.get("index"))) {
+            this.index = NumberUtil.getIntValue(map.get("index"), -1);
         }
         if (NumberUtil.isValidLongValue(map.get("networktaskid"))) {
             this.networktaskid = NumberUtil.getLongValue(map.get("networktaskid"), -1);
@@ -114,6 +121,14 @@ public class Resolve {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public long getNetworkTaskId() {
@@ -159,6 +174,7 @@ public class Resolve {
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
+        bundle.putInt("index", index);
         bundle.putLong("networktaskid", networktaskid);
         if (sourceAddress != null) {
             bundle.putString("sourceAddress", sourceAddress);
@@ -178,6 +194,7 @@ public class Resolve {
     public Map<String, ?> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
+        map.put("index", index);
         map.put("networktaskid", networktaskid);
         if (sourceAddress != null) {
             map.put("sourceAddress", sourceAddress);
@@ -199,6 +216,9 @@ public class Resolve {
             return false;
         }
         if (id != other.id) {
+            return false;
+        }
+        if (index != other.index) {
             return false;
         }
         if (networktaskid != other.networktaskid) {
@@ -240,6 +260,7 @@ public class Resolve {
     public String toString() {
         return "Resolve{" +
                 "id=" + id +
+                ", index=" + index +
                 ", networktaskid=" + networktaskid +
                 ", sourceAddress='" + sourceAddress + '\'' +
                 ", sourcePort=" + sourcePort +

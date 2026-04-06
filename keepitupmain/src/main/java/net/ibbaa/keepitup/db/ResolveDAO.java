@@ -54,13 +54,23 @@ public class ResolveDAO extends BaseDAO {
         return returnedResolve;
     }
 
+    @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
     public Resolve readResolveForNetworkTask(long networkTaskId) {
         Log.d(ResolveDAO.class.getName(), "readResolveForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
-        resolve = executeDBOperationInTransaction(resolve, this::readResolveForNetworkTask);
-        Log.d(ResolveDAO.class.getName(), "Read resolve object is " + resolve);
-        return resolve;
+        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolveForNetworkTask);
+        Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
+        return resolveList.isEmpty() ? null : resolveList.get(0);
+    }
+
+    public List<Resolve> readAllResolveForNetworkTask(long networkTaskId) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTask, network task id is " + networkTaskId);
+        Resolve resolve = new Resolve();
+        resolve.setNetworkTaskId(networkTaskId);
+        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolveForNetworkTask);
+        Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
+        return resolveList;
     }
 
     public List<Resolve> readAllResolve() {
@@ -75,12 +85,18 @@ public class ResolveDAO extends BaseDAO {
         return executeDBOperationInTransaction((Resolve) null, this::readAllResolveForNetworkTasks);
     }
 
-    public void deleteResolveForNetworkTask(long networkTaskId) {
-        Log.d(ResolveDAO.class.getName(), "deleteResolveForNetworkTask, network task id is " + networkTaskId);
+    public void deleteAllResolveForNetworkTask(long networkTaskId) {
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolveForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
-        executeDBOperationInTransaction(resolve, this::deleteResolveForNetworkTask);
-        dumpDatabase("Dump after deleteResolveForNetworkTask call");
+        executeDBOperationInTransaction(resolve, this::deleteAllResolveForNetworkTask);
+        dumpDatabase("Dump after deleteAllResolveForNetworkTask call");
+    }
+
+    public void deleteResolve(Resolve resolve) {
+        Log.d(ResolveDAO.class.getName(), "deleteResolve, resolve object is " + resolve);
+        executeDBOperationInTransaction(resolve, this::deleteResolve);
+        dumpDatabase("Dump after deleteResolve call");
     }
 
     public void deleteAllOrphanResolve() {
@@ -106,6 +122,7 @@ public class ResolveDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), resolve.getNetworkTaskId());
+        values.put(dbConstants.getIndexColumnName(), resolve.getIndex());
         values.put(dbConstants.getSourceAddressColumnName(), resolve.getSourceAddress());
         values.put(dbConstants.getSourcePortColumnName(), resolve.getSourcePort());
         values.put(dbConstants.getTargetAddressColumnName(), resolve.getTargetAddress());
@@ -133,17 +150,18 @@ public class ResolveDAO extends BaseDAO {
         return resolve;
     }
 
-    private Resolve readResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "readResolveForNetworkTask, resolve object is " + resolve);
+    private List<Resolve> readAllResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTask, resolve object is " + resolve);
         Cursor cursor = null;
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
+        List<Resolve> result = new ArrayList<>();
         try {
             Log.d(ResolveDAO.class.getName(), "Executing SQL " + dbConstants.getReadResolveForNetworkTaskStatement() + " with a parameter of " + resolve.getNetworkTaskId());
             cursor = db.rawQuery(dbConstants.getReadResolveForNetworkTaskStatement(), new String[]{String.valueOf(resolve.getNetworkTaskId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
-                    return mapCursorToResolve(cursor);
+                    result.add(mapCursorToResolve(cursor));
                 }
             }
         } finally {
@@ -155,8 +173,7 @@ public class ResolveDAO extends BaseDAO {
                 }
             }
         }
-        Log.d(ResolveDAO.class.getName(), "no resolve object found, returning null");
-        return null;
+        return result;
     }
 
     private List<Resolve> readAllResolve(Resolve resolve, SQLiteDatabase db) {
@@ -199,12 +216,23 @@ public class ResolveDAO extends BaseDAO {
         }
     }
 
-    private int deleteResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "deleteResolveForNetworkTask, resolve object is " + resolve);
+    private int deleteAllResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolveForNetworkTask, resolve object is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         String selection = dbConstants.getNetworkTaskIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(resolve.getNetworkTaskId())};
         return db.delete(dbConstants.getTableName(), selection, selectionArgs);
+    }
+
+    private int deleteResolve(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "deleteResolve, resolve object is " + resolve);
+        ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(resolve.getId())};
+        int value = db.delete(dbConstants.getTableName(), selection, selectionArgs);
+        Log.d(ResolveDAO.class.getName(), "Executing SQL " + dbConstants.getUpdateIndexResolveStatement() + " with parametera " + resolve.getIndex() + " and " + resolve.getNetworkTaskId());
+        db.execSQL(dbConstants.getUpdateIndexResolveStatement(), new Object[]{String.valueOf(resolve.getIndex()), String.valueOf(resolve.getNetworkTaskId())});
+        return value;
     }
 
     private int deleteAllResolve(Resolve resolve, SQLiteDatabase db) {
@@ -225,12 +253,14 @@ public class ResolveDAO extends BaseDAO {
         Resolve resolve = new Resolve();
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
+        int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
         int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
         int indexSourceAddressColumn = cursor.getColumnIndex(dbConstants.getSourceAddressColumnName());
         int indexSourcePortColumn = cursor.getColumnIndex(dbConstants.getSourcePortColumnName());
         int indexTargetAddressColumn = cursor.getColumnIndex(dbConstants.getTargetAddressColumnName());
         int indexTargetPortColumn = cursor.getColumnIndex(dbConstants.getTargetPortColumnName());
         resolve.setId(cursor.getLong(indexIdColumn));
+        resolve.setIndex(cursor.getInt(indexIndexColumn));
         resolve.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         resolve.setSourceAddress(cursor.getString(indexSourceAddressColumn));
         resolve.setSourcePort(cursor.getInt(indexSourcePortColumn));

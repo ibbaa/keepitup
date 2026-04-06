@@ -16,7 +16,7 @@
 
 <resources>
     <string name="db_name">keepitup.db</string>
-    <integer name="db_version">7</integer>
+    <integer name="db_version">8</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
@@ -64,6 +64,7 @@
     <string name="accesstypedata_usedefaultheaders_column_name">USEDEFAULTHEADERS</string>
     <string name="resolve_table_name">RESOLVE</string>
     <string name="resolve_id_column_name">_id</string>
+    <string name="resolve_index_column_name">UIINDEX</string>
     <string name="resolve_taskid_column_name">NETWORKTASKID</string>
     <string name="resolve_source_address_column_name">SOURCEADDRESS</string>
     <string name="resolve_source_port_column_name">SOURCEPORT</string>

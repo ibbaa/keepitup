@@ -862,6 +862,7 @@ public class ImportTaskTest extends BaseUITest {
     private Resolve getResolve1(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(0);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);
@@ -873,6 +874,7 @@ public class ImportTaskTest extends BaseUITest {
     private Resolve getResolve2(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(1);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);

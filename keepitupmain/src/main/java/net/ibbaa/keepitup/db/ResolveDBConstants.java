@@ -25,6 +25,7 @@ public class ResolveDBConstants {
     private final NetworkTaskDBConstants networkTaskDBConstants;
     private final String tableName;
     private final String idColumnName;
+    private final String indexColumnName;
     private final String networkTaskIdColumnName;
     private final String sourceAddressColumnName;
     private final String sourcePortColumnName;
@@ -35,6 +36,7 @@ public class ResolveDBConstants {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
         tableName = context.getResources().getString(R.string.resolve_table_name);
         idColumnName = context.getResources().getString(R.string.resolve_id_column_name);
+        indexColumnName = context.getResources().getString(R.string.resolve_index_column_name);
         networkTaskIdColumnName = context.getResources().getString(R.string.resolve_taskid_column_name);
         sourceAddressColumnName = context.getResources().getString(R.string.resolve_source_address_column_name);
         sourcePortColumnName = context.getResources().getString(R.string.resolve_source_port_column_name);
@@ -48,6 +50,10 @@ public class ResolveDBConstants {
 
     public String getIdColumnName() {
         return idColumnName;
+    }
+
+    public String getIndexColumnName() {
+        return indexColumnName;
     }
 
     public String getNetworkTaskIdColumnName() {
@@ -70,7 +76,26 @@ public class ResolveDBConstants {
         return targetPortColumnName;
     }
 
+    public String getAddIndexColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getIndexColumnName() + " INTEGER NOT NULL DEFAULT 0;";
+    }
+
+    public String getDropIndexColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getIndexColumnName() + ";";
+    }
+
     public String getCreateTableStatement() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getIndexColumnName() + " INTEGER NOT NULL DEFAULT 0, " +
+                getSourceAddressColumnName() + " TEXT, " +
+                getSourcePortColumnName() + " INTEGER, " +
+                getTargetAddressColumnName() + " TEXT, " +
+                getTargetPortColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutIndex() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
@@ -87,24 +112,32 @@ public class ResolveDBConstants {
     public String getReadResolveForNetworkTaskStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
+                getIndexColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
                 getSourceAddressColumnName() + ", " +
                 getSourcePortColumnName() + ", " +
                 getTargetAddressColumnName() + ", " +
                 getTargetPortColumnName() +
                 " FROM " + getTableName() +
-                " WHERE " + getNetworkTaskIdColumnName() + " = ?";
+                " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
+                " ORDER BY " + getIndexColumnName() + " ASC";
     }
 
     public String getReadAllResolveStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
+                getIndexColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
                 getSourceAddressColumnName() + ", " +
                 getSourcePortColumnName() + ", " +
                 getTargetAddressColumnName() + ", " +
                 getTargetPortColumnName() +
-                " FROM " + getTableName();
+                " FROM " + getTableName() +
+                " ORDER BY " + getIndexColumnName() + " ASC";
+    }
+
+    public String getUpdateIndexResolveStatement() {
+        return "UPDATE " + getTableName() + " SET " + getIndexColumnName() + " = " + getIndexColumnName() + " - 1 WHERE " + getIndexColumnName() + " > ? AND " + getNetworkTaskIdColumnName() + " = ?;";
     }
 
     public String getDeleteOrphanResolveStatement() {

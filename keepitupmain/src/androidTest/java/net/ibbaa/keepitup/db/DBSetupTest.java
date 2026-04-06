@@ -336,6 +336,16 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddIndexColumnToResolveTable() {
+        setup.dropResolveTable();
+        ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
+        setup.addIndexColumnToResolveTable();
+        Resolve resolve = new Resolve();
+        resolveDAO.insertResolve(resolve);
+    }
+
+    @Test
     public void testDropCreateHeaderTable() {
         assertTrue(headerDAO.readAllHeaders().isEmpty());
         headerDAO.insertHeader(getHeader(0, 1));

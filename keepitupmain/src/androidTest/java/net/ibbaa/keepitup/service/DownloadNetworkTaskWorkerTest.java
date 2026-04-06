@@ -2146,6 +2146,7 @@ public class DownloadNetworkTaskWorkerTest {
     private Resolve getResolve(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(0);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setSourceAddress("127.0.0.1");
         resolve.setSourcePort(443);

@@ -576,6 +576,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     private Resolve getResolve1() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(0);
         resolve.setNetworkTaskId(0);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);
@@ -587,6 +588,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     private Resolve getResolve2() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(1);
         resolve.setNetworkTaskId(1);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);
@@ -598,6 +600,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     private Resolve getResolve3() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(2);
         resolve.setNetworkTaskId(2);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);
@@ -609,6 +612,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     private Resolve getResolve4() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(3);
         resolve.setNetworkTaskId(2);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);

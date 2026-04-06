@@ -17,7 +17,6 @@
 package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -69,8 +68,8 @@ public class ResolveDAOTest {
         Resolve readResolve = readResolveList.get(0);
         assertTrue(readResolve.getId() > 0);
         assertTrue(resolve1.isEqual(readResolve));
-        readResolve = resolveDAO.readResolveForNetworkTask(0);
-        assertTrue(resolve1.isEqual(readResolve));
+        readResolveList = resolveDAO.readAllResolveForNetworkTask(0);
+        assertTrue(resolve1.isEqual(readResolveList.get(0)));
         Resolve resolve2 = getResolve2();
         resolveDAO.insertResolve(resolve2);
         readResolveList = resolveDAO.readAllResolve();
@@ -79,17 +78,55 @@ public class ResolveDAOTest {
         Resolve readResolve2 = readResolveList.get(1);
         assertTrue(readResolve1.getId() > 0);
         assertTrue(readResolve2.getId() > 0);
-        assertTrue(doesResolveListContain(readResolveList, resolve1));
-        assertTrue(doesResolveListContain(readResolveList, resolve2));
-        resolveDAO.deleteResolveForNetworkTask(1);
-        readResolve = resolveDAO.readResolveForNetworkTask(1);
-        assertNull(readResolve);
+        assertTrue(resolve1.isEqual(readResolve1));
+        assertTrue(resolve2.isEqual(readResolve2));
+        resolveDAO.deleteAllResolveForNetworkTask(1);
+        readResolveList = resolveDAO.readAllResolveForNetworkTask(1);
+        assertTrue(readResolveList.isEmpty());
         readResolveList = resolveDAO.readAllResolve();
+        assertEquals(1, readResolveList.size());
+        readResolve1 = readResolveList.get(0);
+        assertTrue(resolve1.isTechnicallyEqual(readResolve1));
+        readResolveList = resolveDAO.readAllResolveForNetworkTask(0);
         assertEquals(1, readResolveList.size());
         readResolve1 = readResolveList.get(0);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         resolveDAO.deleteAllResolve();
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+    }
+
+    @Test
+    public void testDeleteIndexUpdate() {
+        Resolve resolve1 = getResolve1();
+        Resolve resolve2 = getResolve2();
+        Resolve resolve3 = getResolve3();
+        resolve1.setNetworkTaskId(1);
+        resolve2.setNetworkTaskId(1);
+        resolve3.setNetworkTaskId(1);
+        resolve1 = resolveDAO.insertResolve(resolve1);
+        resolve2 = resolveDAO.insertResolve(resolve2);
+        resolve3 = resolveDAO.insertResolve(resolve3);
+        List<Resolve> readResolveList = resolveDAO.readAllResolveForNetworkTask(1);
+        assertTrue(resolve1.isTechnicallyEqual(readResolveList.get(0)));
+        assertTrue(resolve2.isTechnicallyEqual(readResolveList.get(1)));
+        assertTrue(resolve3.isTechnicallyEqual(readResolveList.get(2)));
+        readResolveList = resolveDAO.readAllResolve();
+        assertTrue(resolve1.isTechnicallyEqual(readResolveList.get(0)));
+        assertTrue(resolve2.isTechnicallyEqual(readResolveList.get(1)));
+        assertTrue(resolve3.isTechnicallyEqual(readResolveList.get(2)));
+        resolveDAO.deleteResolve(resolve2);
+        readResolveList = resolveDAO.readAllResolveForNetworkTask(1);
+        assertEquals(2, readResolveList.size());
+        assertTrue(resolve1.isTechnicallyEqual(readResolveList.get(0)));
+        assertTrue(resolve2.isTechnicallyEqual(readResolveList.get(1)));
+        assertEquals(0, readResolveList.get(0).getIndex());
+        assertEquals(1, readResolveList.get(1).getIndex());
+        readResolveList = resolveDAO.readAllResolve();
+        assertEquals(2, readResolveList.size());
+        assertTrue(resolve1.isTechnicallyEqual(readResolveList.get(0)));
+        assertTrue(resolve2.isTechnicallyEqual(readResolveList.get(1)));
+        assertEquals(0, readResolveList.get(0).getIndex());
+        assertEquals(1, readResolveList.get(1).getIndex());
     }
 
     @Test
@@ -101,7 +138,7 @@ public class ResolveDAOTest {
         Resolve resolve3 = getResolve1();
         resolve3.setNetworkTaskId(2);
         resolve3 = resolveDAO.insertResolve(resolve3);
-        Resolve resolve4 = getResolve1();
+        Resolve resolve4 = getResolve2();
         resolve4.setNetworkTaskId(3);
         resolve4 = resolveDAO.insertResolve(resolve4);
         Map<Long, Resolve> result = resolveDAO.readAllResolveForNetworkTasks();
@@ -118,12 +155,12 @@ public class ResolveDAOTest {
         Resolve resolve2 = getResolve2();
         resolveDAO.insertResolve(resolve1);
         resolveDAO.insertResolve(resolve2);
-        Resolve readResolve1 = resolveDAO.readResolveForNetworkTask(0);
-        Resolve readResolve2 = resolveDAO.readResolveForNetworkTask(1);
+        Resolve readResolve1 = resolveDAO.readAllResolveForNetworkTask(0).get(0);
+        Resolve readResolve2 = resolveDAO.readAllResolveForNetworkTask(1).get(0);
         readResolve2.setTargetAddress("192.168.178.25");
         readResolve2.setTargetPort(443);
         resolveDAO.updateResolve(readResolve2);
-        readResolve2 = resolveDAO.readResolveForNetworkTask(1);
+        readResolve2 = resolveDAO.readAllResolveForNetworkTask(1).get(0);
         assertEquals("192.168.178.25", readResolve2.getTargetAddress());
         assertEquals(443, readResolve2.getTargetPort());
         readResolve2.setTargetAddress(resolve2.getTargetAddress());
@@ -132,7 +169,7 @@ public class ResolveDAOTest {
         readResolve1.setSourceAddress("192.168.188.25");
         readResolve1.setSourcePort(12);
         resolveDAO.updateResolve(readResolve1);
-        readResolve1 = resolveDAO.readResolveForNetworkTask(0);
+        readResolve1 = resolveDAO.readAllResolveForNetworkTask(0).get(0);
         assertEquals("192.168.188.25", readResolve1.getSourceAddress());
         assertEquals(12, readResolve1.getSourcePort());
     }
@@ -152,15 +189,6 @@ public class ResolveDAOTest {
         readResolveList = resolveDAO.readAllResolve();
         assertEquals(1, readResolveList.size());
         assertTrue(resolve1.isTechnicallyEqual(readResolveList.get(0)));
-    }
-
-    private boolean doesResolveListContain(List<Resolve> resolveList, Resolve resolve) {
-        for (Resolve currentResolve : resolveList) {
-            if (currentResolve.isTechnicallyEqual(resolve)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private NetworkTask getNetworkTask() {
@@ -186,6 +214,7 @@ public class ResolveDAOTest {
     private Resolve getResolve1() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(0);
         resolve.setNetworkTaskId(0);
         resolve.setSourceAddress("127.0.0.1");
         resolve.setSourcePort(443);
@@ -197,7 +226,20 @@ public class ResolveDAOTest {
     private Resolve getResolve2() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(1);
         resolve.setNetworkTaskId(1);
+        resolve.setSourceAddress("localhost");
+        resolve.setSourcePort(443);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(80);
+        return resolve;
+    }
+
+    private Resolve getResolve3() {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setIndex(2);
+        resolve.setNetworkTaskId(2);
         resolve.setSourceAddress("localhost");
         resolve.setSourcePort(443);
         resolve.setTargetAddress("127.0.0.1");
