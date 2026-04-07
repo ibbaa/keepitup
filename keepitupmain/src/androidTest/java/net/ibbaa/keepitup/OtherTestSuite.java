@@ -57,6 +57,7 @@ import net.ibbaa.keepitup.notification.NotificationHandlerTest;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManagerTest;
 import net.ibbaa.keepitup.resources.JSONSystemMigrateTest;
 import net.ibbaa.keepitup.resources.JSONSystemSetupTest;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManagerTest;
 import net.ibbaa.keepitup.resources.PreferenceManagerTest;
 import net.ibbaa.keepitup.resources.PreferenceSetupTest;
 import net.ibbaa.keepitup.resources.SystemWorkerFactoryTest;
@@ -202,6 +203,7 @@ import org.junit.runners.Suite;
         ConstantPreferenceManagerTest.class,
         JSONSystemMigrateTest.class,
         JSONSystemSetupTest.class,
+        NoBackupPreferenceManagerTest.class,
         PreferenceManagerTest.class,
         PreferenceSetupTest.class,
         SystemWorkerFactoryTest.class,

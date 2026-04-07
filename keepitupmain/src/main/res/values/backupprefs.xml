@@ -14,7 +14,6 @@
   ~ limitations under the License.
   -->
 
-<full-backup-content>
-    <exclude domain="sharedpref" path="net.ibbaa.keepitup_main_key_preferences.xml"/>
-    <exclude domain="sharedpref" path="net.ibbaa.keepitup_no_backup_preferences.xml"/>
-</full-backup-content>
+<resources>
+    <string name="no_backup_prefs_file">net.ibbaa.keepitup_no_backup_preferences</string>
+</resources>

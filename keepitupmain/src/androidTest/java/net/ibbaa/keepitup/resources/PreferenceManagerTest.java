@@ -568,18 +568,6 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testPreferenceAskedNotificationPermission() {
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
-        preferenceManager.removeAllPreferences();
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
-        preferenceManager.removePreferenceAskedNotificationPermission();
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
-    }
-
-    @Test
     public void testPreferenceAlarmInfoShown() {
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
         preferenceManager.setPreferenceAlarmInfoShown(true);

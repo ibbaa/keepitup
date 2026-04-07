@@ -382,7 +382,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
@@ -441,7 +441,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("/Test/test.json", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -479,7 +479,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
@@ -549,7 +549,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());

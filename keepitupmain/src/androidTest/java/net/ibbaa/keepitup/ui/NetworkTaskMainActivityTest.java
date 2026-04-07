@@ -2049,6 +2049,38 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testInvalidAuthorizationHeaderNotShownOnScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        corruptKey();
+        activityScenario.onActivity(Activity::recreate);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
     public void testMultipleInvalidHeaders() {
         addDefaultHeader();
         resetGlobalHeaderHandler();

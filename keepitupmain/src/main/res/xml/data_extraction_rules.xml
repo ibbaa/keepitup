@@ -20,7 +20,8 @@
         <exclude domain="file" />
         <include domain="database" />
         <include domain="sharedpref" />
-        <exclude domain="sharedpref" path="net.ibbaa.keepitup_main_key_preferences.xml"/>
+        <exclude domain="sharedpref" path="net.ibbaa.keepitup_main_key_preferences.xml" />
+        <exclude domain="sharedpref" path="net.ibbaa.keepitup_no_backup_preferences.xml" />
         <exclude domain="external" />
     </cloud-backup>
     <device-transfer>
@@ -28,7 +29,8 @@
         <include domain="file" />
         <include domain="database" />
         <include domain="sharedpref" />
-        <exclude domain="sharedpref" path="net.ibbaa.keepitup_main_key_preferences.xml"/>
+        <exclude domain="sharedpref" path="net.ibbaa.keepitup_main_key_preferences.xml" />
+        <exclude domain="sharedpref" path="net.ibbaa.keepitup_no_backup_preferences.xml" />
         <include domain="external" />
     </device-transfer>
 </data-extraction-rules>

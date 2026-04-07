@@ -34,10 +34,12 @@ public class PreferenceSetup {
 
     private final Context context;
     private final PreferenceManager preferenceManager;
+    private final NoBackupPreferenceManager noBackupPreferenceManager;
 
     public PreferenceSetup(Context context) {
         this.context = context;
         this.preferenceManager = new PreferenceManager(context);
+        this.noBackupPreferenceManager = new NoBackupPreferenceManager(context);
     }
 
     public Map<String, ?> exportGlobalSettings() {
@@ -94,7 +96,7 @@ public class PreferenceSetup {
         systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
         systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
         systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
-        systemSettings.put("preferenceAskedNotificationPermission", preferenceManager.getPreferenceAskedNotificationPermission());
+        systemSettings.put("preferenceAskedNotificationPermission", noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         systemSettings.put("preferenceAlarmInfoShown", preferenceManager.getPreferenceAlarmInfoShown());
         return systemSettings;
     }
@@ -374,9 +376,9 @@ public class PreferenceSetup {
         }
         Object askedNotificationPermission = systemSettings.get("preferenceAskedNotificationPermission");
         if (isValidBoolean(askedNotificationPermission)) {
-            preferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(askedNotificationPermission.toString()));
+            noBackupPreferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(askedNotificationPermission.toString()));
         } else {
-            preferenceManager.removePreferenceAskedNotificationPermission();
+            noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
         }
         Object alarmInfoShown = systemSettings.get("preferenceAlarmInfoShown");
         if (isValidBoolean(alarmInfoShown)) {
@@ -477,13 +479,14 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceTheme();
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
         preferenceManager.removePreferenceAlarmOnHighPrio();
-        preferenceManager.removePreferenceAskedNotificationPermission();
+        noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
         preferenceManager.removePreferenceAlarmInfoShown();
     }
 
     public void removeAllSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeAllSettings");
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     private Context getContext() {

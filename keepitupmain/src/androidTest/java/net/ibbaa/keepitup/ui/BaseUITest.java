@@ -51,6 +51,7 @@ import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SchedulerState;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.service.IFileManager;
@@ -100,6 +101,7 @@ public abstract class BaseUITest {
     private TestNetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
     private TestTimeBasedSuspensionScheduler timeBasedSuspensionScheduler;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private IFileManager fileManager;
     private MockTimeService timeService;
 
@@ -139,6 +141,8 @@ public abstract class BaseUITest {
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
@@ -170,6 +174,7 @@ public abstract class BaseUITest {
         resolveDAO.deleteAllResolve();
         headerDAO.deleteAllHeaders();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
@@ -328,6 +333,10 @@ public abstract class BaseUITest {
 
     public PreferenceManager getPreferenceManager() {
         return preferenceManager;
+    }
+
+    public NoBackupPreferenceManager getNoBackupPreferenceManager() {
+        return noBackupPreferenceManager;
     }
 
     public void setLocale(Locale locale) {

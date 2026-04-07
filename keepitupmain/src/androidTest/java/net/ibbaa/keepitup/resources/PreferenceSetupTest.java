@@ -42,17 +42,21 @@ public class PreferenceSetupTest {
 
     private PreferenceSetup setup;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
         setup = new PreferenceSetup(TestRegistry.getContext());
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @Test
@@ -364,7 +368,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         Map<String, ?> systemSettings = new HashMap<>();
         setup.importSystemSettings(systemSettings);
@@ -377,7 +381,7 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -406,7 +410,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -435,7 +439,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -464,7 +468,7 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -620,7 +624,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceAlarmInfoShown"), preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -635,7 +639,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -647,7 +651,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceLastArbitraryExportFile"), preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -657,7 +661,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceAlarmInfoShown"), preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -773,7 +777,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
@@ -786,7 +790,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceLastArbitraryExportFile"), preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -796,7 +800,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceAlarmInfoShown"), preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -910,7 +914,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         setup.removeSystemSettings();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -922,7 +926,7 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -967,7 +971,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         setup.removeAllSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -1009,7 +1013,7 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 }

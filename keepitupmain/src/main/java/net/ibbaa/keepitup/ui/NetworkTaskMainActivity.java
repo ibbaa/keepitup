@@ -43,6 +43,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
@@ -122,6 +123,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         initEdgeToEdgeInsets(R.id.layout_activity_main);
+        restoreInstanceState(savedInstanceState);
         initRecyclerView();
         checkIndexConsistency();
         initDragAndDrop();
@@ -183,6 +185,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             String tag = CredentialInfoDialog.class.getName();
             FragmentManager fragmentManager = getSupportFragmentManager();
             if (fragmentManager.findFragmentByTag(tag) == null) {
+                credentialInfoDialogShown = true;
                 showCredentialInfoDialog(toDisplay);
             }
         }
@@ -239,10 +242,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         state.putBoolean(getCredentialInfoDialogShownKey(), credentialInfoDialogShown);
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NotNull Bundle state) {
-        super.onRestoreInstanceState(state);
-        if (state.containsKey(getCredentialInfoDialogShownKey())) {
+    private void restoreInstanceState(Bundle state) {
+        if (state != null && state.containsKey(getCredentialInfoDialogShownKey())) {
             credentialInfoDialogShown = state.getBoolean(getCredentialInfoDialogShownKey());
         }
     }
@@ -339,17 +340,22 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private void checkPermissions() {
         Log.d(NetworkTaskMainActivity.class.getName(), "checkPermissions");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
+        NoBackupPreferenceManager noBackupPreferenceManager = new NoBackupPreferenceManager(this);
         IPermissionManager permissionManager = getPermissionManager();
-        if (!permissionManager.hasPostNotificationsPermission(this) && !preferenceManager.getPreferenceAskedNotificationPermission()) {
+        if (!permissionManager.hasPostNotificationsPermission(this) && !noBackupPreferenceManager.getPreferenceAskedNotificationPermission()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to post notifications is missing");
-            preferenceManager.setPreferenceAskedNotificationPermission(true);
+            noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
             permissionManager.requestPostNotificationsPermission(this);
         }
         if (!createAlarmManager().canScheduleAlarms()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to schedule alarms is missing");
             showAlarmPermissionDialog();
         }
+        checkSAFPermissions();
+    }
+
+    private void checkSAFPermissions() {
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
             if (preferenceManager.getPreferenceLogFile()) {
                 if (!checkArbitraryLogFolderPermission(preferenceManager)) {
@@ -709,7 +715,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         IPermissionManager permissionManager = getPermissionManager();
         permissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        if (permissionManager.hasPostNotificationsPermission(this)) {
+            checkSAFPermissions();
+        }
     }
+
 
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked for type " + type);

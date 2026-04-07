@@ -71,6 +71,7 @@ public class JSONSystemSetupTest {
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private JSONSystemSetup setup;
     private JSONSystemSetup encryptedSetup;
 
@@ -91,6 +92,8 @@ public class JSONSystemSetupTest {
         headerDAO.deleteAllHeaders();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         setup = new JSONSystemSetup(TestRegistry.getContext(), false);
         encryptedSetup = new JSONSystemSetup(TestRegistry.getContext(), true);
     }
@@ -104,6 +107,7 @@ public class JSONSystemSetupTest {
         resolveDAO.deleteAllResolve();
         headerDAO.deleteAllHeaders();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @Test
@@ -379,7 +383,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
@@ -1174,7 +1178,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
@@ -1216,7 +1220,7 @@ public class JSONSystemSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 

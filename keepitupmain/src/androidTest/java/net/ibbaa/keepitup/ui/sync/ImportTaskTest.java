@@ -134,7 +134,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
@@ -246,7 +246,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
@@ -306,7 +306,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
@@ -420,7 +420,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
@@ -480,7 +480,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
@@ -599,7 +599,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
@@ -646,7 +646,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
@@ -698,7 +698,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
