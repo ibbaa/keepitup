@@ -384,6 +384,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
         noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
@@ -429,6 +430,7 @@ public class JSONSystemSetupTest {
         assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmOnHighPrio"));
         assertTrue(systemSettingsData.getBoolean("preferenceAskedNotificationPermission"));
+        assertTrue(systemSettingsData.getBoolean("preferenceSAFNoticeShown"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmInfoShown"));
     }
 
@@ -1179,9 +1181,11 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
         noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
@@ -1221,6 +1225,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -1231,6 +1236,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolveAddress("   address   ");
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
@@ -1253,6 +1259,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceTheme(5);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());

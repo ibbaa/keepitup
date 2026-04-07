@@ -568,6 +568,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testPreferenceSAFNoticeShown() {
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
+        preferenceManager.setPreferenceSAFNoticeShown(true);
+        assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
+        preferenceManager.setPreferenceSAFNoticeShown(true);
+        preferenceManager.removePreferenceSAFNoticeShown();
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
+    }
+
+    @Test
     public void testPreferenceAlarmInfoShown() {
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
         preferenceManager.setPreferenceAlarmInfoShown(true);

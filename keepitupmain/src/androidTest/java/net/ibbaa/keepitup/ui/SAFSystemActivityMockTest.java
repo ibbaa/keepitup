@@ -383,6 +383,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
@@ -442,6 +443,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals("/Test/test.json", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -480,6 +482,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
@@ -489,6 +492,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         FileOutputStream stream = new FileOutputStream(file);
@@ -550,6 +554,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());

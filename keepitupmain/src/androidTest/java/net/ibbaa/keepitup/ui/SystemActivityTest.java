@@ -183,6 +183,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -226,6 +227,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -280,6 +282,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
@@ -327,6 +330,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -381,6 +385,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
@@ -428,6 +433,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
@@ -487,6 +493,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
@@ -534,6 +541,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceHighPrio());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -597,6 +605,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -641,6 +650,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -696,6 +706,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
@@ -744,6 +755,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -798,6 +810,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -839,6 +852,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -893,6 +907,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -937,6 +952,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -991,6 +1007,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1037,6 +1054,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1091,6 +1109,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -1144,6 +1163,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1212,6 +1232,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1257,6 +1278,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1268,6 +1290,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1355,6 +1378,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1431,6 +1455,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1483,6 +1508,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1494,6 +1520,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1581,6 +1608,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1650,6 +1678,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -1703,6 +1732,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1714,6 +1744,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1800,6 +1831,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1877,6 +1909,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -1937,6 +1970,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -1948,6 +1982,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2034,6 +2069,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2102,6 +2138,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -2149,6 +2186,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2160,6 +2198,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2249,6 +2288,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2326,6 +2366,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -2380,6 +2421,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2391,6 +2433,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2480,6 +2523,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2548,6 +2592,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -2597,6 +2642,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2608,6 +2654,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2697,6 +2744,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2774,6 +2822,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -2830,6 +2879,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2841,6 +2891,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2930,6 +2981,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -2997,6 +3049,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3052,6 +3105,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3119,6 +3173,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -3180,6 +3235,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3247,6 +3303,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3298,6 +3355,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3311,6 +3369,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -3394,6 +3453,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3461,6 +3521,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -3522,6 +3583,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3535,6 +3597,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -3618,6 +3681,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3673,6 +3737,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3719,6 +3784,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3774,6 +3840,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -3824,6 +3891,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -3986,6 +4054,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -4005,6 +4074,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4046,6 +4116,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -4100,6 +4171,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4127,6 +4199,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -4160,6 +4233,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -4214,6 +4288,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -4233,6 +4308,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4276,6 +4352,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -4330,6 +4407,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -4360,6 +4438,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -4394,6 +4473,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -4462,6 +4542,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4480,6 +4561,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4572,6 +4654,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -4641,6 +4724,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4658,6 +4742,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4753,6 +4838,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -4822,6 +4908,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4842,6 +4929,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptionResult.data(), outputStream, StandardCharsets.UTF_8);
@@ -4936,6 +5024,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -5005,6 +5094,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5025,6 +5115,7 @@ public class SystemActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptionResult.data(), outputStream, StandardCharsets.UTF_8);
@@ -5122,6 +5213,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -5212,6 +5304,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -5259,6 +5352,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -5314,6 +5408,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -5361,6 +5456,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
@@ -5416,6 +5512,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -5464,6 +5561,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());

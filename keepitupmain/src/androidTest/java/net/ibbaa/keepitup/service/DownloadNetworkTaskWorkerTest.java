@@ -40,6 +40,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
@@ -80,6 +81,7 @@ public class DownloadNetworkTaskWorkerTest {
 
     private MockFileManager fileManager;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private NetworkTaskDAO networkTaskDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
     private LogDAO logDAO;
@@ -94,6 +96,8 @@ public class DownloadNetworkTaskWorkerTest {
         fileManager.setSDCardSupported(false);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
@@ -111,6 +115,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void afterEachTestMethod() {
         fileManager.reset();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         logDAO.deleteAllLogs();
         resolveDAO.deleteAllResolve();
         headerDAO.deleteAllHeaders();

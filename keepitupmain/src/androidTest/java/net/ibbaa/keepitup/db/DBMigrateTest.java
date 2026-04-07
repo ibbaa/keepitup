@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -55,6 +56,7 @@ public class DBMigrateTest {
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -69,12 +71,15 @@ public class DBMigrateTest {
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         setup.dropTables();
     }
 
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         setup.dropTables();
     }
 

@@ -136,6 +136,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         ExportTask task = new ExportTask(getExportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), false);
@@ -150,6 +151,7 @@ public class ExportTaskTest extends BaseUITest {
         getResolveDAO().deleteAllResolve();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(writtenFile);
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -251,6 +253,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
@@ -311,6 +314,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         ExportTask task = new ExportTask(getExportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(true, "password123"), false);
@@ -325,6 +329,7 @@ public class ExportTaskTest extends BaseUITest {
         getResolveDAO().deleteAllResolve();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(writtenFile);
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -428,6 +433,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
@@ -488,6 +494,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
@@ -506,6 +513,7 @@ public class ExportTaskTest extends BaseUITest {
         getResolveDAO().deleteAllResolve();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(file);
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -609,6 +617,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 

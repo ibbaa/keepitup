@@ -34,6 +34,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
@@ -67,6 +68,7 @@ public class NetworkTaskWorkerTest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private LogDAO logDAO;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -78,6 +80,8 @@ public class NetworkTaskWorkerTest {
         logDAO.deleteAllLogs();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @After
@@ -86,6 +90,7 @@ public class NetworkTaskWorkerTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         logDAO.deleteAllLogs();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @Test

@@ -2160,14 +2160,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 2 defined")));
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withTextColor(R.color.textColor)));
-        resetGlobalHeaderHandler();
-        activityScenario.onActivity(Activity::recreate);
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
-        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
-        onView(allOf(withText("Default"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
@@ -2374,6 +2366,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2451,6 +2444,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();

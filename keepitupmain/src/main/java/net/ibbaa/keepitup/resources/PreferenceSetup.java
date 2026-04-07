@@ -98,6 +98,7 @@ public class PreferenceSetup {
         systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
         systemSettings.put("preferenceAskedNotificationPermission", noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         systemSettings.put("preferenceAlarmInfoShown", preferenceManager.getPreferenceAlarmInfoShown());
+        systemSettings.put("preferenceSAFNoticeShown", preferenceManager.getPreferenceSAFNoticeShown());
         return systemSettings;
     }
 
@@ -386,6 +387,12 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceAlarmInfoShown();
         }
+        Object safNoticeShown = systemSettings.get("preferenceSAFNoticeShown");
+        if (isValidBoolean(safNoticeShown)) {
+            preferenceManager.setPreferenceSAFNoticeShown(Boolean.parseBoolean(safNoticeShown.toString()));
+        } else {
+            preferenceManager.removePreferenceSAFNoticeShown();
+        }
     }
 
     private boolean isValidInteger(Object value, int min, int max) {
@@ -481,6 +488,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceAlarmOnHighPrio();
         noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
         preferenceManager.removePreferenceAlarmInfoShown();
+        preferenceManager.removePreferenceSAFNoticeShown();
     }
 
     public void removeAllSettings() {

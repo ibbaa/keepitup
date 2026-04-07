@@ -691,6 +691,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.file_dump_enabled_key));
     }
 
+    public boolean getPreferenceSAFNoticeShown() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSAFNoticeShown");
+        return getPreferenceBoolean(getResources().getString(R.string.saf_notice_shown_key), getResources().getBoolean(R.bool.saf_notice_shown_default));
+    }
+
+    public void setPreferenceSAFNoticeShown(boolean safNoticeShown) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSAFNoticeShown, safNoticeShown is " + safNoticeShown);
+        setPreferenceBoolean(getResources().getString(R.string.saf_notice_shown_key), safNoticeShown);
+    }
+
+    public void removePreferenceSAFNoticeShown() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSAFNoticeShown");
+        removePreferenceValue(getResources().getString(R.string.saf_notice_shown_key));
+    }
+
     public boolean getPreferenceAlarmInfoShown() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceAlarmInfoShown");
         return getPreferenceBoolean(getResources().getString(R.string.alarm_info_shown_key), getResources().getBoolean(R.bool.alarm_info_shown_default));
