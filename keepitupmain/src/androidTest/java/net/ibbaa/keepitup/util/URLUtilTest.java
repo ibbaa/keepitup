@@ -409,4 +409,14 @@ public class URLUtilTest {
         assertEquals("https://user:pass@host.com:8080/path?a=b&c=d#frag", URLUtil.assembleURL("https", "user:pass", "host.com", 8080, "/path", "a=b&c=d", "frag"));
         assertEquals("http://example.com", URLUtil.assembleURL("http", null, "example.com", -1, null, null, null));
     }
+
+    @Test
+    public void testIsContentURL() {
+        assertFalse(URLUtil.isContentURL(null));
+        assertFalse(URLUtil.isContentURL(""));
+        assertFalse(URLUtil.isContentURL("    "));
+        assertFalse(URLUtil.isContentURL("https://www.example.com"));
+        assertTrue(URLUtil.isContentURL("content://www.example.com"));
+        assertTrue(URLUtil.isContentURL("content:"));
+    }
 }

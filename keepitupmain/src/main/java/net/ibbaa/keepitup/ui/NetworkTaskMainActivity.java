@@ -95,6 +95,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private IPermissionManager permissionManager;
     private ItemTouchHelper itemTouchHelper;
     private boolean credentialInfoDialogShown;
+    private boolean folderPermissionNotificationSent;
 
     public void injectPermissionManager(IPermissionManager permissionManager) {
         this.permissionManager = permissionManager;
@@ -130,6 +131,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         prepareAddImageButton();
         startForegroundServiceDelayed();
         checkInvalidHeaders();
+        checkPermissions();
     }
 
     private void initDragAndDrop() {
@@ -231,7 +233,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         registerReceiver();
         NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
         ThreadUtil.execute(uiInitTask);
-        checkPermissions();
         checkActiveAlarm();
         scrollToProvidedEntry();
     }
@@ -240,16 +241,27 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     protected void onSaveInstanceState(@NotNull Bundle state) {
         super.onSaveInstanceState(state);
         state.putBoolean(getCredentialInfoDialogShownKey(), credentialInfoDialogShown);
+        state.putBoolean(getFolderPermissionNotificationSentKey(), folderPermissionNotificationSent);
     }
 
     private void restoreInstanceState(Bundle state) {
-        if (state != null && state.containsKey(getCredentialInfoDialogShownKey())) {
+        if (state == null) {
+            return;
+        }
+        if (state.containsKey(getCredentialInfoDialogShownKey())) {
             credentialInfoDialogShown = state.getBoolean(getCredentialInfoDialogShownKey());
+        }
+        if (state.containsKey(getFolderPermissionNotificationSentKey())) {
+            folderPermissionNotificationSent = state.getBoolean(getFolderPermissionNotificationSentKey());
         }
     }
 
     private String getCredentialInfoDialogShownKey() {
-        return NetworkTaskMainActivity.class.getSimpleName() + ".CredentialInfoDialogShownKey";
+        return NetworkTaskMainActivity.class.getSimpleName() + ".CredentialInfoDialogShown";
+    }
+
+    private String getFolderPermissionNotificationSentKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + ".FolderPermissionNotificationSent";
     }
 
     private void scrollToProvidedEntry() {
@@ -356,7 +368,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private void checkSAFPermissions() {
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+        IPermissionManager permissionManager = getPermissionManager();
+        if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation() && permissionManager.hasPostNotificationsPermission(this) && !folderPermissionNotificationSent) {
             if (preferenceManager.getPreferenceLogFile()) {
                 if (!checkArbitraryLogFolderPermission(preferenceManager)) {
                     Log.d(NetworkTaskMainActivity.class.getName(), "Log folder permission is missing");
@@ -369,6 +382,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                     createNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
                 }
             }
+            folderPermissionNotificationSent = true;
         }
     }
 

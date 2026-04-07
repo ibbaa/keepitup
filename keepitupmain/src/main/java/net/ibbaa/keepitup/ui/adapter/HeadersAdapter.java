@@ -96,7 +96,7 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
     }
 
     private String getHeadersKey() {
-        return HeadersAdapter.class.getSimpleName() + "Headers";
+        return HeadersAdapter.class.getSimpleName() + ".Headers";
     }
 
     public void addItem(Header header) {

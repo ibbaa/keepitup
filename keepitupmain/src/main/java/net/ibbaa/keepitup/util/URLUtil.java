@@ -158,6 +158,10 @@ public class URLUtil {
         }
     }
 
+    public static boolean isContentURL(String url) {
+        return StringUtil.notNull(url).startsWith("content:");
+    }
+
     public static boolean isValidURL(String inputUrl) {
         Log.d(URLUtil.class.getName(), "isValidURL, inputUrl is " + inputUrl);
         if (StringUtil.isTrimmedEmpty(inputUrl)) {

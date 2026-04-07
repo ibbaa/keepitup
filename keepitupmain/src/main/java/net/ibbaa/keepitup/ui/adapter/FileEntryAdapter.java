@@ -253,10 +253,10 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     }
 
     private String getFileEntryKey() {
-        return FileEntryAdapter.class.getSimpleName() + "FileEntry";
+        return FileEntryAdapter.class.getSimpleName() + ".FileEntry";
     }
 
     private String getSelectedKey() {
-        return FileEntryAdapter.class.getSimpleName() + "Selected";
+        return FileEntryAdapter.class.getSimpleName() + ".Selected";
     }
 }
