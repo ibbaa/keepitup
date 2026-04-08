@@ -204,12 +204,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     }
 
     protected void showMessageDialog(String errorMessage, int typeface) {
-        Log.d(SettingsInputActivity.class.getName(), "showMessageDialog with message " + errorMessage);
-        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
-        Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
-        bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
-        errorDialog.setArguments(bundle);
-        showDialog(errorDialog, GeneralMessageDialog.class.getName());
+        showMessageDialog(errorMessage, typeface, null);
     }
 
     protected void showMessageDialog(String errorMessage, int typeface, String extraData) {
@@ -217,7 +212,9 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
-        BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), extraData, bundle);
+        if (extraData != null) {
+            BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), extraData, bundle);
+        }
         errorDialog.setArguments(bundle);
         showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }

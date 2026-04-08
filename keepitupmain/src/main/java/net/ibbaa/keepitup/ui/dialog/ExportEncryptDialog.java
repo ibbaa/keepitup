@@ -64,6 +64,7 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
     private PasswordToggleTouchListener confirmPasswordToggleTouchListener;
     private TextDescriptionColorValidatingWatcher passwordEditTextWatcher;
     private TextDescriptionColorValidatingWatcher confirmPasswordEditTextWatcher;
+    private boolean credentialInfoShown;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
         if (confirmPasswordToggleTouchListener != null) {
             outState.putBoolean(getConfirmPasswordVisibleKey(), confirmPasswordToggleTouchListener.isVisible());
         }
+        outState.putBoolean(getCredentialInfoShownKey(), credentialInfoShown);
     }
 
     public String getPasswordVisibleKey() {
@@ -100,6 +102,10 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
 
     public String getConfirmPasswordVisibleKey() {
         return ExportEncryptDialog.class.getSimpleName() + ".ConfirmPasswordVisible";
+    }
+
+    public String getCredentialInfoShownKey() {
+        return ExportEncryptDialog.class.getSimpleName() + ".CredentialInfoShown";
     }
 
     private List<CredentialInfo> getCredentials() {

@@ -19,12 +19,16 @@ package net.ibbaa.keepitup.ui.dialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import android.os.Bundle;
 
@@ -81,24 +85,61 @@ public class GeneralMessageDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testDoNotShowAgain() {
+        GeneralMessageDialog errorDialog = openGeneralMessageDialog("Title", false);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(not(isDisplayed())));
+        assertFalse(errorDialog.isDoNotShowAgain());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        errorDialog = openGeneralMessageDialog("Title", true);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isDisplayed()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).perform(click());
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isChecked()));
+        assertTrue(errorDialog.isDoNotShowAgain());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+    }
+
+    @Test
     public void testScreenRotation() {
-        openGeneralMessageDialog("Title");
+        openGeneralMessageDialog("Title", true);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isDisplayed()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isNotChecked()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isDisplayed()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isChecked()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_general_message_title)).check(matches(withText("Title")));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isDisplayed()));
+        onView(withId(R.id.checkbox_dialog_general_message_donotshowagain)).check(matches(isNotChecked()));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
     }
 
     private GeneralMessageDialog openGeneralMessageDialog(String title) {
+        return openGeneralMessageDialog(title, false);
+    }
+
+    private GeneralMessageDialog openGeneralMessageDialog(String title, boolean doNotShowAgain) {
         GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), "Message");
         BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), "ExtraData", bundle);
         BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
+        if (doNotShowAgain) {
+            BundleUtil.booleanToBundle(errorDialog.getDoNotShowAgainKey(), true, bundle);
+        }
         errorDialog.setArguments(bundle);
         errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralMessageDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));

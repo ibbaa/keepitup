@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,6 +38,8 @@ import net.ibbaa.keepitup.util.StringUtil;
 @SuppressWarnings({"unused"})
 public class GeneralMessageDialog extends DialogFragmentBase {
 
+    private CheckBox doNotShowAgainCheckBox;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(GeneralMessageDialog.class.getName(), "onCreate");
@@ -51,8 +54,10 @@ public class GeneralMessageDialog extends DialogFragmentBase {
         initEdgeToEdgeInsets(view);
         String title = BundleUtil.stringFromBundle(getTitleKey(), requireArguments());
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
+        boolean doNotShowAgain = BundleUtil.booleanFromBundle(getDoNotShowAgainKey(), requireArguments());
         prepareTitle(view, title);
-        prepareErrorMessage(view, message);
+        prepareMessage(view, message);
+        prepareDoNotShowAgain(view, doNotShowAgain);
         prepareOkImageButton(view);
         return view;
     }
@@ -63,6 +68,14 @@ public class GeneralMessageDialog extends DialogFragmentBase {
 
     public String getTitleKey() {
         return GeneralMessageDialog.class.getSimpleName() + ".Title";
+    }
+
+    public String getDoNotShowAgainKey() {
+        return GeneralMessageDialog.class.getSimpleName() + ".DoNotShowAgain";
+    }
+
+    public String getDoNotShowAgainCheckedKey() {
+        return GeneralMessageDialog.class.getSimpleName() + ".DoNotShowAgainChecked";
     }
 
     public String getExtraDataKey() {
@@ -77,8 +90,12 @@ public class GeneralMessageDialog extends DialogFragmentBase {
         return GeneralMessageDialog.class.getSimpleName() + ".TypefaceStyle";
     }
 
+    public boolean isDoNotShowAgain() {
+        return doNotShowAgainCheckBox.isChecked();
+    }
+
     private void prepareTitle(View view, String title) {
-        Log.d(GeneralMessageDialog.class.getName(), "prepareTitle");
+        Log.d(GeneralMessageDialog.class.getName(), "prepareTitle, title is " + title);
         TextView titleText = view.findViewById(R.id.textview_dialog_general_message_title);
         if (StringUtil.isTrimmedEmpty(title)) {
             titleText.setVisibility(View.GONE);
@@ -89,12 +106,22 @@ public class GeneralMessageDialog extends DialogFragmentBase {
         }
     }
 
-    private void prepareErrorMessage(View view, String message) {
-        Log.d(GeneralMessageDialog.class.getName(), "prepareErrorMessage");
+    private void prepareMessage(View view, String message) {
+        Log.d(GeneralMessageDialog.class.getName(), "prepareErrorMessage, message is " + message);
         TextView messageText = view.findViewById(R.id.textview_dialog_general_message_message);
         int style = requireArguments().getInt(getTypefaceStyleKey(), Typeface.BOLD);
         messageText.setTypeface(null, style);
         messageText.setText(message);
+    }
+
+    private void prepareDoNotShowAgain(View view, boolean doNotShowAgain) {
+        Log.d(GeneralMessageDialog.class.getName(), "prepareDoNotShowAgain, doNotShowAgain is " + doNotShowAgain);
+        doNotShowAgainCheckBox = view.findViewById(R.id.checkbox_dialog_general_message_donotshowagain);
+        if (!doNotShowAgain) {
+            doNotShowAgainCheckBox.setVisibility(View.GONE);
+        } else {
+            doNotShowAgainCheckBox.setVisibility(View.VISIBLE);
+        }
     }
 
     private void prepareOkImageButton(View view) {

@@ -284,6 +284,7 @@ public abstract class BaseUITest {
     public Bundle getBypassSystemSAFBundle() {
         Bundle bundle = BundleUtil.booleanToBundle(SystemActivity.getBypassSystemSAFKey(), true);
         bundle.putBoolean(GlobalSettingsActivity.getBypassSystemSAFKey(), true);
+        bundle.putBoolean(NetworkTaskMainActivity.getBypassSystemSAFKey(), true);
         return bundle;
     }
 

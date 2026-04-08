@@ -126,7 +126,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         task3 = getNetworkTaskDAO().insertNetworkTask(task3);
         AccessTypeData data3 = getAccessTypeDataWithNetworkTaskId(task3.getId());
         getAccessTypeDataDAO().insertAccessTypeData(data3);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
@@ -185,7 +185,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         task3 = getNetworkTaskDAO().insertNetworkTask(task3);
         AccessTypeData data3 = getAccessTypeDataWithNetworkTaskId(task3.getId());
         getAccessTypeDataDAO().insertAccessTypeData(data3);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
@@ -239,7 +239,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         NetworkTask task = getNetworkTask1();
         startAlarmService(task);
         assertTrue(AlarmService.isRunning());
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -252,7 +252,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         NetworkTask task = getNetworkTask1();
         startAlarmService(task);
         assertTrue(AlarmService.isRunning());
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
@@ -268,7 +268,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         task.setNotification(true);
         task.setHighPrio(true);
         task = getNetworkTaskDAO().insertNetworkTask(task);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         startAlarmService(task);
         assertTrue(AlarmService.isRunning());
@@ -283,7 +283,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testAddDeleteNetworkTask() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(0)));
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
@@ -311,7 +311,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testSwipeDeleteNetworkTask() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -341,7 +341,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testAddDeleteNetworkTaskIndex() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -367,7 +367,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testSwipeDeleteNetworkTaskIndex() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -395,7 +395,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskItemText() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -469,7 +469,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskItemTextWithoutNotificationPermission() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
@@ -484,7 +484,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskItemTextPingPackageSize() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("1"));
@@ -535,7 +535,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskChangeTitleTextOk() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -568,7 +568,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskChangeTitleTextDatabase() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -592,7 +592,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskChangeTitleTextCancel() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -606,7 +606,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditNetworkTask() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -642,7 +642,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testCopyNetworkTask() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -708,7 +708,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskAddressTrimmed() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("  localhost  "));
@@ -724,7 +724,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditNetworkTaskHighPrioNotification() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -743,7 +743,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditNetworkTaskValueChanged() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -771,7 +771,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditAccessTypeDataValueChanged() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -795,7 +795,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditAccessTypeDataDownloadValueChanged() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -820,7 +820,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditResolveDataAddedChangedAndRemoved() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -858,7 +858,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditConnectToField() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -892,7 +892,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditNetworkTaskValueNotChanged() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -913,7 +913,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testDisplayLog() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -932,7 +932,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testStartStopNetworkTask() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -952,7 +952,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     @Test
     public void testStartStopNetworkTaskSuspended() {
         getSchedulerStateDAO().insertSchedulerState(new SchedulerState(0, true, 0));
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -974,7 +974,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testMenuOptions() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
@@ -1001,7 +1001,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testAddNetworkTaskScreenRotation() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
@@ -1054,7 +1054,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testDeleteNetworkTaskScreenRotation() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -1069,7 +1069,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testSwipeDeleteNetworkTaskScreenRotation() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -1085,7 +1085,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testSwipeDeleteNetworkTaskCancelScreenRotation() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -1101,7 +1101,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testEditNetworkTaskScreenRotation() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -1152,7 +1152,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testCopyNetworkTaskScreenRotation() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -1174,7 +1174,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     @Test
     public void testHeadersDialogTitleText() {
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1195,7 +1195,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     @Test
     public void testHeadersEmpty() {
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1223,7 +1223,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     @Test
     public void testHeadersEmptyScreenRotation() {
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1254,7 +1254,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     @Test
     public void testHeadersEmptyNotUseDefaultHeaders() {
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1292,7 +1292,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     @Test
     public void testHeadersEmptyNotUseDefaultHeadersScreenRotation() {
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1333,7 +1333,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAddHeaderNotUseDefaultHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1378,7 +1378,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAddHeaderNotUseDefaultHeaderScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1435,7 +1435,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         Header header1 = getHeaderDAO().insertHeader(getHeader(1, task.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader(2, task.getId()));
         Header header3 = getHeaderDAO().insertHeader(getHeader(3, task.getId()));
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -1466,7 +1466,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(1, task.getId()));
         getHeaderDAO().insertHeader(getHeader(2, task.getId()));
         getHeaderDAO().insertHeader(getHeader(3, task.getId()));
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withText("Download")).perform(click());
@@ -1513,7 +1513,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(1, task.getId()));
         getHeaderDAO().insertHeader(getHeader(2, task.getId()));
         getHeaderDAO().insertHeader(getHeader(3, task.getId()));
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withText("Download")).perform(click());
@@ -1549,7 +1549,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAddEditDelete() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1604,7 +1604,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAddEditDeleteScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1661,7 +1661,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAddEditDefaultHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1712,7 +1712,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAddEditDefaultHeaderScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -1765,7 +1765,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testChangeDefaultHeaderToBasicAuth() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
@@ -1806,7 +1806,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testMultipleHeadersChangedAndInsertedEncrypted() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -1883,7 +1883,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testHeaderRemovedAndAdded() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -1938,7 +1938,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testCopyEncryptedHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -1988,7 +1988,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testInvalidAuthorizationHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -2052,7 +2052,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testInvalidAuthorizationHeaderNotShownOnScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -2084,7 +2084,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testMultipleInvalidHeaders() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
@@ -2219,7 +2219,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testInvalidAuthorizationHeaderDeleted() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -2255,7 +2255,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testInvalidAuthorizationHeaderBasicAuthValidation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -2307,7 +2307,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testInvalidAuthorizationHeaderBasicAuthValidationExport() throws Exception {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
@@ -2391,7 +2391,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void testAuthorizationHeaderBasicAuthValidationExportNotEncrypted() throws Exception {
         addDefaultHeader();
         resetGlobalHeaderHandler();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));

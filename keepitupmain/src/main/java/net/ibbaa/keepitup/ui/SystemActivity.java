@@ -497,7 +497,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
     }
 
     public static String getBypassSystemSAFKey() {
-        return SystemActivity.class.getSimpleName() + "BypassSystemSAF";
+        return SystemActivity.class.getSimpleName() + ".BypassSystemSAF";
     }
 
     private void prepareAllowArbitraryFileLocationSwitch() {
@@ -1232,7 +1232,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             NetworkTaskLog.clear();
             resetActivity();
         } else {
-            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.NORMAL);
+            showMessageDialog(!StringUtil.isEmpty(message) ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.NORMAL, Error.IMPORTERROR.name());
         }
     }
 

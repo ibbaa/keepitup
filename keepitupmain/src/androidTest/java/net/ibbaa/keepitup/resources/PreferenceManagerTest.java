@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -49,6 +50,15 @@ public class PreferenceManagerTest {
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+    }
+
+    @Test
+    public void testIsPreferenceValueConfigured() {
+        assertFalse(preferenceManager.isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
+        preferenceManager.removePreferenceAllowArbitraryFileLocation();
+        assertFalse(preferenceManager.isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
     }
 
     @Test

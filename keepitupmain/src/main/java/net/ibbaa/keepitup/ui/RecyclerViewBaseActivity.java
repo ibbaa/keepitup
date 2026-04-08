@@ -91,10 +91,32 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
     }
 
     protected void showMessageDialog(String errorMessage, int typeface) {
-        Log.d(RecyclerViewBaseActivity.class.getName(), "showMessageDialog with message " + errorMessage);
+        showMessageDialog(errorMessage, typeface, null);
+    }
+
+    protected void showMessageDialog(String errorMessage, int typeface, String extraData) {
+        Log.d(RecyclerViewBaseActivity.class.getName(), "showMessageDialog with message " + errorMessage + " and extraData " + extraData);
         GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
+        if (extraData != null) {
+            BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), extraData, bundle);
+        }
+        errorDialog.setArguments(bundle);
+        showDialog(errorDialog, GeneralMessageDialog.class.getName());
+    }
+
+    protected void showMessageDialog(String title, String errorMessage, int typeface, String extraData) {
+        Log.d(RecyclerViewBaseActivity.class.getName(), "showMessageDialog with message " + errorMessage + " and extraData " + extraData);
+        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
+        Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
+        if (title != null) {
+            BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
+        }
+        bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
+        if (extraData != null) {
+            BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), extraData, bundle);
+        }
         errorDialog.setArguments(bundle);
         showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }

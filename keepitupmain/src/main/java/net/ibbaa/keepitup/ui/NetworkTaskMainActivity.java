@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -55,6 +56,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
@@ -64,6 +66,7 @@ import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
+import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
 import net.ibbaa.keepitup.ui.sync.HeaderBulkDeleteTask;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
@@ -87,7 +90,11 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport, MessageSupport {
+
+    private enum Message {
+        SAFNOTICE,
+    }
 
     private static final Equality<Header> HEADER_TECHNICAL_EQUALITY = Header::isTechnicallyEqual;
 
@@ -96,6 +103,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private ItemTouchHelper itemTouchHelper;
     private boolean credentialInfoDialogShown;
     private boolean folderPermissionNotificationSent;
+
+    public static String getBypassSystemSAFKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + ".BypassSystemSAF";
+    }
 
     public void injectPermissionManager(IPermissionManager permissionManager) {
         this.permissionManager = permissionManager;
@@ -132,6 +143,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         startForegroundServiceDelayed();
         checkInvalidHeaders();
         checkPermissions();
+        //handleSAFNotice();
     }
 
     private void initDragAndDrop() {
@@ -366,6 +378,39 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         checkSAFPermissions();
     }
 
+    @SuppressWarnings("unused")
+    private void handleSAFNotice() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showSAFNotice");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (!SystemUtil.supportsSAFFeature() || bypassSystemSAF) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "SAF not supported. Not showing dialog.");
+            return;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "SAF is enabled. Not showing dialog.");
+            return;
+        }
+        if (canSAFBeEnabledInBackground()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Assuming fresh install. Enabling SAF.");
+            preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        } else {
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name());
+        }
+    }
+
+    private boolean canSAFBeEnabledInBackground() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "canSAFBeEnabledInBackground");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        boolean allowArbitraryFileLocationKeyPresent = preferenceManager.isPreferenceValueConfigured(getResources().getString(R.string.allow_arbitrary_file_location_key));
+        boolean downloadExternalStorageEnabled = preferenceManager.getPreferenceDownloadExternalStorage();
+        boolean logFileEnabled = preferenceManager.getPreferenceLogFile();
+        Log.d(NetworkTaskMainActivity.class.getName(), "allowArbitraryFileLocationKeyPresent is " + allowArbitraryFileLocationKeyPresent);
+        Log.d(NetworkTaskMainActivity.class.getName(), "downloadExternalStorageEnabled is " + downloadExternalStorageEnabled);
+        Log.d(NetworkTaskMainActivity.class.getName(), "logFileEnabled is " + logFileEnabled);
+        return !allowArbitraryFileLocationKeyPresent && !downloadExternalStorageEnabled && !logFileEnabled;
+    }
+
     private void checkSAFPermissions() {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IPermissionManager permissionManager = getPermissionManager();
@@ -510,7 +555,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     public void onMainAddClicked(View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
         Resolve resolve = new Resolve(this);
@@ -817,6 +861,18 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onMessageDialogOkClicked(GeneralMessageDialog messageDialog) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMessageDialogOkClicked");
+        String extraData = messageDialog.getExtraData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMessageDialogOkClicked, extraData is " + extraData);
+        messageDialog.dismiss();
+        if (Message.SAFNOTICE.name().equals(extraData)) {
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            preferenceManager.setPreferenceSAFNoticeShown(messageDialog.isDoNotShowAgain());
         }
     }
 

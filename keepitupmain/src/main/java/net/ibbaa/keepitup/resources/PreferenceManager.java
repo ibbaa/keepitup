@@ -50,6 +50,11 @@ public class PreferenceManager {
         editor.commit();
     }
 
+    public boolean isPreferenceValueConfigured(String key) {
+        Log.d(PreferenceManager.class.getName(), "isPreferenceValueConfigured, key is " + key);
+        return getDefaultSharedPreferences().contains(key);
+    }
+
     public boolean getPreferenceBoolean(String key, boolean defaultValue) {
         Log.d(PreferenceManager.class.getName(), "getPreferenceBoolean, key is " + key + ", default is " + defaultValue);
         boolean value = getDefaultSharedPreferences().getBoolean(key, defaultValue);

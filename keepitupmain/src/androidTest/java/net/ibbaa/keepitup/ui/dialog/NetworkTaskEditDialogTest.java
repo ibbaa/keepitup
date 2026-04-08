@@ -81,7 +81,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         permissionManager = new MockPermissionManager();
         injectPermissionManager();
     }
