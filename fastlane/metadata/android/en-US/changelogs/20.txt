@@ -1,1 +1,2 @@
-* Some bug fixes
+* Fixed bug wrong port value is set on import
+* Prepare SAF enablement
