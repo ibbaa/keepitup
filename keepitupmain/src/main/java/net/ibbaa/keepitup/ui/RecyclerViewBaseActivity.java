@@ -106,7 +106,12 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }
 
+    @SuppressWarnings("unused")
     protected void showMessageDialog(String title, String errorMessage, int typeface, String extraData) {
+        showMessageDialog(title, errorMessage, typeface, extraData, false);
+    }
+
+    protected void showMessageDialog(String title, String errorMessage, int typeface, String extraData, boolean doNotShowAgain) {
         Log.d(RecyclerViewBaseActivity.class.getName(), "showMessageDialog with message " + errorMessage + " and extraData " + extraData);
         GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
@@ -117,6 +122,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         if (extraData != null) {
             BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), extraData, bundle);
         }
+        bundle.putBoolean(errorDialog.getDoNotShowAgainKey(), doNotShowAgain);
         errorDialog.setArguments(bundle);
         showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }

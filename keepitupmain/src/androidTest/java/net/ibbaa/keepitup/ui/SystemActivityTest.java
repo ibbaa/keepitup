@@ -439,6 +439,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         assertNotNull(mainKey1.key());
         assertNotNull(mainKey2.key());
@@ -550,6 +551,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         assertNotNull(mainKey1.key());
         assertNotNull(mainKey2.key());
@@ -4659,6 +4661,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -4843,6 +4846,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -5029,6 +5033,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -5218,6 +5223,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }

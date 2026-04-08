@@ -399,7 +399,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 String tag = GeneralMessageDialog.class.getName();
                 if (fragmentManager.findFragmentByTag(tag) == null) {
-                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name());
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name(), true);
                 }
             }
         }
