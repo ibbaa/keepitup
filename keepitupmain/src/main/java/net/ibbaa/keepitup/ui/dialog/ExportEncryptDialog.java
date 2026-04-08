@@ -78,7 +78,7 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
         Log.d(ExportEncryptDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_export_encrypt, container);
         initEdgeToEdgeInsets(dialogView);
-        prepareEncryptCheckBox();
+        prepareEncryptCheckBox(savedInstanceState);
         preparePasswordTextField(savedInstanceState);
         prepareConfirmPasswordTextField(savedInstanceState);
         prepareOkCancelImageButtons();
@@ -119,9 +119,10 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
         return ExportEncryptDialog.class.getSimpleName() + ".getCredentialInfo";
     }
 
-    private void prepareEncryptCheckBox() {
+    private void prepareEncryptCheckBox(Bundle savedInstanceState) {
         Log.d(ExportEncryptDialog.class.getName(), "prepareEncryptCheckBox");
         encryptCheckBox = dialogView.findViewById(R.id.checkbox_dialog_export_encrypt_encrypt);
+        credentialInfoShown = savedInstanceState != null && BundleUtil.booleanFromBundle(getCredentialInfoShownKey(), savedInstanceState);
         encryptCheckBox.setOnCheckedChangeListener(this::onEncryptCheckboxCheckedChanged);
     }
 
@@ -135,7 +136,8 @@ public class ExportEncryptDialog extends DialogFragmentBase implements Credentia
         if (!checked) {
             String tag = CredentialInfoDialog.class.getName();
             FragmentManager fragmentManager = getParentFragmentManager();
-            if (fragmentManager.findFragmentByTag(tag) == null) {
+            if (fragmentManager.findFragmentByTag(tag) == null && !credentialInfoShown) {
+                credentialInfoShown = true;
                 showCredentialInfoDialog();
             }
         }
