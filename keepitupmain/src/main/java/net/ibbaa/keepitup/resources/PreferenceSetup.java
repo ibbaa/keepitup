@@ -271,7 +271,7 @@ public class PreferenceSetup {
         int resolvePortMax = getResources().getInteger(R.integer.resolve_port_maximum);
         int resolvePortDefault = getResources().getInteger(R.integer.resolve_port_default);
         if (isValidInteger(resolvePort, resolvePortMin, resolvePortMax)) {
-            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(port, resolvePortDefault));
+            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(resolvePort, resolvePortDefault));
         } else {
             preferenceManager.removePreferenceResolvePort();
         }
