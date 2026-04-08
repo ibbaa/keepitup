@@ -126,6 +126,8 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
     private PermissionLauncher exportFileLauncher;
     private PermissionLauncher importFileLauncher;
     private PermissionLauncher arbitraryFolderLauncher;
+    private PermissionLauncher logFolderLauncher;
+    private PermissionLauncher downloadFolderLauncher;
 
     private DBPurgeTask purgeTask;
     private ExportTask exportTask;
@@ -155,6 +157,14 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
 
     public void injectArbitraryFolderLauncher(PermissionLauncher arbitraryFolderLauncher) {
         this.arbitraryFolderLauncher = arbitraryFolderLauncher;
+    }
+
+    public void injectLogFolderLauncher(PermissionLauncher logFolderLauncher) {
+        this.logFolderLauncher = logFolderLauncher;
+    }
+
+    public void injectDownloadFolderLauncher(PermissionLauncher downloadFolderLauncher) {
+        this.downloadFolderLauncher = downloadFolderLauncher;
     }
 
     public void injectExportFileLauncher(PermissionLauncher exportFileLauncher) {
@@ -189,7 +199,10 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         prepareThemeRadioGroup();
         prepareArbitraryFolderLauncher();
         prepareAllowArbitraryFileLocationSwitch();
-        prepareArbitraryFolderPermissions();
+        prepareDownloadFolderLauncher();
+        prepareLogFolderLauncher();
+        prepareArbitraryDownloadFolderPermission();
+        prepareArbitraryLogFolderPermission();
         prepareAlarmOnHighPrioSwitch();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
@@ -486,6 +499,26 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         }
     }
 
+    private void prepareDownloadFolderLauncher() {
+        Log.d(SystemActivity.class.getName(), "prepareDownloadFolderLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
+            downloadFolderLauncher = new GenericPermissionLauncher(this, this::grantArbitraryDownloadFolderPermission);
+        } else {
+            downloadFolderLauncher = new NullPermissionLauncher();
+        }
+    }
+
+    private void prepareLogFolderLauncher() {
+        Log.d(SystemActivity.class.getName(), "prepareLogFolderLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
+            logFolderLauncher = new GenericPermissionLauncher(this, this::grantArbitraryLogFolderPermission);
+        } else {
+            logFolderLauncher = new NullPermissionLauncher();
+        }
+    }
+
     private void prepareArbitraryFolderLauncher() {
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderLauncher");
         boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
@@ -543,6 +576,44 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         NetworkTaskLog.clear();
     }
 
+    void prepareArbitraryDownloadFolderPermission() {
+        Log.d(SystemActivity.class.getName(), "prepareArbitraryDownloadFolderPermission");
+        if (getTaskViewModel().isImportRunning() || getTaskViewModel().isPurgeRunning()) {
+            Log.d(SystemActivity.class.getName(), "Import or purge running, skipping folder permission check");
+            return;
+        }
+        if (!arbitraryFileLocationSwitch.isChecked()) {
+            Log.d(SystemActivity.class.getName(), "SAF is not enabled");
+            return;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (preferenceManager.getPreferenceDownloadExternalStorage()) {
+            IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+            if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryDownloadFolder())) {
+                storagePermissionManager.requestPersistentFolderPermission(downloadFolderLauncher, preferenceManager.getPreferenceArbitraryDownloadFolder());
+            }
+        }
+    }
+
+    void prepareArbitraryLogFolderPermission() {
+        Log.d(SystemActivity.class.getName(), "prepareArbitraryLogFolderPermission");
+        if (getTaskViewModel().isImportRunning() || getTaskViewModel().isPurgeRunning()) {
+            Log.d(SystemActivity.class.getName(), "Import or purge running, skipping folder permission check");
+            return;
+        }
+        if (!arbitraryFileLocationSwitch.isChecked()) {
+            Log.d(SystemActivity.class.getName(), "SAF is not enabled");
+            return;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (preferenceManager.getPreferenceLogFile()) {
+            IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+            if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryLogFolder())) {
+                storagePermissionManager.requestPersistentFolderPermission(logFolderLauncher, preferenceManager.getPreferenceArbitraryLogFolder());
+            }
+        }
+    }
+
     private void prepareArbitraryFolderPermissions() {
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderPermissions");
         if (getTaskViewModel().isImportRunning() || getTaskViewModel().isPurgeRunning()) {
@@ -557,6 +628,45 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
                 PreferenceManager preferenceManager = new PreferenceManager(this);
                 storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
             }
+        }
+    }
+
+    public void grantArbitraryLogFolderPermission(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "grantArbitraryLogFolderPermission for uri " + uri + " and encryptionInfo " + encryptionInfo);
+        if (uri == null) {
+            Log.e(SystemActivity.class.getName(), "uri is null");
+            return;
+        }
+        String logFolder = uri.toString();
+        Log.d(SystemActivity.class.getName(), "New arbitrary log folder is " + logFolder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String currentLogFolder = preferenceManager.getPreferenceArbitraryLogFolder();
+        Log.d(SystemActivity.class.getName(), "Old arbitrary log folder is " + currentLogFolder);
+        if (!currentLogFolder.equals(logFolder)) {
+            Log.d(SystemActivity.class.getName(), "Arbitrary log folder changed. Revoking old permission.");
+            preferenceManager.setPreferenceArbitraryLogFolder(logFolder);
+            IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+            storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
+        }
+    }
+
+    public void grantArbitraryDownloadFolderPermission(Uri uri, EncryptionInfo encryptionInfo) {
+        Log.d(SystemActivity.class.getName(), "grantArbitraryDownloadFolderPermission for uri " + uri + " and encryptionInfo " + encryptionInfo);
+        if (uri == null) {
+            Log.e(SystemActivity.class.getName(), "uri is null");
+            return;
+        }
+        String downloadFolder = uri.toString();
+        Log.d(SystemActivity.class.getName(), "New arbitrary download folder is " + downloadFolder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String currentDownloadFolder = preferenceManager.getPreferenceArbitraryDownloadFolder();
+        Log.d(SystemActivity.class.getName(), "Old arbitrary download folder is " + currentDownloadFolder);
+        if (!currentDownloadFolder.equals(downloadFolder)) {
+            Log.d(SystemActivity.class.getName(), "Arbitrary download folder changed. Revoking old permission.");
+            preferenceManager.setPreferenceArbitraryDownloadFolder(downloadFolder);
+            IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+            storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
+            NetworkTaskLog.clear();
         }
     }
 

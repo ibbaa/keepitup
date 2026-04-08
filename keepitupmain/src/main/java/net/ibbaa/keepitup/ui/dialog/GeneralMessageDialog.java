@@ -107,7 +107,7 @@ public class GeneralMessageDialog extends DialogFragmentBase {
     }
 
     private void prepareMessage(View view, String message) {
-        Log.d(GeneralMessageDialog.class.getName(), "prepareErrorMessage, message is " + message);
+        Log.d(GeneralMessageDialog.class.getName(), "prepareMessage, message is " + message);
         TextView messageText = view.findViewById(R.id.textview_dialog_general_message_message);
         int style = requireArguments().getInt(getTypefaceStyleKey(), Typeface.BOLD);
         messageText.setTypeface(null, style);

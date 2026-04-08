@@ -380,7 +380,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     @SuppressWarnings("unused")
     private void handleSAFNotice() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "showSAFNotice");
+        Log.d(NetworkTaskMainActivity.class.getName(), "handleSAFNotice");
         boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
         if (!SystemUtil.supportsSAFFeature() || bypassSystemSAF) {
             Log.d(NetworkTaskMainActivity.class.getName(), "SAF not supported. Not showing dialog.");
@@ -395,7 +395,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "Assuming fresh install. Enabling SAF.");
             preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         } else {
-            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name());
+            if (!preferenceManager.getPreferenceSAFNoticeShown()) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                String tag = GeneralMessageDialog.class.getName();
+                if (fragmentManager.findFragmentByTag(tag) == null) {
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name());
+                }
+            }
         }
     }
 
