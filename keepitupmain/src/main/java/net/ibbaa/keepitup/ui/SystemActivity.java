@@ -1228,6 +1228,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         HeaderSyncHandler handler = new HeaderSyncHandler(this);
         handler.reset();
         getTaskViewModel().setImportRunning(false);
+        initializeSAFFlag();
         if (success) {
             NetworkTaskLog.clear();
             resetActivity();
@@ -1244,6 +1245,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         handler.reset();
         if (success) {
             resetPreferences();
+            initializeSAFFlag();
             resetFolderPermissions();
             resetKeystore();
             NetworkTaskLog.clear();
@@ -1400,6 +1402,13 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             return purgeTask;
         }
         return new DBPurgeTask(taskViewModel.getPurgeDispatcher(), this);
+    }
+
+    private void initializeSAFFlag() {
+        Log.d(SystemActivity.class.getName(), "initializeSAFFlag");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        boolean safFlag = preferenceManager.getPreferenceAllowArbitraryFileLocation();
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(safFlag);
     }
 
     @SuppressWarnings({"ReplaceNullCheck"})
