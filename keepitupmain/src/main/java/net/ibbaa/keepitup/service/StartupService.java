@@ -80,10 +80,12 @@ public class StartupService extends BroadcastReceiver {
         cleanupResolve(context);
         cleanupHeaders(context);
         cleanupLogs(context);
+        Log.d(StartupService.class.getName(), "Initialize SAF flag.");
+        initializeSAFFlag(context);
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
+        Log.d(StartupService.class.getName(), "Initialize theme.");
         initializeTheme(context);
-        initializeSAFFlag(context);
     }
 
     private void initializeDatabase(Context context) {
