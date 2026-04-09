@@ -95,6 +95,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
@@ -118,6 +120,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_defaults_match_host_label)).check(matches(withText("Match host")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_port_label)).check(matches(withText("Match port")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
@@ -150,6 +156,8 @@ public class DefaultsActivityTest extends BaseUITest {
         preferenceManager.setPreferencePingCount(8);
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceConnectCount(9);
+        preferenceManager.setPreferenceResolveMatchAddress("matchaddress");
+        preferenceManager.setPreferenceResolveMatchPort(80);
         preferenceManager.setPreferenceResolveAddress("address");
         preferenceManager.setPreferenceResolvePort(443);
         preferenceManager.setPreferenceStopOnSuccess(true);
@@ -174,6 +182,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("1234")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("9")));
+        onView(withId(R.id.textview_activity_defaults_match_host_label)).check(matches(withText("Match host")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("matchaddress")));
+        onView(withId(R.id.textview_activity_defaults_match_port_label)).check(matches(withText("Match port")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
@@ -220,9 +232,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("matchaddress"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("443"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -250,6 +272,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("64")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("10")));
+        onView(withId(R.id.textview_activity_defaults_match_host_label)).check(matches(withText("Match host")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("matchaddress")));
+        onView(withId(R.id.textview_activity_defaults_match_port_label)).check(matches(withText("Match port")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
@@ -365,9 +391,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("9"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("matchaddress"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("22"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -389,6 +425,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(123, preferenceManager.getPreferencePingPackageSize());
         assertEquals(9, preferenceManager.getPreferenceConnectCount());
+        assertEquals("matchaddress", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(80, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("address", preferenceManager.getPreferenceResolveAddress());
         assertEquals(22, preferenceManager.getPreferenceResolvePort());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
@@ -420,9 +458,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("matchaddress"));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("22"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -433,6 +481,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         activityScenario.close();
@@ -2696,6 +2746,185 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testMatchHostInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Match host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("not set"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host.com"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("host.com")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("192.168.2.100")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchHostTrimmed() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("  host.com  "));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("host.com")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100  "));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("192.168.2.100")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchHostCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("data");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("data", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("data")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchHostCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("data");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("data");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("data", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("data")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchPortInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Match port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("70000"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Match port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 65535"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("80")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchPortCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("1234");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("456", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("456")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchPortCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
+        rotateScreen(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("1234");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("1234");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("456", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("456")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testConnectToHostInput() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
@@ -2798,6 +3027,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testConnectToPortInput() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -2826,6 +3056,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testConnectToPortCopyPasteOption() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         SettingsInputDialog inputDialog = getDialog(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -2850,6 +3081,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testConnectToPortCopyPasteOptionScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
         rotateScreen(activityScenario);
@@ -2875,14 +3107,37 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testMatchHostAndPortPreferenceRemoved() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceResolveMatchAddress("matchaddress");
+        preferenceManager.setPreferenceResolveMatchPort(80);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("not set")));
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        activityScenario.close();
+    }
+
+    @Test
     public void testConnectToHostAndPortPreferenceRemoved() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceResolveAddress("address");
         preferenceManager.setPreferenceResolvePort(443);
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -2915,9 +3170,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("matchaddress"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -2947,6 +3212,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_defaults_match_host_label)).check(matches(withText("Match host")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_port_label)).check(matches(withText("Match port")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
@@ -2975,6 +3244,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
@@ -3007,9 +3278,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("matchaddress"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -3032,6 +3313,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("matchaddress")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("4")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
@@ -3054,6 +3337,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("matchaddress")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("4")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
@@ -3154,6 +3439,40 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testConfirmDialogOnScreenRotationMatchHost() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_host)).check(matches(withText("localhost")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConfirmDialogOnScreenRotationMatchPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("55"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("55"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_match_port)).check(matches(withText("55")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testConfirmDialogOnScreenRotationConnectToHost() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
@@ -3173,6 +3492,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testConfirmDialogOnScreenRotationConnectToPort() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("55"));
         rotateScreen(activityScenario);
@@ -3404,6 +3724,78 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testValidationErrorScreenRotationMatchHost() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1. 34.2"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Match host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("Match host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("Match host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorColorScreenRotationMatchHost() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1. 34.2"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("1. 34.2")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("1. 34.2")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorScreenRotationMatchPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Match port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("Match port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("Match port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorColorScreenRotationMatchPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testValidationErrorScreenRotationConnectToHost() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
@@ -3442,6 +3834,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testValidationErrorScreenRotationConnectToPort() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -3462,6 +3855,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testValidationErrorColorScreenRotationConnectToPort() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
