@@ -41,6 +41,70 @@ public class StandardResolveValidatorTest {
     }
 
     @Test
+    public void testValidateSourceAddress() {
+        ValidationResult result = validator.validateSourceAddress("www.host.com");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceAddress("192.168.178.100");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceAddress("not valid");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("No valid host or IP address", result.getMessage());
+        result = validator.validateSourceAddress("");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceAddress(null);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceAddress("not set");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+    }
+
+    @Test
+    public void testValidateSourcePort() {
+        ValidationResult result = validator.validateSourcePort("80");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourcePort("abc");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Invalid format", result.getMessage());
+        result = validator.validateSourcePort("-1");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Minimum: 0", result.getMessage());
+        result = validator.validateSourcePort("12345678");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Maximum: 65535", result.getMessage());
+        result = validator.validateSourcePort("");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourcePort(null);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourcePort("not set");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+    }
+
+    @Test
     public void testValidateTargetAddress() {
         ValidationResult result = validator.validateTargetAddress("www.host.com");
         assertTrue(result.isValidationSuccessful());

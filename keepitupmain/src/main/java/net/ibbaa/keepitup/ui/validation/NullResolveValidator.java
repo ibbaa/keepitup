@@ -31,6 +31,22 @@ public class NullResolveValidator implements ResolveValidator {
     }
 
     @Override
+    public ValidationResult validateSourceAddress(String address) {
+        Log.d(NullResolveValidator.class.getName(), "validateSourceAddress, address is " + address);
+        String fieldName = getResources().getString(R.string.resolve_match_host_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
+    public ValidationResult validateSourcePort(String port) {
+        Log.d(NullResolveValidator.class.getName(), "validateSourcePort, port is " + port);
+        String fieldName = getResources().getString(R.string.resolve_match_port_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
     public ValidationResult validateTargetAddress(String address) {
         Log.d(NullResolveValidator.class.getName(), "validateTargetAddress, address is " + address);
         String fieldName = getResources().getString(R.string.resolve_host_field_name);

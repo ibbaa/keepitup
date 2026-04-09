@@ -31,6 +31,24 @@ public class StandardResolveValidator implements ResolveValidator {
     }
 
     @Override
+    public ValidationResult validateSourceAddress(String address) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourceAddress, address is " + address);
+        String fieldName = getResources().getString(R.string.resolve_match_host_field_name);
+        ValidationResult result = new ResolveHostMatchFieldValidator(fieldName, getContext()).validate(address);
+        Log.d(StandardResolveValidator.class.getName(), ResolveHostMatchFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateSourcePort(String port) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourcePort, port is " + port);
+        String fieldName = getResources().getString(R.string.resolve_match_port_field_name);
+        ValidationResult result = new ResolvePortMatchFieldValidator(fieldName, getContext()).validate(port);
+        Log.d(StandardResolveValidator.class.getName(), ResolvePortMatchFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
     public ValidationResult validateTargetAddress(String address) {
         Log.d(StandardResolveValidator.class.getName(), "validateTargetAddress, address is " + address);
         String fieldName = getResources().getString(R.string.resolve_host_field_name);

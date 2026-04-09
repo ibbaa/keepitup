@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui.validation;
+package net.ibbaa.keepitup.ui.support;
 
-public interface ResolveValidator {
+import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
 
-    ValidationResult validateSourceAddress(String address);
+public interface ResolveEditSupport {
 
-    ValidationResult validateSourcePort(String port);
+    void onResolveEditDialogOkClicked(ResolveEditDialog resolveEditDialog, int position);
 
-    ValidationResult validateTargetAddress(String address);
-
-    ValidationResult validateTargetPort(String port);
+    void onResolveEditDialogCancelClicked(ResolveEditDialog resolveEditDialog);
 }

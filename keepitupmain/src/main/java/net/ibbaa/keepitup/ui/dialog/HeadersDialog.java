@@ -197,7 +197,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
             Log.e(HeadersDialog.class.getName(), "onHeaderOpenClicked, header is null");
             return;
         }
-        showGlobalHeaderEditDialog(header, index);
+        showHeaderEditDialog(header, index);
     }
 
     public void onHeadersRestoreClicked(View view) {
@@ -333,7 +333,7 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         Log.d(HeadersDialog.class.getName(), "onHeaderAddClicked");
         Header header = new Header();
         header.setNetworkTaskId(getNetworkTaskId());
-        showGlobalHeaderEditDialog(header, -1);
+        showHeaderEditDialog(header, -1);
     }
 
     private void onOkClicked(View view) {
@@ -403,8 +403,8 @@ public class HeadersDialog extends DialogFragmentBase implements HeaderEditSuppo
         return (HeadersSupport) activity;
     }
 
-    private void showGlobalHeaderEditDialog(Header header, int position) {
-        Log.d(HeadersDialog.class.getName(), "showGlobalHeaderEditDialog with header " + header + " and position " + position);
+    private void showHeaderEditDialog(Header header, int position) {
+        Log.d(HeadersDialog.class.getName(), "showHeaderEditDialog with header " + header + " and position " + position);
         HeaderEditDialog headerEditDialog = new HeaderEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(headerEditDialog.getHeaderKey(), header.toBundle());
         bundle = BundleUtil.integerToBundle(headerEditDialog.getPositionKey(), position, bundle);

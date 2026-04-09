@@ -26,6 +26,8 @@
     <string name="accesstypedata_connect_count_field_name">Connect count</string>
     <string name="resolve_host_field_name">Connect-to host</string>
     <string name="resolve_port_field_name">Connect-to port</string>
+    <string name="resolve_match_host_field_name">Match host</string>
+    <string name="resolve_match_port_field_name">Match port</string>
     <string name="header_name_field_name">Header name</string>
     <string name="header_value_field_name">Header value</string>
     <string name="basic_auth_username_field_name">Basic auth username</string>
