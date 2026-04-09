@@ -1463,9 +1463,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("22"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());

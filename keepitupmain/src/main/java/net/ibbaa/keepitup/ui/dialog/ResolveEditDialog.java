@@ -37,6 +37,7 @@ import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.ResolveEditSupport;
+import net.ibbaa.keepitup.ui.validation.ResolveValidator;
 import net.ibbaa.keepitup.ui.validation.StandardResolveValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
@@ -250,7 +251,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
 
     private boolean validateMatchHost(EditText editText) {
         Log.d(ResolveEditDialog.class.getName(), "validateMatchHost");
-        StandardResolveValidator validator = new StandardResolveValidator(requireContext());
+        ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult result = validator.validateSourceAddress(getMatchHost());
         Log.d(ResolveEditDialog.class.getName(), "match host validation result: " + result);
         return result.isValidationSuccessful();
@@ -258,7 +259,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
 
     private boolean validateMatchPort(EditText editText) {
         Log.d(ResolveEditDialog.class.getName(), "validateMatchPort");
-        StandardResolveValidator validator = new StandardResolveValidator(requireContext());
+        ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult result = validator.validateSourcePort(getMatchPort());
         Log.d(ResolveEditDialog.class.getName(), "match port validation result: " + result);
         return result.isValidationSuccessful();
@@ -266,7 +267,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
 
     private boolean validateConnectToHost(EditText editText) {
         Log.d(ResolveEditDialog.class.getName(), "validateConnectToHost");
-        StandardResolveValidator validator = new StandardResolveValidator(requireContext());
+        ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult result = validator.validateTargetAddress(getConnectToHost());
         Log.d(ResolveEditDialog.class.getName(), "connect-to host validation result: " + result);
         return result.isValidationSuccessful();
@@ -274,7 +275,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
 
     private boolean validateConnectToPort(EditText editText) {
         Log.d(ResolveEditDialog.class.getName(), "validateConnectToPort");
-        StandardResolveValidator validator = new StandardResolveValidator(requireContext());
+        ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult result = validator.validateTargetPort(getConnectToPort());
         Log.d(ResolveEditDialog.class.getName(), "connect-to port validation result: " + result);
         return result.isValidationSuccessful();
@@ -283,7 +284,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
     private List<ValidationResult> validateInput() {
         Log.d(ResolveEditDialog.class.getName(), "validateInput");
         List<ValidationResult> validationResults = new ArrayList<>();
-        StandardResolveValidator validator = new StandardResolveValidator(requireContext());
+        ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult matchHostResult = validator.validateSourceAddress(getMatchHost());
         ValidationResult matchPortResult = validator.validateSourcePort(getMatchPort());
         ValidationResult connectToHostResult = validator.validateTargetAddress(getConnectToHost());

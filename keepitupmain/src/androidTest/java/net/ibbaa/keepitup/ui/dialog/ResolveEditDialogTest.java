@@ -54,7 +54,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testEmptyFields() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(withId(R.id.textview_dialog_resolve_edit_title)).check(matches(withText("Connection configuration")));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("not set")));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("not set")));
@@ -72,7 +72,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testEmptyFieldsScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("not set")));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("not set")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("not set")));
@@ -96,7 +96,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testFieldsSet() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(getResolve(), 2);
+        ResolveEditDialog dialog = openResolveEditDialog(getResolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("match.host.com")));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("8080")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("connect.host.com")));
@@ -113,7 +113,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testFieldsSetScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(getResolve(), 2);
+        openResolveEditDialog(getResolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("match.host.com")));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("8080")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("connect.host.com")));
@@ -137,7 +137,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testNotSetHandling() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("not set")));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -166,7 +166,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testNotSetHandlingWithValues() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("8080"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
@@ -190,7 +190,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testGetResolveEmptyAndNotSet() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText(""));
@@ -216,7 +216,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testGetResolveWithValuesHostTrimmed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("   match.host.com   "));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("8080"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("   connect.host.com   "));
@@ -233,7 +233,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testGetResolveWithValuesHostTrimmedScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("   match.host.com   "));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("8080"));
         rotateScreen(activityScenario);
@@ -256,7 +256,7 @@ public class ResolveEditDialogTest extends BaseUITest {
         Resolve initial = getResolve();
         initial.setId(7);
         initial.setNetworkTaskId(3);
-        ResolveEditDialog dialog = openResolveEditDialog(initial, 0);
+        ResolveEditDialog dialog = openResolveEditDialog(initial);
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("new.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("22"));
         Resolve resolve = dialog.getResolve();
@@ -274,7 +274,7 @@ public class ResolveEditDialogTest extends BaseUITest {
         Resolve initial = getResolve();
         initial.setId(7);
         initial.setNetworkTaskId(3);
-        openResolveEditDialog(initial, 0);
+        openResolveEditDialog(initial);
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("new.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("22"));
@@ -292,7 +292,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testInputErrorColor() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withTextColor(R.color.textColor)));
@@ -332,7 +332,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testValidationErrorDialog() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("not valid host"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("99999"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("not valid host"));
@@ -361,7 +361,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testValidationErrorDialogScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openResolveEditDialog(new Resolve(), 0);
+        openResolveEditDialog(new Resolve());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("not valid host"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("99999"));
@@ -392,7 +392,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testNoValueAllowed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText(""));
@@ -404,7 +404,7 @@ public class ResolveEditDialogTest extends BaseUITest {
         assertEquals(-1, resolve.getTargetPort());
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        dialog = openResolveEditDialog(new Resolve(), 0);
+        dialog = openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("not set"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("not set"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("not set"));
@@ -422,7 +422,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testCopyPasteOption() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
@@ -472,7 +472,7 @@ public class ResolveEditDialogTest extends BaseUITest {
     @Test
     public void testHostPasteOption() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("match.host.com");
@@ -497,9 +497,36 @@ public class ResolveEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testPortPasteOption() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
+        onView(isRoot()).perform(waitFor(500));
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
+        clipboardManager.putData("8080");
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("8080")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("8080")));
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testCopyPasteOptionScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve(), 0);
+        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
         onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
@@ -537,10 +564,10 @@ public class ResolveEditDialogTest extends BaseUITest {
         return clipboardManager;
     }
 
-    private ResolveEditDialog openResolveEditDialog(Resolve resolve, int position) {
+    private ResolveEditDialog openResolveEditDialog(Resolve resolve) {
         ResolveEditDialog resolveEditDialog = new ResolveEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(resolveEditDialog.getResolveKey(), resolve.toBundle());
-        bundle = BundleUtil.integerToBundle(resolveEditDialog.getPositionKey(), position, bundle);
+        bundle = BundleUtil.integerToBundle(resolveEditDialog.getPositionKey(), 0, bundle);
         resolveEditDialog.setArguments(bundle);
         resolveEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ResolveEditDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
