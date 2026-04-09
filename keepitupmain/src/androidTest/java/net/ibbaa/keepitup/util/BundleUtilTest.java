@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
@@ -703,6 +704,74 @@ public class BundleUtilTest {
         assertTrue(header2.isEqual(headerList.get(1)));
     }
 
+    @Test
+    public void testEmptyResolveListToBundle() {
+        Bundle bundle = BundleUtil.resolveListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.resolveListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testResolveListFromEmptyBundle() {
+        List<Resolve> resolveList = BundleUtil.resolveListFromBundle("key", null);
+        assertNotNull(resolveList);
+        assertTrue(resolveList.isEmpty());
+        Bundle bundle = new Bundle();
+        resolveList = BundleUtil.resolveListFromBundle("key", bundle);
+        assertNotNull(resolveList);
+        assertTrue(resolveList.isEmpty());
+    }
+
+    @Test
+    public void testResolveListToBundle() {
+        Resolve resolve1 = getResolve(1, 2, "source1", 80, "target1", 443);
+        Resolve resolve2 = getResolve(2, 3, "source2", 8080, "target2", 8443);
+        Bundle bundle = BundleUtil.resolveListToBundle("key", Arrays.asList(resolve1, resolve2));
+        Resolve otherResolve1 = new Resolve(Objects.requireNonNull(bundle.getBundle("key0")));
+        Resolve otherResolve2 = new Resolve(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(resolve1.isEqual(otherResolve1));
+        assertTrue(resolve2.isEqual(otherResolve2));
+    }
+
+    @Test
+    public void testResolveListToProvidedBundle() {
+        Resolve resolve1 = getResolve(1, 2, "source1", 80, "target1", 443);
+        Resolve resolve2 = getResolve(2, 3, "source2", 8080, "target2", 8443);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.resolveListToBundle("key", Arrays.asList(resolve1, resolve2), bundle);
+        Resolve otherResolve1 = new Resolve(Objects.requireNonNull(bundle.getBundle("key0")));
+        Resolve otherResolve2 = new Resolve(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(resolve1.isEqual(otherResolve1));
+        assertTrue(resolve2.isEqual(otherResolve2));
+        assertTrue(bundle.getBoolean("otherkey"));
+    }
+
+    @Test
+    public void testResolveListFromBundle() {
+        Bundle bundle = new Bundle();
+        Resolve resolve1 = getResolve(1, 2, "source1", 80, "target1", 443);
+        Resolve resolve2 = getResolve(2, 3, "source2", 8080, "target2", 8443);
+        bundle.putBundle("key0", resolve1.toBundle());
+        bundle.putBundle("key1", resolve2.toBundle());
+        List<Resolve> resolveList = BundleUtil.resolveListFromBundle("key", bundle);
+        assertTrue(resolve1.isEqual(resolveList.get(0)));
+        assertTrue(resolve2.isEqual(resolveList.get(1)));
+    }
+
+    @Test
+    public void testResolveListToAndFromBundle() {
+        Resolve resolve1 = getResolve(1, 2, "source1", 80, "target1", 443);
+        Resolve resolve2 = getResolve(2, 3, "source2", 8080, "target2", 8443);
+        Bundle bundle = BundleUtil.resolveListToBundle("key", Arrays.asList(resolve1, resolve2));
+        List<Resolve> resolveList = BundleUtil.resolveListFromBundle("key", bundle);
+        assertTrue(resolve1.isEqual(resolveList.get(0)));
+        assertTrue(resolve2.isEqual(resolveList.get(1)));
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
@@ -734,5 +803,16 @@ public class BundleUtilTest {
         header.setValue(value);
         header.setValueValid(true);
         return header;
+    }
+
+    private Resolve getResolve(long id, long networkTaskId, String sourceAddress, int sourcePort, String targetAddress, int targetPort) {
+        Resolve resolve = new Resolve();
+        resolve.setId(id);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setSourceAddress(sourceAddress);
+        resolve.setSourcePort(sourcePort);
+        resolve.setTargetAddress(targetAddress);
+        resolve.setTargetPort(targetPort);
+        return resolve;
     }
 }

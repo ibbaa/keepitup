@@ -21,6 +21,7 @@ import android.os.Bundle;
 import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
@@ -352,5 +353,31 @@ public class BundleUtil {
             }
         }
         return headerList;
+    }
+
+    public static Bundle resolveListToBundle(String baseKey, List<Resolve> resolveList) {
+        return resolveListToBundle(baseKey, resolveList, new Bundle());
+    }
+
+    public static Bundle resolveListToBundle(String baseKey, List<Resolve> resolveList, Bundle bundle) {
+        if (baseKey == null || resolveList == null) {
+            return bundle;
+        }
+        List<Bundle> bundleList = new ArrayList<>(resolveList.size());
+        for (Resolve resolve : resolveList) {
+            bundleList.add(resolve.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList, bundle);
+    }
+
+    public static List<Resolve> resolveListFromBundle(String baseKey, Bundle bundle) {
+        List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
+        List<Resolve> resolveList = new ArrayList<>(bundleList.size());
+        for (Bundle currentBundle : bundleList) {
+            if (currentBundle != null) {
+                resolveList.add(new Resolve(currentBundle));
+            }
+        }
+        return resolveList;
     }
 }
