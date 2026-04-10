@@ -768,7 +768,7 @@ public class DBSetup {
     public void deleteAllResolve() {
         Log.d(DBSetup.class.getName(), "deleteAllResolve");
         ResolveDAO dao = new ResolveDAO(getContext());
-        dao.deleteAllResolve();
+        dao.deleteAllResolves();
     }
 
     public void deleteAllHeaders() {

@@ -135,7 +135,7 @@ public abstract class BaseUITest {
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
         setLocale(Locale.US);
@@ -171,7 +171,7 @@ public abstract class BaseUITest {
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager.removeAllPreferences();

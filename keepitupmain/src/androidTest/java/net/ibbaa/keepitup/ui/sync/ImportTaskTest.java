@@ -144,7 +144,7 @@ public class ImportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
@@ -321,7 +321,7 @@ public class ImportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
@@ -498,7 +498,7 @@ public class ImportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -670,7 +670,7 @@ public class ImportTaskTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getResolveDAO().readAllResolve().isEmpty());
+        assertFalse(getResolveDAO().readAllResolves().isEmpty());
         assertFalse(getHeaderDAO().readAllHeaders().isEmpty());
         assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());

@@ -102,6 +102,7 @@ import net.ibbaa.keepitup.ui.sync.LogEntryUISyncTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUISyncTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskUIBroadcastReceiverTest;
+import net.ibbaa.keepitup.ui.sync.ResolveSyncHandlerTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidatorTest;
@@ -258,6 +259,7 @@ import org.junit.runners.Suite;
         NetworkTaskMainUIInitTaskTest.class,
         NetworkTaskMainUISyncTaskTest.class,
         NetworkTaskUIBroadcastReceiverTest.class,
+        ResolveSyncHandlerTest.class,
         //net.ibbaa.keepitup.ui.validation
         BasicAuthPasswordFieldValidatorTest.class,
         BasicAuthUsernameFieldValidatorTest.class,

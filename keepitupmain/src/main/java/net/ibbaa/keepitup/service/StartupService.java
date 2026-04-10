@@ -195,7 +195,7 @@ public class StartupService extends BroadcastReceiver {
         try {
             Log.d(StartupService.class.getName(), "Deleting orphan resolve objects.");
             ResolveDAO resolveDAO = new ResolveDAO(context);
-            resolveDAO.deleteAllOrphanResolve();
+            resolveDAO.deleteAllOrphanResolves();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on cleaning up resolve objects", exc);
         }

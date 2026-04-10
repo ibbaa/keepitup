@@ -105,7 +105,7 @@ public class DownloadNetworkTaskWorkerTest {
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
         InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(Locale.US);
@@ -117,7 +117,7 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager.removeAllPreferences();
         logDAO.deleteAllLogs();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
         accessTypeDataDAO.deleteAllAccessTypeData();
         networkTaskDAO.deleteAllNetworkTasks();

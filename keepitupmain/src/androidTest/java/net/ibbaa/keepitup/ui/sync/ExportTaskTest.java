@@ -148,7 +148,7 @@ public class ExportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
@@ -326,7 +326,7 @@ public class ExportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
@@ -510,7 +510,7 @@ public class ExportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();

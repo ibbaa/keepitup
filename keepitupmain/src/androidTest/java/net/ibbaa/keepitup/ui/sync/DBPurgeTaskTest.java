@@ -75,7 +75,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertFalse(getResolveDAO().readAllResolve().isEmpty());
+        assertFalse(getResolveDAO().readAllResolves().isEmpty());
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
         Header header = getHeaderDAO().readAllHeaders().get(0);
         assertEquals("name", header.getName());
@@ -87,7 +87,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
-        assertTrue(getResolveDAO().readAllResolve().isEmpty());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
         header = getHeaderDAO().readAllHeaders().get(0);
         assertEquals("User-Agent", header.getName());

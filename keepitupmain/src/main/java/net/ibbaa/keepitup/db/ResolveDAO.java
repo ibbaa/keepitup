@@ -45,6 +45,13 @@ public class ResolveDAO extends BaseDAO {
         return returnedResolve;
     }
 
+    public int insertResolves(List<Resolve> resolves) {
+        Log.d(ResolveDAO.class.getName(), "insertResolves, resolve objects are " + resolves);
+        int count = executeDBOperationInTransactionWithRollback(resolves, this::insertResolves);
+        dumpDatabase("Dump after insertResolves call");
+        return count;
+    }
+
     @SuppressWarnings("UnusedReturnValue")
     public Resolve updateResolve(Resolve resolve) {
         Log.d(ResolveDAO.class.getName(), "updateResolve, resolve object is " + resolve);
@@ -59,37 +66,37 @@ public class ResolveDAO extends BaseDAO {
         Log.d(ResolveDAO.class.getName(), "readResolveForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
-        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolveForNetworkTask);
+        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolvesForNetworkTask);
         Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
         return resolveList.isEmpty() ? null : resolveList.get(0);
     }
 
-    public List<Resolve> readAllResolveForNetworkTask(long networkTaskId) {
-        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTask, network task id is " + networkTaskId);
+    public List<Resolve> readAllResolvesForNetworkTask(long networkTaskId) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
-        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolveForNetworkTask);
+        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolvesForNetworkTask);
         Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
         return resolveList;
     }
 
-    public List<Resolve> readAllResolve() {
-        Log.d(ResolveDAO.class.getName(), "readAllResolve");
-        List<Resolve> resolveList = executeDBOperationInTransaction((Resolve) null, this::readAllResolve);
+    public List<Resolve> readAllResolves() {
+        Log.d(ResolveDAO.class.getName(), "readAllResolves");
+        List<Resolve> resolveList = executeDBOperationInTransaction((Resolve) null, this::readAllResolves);
         Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
         return resolveList;
     }
 
-    public Map<Long, Resolve> readAllResolveForNetworkTasks() {
-        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTasks");
-        return executeDBOperationInTransaction((Resolve) null, this::readAllResolveForNetworkTasks);
+    public Map<Long, Resolve> readAllResolvesForNetworkTasks() {
+        Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTasks");
+        return executeDBOperationInTransaction((Resolve) null, this::readAllResolvesForNetworkTasks);
     }
 
-    public void deleteAllResolveForNetworkTask(long networkTaskId) {
-        Log.d(ResolveDAO.class.getName(), "deleteAllResolveForNetworkTask, network task id is " + networkTaskId);
+    public void deleteAllResolvesForNetworkTask(long networkTaskId) {
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolvesForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
-        executeDBOperationInTransaction(resolve, this::deleteAllResolveForNetworkTask);
+        executeDBOperationInTransaction(resolve, this::deleteAllResolvesForNetworkTask);
         dumpDatabase("Dump after deleteAllResolveForNetworkTask call");
     }
 
@@ -99,15 +106,15 @@ public class ResolveDAO extends BaseDAO {
         dumpDatabase("Dump after deleteResolve call");
     }
 
-    public void deleteAllOrphanResolve() {
-        Log.d(ResolveDAO.class.getName(), "deleteAllOrphanResolve");
-        executeDBOperationInTransaction((Resolve) null, this::deleteAllOrphanResolve);
+    public void deleteAllOrphanResolves() {
+        Log.d(ResolveDAO.class.getName(), "deleteAllOrphanResolves");
+        executeDBOperationInTransaction((Resolve) null, this::deleteAllOrphanResolves);
         dumpDatabase("Dump after deleteAllOrphanResolve call");
     }
 
-    public void deleteAllResolve() {
-        Log.d(ResolveDAO.class.getName(), "deleteAllResolve");
-        executeDBOperationInTransaction((Resolve) null, this::deleteAllResolve);
+    public void deleteAllResolves() {
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolves");
+        executeDBOperationInTransaction((Resolve) null, this::deleteAllResolves);
         dumpDatabase("Dump after deleteAllResolve call");
     }
 
@@ -121,7 +128,7 @@ public class ResolveDAO extends BaseDAO {
 
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
-            Dump.dump(ResolveDAO.class.getName(), message, Resolve.class.getSimpleName().toLowerCase(), this::readAllResolve);
+            Dump.dump(ResolveDAO.class.getName(), message, Resolve.class.getSimpleName().toLowerCase(), this::readAllResolves);
         }
     }
 
@@ -143,6 +150,29 @@ public class ResolveDAO extends BaseDAO {
         return resolve;
     }
 
+    private DBResult<Integer> insertResolves(List<Resolve> resolves, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "insertResolves with resolve objects " + resolves);
+        int count = 0;
+        for (Resolve resolve : resolves) {
+            ContentValues values = new ContentValues();
+            ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
+            values.put(dbConstants.getNetworkTaskIdColumnName(), resolve.getNetworkTaskId());
+            values.put(dbConstants.getIndexColumnName(), resolve.getIndex());
+            values.put(dbConstants.getSourceAddressColumnName(), resolve.getSourceAddress());
+            values.put(dbConstants.getSourcePortColumnName(), resolve.getSourcePort());
+            values.put(dbConstants.getTargetAddressColumnName(), resolve.getTargetAddress());
+            values.put(dbConstants.getTargetPortColumnName(), resolve.getTargetPort());
+            long rowid = db.insert(dbConstants.getTableName(), null, values);
+            if (rowid < 0) {
+                Log.e(ResolveDAO.class.getName(), "Error inserting resolve object into database. Insert returned -1.");
+            } else {
+                count++;
+            }
+            resolve.setId(rowid);
+        }
+        return new DBResult<>(count == resolves.size(), count);
+    }
+
     private Resolve updateResolve(Resolve resolve, SQLiteDatabase db) {
         Log.d(ResolveDAO.class.getName(), "updateResolve, resolve is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
@@ -158,8 +188,8 @@ public class ResolveDAO extends BaseDAO {
         return resolve;
     }
 
-    private List<Resolve> readAllResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTask, resolve object is " + resolve);
+    private List<Resolve> readAllResolvesForNetworkTask(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTask, resolve object is " + resolve);
         Cursor cursor = null;
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         List<Resolve> result = new ArrayList<>();
@@ -184,16 +214,16 @@ public class ResolveDAO extends BaseDAO {
         return result;
     }
 
-    private List<Resolve> readAllResolve(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "readAllResolve, resolve object is " + resolve);
+    private List<Resolve> readAllResolves(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolves, resolve object is " + resolve);
         List<Resolve> result = new ArrayList<>();
         readAllResolveInternal(db, result::add);
         Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
         return result;
     }
 
-    private Map<Long, Resolve> readAllResolveForNetworkTasks(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "readAllResolveForNetworkTasks, resolve object is " + resolve);
+    private Map<Long, Resolve> readAllResolvesForNetworkTasks(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTasks, resolve object is " + resolve);
         Map<Long, Resolve> result = new HashMap<>();
         readAllResolveInternal(db, mappedResolve -> result.put(mappedResolve.getNetworkTaskId(), mappedResolve));
         Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
@@ -224,8 +254,8 @@ public class ResolveDAO extends BaseDAO {
         }
     }
 
-    private int deleteAllResolveForNetworkTask(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "deleteAllResolveForNetworkTask, resolve object is " + resolve);
+    private int deleteAllResolvesForNetworkTask(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolvesForNetworkTask, resolve object is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         String selection = dbConstants.getNetworkTaskIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(resolve.getNetworkTaskId())};
@@ -243,14 +273,14 @@ public class ResolveDAO extends BaseDAO {
         return value;
     }
 
-    private int deleteAllResolve(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "deleteAllResolve, resolve object is " + resolve);
+    private int deleteAllResolves(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolves, resolve object is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
     }
 
-    private int deleteAllOrphanResolve(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "deleteAllOrphanResolve, resolve object is " + resolve);
+    private int deleteAllOrphanResolves(Resolve resolve, SQLiteDatabase db) {
+        Log.d(ResolveDAO.class.getName(), "deleteAllOrphanResolves, resolve object is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         Log.d(ResolveDAO.class.getName(), "Executing SQL " + dbConstants.getDeleteOrphanResolveStatement());
         db.execSQL(dbConstants.getDeleteOrphanResolveStatement());

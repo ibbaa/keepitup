@@ -270,7 +270,7 @@ public class DBMigrateTest {
         intervalDAO.insertInterval(new Interval());
         assertEquals(1, intervalDAO.readAllIntervals().size());
         resolveDAO.insertResolve(new Resolve());
-        assertEquals(1, resolveDAO.readAllResolve().size());
+        assertEquals(1, resolveDAO.readAllResolves().size());
         headerDAO.insertHeader(new Header());
         assertEquals(2, headerDAO.readAllHeaders().size());
     }
@@ -298,7 +298,7 @@ public class DBMigrateTest {
     public void testDowngradeFrom6To5ResolveTable() {
         setup.createTables();
         migrate.doDowngrade(TestRegistry.getContext(), 6, 5);
-        resolveDAO.readAllResolve();
+        resolveDAO.readAllResolves();
     }
 
     @Test(expected = SQLiteException.class)

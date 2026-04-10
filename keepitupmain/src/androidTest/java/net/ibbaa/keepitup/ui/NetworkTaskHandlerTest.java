@@ -156,7 +156,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(0, getHeaderDAO().readHeadersForNetworkTask(task1.getId()).size());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
-        getResolveDAO().deleteAllResolve();
+        getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
         getAdapter().replaceItems(Collections.emptyList());
         task1 = getNetworkTask1();
@@ -283,7 +283,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         handler.insertNetworkTask(task1, data1, resolve1, null);
         handler.updateNetworkTask(task1, data1, new Resolve(), null);
         assertNull(getResolveDAO().readResolveForNetworkTask(task1.getId()));
-        assertTrue(getResolveDAO().readAllResolve().isEmpty());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
     }
 
     @Test
