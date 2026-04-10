@@ -52,7 +52,9 @@ public class ConfirmDialog extends DialogFragmentBase {
         DELETEHEADER,
         DELETEHEADERSWIPE,
         CONFIRMAUTHORIZATIONHEADER,
-        RESTOREHEADER
+        RESTOREHEADER,
+        DELETERESOLVE,
+        DELETERESOLVESWIPE
     }
 
     @Override
