@@ -84,17 +84,34 @@ public class ResolvesAdapter extends RecyclerView.Adapter<ResolveViewHolder> {
     }
 
     private String getMatchText(Resolve resolve) {
-        return getResources().getString(R.string.list_item_resolve_match, getHostAndPort(resolve, resolve.getSourceAddress(), resolve.getSourcePort()));
+        String match;
+        if (isMatchEmpty(resolve)) {
+            match =  getResources().getString(R.string.string_not_set);
+        } else {
+            match = getHostAndPort(resolve.getSourceAddress(), resolve.getSourcePort());
+        }
+        return getResources().getString(R.string.list_item_resolve_match, match);
     }
 
     private String getConnectToText(Resolve resolve) {
-        return getResources().getString(R.string.list_item_resolve_connect_to, getHostAndPort(resolve, resolve.getTargetAddress(), resolve.getTargetPort()));
+        String connectTo;
+        if (isConnectToEmpty(resolve)) {
+            connectTo = getResources().getString(R.string.string_not_set);
+        } else {
+            connectTo = getHostAndPort(resolve.getTargetAddress(), resolve.getTargetPort());
+        }
+        return getResources().getString(R.string.list_item_resolve_connect_to, connectTo);
     }
 
-    private String getHostAndPort(Resolve resolve, String address, int port) {
-        if (resolve.isEmpty()) {
-            return getResources().getString(R.string.string_not_set);
-        }
+    private boolean isMatchEmpty(Resolve resolve) {
+        return StringUtil.isEmpty(resolve.getSourceAddress()) && resolve.getSourcePort() < 0;
+    }
+
+    private boolean isConnectToEmpty(Resolve resolve) {
+        return StringUtil.isEmpty(resolve.getTargetAddress()) && resolve.getTargetPort() < 0;
+    }
+
+    private String getHostAndPort(String address, int port) {
         URL url = URLUtil.getURL(resolvesDialog.getNetworkTaskURL());
         if (url == null) {
             return getResources().getString(R.string.string_not_set);

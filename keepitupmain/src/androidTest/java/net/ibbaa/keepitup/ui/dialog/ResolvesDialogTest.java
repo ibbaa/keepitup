@@ -52,9 +52,6 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class ResolvesDialogTest extends BaseUITest {
 
-    private static final String NETWORK_TASK_URL = "https://example.com:8080/path";
-    private static final long NETWORK_TASK_ID = 1L;
-
     private ActivityScenario<?> activityScenario;
 
     @Test
@@ -65,7 +62,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("No resolve rules defined")));
-        assertEquals(NETWORK_TASK_ID, getDialog().getNetworkTaskId());
+        assertEquals(1L, getDialog().getNetworkTaskId());
         assertEquals(0, getDialog().getAdapter().getAllItems().size());
         activityScenario.close();
     }
@@ -82,7 +79,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("No resolve rules defined")));
         rotateScreen(activityScenario);
-        assertEquals(NETWORK_TASK_ID, getDialog().getNetworkTaskId());
+        assertEquals(1L, getDialog().getNetworkTaskId());
         assertEquals(0, getDialog().getAdapter().getAllItems().size());
         activityScenario.close();
     }
@@ -90,14 +87,14 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDialogConfigurationWithResolves() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: match2.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: connect2.host.com:443")));
-        assertEquals(NETWORK_TASK_ID, getDialog().getNetworkTaskId());
+        assertEquals(1L, getDialog().getNetworkTaskId());
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(2, items.size());
         assertEquals(0, items.get(0).getIndex());
@@ -116,7 +113,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDialogConfigurationWithResolvesScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
@@ -125,7 +122,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
         rotateScreen(activityScenario);
-        assertEquals(NETWORK_TASK_ID, getDialog().getNetworkTaskId());
+        assertEquals(1L, getDialog().getNetworkTaskId());
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(2, items.size());
         assertEquals(0, items.get(0).getIndex());
@@ -136,7 +133,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testMatchAndConnectToTextAllFieldsSet() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1)));
+        showResolvesDialog(List.of(getResolve(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
         activityScenario.close();
@@ -145,7 +142,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testMatchAndConnectToTextWithURLFallbackPort() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        Resolve resolve = new Resolve(NETWORK_TASK_ID);
+        Resolve resolve = new Resolve();
         resolve.setIndex(0);
         resolve.setSourceAddress("match.host.com");
         resolve.setSourcePort(-1);
@@ -160,7 +157,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testMatchAndConnectToTextWithURLFallbackHost() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        Resolve resolve = new Resolve(NETWORK_TASK_ID);
+        Resolve resolve = new Resolve();
         resolve.setIndex(0);
         resolve.setSourceAddress("");
         resolve.setSourcePort(9090);
@@ -173,9 +170,35 @@ public class ResolvesDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testMatchTextEmptyResolve() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = getResolve(1);
+        resolve.setIndex(0);
+        resolve.setSourceAddress(null);
+        resolve.setSourcePort(-1);
+        showResolvesDialog(List.of(resolve));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConnectToTextEmptyResolve() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = getResolve(1);
+        resolve.setIndex(0);
+        resolve.setTargetAddress(null);
+        resolve.setTargetPort(-1);
+        showResolvesDialog(List.of(resolve));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: not set")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testMatchAndConnectToTextEmptyResolve() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        Resolve resolve = new Resolve(NETWORK_TASK_ID);
+        Resolve resolve = new Resolve();
         resolve.setIndex(0);
         showResolvesDialog(List.of(resolve));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
@@ -186,7 +209,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveCancel() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
@@ -213,7 +236,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveCancelScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_resolve_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
@@ -238,7 +261,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveSwipeCancel() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
@@ -264,7 +287,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveSwipeCancelScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(withRecyclerView(R.id.listview_dialog_resolves_resolves).atPosition(0)).perform(ViewActions.swipeRight());
@@ -289,7 +312,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveOk() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
@@ -316,7 +339,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveOkScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_resolve_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
@@ -337,7 +360,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveSwipeOk() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: match2.host.com:9090")));
@@ -362,7 +385,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteResolveSwipeOkScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(withRecyclerView(R.id.listview_dialog_resolves_resolves).atPosition(0)).perform(ViewActions.swipeRight());
@@ -383,7 +406,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteLastResolveOk() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1)));
+        showResolvesDialog(List.of(getResolve(1)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
@@ -400,7 +423,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testDeleteLastResolveSwipeOk() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1)));
+        showResolvesDialog(List.of(getResolve(1)));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(isRoot()).perform(waitFor(500));
@@ -583,7 +606,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testEditExistingResolveCancel() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -610,7 +633,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testEditExistingResolveCancelScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -635,7 +658,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testEditExistingResolve() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -669,7 +692,7 @@ public class ResolvesDialogTest extends BaseUITest {
     @Test
     public void testEditExistingResolveScreenRotation() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        showResolvesDialog(List.of(getFullResolve(1), getFullResolve(2)));
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -773,8 +796,8 @@ public class ResolvesDialogTest extends BaseUITest {
     private void showResolvesDialog(List<Resolve> resolves) {
         ResolvesDialog resolvesDialog = new ResolvesDialog();
         Bundle bundle = BundleUtil.resolveListToBundle(resolvesDialog.getInitialResolvesKey(), resolves);
-        BundleUtil.longToBundle(resolvesDialog.getNetworkTaskIdKey(), NETWORK_TASK_ID, bundle);
-        BundleUtil.stringToBundle(resolvesDialog.getNetworkTaskURLKey(), NETWORK_TASK_URL, bundle);
+        BundleUtil.longToBundle(resolvesDialog.getNetworkTaskIdKey(), 1L, bundle);
+        BundleUtil.stringToBundle(resolvesDialog.getNetworkTaskURLKey(),  "https://example.com:8080/path", bundle);
         resolvesDialog.setArguments(bundle);
         resolvesDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ResolvesDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
@@ -784,8 +807,8 @@ public class ResolvesDialogTest extends BaseUITest {
         return (ResolvesDialog) getDialog(activityScenario, ResolvesDialog.class);
     }
 
-    private Resolve getFullResolve(int number) {
-        Resolve resolve = new Resolve(NETWORK_TASK_ID);
+    private Resolve getResolve(int number) {
+        Resolve resolve = new Resolve(1L);
         resolve.setIndex(number - 1);
         resolve.setSourceAddress("match" + number + ".host.com");
         resolve.setSourcePort(9090);
