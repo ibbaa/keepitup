@@ -254,7 +254,8 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
 
     private void onResolveAddClicked(View view) {
         Log.d(ResolvesDialog.class.getName(), "onResolveAddClicked");
-        Resolve resolve = new Resolve(getNetworkTaskId());
+        Resolve resolve = new Resolve(requireContext());
+        resolve.setNetworkTaskId(getNetworkTaskId());
         showResolveEditDialog(resolve, -1);
     }
 
