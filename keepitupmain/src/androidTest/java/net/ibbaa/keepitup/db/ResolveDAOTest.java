@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -166,18 +167,23 @@ public class ResolveDAOTest {
         resolve1 = resolveDAO.insertResolve(resolve1);
         Resolve resolve2 = getResolve2();
         resolve2 = resolveDAO.insertResolve(resolve2);
-        Resolve resolve3 = getResolve1();
-        resolve3.setNetworkTaskId(2);
+        Resolve resolve3 = getResolve3();
         resolve3 = resolveDAO.insertResolve(resolve3);
         Resolve resolve4 = getResolve2();
-        resolve4.setNetworkTaskId(3);
+        resolve4.setIndex(5);
         resolve4 = resolveDAO.insertResolve(resolve4);
-        Map<Long, Resolve> result = resolveDAO.readAllResolvesForNetworkTasks();
-        assertEquals(4, result.size());
-        assertTrue(resolve1.isTechnicallyEqual(result.get(0L)));
-        assertTrue(resolve2.isTechnicallyEqual(result.get(1L)));
-        assertTrue(resolve3.isTechnicallyEqual(result.get(2L)));
-        assertTrue(resolve4.isTechnicallyEqual(result.get(3L)));
+        Map<Long, List<Resolve>> result = resolveDAO.readAllResolvesForNetworkTasks();
+        assertEquals(3, result.size());
+        List<Resolve> resolveList1 = Objects.requireNonNull(result.get(0L));
+        List<Resolve> resolveList2 = Objects.requireNonNull(result.get(1L));
+        List<Resolve> resolveList3 = Objects.requireNonNull(result.get(2L));
+        assertEquals(1, resolveList1.size());
+        assertEquals(2, resolveList2.size());
+        assertEquals(1, resolveList3.size());
+        assertTrue(resolve1.isTechnicallyEqual(resolveList1.get(0)));
+        assertTrue(resolve2.isTechnicallyEqual(resolveList2.get(0)));
+        assertTrue(resolve4.isTechnicallyEqual(resolveList2.get(1)));
+        assertTrue(resolve3.isTechnicallyEqual(resolveList3.get(0)));
     }
 
     @Test

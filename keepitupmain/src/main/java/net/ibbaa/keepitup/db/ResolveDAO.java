@@ -87,7 +87,7 @@ public class ResolveDAO extends BaseDAO {
         return resolveList;
     }
 
-    public Map<Long, Resolve> readAllResolvesForNetworkTasks() {
+    public Map<Long, List<Resolve>> readAllResolvesForNetworkTasks() {
         Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTasks");
         return executeDBOperationInTransaction((Resolve) null, this::readAllResolvesForNetworkTasks);
     }
@@ -97,7 +97,7 @@ public class ResolveDAO extends BaseDAO {
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(resolve, this::deleteAllResolvesForNetworkTask);
-        dumpDatabase("Dump after deleteAllResolveForNetworkTask call");
+        dumpDatabase("Dump after deleteAllResolvesForNetworkTask call");
     }
 
     public void deleteResolve(Resolve resolve) {
@@ -109,13 +109,13 @@ public class ResolveDAO extends BaseDAO {
     public void deleteAllOrphanResolves() {
         Log.d(ResolveDAO.class.getName(), "deleteAllOrphanResolves");
         executeDBOperationInTransaction((Resolve) null, this::deleteAllOrphanResolves);
-        dumpDatabase("Dump after deleteAllOrphanResolve call");
+        dumpDatabase("Dump after deleteAllOrphanResolves call");
     }
 
     public void deleteAllResolves() {
         Log.d(ResolveDAO.class.getName(), "deleteAllResolves");
         executeDBOperationInTransaction((Resolve) null, this::deleteAllResolves);
-        dumpDatabase("Dump after deleteAllResolve call");
+        dumpDatabase("Dump after deleteAllResolves call");
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -218,16 +218,27 @@ public class ResolveDAO extends BaseDAO {
         Log.d(ResolveDAO.class.getName(), "readAllResolves, resolve object is " + resolve);
         List<Resolve> result = new ArrayList<>();
         readAllResolveInternal(db, result::add);
-        Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
+        Log.d(ResolveDAO.class.getName(), "readAllResolves, returning " + result);
         return result;
     }
 
-    private Map<Long, Resolve> readAllResolvesForNetworkTasks(Resolve resolve, SQLiteDatabase db) {
+    private Map<Long, List<Resolve>> readAllResolvesForNetworkTasks(Resolve resolve, SQLiteDatabase db) {
         Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTasks, resolve object is " + resolve);
-        Map<Long, Resolve> result = new HashMap<>();
-        readAllResolveInternal(db, mappedResolve -> result.put(mappedResolve.getNetworkTaskId(), mappedResolve));
-        Log.d(ResolveDAO.class.getName(), "readAllResolve, returning " + result);
+        Map<Long, List<Resolve>> result = new HashMap<>();
+        readAllResolveInternal(db, mappedResolve -> collectResolveForNetworkTask(result, mappedResolve));
+        Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTasks, returning " + result);
         return result;
+    }
+
+    private void collectResolveForNetworkTask(Map<Long, List<Resolve>> result, Resolve mappedResolve) {
+        if (mappedResolve.getNetworkTaskId() >= 0) {
+            List<Resolve> currentList = result.get(mappedResolve.getNetworkTaskId());
+            if (currentList == null) {
+                currentList = new ArrayList<>();
+                result.put(mappedResolve.getNetworkTaskId(), currentList);
+            }
+            currentList.add(mappedResolve);
+        }
     }
 
     private void readAllResolveInternal(SQLiteDatabase db, ResolveCollector collector) {

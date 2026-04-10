@@ -53,6 +53,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
     }
 
     @Override
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
     protected List<NetworkTaskUIWrapper> runInBackground() {
         Log.d(NetworkTaskMainUIInitTask.class.getName(), "runInBackground");
         try {
@@ -69,7 +70,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all access type data");
                 Map<Long, AccessTypeData> allData = accessTypeDataDAO.readAllAccessTypeDataForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all resolve objects");
-                Map<Long, Resolve> allResolve = resolveDAO.readAllResolvesForNetworkTasks();
+                Map<Long, List<Resolve>> allResolve = resolveDAO.readAllResolvesForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all headers");
                 Map<Long, List<Header>> allHeaders = headerDAO.readAllHeadersForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading most recent log entries");
@@ -90,7 +91,8 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                         data.setNetworkTaskId(currentTask.getId());
                         accessTypeDataDAO.insertAccessTypeData(data);
                     }
-                    Resolve resolve = allResolve.get(currentTask.getId());
+                    List<Resolve> resolveList = allResolve.get(currentTask.getId());
+                    Resolve resolve = (resolveList == null || resolveList.isEmpty()) ? null : resolveList.get(0);
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following resolve object: " + (resolve == null ? "null" : resolve.toString()));
                     List<Header> headers = allHeaders.get(currentTask.getId());
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following headers: " + (headers == null ? "null" : headers.toString()));
