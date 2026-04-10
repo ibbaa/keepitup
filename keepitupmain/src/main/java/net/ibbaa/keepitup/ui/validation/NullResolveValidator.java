@@ -21,6 +21,7 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Resolve;
 
 public class NullResolveValidator implements ResolveValidator {
 
@@ -28,6 +29,14 @@ public class NullResolveValidator implements ResolveValidator {
 
     public NullResolveValidator(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public ValidationResult validateValueSet(Resolve resolve) {
+        Log.d(StandardResolveValidator.class.getName(), "validateValueSet, resolve object is " + resolve);
+        String fieldName = getResources().getString(R.string.resolve_all_fields);
+        String failedMessage = getResources().getString(R.string.invalid_must_exist);
+        return new ValidationResult(false, fieldName, failedMessage);
     }
 
     @Override

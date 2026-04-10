@@ -390,30 +390,46 @@ public class ResolveEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testNoValueAllowed() {
+    public void testNoValueNotAllowed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ResolveEditDialog dialog = openResolveEditDialog(new Resolve());
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText(""));
-        Resolve resolve = dialog.getResolve();
-        assertEquals("", resolve.getSourceAddress());
-        assertEquals(-1, resolve.getSourcePort());
-        assertEquals("", resolve.getTargetAddress());
-        assertEquals(-1, resolve.getTargetPort());
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        dialog = openResolveEditDialog(new Resolve());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Value"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("At least one value must be specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
+        openResolveEditDialog(new Resolve());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("not set"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("not set"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("not set"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("not set"));
-        resolve = dialog.getResolve();
-        assertEquals("", resolve.getSourceAddress());
-        assertEquals(-1, resolve.getSourcePort());
-        assertEquals("", resolve.getTargetAddress());
-        assertEquals(-1, resolve.getTargetPort());
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Value"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("At least one value must be specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorInitialDialogAllFieldsEmpty() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openResolveEditDialog(new Resolve());
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Value"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("At least one value must be specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
@@ -485,6 +501,7 @@ public class ResolveEditDialogTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("match.host.com")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
@@ -512,6 +529,7 @@ public class ResolveEditDialogTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("8080")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));

@@ -16,7 +16,11 @@
 
 package net.ibbaa.keepitup.ui.validation;
 
+import net.ibbaa.keepitup.model.Resolve;
+
 public interface ResolveValidator {
+
+    ValidationResult validateValueSet(Resolve resolve);
 
     ValidationResult validateSourceAddress(String address);
 

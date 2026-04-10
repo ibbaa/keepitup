@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
@@ -38,6 +39,38 @@ public class StandardResolveValidatorTest {
     @Before
     public void beforeEachTestMethod() {
         validator = new StandardResolveValidator(TestRegistry.getContext());
+    }
+
+    @Test
+    public void testValidateValueSet() {
+        Resolve resolve = new Resolve();
+        ValidationResult result = validator.validateValueSet(resolve);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value", result.getFieldName());
+        assertEquals("At least one value must be specified", result.getMessage());
+        resolve.setSourceAddress("127.0.0.1");
+        result = validator.validateValueSet(resolve);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Value", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        resolve = new Resolve();
+        resolve.setSourcePort(80);
+        result = validator.validateValueSet(resolve);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Value", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        resolve = new Resolve();
+        resolve.setTargetAddress("127.0.0.1");
+        result = validator.validateValueSet(resolve);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Value", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        resolve = new Resolve();
+        resolve.setTargetPort(80);
+        result = validator.validateValueSet(resolve);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Value", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
     }
 
     @Test

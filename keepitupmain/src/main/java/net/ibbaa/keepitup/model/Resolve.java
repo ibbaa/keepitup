@@ -210,7 +210,7 @@ public class Resolve {
     }
 
     public boolean isEmpty() {
-        return StringUtil.isEmpty(targetAddress) && targetPort < 0;
+        return StringUtil.isEmpty(targetAddress) && targetPort < 0 && StringUtil.isEmpty(sourceAddress) && sourcePort < 0;
     }
 
     public boolean isEqual(Resolve other) {

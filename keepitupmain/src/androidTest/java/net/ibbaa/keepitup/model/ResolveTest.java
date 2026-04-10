@@ -258,8 +258,14 @@ public class ResolveTest {
         Resolve resolve = new Resolve();
         assertTrue(resolve.isEmpty());
         resolve.setSourceAddress("address");
+        assertFalse(resolve.isEmpty());
+        resolve = new Resolve();
         resolve.setSourcePort(3);
-        assertTrue(resolve.isEmpty());
+        assertFalse(resolve.isEmpty());
+        resolve = new Resolve();
+        resolve.setSourceAddress("address");
+        resolve.setSourcePort(3);
+        assertFalse(resolve.isEmpty());
         resolve = new Resolve(TestRegistry.getContext());
         assertTrue(resolve.isEmpty());
         resolve = new Resolve(new Resolve());
@@ -276,6 +282,11 @@ public class ResolveTest {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(12);
+        resolve = new Resolve(TestRegistry.getContext());
+        assertFalse(resolve.isEmpty());
+        preferenceManager.removeAllPreferences();
+        preferenceManager.setPreferenceResolveMatchAddress("127.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(12);
         resolve = new Resolve(TestRegistry.getContext());
         assertFalse(resolve.isEmpty());
     }

@@ -207,12 +207,16 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
     public Resolve getResolve() {
         Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
         Resolve resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
+        fillResolveFields(resolve);
+        Log.d(ResolveEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
+        return resolve;
+    }
+
+    private void fillResolveFields(Resolve resolve) {
         resolve.setSourceAddress(UIUtil.getEmptyIfNotSet(requireContext(), getMatchHost()));
         resolve.setSourcePort(UIUtil.getNegativeIfNotSet(requireContext(), getMatchPort()));
         resolve.setTargetAddress(UIUtil.getEmptyIfNotSet(requireContext(), getConnectToHost()));
         resolve.setTargetPort(UIUtil.getNegativeIfNotSet(requireContext(), getConnectToPort()));
-        Log.d(ResolveEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
-        return resolve;
     }
 
     private void onOkClicked(View view) {
@@ -300,6 +304,14 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
         }
         if (!connectToPortResult.isValidationSuccessful()) {
             validationResults.add(connectToPortResult);
+        }
+        if (validationResults.isEmpty()) {
+            Resolve resolve = new Resolve();
+            fillResolveFields(resolve);
+            ValidationResult valueResult = validator.validateValueSet(resolve);
+            if (!valueResult.isValidationSuccessful()) {
+                validationResults.add(valueResult);
+            }
         }
         return validationResults;
     }
