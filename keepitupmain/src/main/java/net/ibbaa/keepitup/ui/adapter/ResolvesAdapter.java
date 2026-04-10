@@ -134,6 +134,16 @@ public class ResolvesAdapter extends RecyclerView.Adapter<ResolveViewHolder> {
         return resolves.get(index);
     }
 
+    public void replaceItem(int index, Resolve resolve) {
+        Log.d(ResolvesAdapter.class.getName(), "replaceItem for index " + index + " with " + resolve);
+        if (index < 0 || index >= resolves.size()) {
+            Log.e(ResolvesAdapter.class.getName(), "invalid index " + index);
+            return;
+        }
+        resolve.setIndex(index);
+        resolves.set(index, resolve);
+    }
+
     public void removeItem(int index) {
         Log.d(ResolvesAdapter.class.getName(), "removeItem for index " + index);
         if (index < 0 || index >= resolves.size()) {

@@ -179,7 +179,6 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
     }
 
     @Override
-    @SuppressWarnings("NotifyDataSetChanged")
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(ResolvesDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.DELETERESOLVE.equals(type) || ConfirmDialog.Type.DELETERESOLVESWIPE.equals(type)) {
@@ -187,8 +186,12 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
             if (deletePosition >= 0) {
                 Log.d(ResolvesDialog.class.getName(), "deleting resolve at position " + deletePosition);
                 getAdapter().removeItem(deletePosition);
-                getAdapter().notifyItemRemoved(deletePosition);
-                getAdapter().notifyItemRangeChanged(deletePosition, getAdapter().getItemCount());
+                if (getAdapter().getAllItems().isEmpty()) {
+                    getAdapter().notifyItemChanged(0);
+                } else {
+                    getAdapter().notifyItemRemoved(deletePosition);
+                    getAdapter().notifyItemRangeChanged(deletePosition, getAdapter().getItemCount());
+                }
                 if (ConfirmDialog.Type.DELETERESOLVESWIPE.equals(type)) {
                     reattachItemTouchHelper();
                 }
@@ -225,15 +228,21 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
     }
 
     @Override
-    @SuppressWarnings("NotifyDataSetChanged")
     public void onResolveEditDialogOkClicked(ResolveEditDialog resolveEditDialog, int position) {
         Log.d(ResolvesDialog.class.getName(), "onResolveEditDialogOkClicked with position " + position);
-        if (position >= 0) {
-            getAdapter().removeItem(position);
-        }
         Resolve resolve = resolveEditDialog.getResolve();
-        getAdapter().addItem(resolve);
-        getAdapter().notifyDataSetChanged();
+        if (position >= 0) {
+            getAdapter().replaceItem(position, resolve);
+            getAdapter().notifyItemChanged(position);
+        } else {
+            boolean wasEmpty = getAdapter().getAllItems().isEmpty();
+            getAdapter().addItem(resolve);
+            if (wasEmpty) {
+                getAdapter().notifyItemChanged(0);
+            } else {
+                getAdapter().notifyItemInserted(resolve.getIndex());
+            }
+        }
         resolveEditDialog.dismiss();
     }
 

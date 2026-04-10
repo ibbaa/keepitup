@@ -2153,8 +2153,8 @@ public class DownloadNetworkTaskWorkerTest {
         resolve.setId(0);
         resolve.setIndex(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setSourceAddress("127.0.0.1");
-        resolve.setSourcePort(443);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
         resolve.setTargetAddress("192.168.178.1");
         resolve.setTargetPort(22);
         return resolve;

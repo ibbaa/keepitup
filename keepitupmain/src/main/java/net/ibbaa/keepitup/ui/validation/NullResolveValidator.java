@@ -33,7 +33,7 @@ public class NullResolveValidator implements ResolveValidator {
 
     @Override
     public ValidationResult validateValueSet(Resolve resolve) {
-        Log.d(StandardResolveValidator.class.getName(), "validateValueSet, resolve object is " + resolve);
+        Log.d(NullResolveValidator.class.getName(), "validateValueSet, resolve object is " + resolve);
         String fieldName = getResources().getString(R.string.resolve_all_fields);
         String failedMessage = getResources().getString(R.string.invalid_must_exist);
         return new ValidationResult(false, fieldName, failedMessage);
