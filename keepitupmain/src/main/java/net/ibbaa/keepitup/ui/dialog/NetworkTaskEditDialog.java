@@ -76,7 +76,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private View dialogView;
     private NetworkTask task;
     private AccessTypeData accessTypeData;
-    private Resolve resolve;
+    private List<Resolve> resolves;
     private List<Header> headers;
     private List<Header> currentHeaders;
     private RadioGroup accessTypeGroup;
@@ -151,8 +151,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
         Bundle accessTypeDataBundle = BundleUtil.bundleFromBundle(getAccessTypeDataKey(), requireArguments());
         accessTypeData = accessTypeDataBundle != null ? new AccessTypeData(accessTypeDataBundle) : new AccessTypeData();
-        Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
-        resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
+        Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolvesKey(), requireArguments());
+        prepareResolves();
         prepareHeaders();
         prepareCurrentHeaders(savedInstanceState);
         prepareAccessTypeRadioButtons(savedInstanceState);
@@ -206,8 +206,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return NetworkTaskEditDialog.class.getName() + ".AccessTypeData";
     }
 
-    public String getResolveKey() {
-        return NetworkTaskEditDialog.class.getName() + ".Resolve";
+    public String getResolvesKey() {
+        return NetworkTaskEditDialog.class.getName() + ".Resolves";
     }
 
     public String getHeadersKey() {
@@ -306,6 +306,16 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isHighPrioVisible() {
         return highPrioSwitch.getVisibility() == View.VISIBLE;
+    }
+
+    private void prepareResolves() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolves");
+        Bundle resolvesBundle = BundleUtil.bundleFromBundle(getResolvesKey(), requireArguments());
+        if (resolvesBundle != null) {
+            resolves = BundleUtil.resolveListFromBundle(getHeadersKey(), resolvesBundle);
+        } else {
+            resolves = Collections.emptyList();
+        }
     }
 
     private void prepareHeaders() {
@@ -462,21 +472,29 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private void prepareResolveFields() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields with resolve object of " + resolve);
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields");
         connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
         prepareConnectToHostEditTextListener();
         connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
         connectToHostEditText.setOnFocusChangeListener(new PlaceholderFocusChangeListener(connectToHostEditText, getResources().getString(R.string.string_not_set)));
-        connectToHostEditText.setText(UIUtil.getNotSetIfEmpty(requireContext(), resolve.getTargetAddress()));
+        connectToHostEditText.setText(UIUtil.getNotSetIfEmpty(requireContext(), getFirstResolve().getTargetAddress()));
         connectToPortEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_port);
         prepareConnectToPortEditTextListener();
         connectToPortEditText.setOnLongClickListener(this::onEditTextLongClicked);
         connectToPortEditText.setOnFocusChangeListener(new PlaceholderFocusChangeListener(connectToPortEditText, getResources().getString(R.string.string_not_set)));
-        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), resolve.getTargetPort()));
+        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), getFirstResolve().getTargetPort()));
+    }
+
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    private Resolve getFirstResolve() {
+        if (resolves != null && !resolves.isEmpty()) {
+            return resolves.get(0);
+        }
+        return new Resolve(requireContext());
     }
 
     private void prepareResolveFieldsVisibility() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFieldsVisibility with resolve object of " + resolve);
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFieldsVisibility");
         RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_accesstype);
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
         RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
@@ -822,8 +840,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return accessTypeData;
     }
 
-    public Resolve getInitialResolve() {
-        return resolve;
+    public List<Resolve> getInitialResolves() {
+        return resolves;
     }
 
     public List<Header> getInitialHeaders() {
@@ -886,9 +904,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return accessTypeData;
     }
 
-    public Resolve getResolve() {
-        Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
-        Resolve resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
+    public List<Resolve> getResolves() {
+        Resolve initialResolve = getFirstResolve();
+        Resolve resolve = initialResolve != null ? new Resolve(initialResolve) : new Resolve();
         if (isConnectToHostVisible()) {
             resolve.setTargetAddress(UIUtil.getEmptyIfNotSet(requireContext(), getConnectToHost()));
         }
@@ -896,7 +914,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             resolve.setTargetPort(UIUtil.getNegativeIfNotSet(requireContext(), getConnectToPort()));
         }
         Log.d(NetworkTaskEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
-        return resolve;
+        if (resolve.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return List.of(resolve);
     }
 
     public List<Header> getHeaders() {

@@ -2483,9 +2483,9 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         logEntry.setTimestamp(calendar.getTime().getTime());
         logEntry.setMessage(message);
         AccessTypeData data = getAdapter(activityScenario).getItem(position).getAccessTypeData();
-        Resolve resolve = getAdapter(activityScenario).getItem(position).getResolve();
+        List<Resolve> resolves = getAdapter(activityScenario).getItem(position).getResolves();
         List<Header> headers = getAdapter(activityScenario).getItem(position).getHeaders();
-        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, data, resolve, headers, logEntry));
+        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, data, resolves, headers, logEntry));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
@@ -2494,11 +2494,11 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         NetworkTaskUIWrapper wrapper = getAdapter(activityScenario).getItem(position);
         NetworkTask task = wrapper.getNetworkTask();
         AccessTypeData data = wrapper.getAccessTypeData();
-        Resolve resolve = wrapper.getResolve();
+        List<Resolve> resolves = wrapper.getResolves();
         List<Header> headers = wrapper.getHeaders();
         LogEntry logEntry = wrapper.getLogEntry();
         task.setFailureCount(count);
-        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, data, resolve, headers, logEntry));
+        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, data, resolves, headers, logEntry));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
@@ -2507,11 +2507,11 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         NetworkTaskUIWrapper wrapper = getAdapter(activityScenario).getItem(position);
         NetworkTask task = wrapper.getNetworkTask();
         AccessTypeData data = wrapper.getAccessTypeData();
-        Resolve resolve = wrapper.getResolve();
+        List<Resolve> resolves = wrapper.getResolves();
         List<Header> headers = wrapper.getHeaders();
         LogEntry logEntry = wrapper.getLogEntry();
         task.setInstances(instances);
-        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, data, resolve, headers, logEntry));
+        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, data, resolves, headers, logEntry));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }

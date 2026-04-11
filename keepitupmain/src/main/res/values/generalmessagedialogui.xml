@@ -19,6 +19,7 @@
     <string name="label_dialog_general_message_ok">@android:string/ok</string>
     <string name="text_dialog_general_message_insert_network_task">Fatal error adding network task.</string>
     <string name="text_dialog_general_message_insert_headers">Fatal error adding headers for network task.</string>
+    <string name="text_dialog_general_message_insert_resolves">Fatal error adding resolve rules for network task.</string>
     <string name="text_dialog_general_message_update_network_task">Fatal error updating network task.</string>
     <string name="text_dialog_general_message_start_network_task">Fatal error starting network task.</string>
     <string name="text_dialog_general_message_stop_network_task">Fatal error stopping network task.</string>

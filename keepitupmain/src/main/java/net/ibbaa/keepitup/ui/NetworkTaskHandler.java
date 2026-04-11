@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.ui.sync.ResolveSyncHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +72,10 @@ public class NetworkTaskHandler {
         }
     }
 
-    public void insertNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers) {
+    public void insertNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers) {
         Log.d(NetworkTaskHandler.class.getName(), "insertNetworkTask for task " + task + " and access type data " + data);
-        Log.d(NetworkTaskHandler.class.getName(), "resolve is " + resolve);
-        Log.d(NetworkTaskHandler.class.getName(), "headers is " + headers);
+        Log.d(NetworkTaskHandler.class.getName(), "resolve objects are " + resolves);
+        Log.d(NetworkTaskHandler.class.getName(), "headers are " + headers);
         int index = getAdapter().getNextIndex();
         task.setIndex(index);
         try {
@@ -90,34 +91,50 @@ public class NetworkTaskHandler {
                 accessTypeDataDAO.insertAccessTypeData(data);
                 LogDAO logDAO = new LogDAO(mainActivity);
                 logDAO.deleteAllLogsForNetworkTask(taskId);
-                if (resolve != null && !resolve.isEmpty()) {
-                    ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
-                    resolve.setNetworkTaskId(taskId);
-                    resolveDAO.insertResolve(resolve);
-                }
-                if (headers != null) {
-                    for (Header header : headers) {
-                        header.setNetworkTaskId(taskId);
-                    }
-                    HeaderDAO headerDAO = new HeaderDAO(mainActivity);
-                    int count = headerDAO.insertHeaders(headers);
-                    headers = new ArrayList<>(headers);
-                    if (count < 0) {
-                        mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_headers));
-                    } else {
-                        HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
-                        if (!syncHandler.removeInvalidHeaders(headers).isEmpty()) {
-                            Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
-                            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
-                        }
-                    }
-                }
-                getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolve, headers, null));
+                insertResolves(resolves, taskId);
+                headers = insertHeaders(headers, taskId);
+                getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolves, headers, null));
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_network_task));
         }
+    }
+
+    private void insertResolves(List<Resolve> resolves, long taskId) {
+        Log.d(NetworkTaskHandler.class.getName(), "insertResolves");
+        if (resolves != null) {
+            for (Resolve resolve : resolves) {
+                resolve.setNetworkTaskId(taskId);
+            }
+            ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
+            int count = resolveDAO.insertResolves(resolves);
+            if (count < 0) {
+                mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_resolves));
+            }
+        }
+    }
+
+    private List<Header> insertHeaders(List<Header> headers, long taskId) {
+        Log.d(NetworkTaskHandler.class.getName(), "insertHeaders");
+        if (headers != null) {
+            for (Header header : headers) {
+                header.setNetworkTaskId(taskId);
+            }
+            HeaderDAO headerDAO = new HeaderDAO(mainActivity);
+            int count = headerDAO.insertHeaders(headers);
+            headers = new ArrayList<>(headers);
+            if (count < 0) {
+                mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_headers));
+            } else {
+                HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
+                if (!syncHandler.removeInvalidHeaders(headers).isEmpty()) {
+                    Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
+                }
+            }
+        }
+        return headers;
     }
 
     public void updateNetworkTaskName(NetworkTask task, String name) {
@@ -135,10 +152,10 @@ public class NetworkTaskHandler {
         }
     }
 
-    public void updateNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers) {
+    public void updateNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers) {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task + " and access type data " + data);
-        Log.d(NetworkTaskHandler.class.getName(), "resolve is " + resolve);
-        Log.d(NetworkTaskHandler.class.getName(), "headers is " + headers);
+        Log.d(NetworkTaskHandler.class.getName(), "resolve objects are " + resolves);
+        Log.d(NetworkTaskHandler.class.getName(), "headers are " + headers);
         try {
             boolean running = task.isRunning();
             if (running) {
@@ -161,25 +178,21 @@ public class NetworkTaskHandler {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
                 task = scheduler.start(task);
             }
-            if (resolve != null) {
-                ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
-                resolve.setNetworkTaskId(task.getId());
-                resolveDAO.deleteAllResolvesForNetworkTask(task.getId());
-                if (!resolve.isEmpty()) {
-                    resolve = resolveDAO.insertResolve(resolve);
-                }
+            if (resolves != null) {
+                ResolveSyncHandler resolveSyncHandler = new ResolveSyncHandler(mainActivity);
+                resolveSyncHandler.synchronizeResolves(task.getId(), resolves);
             }
             if (headers != null) {
-                HeaderSyncHandler syncHandler = new HeaderSyncHandler(mainActivity);
-                syncHandler.synchronizeHeaders(task.getId(), headers);
-                if (syncHandler.containsInvalidHeaders(headers)) {
+                HeaderSyncHandler headerSyncHandler = new HeaderSyncHandler(mainActivity);
+                headerSyncHandler.synchronizeHeaders(task.getId(), headers);
+                if (headerSyncHandler.containsInvalidHeaders(headers)) {
                     Log.e(NetworkTaskHandler.class.getName(), "Error encrypting header. Showing error dialog.");
                     HeaderDAO headerDAO = new HeaderDAO(mainActivity);
                     headers = headerDAO.readHeadersForNetworkTask(task.getId());
                     showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
                 }
             }
-            getAdapter().replaceNetworkTask(task, data, resolve, headers, null);
+            getAdapter().replaceNetworkTask(task, data, resolves, headers, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));

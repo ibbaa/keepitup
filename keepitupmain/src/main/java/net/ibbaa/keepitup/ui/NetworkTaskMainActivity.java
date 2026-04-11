@@ -97,6 +97,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     private static final Equality<Header> HEADER_TECHNICAL_EQUALITY = Header::isTechnicallyEqual;
+    private static final Equality<Resolve> RESOLVE_TECHNICAL_EQUALITY = Resolve::isTechnicallyEqual;
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private IPermissionManager permissionManager;
@@ -563,8 +564,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onMainAddClicked(View view) {
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        Resolve resolve = new Resolve(this);
-        openNetworkTaskEditDialog(task, data, resolve, null, -1);
+        openNetworkTaskEditDialog(task, data, null, null, -1);
 
         /*Resolve resolve1 = new Resolve(1L);
         resolve1.setSourceAddress("192.168.1.1");
@@ -654,9 +654,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = uiWrapper.getNetworkTask();
         AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
-        Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : uiWrapper.getResolve();
+        List<Resolve> resolves = uiWrapper.getResolves();
         List<Header> headers = uiWrapper.getHeaders();
-        openNetworkTaskEditDialog(task, accessTypeData, resolve, headers, position);
+        openNetworkTaskEditDialog(task, accessTypeData, resolves, headers, position);
     }
 
     public void onMainCopyClicked(int position) {
@@ -672,13 +672,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = new NetworkTask(uiWrapper.getNetworkTask());
         AccessTypeData accessTypeData = new AccessTypeData(uiWrapper.getAccessTypeData());
-        Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : new Resolve(uiWrapper.getResolve());
+        List<Resolve> resolves = uiWrapper.getResolves() == null ? null : new ArrayList<>(uiWrapper.getResolves());
         List<Header> headers = uiWrapper.getHeaders() == null ? null : new ArrayList<>(uiWrapper.getHeaders());
-        openNetworkTaskEditDialog(task, accessTypeData, resolve, headers, position);
+        openNetworkTaskEditDialog(task, accessTypeData, resolves, headers, position);
     }
 
-    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, Resolve resolve, List<Header> headers, int position) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is" + accessTypeData + ", resolve is" + resolve + ", position is " + position);
+    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is, position is " + position);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
             editDialog.injectPermissionManager(permissionManager);
@@ -686,7 +686,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), position);
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
         bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), accessTypeData.toBundle(), bundle);
-        bundle = BundleUtil.bundleToBundle(editDialog.getResolveKey(), resolve.toBundle(), bundle);
+        if (resolves != null) {
+            Bundle resolvesBundle = BundleUtil.resolveListToBundle(editDialog.getResolvesKey(), resolves);
+            bundle = BundleUtil.bundleToBundle(editDialog.getResolvesKey(), resolvesBundle, bundle);
+        }
         if (headers != null) {
             Bundle headersBundle = BundleUtil.headerListToBundle(editDialog.getHeadersKey(), headers);
             bundle = BundleUtil.bundleToBundle(editDialog.getHeadersKey(), headersBundle, bundle);
@@ -718,42 +721,42 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
         NetworkTask task = editDialog.getNetworkTask();
         AccessTypeData accessTypeData = editDialog.getAccessTypeData();
-        Resolve resolve = editDialog.getResolve();
-        resolve.setNetworkTaskId(task.getId());
+        List<Resolve> resolves = editDialog.getResolves();
+        setResolvesNetworkTaskId(resolves, task.getId());
         List<Header> headers = editDialog.getHeaders();
         setHeadersNetworkTaskId(headers, task.getId());
-        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolve is " + resolve);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolves are " + resolves +  ", headers are " + headers);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
-            handler.insertNetworkTask(task, accessTypeData, resolve, headers);
+            handler.insertNetworkTask(task, accessTypeData, resolves, headers);
             getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
             scrollToEntryByIndex(task.getIndex());
         } else {
             NetworkTask initialTask = editDialog.getInitialNetworkTask();
             AccessTypeData initialAccessTypeData = editDialog.getInitialAccessTypeData();
             initialAccessTypeData.setNetworkTaskId(initialTask.getId());
-            Resolve initialResolve = editDialog.getInitialResolve();
-            initialResolve.setNetworkTaskId(initialTask.getId());
+            List<Resolve> initialResolves = editDialog.getInitialResolves();
+            setResolvesNetworkTaskId(initialResolves, task.getId());
             List<Header> initialHeaders = editDialog.getInitialHeaders();
             setHeadersNetworkTaskId(initialHeaders, task.getId());
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task is " + initialTask);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data is " + initialAccessTypeData);
-            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve object is " + initialResolve);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve objects are " + initialResolves);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial headers are " + initialHeaders);
             boolean taskChanged = !initialTask.isTechnicallyEqual(task);
             boolean accessTypeDataChanged = !initialAccessTypeData.isTechnicallyEqual(accessTypeData);
-            boolean resolveChanged = !initialResolve.isTechnicallyEqual(resolve);
+            boolean resolvesChanged = resolves != null && !CollectionUtil.areListsEqual(initialResolves, resolves, RESOLVE_TECHNICAL_EQUALITY);
             boolean headersChanged = headers != null && !CollectionUtil.areListsEqual(initialHeaders, headers, HEADER_TECHNICAL_EQUALITY);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task changed: " + taskChanged);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data changed: " + accessTypeDataChanged);
-            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve object changed: " + resolveChanged);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve objects changed: " + resolvesChanged);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial headers changed: " + headersChanged);
-            if (!taskChanged && !accessTypeDataChanged && !resolveChanged && !headersChanged) {
+            if (!taskChanged && !accessTypeDataChanged && !resolvesChanged && !headersChanged) {
                 Log.d(NetworkTaskMainActivity.class.getName(), "No changes were made. Skipping update.");
             } else {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolveChanged ? resolve : null, headersChanged ? headers : null);
+                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolvesChanged ? resolves : null, headersChanged ? headers : null);
                 getAdapter().notifyItemChanged(editDialog.getPosition());
             }
         }
@@ -764,6 +767,14 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (headers != null) {
             for (Header header : headers) {
                 header.setNetworkTaskId(taskId);
+            }
+        }
+    }
+
+    private void setResolvesNetworkTaskId(List<Resolve> resolves, long taskId) {
+        if (resolves != null) {
+            for (Resolve resolve : resolves) {
+                resolve.setNetworkTaskId(taskId);
             }
         }
     }

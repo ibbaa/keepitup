@@ -245,6 +245,9 @@ public class Resolve {
         if (networktaskid != other.networktaskid) {
             return false;
         }
+        if (index != other.index) {
+            return false;
+        }
         if (!Objects.equals(sourceAddress, other.sourceAddress)) {
             return false;
         }

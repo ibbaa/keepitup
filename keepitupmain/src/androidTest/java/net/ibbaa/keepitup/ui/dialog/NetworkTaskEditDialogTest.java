@@ -112,7 +112,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
-        Resolve resolve = dialog.getResolve();
         assertNotNull(task);
         assertNotNull(data);
         assertEquals(AccessType.PING, task.getAccessType());
@@ -126,8 +125,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
-        assertEquals("", resolve.getTargetAddress());
-        assertEquals(-1, resolve.getTargetPort());
     }
 
     @Test
@@ -218,7 +215,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
-        Resolve resolve = dialog.getResolve();
         assertNotNull(task);
         assertEquals(AccessType.CONNECT, task.getAccessType());
         assertEquals("localhost", task.getAddress());
@@ -232,14 +228,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(9, data.getConnectCount());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isStopOnSuccess());
-        assertEquals("", resolve.getTargetAddress());
-        assertEquals(-1, resolve.getTargetPort());
         onView(withText("Ping")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
-        resolve = dialog.getResolve();
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals("localhost", task.getAddress());
         assertEquals(60, task.getInterval());
@@ -251,8 +244,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isStopOnSuccess());
-        assertEquals("", resolve.getTargetAddress());
-        assertEquals(-1, resolve.getTargetPort());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test.com"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("test.com"));
@@ -262,7 +253,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
-        resolve = dialog.getResolve();
         assertNotNull(task);
         assertEquals(AccessType.DOWNLOAD, task.getAccessType());
         assertEquals("http://test.com", task.getAddress());
@@ -275,8 +265,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, data.getConnectCount());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isStopOnSuccess());
-        assertEquals("test.com", resolve.getTargetAddress());
-        assertEquals(-1, resolve.getTargetPort());
     }
 
     @Test
@@ -300,9 +288,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withTextColor(R.color.textColor)));
         dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         task = dialog.getNetworkTask();
-        Resolve resolve = dialog.getResolve();
         assertEquals("https://test.com", task.getAddress());
-        assertEquals("test.com", resolve.getTargetAddress());
     }
 
     @Test
@@ -346,8 +332,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData initialAccessTypeData = dialog.getInitialAccessTypeData();
         AccessTypeData data = dialog.getAccessTypeData();
-        Resolve initialResolve = dialog.getInitialResolve();
-        Resolve resolve = dialog.getResolve();
+        List<Resolve> initialResolves = dialog.getInitialResolves();
+        List<Resolve> resolves = dialog.getResolves();
         List<Header> initialHeaders = dialog.getInitialHeaders();
         List<Header> headers = dialog.getInitialHeaders();
         assertEquals(initialTask.getId(), task.getId());
@@ -367,10 +353,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertNotEquals(initialAccessTypeData.getConnectCount(), data.getConnectCount());
         assertEquals(initialAccessTypeData.isIgnoreSSLError(), data.isIgnoreSSLError());
         assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
-        assertEquals(initialResolve.getTargetAddress(), resolve.getTargetAddress());
-        assertEquals(initialResolve.getTargetPort(), resolve.getTargetPort());
         assertNull(initialHeaders);
         assertNull(headers);
+        assertTrue(initialResolves.isEmpty());
+        assertTrue(resolves.isEmpty());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
@@ -394,8 +380,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialAccessTypeData.isIgnoreSSLError(), data.isIgnoreSSLError());
         assertNotEquals(initialAccessTypeData.getConnectCount(), data.getConnectCount());
         assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
-        assertEquals(initialResolve.getTargetAddress(), resolve.getTargetAddress());
-        assertEquals(initialResolve.getTargetPort(), resolve.getTargetPort());
     }
 
     @Test

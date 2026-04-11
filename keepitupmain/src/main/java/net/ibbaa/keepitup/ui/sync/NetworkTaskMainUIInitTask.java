@@ -53,7 +53,6 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
     }
 
     @Override
-    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
     protected List<NetworkTaskUIWrapper> runInBackground() {
         Log.d(NetworkTaskMainUIInitTask.class.getName(), "runInBackground");
         try {
@@ -84,21 +83,20 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 }
                 for (NetworkTask currentTask : tasks) {
                     AccessTypeData data = allData.get(currentTask.getId());
-                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following access type data: " + (data == null ? "null" : data.toString()));
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following access type data: " + data);
                     if (data == null) {
                         Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned null for access type data. Creating new one.");
                         data = new AccessTypeData(context);
                         data.setNetworkTaskId(currentTask.getId());
                         accessTypeDataDAO.insertAccessTypeData(data);
                     }
-                    List<Resolve> resolveList = allResolve.get(currentTask.getId());
-                    Resolve resolve = (resolveList == null || resolveList.isEmpty()) ? null : resolveList.get(0);
-                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following resolve object: " + (resolve == null ? "null" : resolve.toString()));
+                    List<Resolve> resolves = allResolve.get(currentTask.getId());
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following resolve object: " + resolves);
                     List<Header> headers = allHeaders.get(currentTask.getId());
-                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following headers: " + (headers == null ? "null" : headers.toString()));
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following headers: " + headers);
                     LogEntry logEntry = allLogEntries.get(currentTask.getId());
-                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
-                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolve, headers, logEntry);
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following log entry: " + logEntry);
+                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolves, headers, logEntry);
                     wrapperList.add(currentWrapper);
                 }
                 return wrapperList;

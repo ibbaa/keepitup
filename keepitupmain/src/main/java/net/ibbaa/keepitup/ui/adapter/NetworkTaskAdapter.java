@@ -77,7 +77,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder for position " + position);
         NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
         AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
-        Resolve resolve = networkTaskWrapperList.get(position).getResolve();
+        List<Resolve> resolves = networkTaskWrapperList.get(position).getResolves();
         List<Header> headers = networkTaskWrapperList.get(position).getHeaders();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
         bindTitle(networkTaskViewHolder, networkTask);
@@ -85,7 +85,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindInstances(networkTaskViewHolder, networkTask);
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
-        bindConnectTo(networkTaskViewHolder, networkTask, resolve);
+        bindConnectTo(networkTaskViewHolder, networkTask, resolves);
         bindHeaders(position, networkTaskViewHolder, networkTask, accessTypeData, headers);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
@@ -178,21 +178,22 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setAddress(formattedAddressText);
     }
 
-    private void bindConnectTo(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, Resolve resolve) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindConnectTo, networkTask is " + networkTask + ", resolve is " + resolve);
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    private void bindConnectTo(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<Resolve> resolves) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindConnectTo, networkTask is " + networkTask + ", resolve objects are " + resolves);
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
             networkTaskViewHolder.showConnectToTextView();
             String hostAndPort;
-            if (resolve == null || resolve.isEmpty()) {
+            if (resolves == null || resolves.isEmpty()) {
                 hostAndPort = getResources().getString(R.string.string_not_set);
             } else {
                 URL url = URLUtil.getURL(networkTask.getAddress());
                 if (url == null) {
                     hostAndPort = getResources().getString(R.string.string_not_set);
                 } else {
-                    String targetAddress = URLUtil.getTargetAddress(resolve, url);
+                    String targetAddress = URLUtil.getTargetAddress(resolves.get(0), url);
                     targetAddress = URLUtil.isValidIP6Address(targetAddress) ? "[" + targetAddress + "]" : targetAddress;
-                    int targetPort = URLUtil.getTargetPort(resolve, url);
+                    int targetPort = URLUtil.getTargetPort(resolves.get(0), url);
                     hostAndPort = targetAddress + ":" + targetPort;
                 }
             }
@@ -359,7 +360,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers, LogEntry logEntry) {
+    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, LogEntry logEntry) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
@@ -367,8 +368,8 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 if (data == null) {
                     data = currentTask.getAccessTypeData();
                 }
-                if (resolve == null) {
-                    resolve = currentTask.getResolve();
+                if (resolves == null) {
+                    resolves = currentTask.getResolves();
                 }
                 if (headers == null) {
                     headers = currentTask.getHeaders();
@@ -376,7 +377,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 if (logEntry == null) {
                     logEntry = currentTask.getLogEntry();
                 }
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolve, headers, logEntry));
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolves, headers, logEntry));
                 return ii;
             }
         }

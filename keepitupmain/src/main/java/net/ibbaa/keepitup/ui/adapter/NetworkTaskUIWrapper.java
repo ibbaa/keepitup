@@ -29,29 +29,29 @@ import net.ibbaa.keepitup.util.CollectionUtil;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class NetworkTaskUIWrapper {
 
     private static final Equality<Header> HEADER_EQUALITY = Header::isEqual;
+    private static final Equality<Resolve> RESOLVE_EQUALITY = Resolve::isEqual;
 
     private final NetworkTask networkTask;
     private final AccessTypeData accessTypeData;
-    private final Resolve resolve;
+    private final List<Resolve> resolves;
     private final List<Header> headers;
     private final LogEntry logEntry;
 
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, List<Header> headers, LogEntry logEntry) {
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, LogEntry logEntry) {
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
-        this.resolve = resolve;
+        this.resolves = resolves;
         this.headers = headers;
         this.logEntry = logEntry;
     }
 
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, LogEntry logEntry) {
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, LogEntry logEntry) {
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
-        this.resolve = resolve;
+        this.resolves = resolves;
         this.headers = Collections.emptyList();
         this.logEntry = logEntry;
     }
@@ -68,8 +68,8 @@ public class NetworkTaskUIWrapper {
         return accessTypeData;
     }
 
-    public Resolve getResolve() {
-        return resolve;
+    public List<Resolve> getResolves() {
+        return resolves;
     }
 
     public List<Header> getHeaders() {
@@ -96,10 +96,7 @@ public class NetworkTaskUIWrapper {
         if (accessTypeData != null && !accessTypeData.isEqual(other.getAccessTypeData())) {
             return false;
         }
-        if (resolve == null && other.getResolve() != null) {
-            return false;
-        }
-        if (resolve != null && !resolve.isEqual(other.getResolve())) {
+        if (!CollectionUtil.areListsEqual(resolves, other.getResolves(), RESOLVE_EQUALITY)) {
             return false;
         }
         if (!CollectionUtil.areListsEqual(headers, other.getHeaders(), HEADER_EQUALITY)) {
@@ -117,7 +114,7 @@ public class NetworkTaskUIWrapper {
         return "NetworkTaskUIWrapper{" +
                 "networkTask=" + networkTask +
                 ", accessTypeData=" + accessTypeData +
-                ", resolve=" + resolve +
+                ", resolves=" + resolves +
                 ", headers=" + headers +
                 ", logEntry=" + logEntry +
                 '}';
