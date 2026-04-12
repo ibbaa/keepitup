@@ -101,7 +101,7 @@ public class ResolveSyncHandlerTest extends BaseUITest {
         List<Resolve> resolves = getResolveDAO().readAllResolvesForNetworkTask(0);
         assertEquals(1, resolves.size());
         assertEquals(0, resolves.get(0).getIndex());
-        assertTrue(getResolve3().isTechnicallyEqual(resolves.get(0)));
+        assertTrue(resolve3.isTechnicallyEqual(resolves.get(0)));
     }
 
     @Test
@@ -132,7 +132,9 @@ public class ResolveSyncHandlerTest extends BaseUITest {
         getResolveDAO().insertResolve(getResolve(1, 0));
         getResolveDAO().insertResolve(getResolve(1, 1));
         ResolveSyncHandler handler = new ResolveSyncHandler(TestRegistry.getContext());
-        List<Resolve> newResolves = Arrays.asList(getResolve2(), getResolve3());
+        Resolve resolve2 = getResolve2();
+        Resolve resolve3 = getResolve3();
+        List<Resolve> newResolves = Arrays.asList(resolve2, resolve3);
         DBSyncResult syncResult = handler.synchronizeResolves(0, newResolves);
         assertTrue(syncResult.success());
         assertTrue(syncResult.dbChanged());
@@ -140,8 +142,8 @@ public class ResolveSyncHandlerTest extends BaseUITest {
         assertEquals(2, resolvesTask0.size());
         assertEquals(0, resolvesTask0.get(0).getIndex());
         assertEquals(1, resolvesTask0.get(1).getIndex());
-        assertTrue(getResolve2().isTechnicallyEqual(resolvesTask0.get(0)));
-        assertTrue(getResolve3().isTechnicallyEqual(resolvesTask0.get(1)));
+        assertTrue(resolve2.isTechnicallyEqual(resolvesTask0.get(0)));
+        assertTrue(resolve3.isTechnicallyEqual(resolvesTask0.get(1)));
         List<Resolve> resolvesTask1 = getResolveDAO().readAllResolvesForNetworkTask(1);
         assertEquals(2, resolvesTask1.size());
         assertEquals(0, resolvesTask1.get(0).getIndex());

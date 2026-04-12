@@ -214,6 +214,14 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return NetworkTaskEditDialog.class.getName() + ".Headers";
     }
 
+    public String getResolvesBaseKey() {
+        return NetworkTaskEditDialog.class.getName() + ".ResolvesBase";
+    }
+
+    public String getHeadersBaseKey() {
+        return NetworkTaskEditDialog.class.getName() + ".HeadersBase";
+    }
+
     public String getCurrentHeadersKey() {
         return NetworkTaskEditDialog.class.getName() + ".CurrentHeaders";
     }
@@ -312,7 +320,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolves");
         Bundle resolvesBundle = BundleUtil.bundleFromBundle(getResolvesKey(), requireArguments());
         if (resolvesBundle != null) {
-            resolves = BundleUtil.resolveListFromBundle(getHeadersKey(), resolvesBundle);
+            resolves = BundleUtil.resolveListFromBundle(getResolvesBaseKey(), resolvesBundle);
         } else {
             resolves = Collections.emptyList();
         }
@@ -322,7 +330,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHeaders");
         Bundle headersBundle = BundleUtil.bundleFromBundle(getHeadersKey(), requireArguments());
         if (headersBundle != null) {
-            headers = BundleUtil.headerListFromBundle(getHeadersKey(), headersBundle);
+            headers = BundleUtil.headerListFromBundle(getHeadersBaseKey(), headersBundle);
         } else {
             headers = accessTypeData.isUseDefaultHeaders() ? null : Collections.emptyList();
         }

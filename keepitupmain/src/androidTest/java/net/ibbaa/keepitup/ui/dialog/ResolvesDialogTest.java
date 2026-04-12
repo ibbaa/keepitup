@@ -429,6 +429,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withRecyclerView(R.id.listview_dialog_resolves_resolves).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("No resolve rules defined")));

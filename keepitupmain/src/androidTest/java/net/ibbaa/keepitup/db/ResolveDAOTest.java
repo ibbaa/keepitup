@@ -252,6 +252,7 @@ public class ResolveDAOTest {
         assertTrue(resolveDAO.normalizeUIIndex());
         readResolveList = resolveDAO.readAllResolvesForNetworkTask(0);
         assertEquals(0, readResolveList.get(0).getIndex());
+        insertedResolve1.setIndex(0);
         assertTrue(insertedResolve1.isTechnicallyEqual(readResolveList.get(0)));
         resolveDAO.deleteAllResolves();
         insertedResolve1 = getResolve1();
@@ -271,6 +272,9 @@ public class ResolveDAOTest {
         assertEquals(0, readResolveList.get(0).getIndex());
         assertEquals(1, readResolveList.get(1).getIndex());
         assertEquals(2, readResolveList.get(2).getIndex());
+        insertedResolve1.setIndex(0);
+        insertedResolve3.setIndex(1);
+        insertedResolve2.setIndex(2);
         assertTrue(insertedResolve1.isTechnicallyEqual(readResolveList.get(0)));
         assertTrue(insertedResolve3.isTechnicallyEqual(readResolveList.get(1)));
         assertTrue(insertedResolve2.isTechnicallyEqual(readResolveList.get(2)));

@@ -687,11 +687,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
         bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), accessTypeData.toBundle(), bundle);
         if (resolves != null) {
-            Bundle resolvesBundle = BundleUtil.resolveListToBundle(editDialog.getResolvesKey(), resolves);
+            Bundle resolvesBundle = BundleUtil.resolveListToBundle(editDialog.getResolvesBaseKey(), resolves);
             bundle = BundleUtil.bundleToBundle(editDialog.getResolvesKey(), resolvesBundle, bundle);
         }
         if (headers != null) {
-            Bundle headersBundle = BundleUtil.headerListToBundle(editDialog.getHeadersKey(), headers);
+            Bundle headersBundle = BundleUtil.headerListToBundle(editDialog.getHeadersBaseKey(), headers);
             bundle = BundleUtil.bundleToBundle(editDialog.getHeadersKey(), headersBundle, bundle);
         }
         editDialog.setArguments(bundle);

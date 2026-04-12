@@ -336,7 +336,7 @@ public class ResolveTest {
         resolve2.setId(0);
         assertTrue(resolve1.isTechnicallyEqual(resolve2));
         resolve1.setIndex(2);
-        assertTrue(resolve1.isTechnicallyEqual(resolve2));
+        assertFalse(resolve1.isTechnicallyEqual(resolve2));
         resolve2.setIndex(2);
         assertTrue(resolve1.isTechnicallyEqual(resolve2));
         resolve1.setNetworkTaskId(22);
