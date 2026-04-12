@@ -917,6 +917,9 @@ public class DBSetup {
             if (resolve.getTargetAddress() != null) {
                 resolve.setTargetAddress(resolve.getTargetAddress().trim());
             }
+            if (resolve.getSourceAddress() != null) {
+                resolve.setSourceAddress(resolve.getSourceAddress().trim());
+            }
             Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
             if (resolveValidator.validate(resolve)) {
                 Log.d(DBSetup.class.getName(), "Importing resolve object.");

@@ -748,6 +748,7 @@ public class DBSetupTest {
         task.setAddress("   https://test.org   ");
         taskMap = task.toMap();
         resolve = getResolve(0);
+        resolve.setSourceAddress("  localhost   ");
         resolve.setTargetAddress("   192.168.178.1  ");
         resolveMap = resolve.toMap();
         setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, resolveMap, Collections.emptyList());
@@ -757,6 +758,7 @@ public class DBSetupTest {
         assertEquals("https://test.org", task.getAddress());
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
         assertEquals("192.168.178.1", resolve.getTargetAddress());
+        assertEquals("localhost", resolve.getSourceAddress());
     }
 
     @Test
