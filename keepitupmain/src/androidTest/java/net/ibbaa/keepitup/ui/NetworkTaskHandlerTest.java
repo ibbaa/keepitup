@@ -241,13 +241,13 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
         assertEquals(9, adapterWrapper1.getAccessTypeData().getPingCount());
         assertEquals(1234, adapterWrapper1.getResolves().get(0).getTargetPort());
-        assertEquals(4321, adapterWrapper1.getResolves().get(0).getTargetPort());
+        assertEquals(4321, adapterWrapper1.getResolves().get(1).getSourcePort());
         assertEquals("value2", adapterWrapper1.getHeaders().get(0).getValue());
         assertEquals("name3", adapterWrapper1.getHeaders().get(1).getName());
         assertTrue(task1.isEqual(adapterWrapper1.getNetworkTask()));
         assertTrue(data1.isEqual(adapterWrapper1.getAccessTypeData()));
         assertTrue(resolve1.isEqual(adapterWrapper1.getResolves().get(0)));
-        assertTrue(resolve2.isEqual(adapterWrapper1.getResolves().get(01)));
+        assertTrue(resolve2.isEqual(adapterWrapper1.getResolves().get(1)));
         assertTrue(header1.isEqual(adapterWrapper1.getHeaders().get(0)));
         assertTrue(header2.isEqual(adapterWrapper1.getHeaders().get(1)));
         assertFalse(task1.isRunning());

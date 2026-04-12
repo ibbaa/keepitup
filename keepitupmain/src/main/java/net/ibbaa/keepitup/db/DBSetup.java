@@ -812,11 +812,15 @@ public class DBSetup {
         return accessTypeData != null ? accessTypeData.toMap() : null;
     }
 
-    public Map<String, ?> exportResolveForNetworkTask(long networkTaskId) {
-        Log.d(DBSetup.class.getName(), "exportResolveForNetworkTask, networkTaskId is " + networkTaskId);
+    public List<Map<String, ?>> exportResolvesForNetworkTask(long networkTaskId) {
+        Log.d(DBSetup.class.getName(), "exportResolvesForNetworkTask, networkTaskId is " + networkTaskId);
         ResolveDAO dao = new ResolveDAO(getContext());
-        Resolve resolve = dao.readResolveForNetworkTask(networkTaskId);
-        return resolve != null ? resolve.toMap() : null;
+        List<Resolve> resolves = dao.readAllResolvesForNetworkTask(networkTaskId);
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (Resolve resolve : resolves) {
+            exportedList.add(resolve.toMap());
+        }
+        return exportedList;
     }
 
     public List<Map<String, ?>> exportHeadersForNetworkTask(long networkTaskId, boolean encrypted) {
@@ -867,11 +871,11 @@ public class DBSetup {
         return encrypted;
     }
 
-    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headerList) {
-        importNetworkTaskWithAssociatedObjects(taskMap, logList, accessTypeDataMap, resolveMap, headerList, true);
+    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList) {
+        importNetworkTaskWithAssociatedObjects(taskMap, logList, accessTypeDataMap, resolveList, headerList, true);
     }
 
-    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headerList, boolean resetRunnning) {
+    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList, boolean resetRunnning) {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithAssociatedObjects, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
@@ -892,7 +896,7 @@ public class DBSetup {
         if (task.getId() > 0) {
             importLogs(logList, task);
             importAccessTypeData(accessTypeDataMap, task);
-            importResolve(resolveMap, task);
+            importResolves(resolveList, task);
             importHeaders(headerList, task);
         }
     }
@@ -905,27 +909,29 @@ public class DBSetup {
         });
     }
 
-    private void importResolve(Map<String, ?> resolveMap, NetworkTask task) {
-        Log.d(DBSetup.class.getName(), "importResolve");
-        if (resolveMap == null) {
-            Log.d(DBSetup.class.getName(), "Resolve map is null. Nothing to import.");
+    private void importResolves(List<Map<String, ?>> resolveList, NetworkTask task) {
+        Log.d(DBSetup.class.getName(), "importResolves");
+        if (resolveList == null) {
+            Log.d(DBSetup.class.getName(), "Resolve list is null. Nothing to import.");
         } else {
             ResolveDAO resolveDAO = new ResolveDAO(getContext());
             ResolveValidator resolveValidator = new ResolveValidator(getContext());
-            Resolve resolve = new Resolve(resolveMap);
-            resolve.setNetworkTaskId(task.getId());
-            if (resolve.getTargetAddress() != null) {
-                resolve.setTargetAddress(resolve.getTargetAddress().trim());
-            }
-            if (resolve.getSourceAddress() != null) {
-                resolve.setSourceAddress(resolve.getSourceAddress().trim());
-            }
-            Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
-            if (resolveValidator.validate(resolve)) {
-                Log.d(DBSetup.class.getName(), "Importing resolve object.");
-                resolveDAO.insertResolve(resolve);
-            } else {
-                Log.e(DBSetup.class.getName(), "Resolve object is invalid and will not be imported: " + resolve);
+            for (Map<String, ?> resolveMap : resolveList) {
+                Resolve resolve = new Resolve(resolveMap);
+                resolve.setNetworkTaskId(task.getId());
+                if (resolve.getTargetAddress() != null) {
+                    resolve.setTargetAddress(resolve.getTargetAddress().trim());
+                }
+                if (resolve.getSourceAddress() != null) {
+                    resolve.setSourceAddress(resolve.getSourceAddress().trim());
+                }
+                Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
+                if (resolveValidator.validate(resolve)) {
+                    Log.d(DBSetup.class.getName(), "Importing resolve object.");
+                    resolveDAO.insertResolve(resolve);
+                } else {
+                    Log.e(DBSetup.class.getName(), "Resolve object is invalid and will not be imported: " + resolve);
+                }
             }
         }
     }

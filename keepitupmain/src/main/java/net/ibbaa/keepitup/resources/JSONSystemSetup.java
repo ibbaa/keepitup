@@ -186,17 +186,30 @@ public class JSONSystemSetup {
         String taskKey = getResources().getString(R.string.networktask_json_key);
         String logKey = getResources().getString(R.string.logentry_json_key);
         String accessTypeDataKey = getResources().getString(R.string.accesstypedata_json_key);
-        String resolveKey = getResources().getString(R.string.resolve_json_key);
         String headerKey = getResources().getString(R.string.header_json_key);
         JSONObject taskData = (JSONObject) dbData.get(key);
         if (taskData.has(taskKey)) {
             Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
             List<?> logList = taskData.has(logKey) ? JSONUtil.toList((JSONArray) taskData.get(logKey)) : Collections.emptyList();
             Map<String, ?> dataMap = taskData.has(accessTypeDataKey) ? JSONUtil.toMap((JSONObject) taskData.get(accessTypeDataKey)) : null;
-            Map<String, ?> resolveMap = taskData.has(resolveKey) ? JSONUtil.toMap((JSONObject) taskData.get(resolveKey)) : null;
+            List<?> resolveList = getResolveList(taskData);
             List<?> headerList = taskData.has(headerKey) ? JSONUtil.toList((JSONArray) taskData.get(headerKey)) : null;
-            dbSetup.importNetworkTaskWithAssociatedObjects(taskMap, filterList(logList), dataMap, resolveMap, filterList(headerList));
+            dbSetup.importNetworkTaskWithAssociatedObjects(taskMap, filterList(logList), dataMap, filterList(resolveList), filterList(headerList));
         }
+    }
+
+    private List<?> getResolveList(JSONObject taskData) throws JSONException {
+        String resolveKey = getResources().getString(R.string.resolve_json_key);
+        if (!taskData.has(resolveKey)) {
+            return null;
+        }
+        Object resolveData = taskData.get(resolveKey);
+        if (resolveData instanceof JSONArray) {
+            return JSONUtil.toList((JSONArray) taskData.get(resolveKey));
+        } else if (resolveData instanceof JSONObject) {
+            return Collections.singletonList(JSONUtil.toMap((JSONObject) taskData.get(resolveKey)));
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -239,9 +252,9 @@ public class JSONSystemSetup {
             if (id >= 0) {
                 List<Map<String, ?>> logs = dbSetup.exportLogsForNetworkTask(id);
                 Map<String, ?> acccessTypeDataMap = dbSetup.exportAccessTypeDataForNetworkTask(id);
-                Map<String, ?> resolveMap = dbSetup.exportResolveForNetworkTask(id);
+                List<Map<String, ?>> resolves = dbSetup.exportResolvesForNetworkTask(id);
                 List<Map<String, ?>> headers = dbSetup.exportHeadersForNetworkTask(id, encrypted);
-                JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap, resolveMap, headers);
+                JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap, resolves, headers);
                 dbData.put(String.valueOf(id), task);
             }
         }
@@ -276,7 +289,7 @@ public class JSONSystemSetup {
         return -1;
     }
 
-    private JSONObject getJSONObjectForNetworkTask(Map<String, ?> taskMap, List<Map<String, ?>> logs, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headers) throws JSONException {
+    private JSONObject getJSONObjectForNetworkTask(Map<String, ?> taskMap, List<Map<String, ?>> logs, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolves, List<Map<String, ?>> headers) throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "getJSONObjectForNetworkTask");
         JSONObject task = new JSONObject();
         String taskKey = getResources().getString(R.string.networktask_json_key);
@@ -289,8 +302,8 @@ public class JSONSystemSetup {
         if (accessTypeDataMap != null) {
             task.put(accessTypeDataKey, new JSONObject(accessTypeDataMap));
         }
-        if (resolveMap != null) {
-            task.put(resolveKey, new JSONObject(resolveMap));
+        if (resolves != null) {
+            task.put(resolveKey, new JSONArray(resolves));
         }
         if (headers != null) {
             task.put(headerKey, new JSONArray(headers));

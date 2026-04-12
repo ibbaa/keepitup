@@ -338,7 +338,7 @@ public class DBMigrateTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         assertTrue(data.isTechnicallyEqual(data1));
-        Resolve resolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve resolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(resolve.isTechnicallyEqual(resolve1));
         Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(header.isTechnicallyEqual(header1));
@@ -376,7 +376,7 @@ public class DBMigrateTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         assertTrue(data.isTechnicallyEqual(data1));
-        Resolve resolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve resolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(resolve.isTechnicallyEqual(resolve1));
         Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(header.isTechnicallyEqual(header1));
@@ -416,7 +416,7 @@ public class DBMigrateTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         assertTrue(data.isTechnicallyEqual(data1));
-        Resolve resolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve resolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(resolve.isTechnicallyEqual(resolve1));
         Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(header.isTechnicallyEqual(header1));

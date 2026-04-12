@@ -185,10 +185,10 @@ public class JSONSystemSetupTest {
         AccessTypeData task2AccessData = new AccessTypeData(JSONUtil.toMap((task2AccessDataJSON)));
         assertTrue(task1AccessData.isEqual(accessData1));
         assertTrue(task2AccessData.isEqual(accessData2));
-        JSONObject task1ResolveJSON = (JSONObject) task1Data.get("resolve");
-        JSONObject task2ResolveJSON = (JSONObject) task2Data.get("resolve");
-        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON)));
-        Resolve task2Resolve = new Resolve(JSONUtil.toMap((task2ResolveJSON)));
+        JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
+        JSONArray task2ResolveJSON = (JSONArray) task2Data.get("resolve");
+        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON.getJSONObject(0))));
+        Resolve task2Resolve = new Resolve(JSONUtil.toMap((task2ResolveJSON.getJSONObject(0))));
         assertTrue(task1Resolve.isEqual(resolve1));
         assertTrue(task2Resolve.isEqual(resolve2));
         JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
@@ -259,8 +259,8 @@ public class JSONSystemSetupTest {
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
         AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
         assertTrue(task1AccessData.isEqual(accessData1));
-        JSONObject task1ResolveJSON = (JSONObject) task1Data.get("resolve");
-        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON)));
+        JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
+        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON.getJSONObject(0))));
         assertTrue(task1Resolve.isEqual(insertedResolve1));
     }
 
@@ -281,11 +281,11 @@ public class JSONSystemSetupTest {
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONArray globalHeaderData = (JSONArray) databaseData.get("globalheader");
         assertEquals(1, globalHeaderData.length());
-        Header globalHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
+        Header globalHeader1 = new Header(JSONUtil.toMap(globalHeaderData.getJSONObject(0)));
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
         assertEquals(1, task1HeaderJSON.length());
-        Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
+        Header task1Header = new Header(JSONUtil.toMap(task1HeaderJSON.getJSONObject(0)));
         assertTrue(task1Header.isEqual(header1));
         assertTrue(globalHeader1.isEqual(header2));
     }
@@ -596,11 +596,11 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData3 = new AccessTypeData(TestRegistry.getContext());
         accessData3.setNetworkTaskId(readAccessData3.getId());
         assertTrue(accessData3.isTechnicallyEqual(readAccessData3));
-        Resolve readResolve1 = resolveDAO.readResolveForNetworkTask(readTask1.getId());
-        Resolve readResolve2 = resolveDAO.readResolveForNetworkTask(readTask2.getId());
+        Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(readTask1.getId()).get(0);
+        Resolve readResolve2 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(0);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
-        assertNull(resolveDAO.readResolveForNetworkTask(readTask3.getId()));
+        assertTrue(resolveDAO.readAllResolvesForNetworkTask(readTask3.getId()).isEmpty());
         List<Header> readHeaderList1 = headerDAO.readHeadersForNetworkTask(readTask1.getId());
         List<Header> readHeaderList2 = headerDAO.readHeadersForNetworkTask(readTask2.getId());
         assertTrue(header1.isTechnicallyEqual(readHeaderList1.get(0)));
@@ -669,7 +669,7 @@ public class JSONSystemSetupTest {
         NetworkTask readTask1 = tasks.get(0);
         assertTrue(task1.isTechnicallyEqual(readTask1));
         assertEquals("127.0.0.1", readTask1.getAddress());
-        Resolve readResolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertEquals("192.168.178.1", readResolve1.getTargetAddress());
     }
@@ -849,7 +849,7 @@ public class JSONSystemSetupTest {
         AccessTypeData defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task1.getId());
         assertTrue(defaultData.isTechnicallyEqual(data1));
-        Resolve resolve = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
@@ -875,7 +875,7 @@ public class JSONSystemSetupTest {
         defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task1.getId());
         assertTrue(defaultData.isTechnicallyEqual(data1));
-        resolve = resolveDAO.readResolveForNetworkTask(task1.getId());
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
@@ -901,7 +901,7 @@ public class JSONSystemSetupTest {
         defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task1.getId());
         assertTrue(defaultData.isTechnicallyEqual(data1));
-        resolve = resolveDAO.readResolveForNetworkTask(task1.getId());
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
     }
 

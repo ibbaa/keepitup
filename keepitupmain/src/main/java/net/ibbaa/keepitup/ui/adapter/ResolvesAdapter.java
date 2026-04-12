@@ -86,7 +86,7 @@ public class ResolvesAdapter extends RecyclerView.Adapter<ResolveViewHolder> {
     private String getMatchText(Resolve resolve) {
         String match;
         if (isMatchEmpty(resolve)) {
-            match =  getResources().getString(R.string.string_not_set);
+            match = getResources().getString(R.string.string_not_set);
         } else {
             match = getHostAndPort(resolve.getSourceAddress(), resolve.getSourcePort());
         }

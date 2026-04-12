@@ -725,7 +725,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         setResolvesNetworkTaskId(resolves, task.getId());
         List<Header> headers = editDialog.getHeaders();
         setHeadersNetworkTaskId(headers, task.getId());
-        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolves are " + resolves +  ", headers are " + headers);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolves are " + resolves + ", headers are " + headers);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
