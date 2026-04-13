@@ -97,6 +97,7 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -203,10 +204,12 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
-        Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(readTask1.getId());
-        Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
+        Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
+        Resolve readResolve2 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(0);
+        Resolve readResolve3 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
+        assertTrue(resolve3.isTechnicallyEqual(readResolve3));
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
         Header readGlobalHeader = getHeaderDAO().readGlobalHeaders().get(0);
@@ -272,6 +275,7 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -380,10 +384,12 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
-        Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(readTask1.getId());
-        Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
+        Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
+        Resolve readResolve2 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(0);
+        Resolve readResolve3 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
+        assertTrue(resolve3.isTechnicallyEqual(readResolve3));
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
         Header readGlobalHeader = getHeaderDAO().readGlobalHeaders().get(0);
@@ -449,6 +455,7 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -562,10 +569,12 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
-        Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(readTask1.getId());
-        Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
+        Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
+        Resolve readResolve2 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(0);
+        Resolve readResolve3 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
+        assertTrue(resolve3.isTechnicallyEqual(readResolve3));
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
         assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
         Header readGlobalHeader = getHeaderDAO().readGlobalHeaders().get(0);
@@ -891,7 +900,7 @@ public class ImportTaskTest extends BaseUITest {
         resolve.setId(0);
         resolve.setIndex(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setSourceAddress("");
+        resolve.setSourceAddress("192.168.178.2");
         resolve.setSourcePort(-1);
         resolve.setTargetAddress("192.168.178.1");
         resolve.setTargetPort(22);
@@ -903,9 +912,21 @@ public class ImportTaskTest extends BaseUITest {
         resolve.setId(0);
         resolve.setIndex(1);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setSourceAddress("");
-        resolve.setSourcePort(-1);
+        resolve.setSourceAddress("localhost");
+        resolve.setSourcePort(443);
         resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(80);
+        return resolve;
+    }
+
+    private Resolve getResolve3(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setIndex(2);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setSourceAddress("10.0.0.2");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("10.0.0.1");
         resolve.setTargetPort(80);
         return resolve;
     }

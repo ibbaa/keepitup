@@ -749,13 +749,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
-        Resolve resolveBefore = getResolveDAO().readResolveForNetworkTask(taskBefore.getId());
+        List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
-        Resolve resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
+        List<Resolve> resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
         assertEquals(taskBefore.getAccessType(), taskAfter.getAccessType());
         assertNotEquals(taskBefore.getAddress(), taskAfter.getAddress());
         assertEquals(taskBefore.getPort(), taskAfter.getPort());
@@ -764,8 +764,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals(taskBefore.isOnlyWifi(), taskAfter.isOnlyWifi());
         assertNotEquals(taskBefore.getSchedulerId(), taskAfter.getSchedulerId());
         assertTrue(dataBefore.isTechnicallyEqual(dataAfter));
-        assertNull(resolveBefore);
-        assertNull(resolveAfter);
+        assertTrue(resolvesBefore.isEmpty());
+        assertTrue(resolvesAfter.isEmpty());
         activityScenario.close();
     }
 
@@ -777,19 +777,19 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
-        Resolve resolveBefore = getResolveDAO().readResolveForNetworkTask(taskBefore.getId());
+        List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
-        Resolve resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
+        List<Resolve> resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
         assertFalse(taskBefore.isEqual(taskAfter));
         assertTrue(taskBefore.isTechnicallyEqual(taskAfter));
         assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
-        assertNull(resolveBefore);
-        assertNull(resolveAfter);
+        assertTrue(resolvesBefore.isEmpty());
+        assertTrue(resolvesAfter.isEmpty());
         activityScenario.close();
     }
 
@@ -801,7 +801,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
-        Resolve resolveBefore = getResolveDAO().readResolveForNetworkTask(taskBefore.getId());
+        List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
@@ -809,12 +809,12 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
-        Resolve resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
+        List<Resolve> resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
         assertFalse(taskBefore.isEqual(taskAfter));
         assertFalse(taskBefore.isTechnicallyEqual(taskAfter));
         assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
-        assertNull(resolveBefore);
-        assertNull(resolveAfter);
+        assertTrue(resolvesBefore.isEmpty());
+        assertTrue(resolvesAfter.isEmpty());
         activityScenario.close();
     }
 
@@ -825,7 +825,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
-        Resolve resolveBefore = getResolveDAO().readResolveForNetworkTask(taskBefore.getId());
+        List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
@@ -833,26 +833,26 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("22"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
-        Resolve resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
-        assertNull(resolveBefore);
-        assertNotNull(resolveAfter);
-        assertEquals("localhost", resolveAfter.getTargetAddress());
-        assertEquals(22, resolveAfter.getTargetPort());
+        List<Resolve> resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
+        assertTrue(resolvesBefore.isEmpty());
+        assertFalse(resolvesAfter.isEmpty());
+        assertEquals("localhost", resolvesAfter.get(0).getTargetAddress());
+        assertEquals(22, resolvesAfter.get(0).getTargetPort());
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("127.0.0.1"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("443"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
-        assertEquals("127.0.0.1", resolveAfter.getTargetAddress());
-        assertEquals(443, resolveAfter.getTargetPort());
+        resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
+        assertEquals("127.0.0.1", resolvesAfter.get(0).getTargetAddress());
+        assertEquals(443, resolvesAfter.get(0).getTargetPort());
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("not set"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
-        assertNull(resolveAfter);
+        resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
+        assertTrue(resolvesAfter.isEmpty());
         activityScenario.close();
     }
 
@@ -898,16 +898,16 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
-        Resolve resolveBefore = getResolveDAO().readResolveForNetworkTask(taskBefore.getId());
+        List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
-        Resolve resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
+        List<Resolve> resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         assertTrue(taskBefore.isEqual(taskAfter));
         assertTrue(dataBefore.isEqual(dataAfter));
-        assertNull(resolveBefore);
-        assertNull(resolveAfter);
+        assertTrue(resolvesBefore.isEmpty());
+        assertTrue(resolvesAfter.isEmpty());
         activityScenario.close();
     }
 

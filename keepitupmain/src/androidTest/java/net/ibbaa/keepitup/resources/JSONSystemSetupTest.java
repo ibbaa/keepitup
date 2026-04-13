@@ -139,6 +139,7 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = resolveDAO.insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = resolveDAO.insertResolve(getResolve3(task2.getId()));
         Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
         Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
         Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
@@ -188,9 +189,11 @@ public class JSONSystemSetupTest {
         JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
         JSONArray task2ResolveJSON = (JSONArray) task2Data.get("resolve");
         Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON.getJSONObject(0))));
-        Resolve task2Resolve = new Resolve(JSONUtil.toMap((task2ResolveJSON.getJSONObject(0))));
+        Resolve task2Resolve1 = new Resolve(JSONUtil.toMap((task2ResolveJSON.getJSONObject(0))));
+        Resolve task2Resolve2 = new Resolve(JSONUtil.toMap((task2ResolveJSON.getJSONObject(1))));
         assertTrue(task1Resolve.isEqual(resolve1));
-        assertTrue(task2Resolve.isEqual(resolve2));
+        assertTrue(task2Resolve1.isEqual(resolve2));
+        assertTrue(task2Resolve2.isEqual(resolve3));
         JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
         JSONArray task2HeaderJSON = (JSONArray) task2Data.get("header");
         Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
@@ -526,6 +529,7 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = resolveDAO.insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = resolveDAO.insertResolve(getResolve3(task2.getId()));
         Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
         Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
         Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
@@ -598,8 +602,10 @@ public class JSONSystemSetupTest {
         assertTrue(accessData3.isTechnicallyEqual(readAccessData3));
         Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(readTask1.getId()).get(0);
         Resolve readResolve2 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(0);
+        Resolve readResolve3 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
+        assertTrue(resolve3.isTechnicallyEqual(readResolve3));
         assertTrue(resolveDAO.readAllResolvesForNetworkTask(readTask3.getId()).isEmpty());
         List<Header> readHeaderList1 = headerDAO.readHeadersForNetworkTask(readTask1.getId());
         List<Header> readHeaderList2 = headerDAO.readHeadersForNetworkTask(readTask2.getId());
@@ -664,7 +670,7 @@ public class JSONSystemSetupTest {
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
-        setup.importData(exportResult.data().replace("\"address\":\"127.0.0.1\"", "\"address\":\"   127.0.0.1   \"").replace("\"targetAddress\":\"192.168.178.1\"", "\"targetAddress\":\"   192.168.178.1   \""));
+        setup.importData(exportResult.data().replace("\"address\":\"127.0.0.1\"", "\"address\":\"   127.0.0.1   \"").replace("\"targetAddress\":\"192.168.178.1\"", "\"targetAddress\":\"   192.168.178.1   \"").replace("\"sourceAddress\":\"192.168.178.2\"", "\"sourceAddress\":\"   192.168.178.2   \""));
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         assertTrue(task1.isTechnicallyEqual(readTask1));
@@ -672,6 +678,7 @@ public class JSONSystemSetupTest {
         Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertEquals("192.168.178.1", readResolve1.getTargetAddress());
+        assertEquals("192.168.178.2", readResolve1.getSourceAddress());
     }
 
     @Test
@@ -934,6 +941,50 @@ public class JSONSystemSetupTest {
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolve1 = getResolve1(task1.getId());
         resolve1.setTargetPort(123456789);
+        resolveDAO.insertResolve(resolve1);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(getAccessTypeData1(task1.getId()).isTechnicallyEqual(data1));
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        resolve1 = getResolve1(task1.getId());
+        resolve1.setSourcePort(9999999);
+        resolveDAO.insertResolve(resolve1);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(getAccessTypeData1(task1.getId()).isTechnicallyEqual(data1));
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        resolve1 = getResolve1(task1.getId());
+        resolve1.setSourceAddress("wrong host");
         resolveDAO.insertResolve(resolve1);
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
@@ -1517,7 +1568,7 @@ public class JSONSystemSetupTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setIndex(0);
-        resolve.setSourceAddress("");
+        resolve.setSourceAddress("192.168.178.2");
         resolve.setSourcePort(-1);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setTargetAddress("192.168.178.1");
@@ -1529,11 +1580,23 @@ public class JSONSystemSetupTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setIndex(1);
-        resolve.setSourceAddress("");
+        resolve.setSourceAddress("localhost");
         resolve.setSourcePort(-1);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setTargetAddress("127.0.0.1");
         resolve.setTargetPort(80);
+        return resolve;
+    }
+
+    private Resolve getResolve3(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setIndex(2);
+        resolve.setSourceAddress("10.0.0.1");
+        resolve.setSourcePort(8080);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setTargetAddress("10.0.0.2");
+        resolve.setTargetPort(-1);
         return resolve;
     }
 

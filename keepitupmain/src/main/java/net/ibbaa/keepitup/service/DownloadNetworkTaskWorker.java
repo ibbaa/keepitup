@@ -126,9 +126,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private Resolve getResolve(NetworkTask networkTask) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "getResolve for network task " + networkTask);
         ResolveDAO resolveDAO = new ResolveDAO(getContext());
-        Resolve resolve = resolveDAO.readResolveForNetworkTask(networkTask.getId());
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "Resolve object from database: " + resolve);
-        if (resolve != null && resolve.isEmpty()) {
+        List<Resolve> resolves = resolveDAO.readAllResolvesForNetworkTask(networkTask.getId());
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Resolve objects from database: " + resolves);
+        if (resolves == null || resolves.isEmpty()) {
+            return null;
+        }
+        Resolve resolve = resolves.get(0);
+        if (resolve.isEmpty()) {
             return null;
         }
         return resolve;

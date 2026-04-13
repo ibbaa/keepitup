@@ -61,16 +61,6 @@ public class ResolveDAO extends BaseDAO {
         return returnedResolve;
     }
 
-    @SuppressWarnings("SequencedCollectionMethodCanBeUsed")
-    public Resolve readResolveForNetworkTask(long networkTaskId) {
-        Log.d(ResolveDAO.class.getName(), "readResolveForNetworkTask, network task id is " + networkTaskId);
-        Resolve resolve = new Resolve();
-        resolve.setNetworkTaskId(networkTaskId);
-        List<Resolve> resolveList = executeDBOperationInTransaction(resolve, this::readAllResolvesForNetworkTask);
-        Log.d(ResolveDAO.class.getName(), "Number of resolve objects read: " + resolveList.size());
-        return resolveList.isEmpty() ? null : resolveList.get(0);
-    }
-
     public List<Resolve> readAllResolvesForNetworkTask(long networkTaskId) {
         Log.d(ResolveDAO.class.getName(), "readAllResolvesForNetworkTask, network task id is " + networkTaskId);
         Resolve resolve = new Resolve();
