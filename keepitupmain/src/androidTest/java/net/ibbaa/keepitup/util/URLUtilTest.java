@@ -128,6 +128,36 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testIsSameHostAndPortString() {
+        assertTrue(URLUtil.isSameHostAndPort(null, -1, null, -1));
+        assertTrue(URLUtil.isSameHostAndPort("", -1, "", -1));
+        assertTrue(URLUtil.isSameHostAndPort(null, -1, "", -2));
+        assertTrue(URLUtil.isSameHostAndPort(null, 443, null, 443));
+        assertTrue(URLUtil.isSameHostAndPort("", 80, "", 80));
+        assertTrue(URLUtil.isSameHostAndPort(null, 443, "", 443));
+        assertFalse(URLUtil.isSameHostAndPort(null, 443, null, 8443));
+        assertFalse(URLUtil.isSameHostAndPort("", 80, null, 443));
+        assertTrue(URLUtil.isSameHostAndPort("example.com", -1, "example.com", -1));
+        assertTrue(URLUtil.isSameHostAndPort("EXAMPLE.com", -1, "example.COM", -2));
+        assertTrue(URLUtil.isSameHostAndPort("127.0.0.1", -1, "127.0.0.1", -1));
+        assertTrue(URLUtil.isSameHostAndPort("::1", -1, "0:0:0:0:0:0:0:1", -1));
+        assertFalse(URLUtil.isSameHostAndPort("example.com", -1, "other.com", -1));
+        assertFalse(URLUtil.isSameHostAndPort("127.0.0.1", -1, "127.0.0.2", -1));
+        assertFalse(URLUtil.isSameHostAndPort("::1", -1, "::2", -1));
+        assertTrue(URLUtil.isSameHostAndPort("example.com", 443, "example.com", 443));
+        assertTrue(URLUtil.isSameHostAndPort("EXAMPLE.com", 443, "example.COM", 443));
+        assertTrue(URLUtil.isSameHostAndPort("127.0.0.1", 80, "127.0.0.1", 80));
+        assertTrue(URLUtil.isSameHostAndPort("::1", 443, "0:0:0:0:0:0:0:1", 443));
+        assertFalse(URLUtil.isSameHostAndPort("example.com", 443, "example.com", 8443));
+        assertFalse(URLUtil.isSameHostAndPort("example.com", 443, "other.com", 443));
+        assertFalse(URLUtil.isSameHostAndPort("127.0.0.1", 80, "127.0.0.2", 80));
+        assertFalse(URLUtil.isSameHostAndPort(null, 443, "example.com", 443));
+        assertFalse(URLUtil.isSameHostAndPort("example.com", 443, "", 443));
+        assertFalse(URLUtil.isSameHostAndPort("example.com", -1, "example.com", 443));
+        assertFalse(URLUtil.isSameHostAndPort("example.com", 443, "example.com", -1));
+    }
+
+    @Test
     public void testGetPort() throws Exception {
         assertEquals(443, URLUtil.getPort(new URL("https://127.0.0.2")));
         assertEquals(80, URLUtil.getPort(new URL("https://127.0.0.2:80")));
@@ -145,6 +175,27 @@ public class URLUtilTest {
         assertEquals("[www.host.com", URLUtil.normalizeHost("[www.host.com"));
         assertEquals("www.host.com", URLUtil.normalizeHost("[www.host.com]"));
         assertEquals("3ffe:1900:4545:3:200:f8ff:fe21:67cf", URLUtil.normalizeHost("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
+    }
+
+    @Test
+    public void testGetSourceAddress() throws Exception {
+        Resolve resolve = new Resolve();
+        assertEquals("127.0.0.2", URLUtil.getSourceAddress(resolve, new URL("https://127.0.0.2")));
+        resolve.setSourceAddress(null);
+        assertEquals("www.test.com", URLUtil.getSourceAddress(resolve, new URL("https://www.test.com")));
+        resolve.setSourceAddress("www.test.com");
+        assertEquals("www.test.com", URLUtil.getSourceAddress(resolve, new URL("https://127.0.0.2")));
+    }
+
+    @Test
+    public void testGetSourcePort() throws Exception {
+        Resolve resolve = new Resolve();
+        assertEquals(443, URLUtil.getSourcePort(resolve, new URL("https://127.0.0.2")));
+        assertEquals(80, URLUtil.getSourcePort(resolve, new URL("http://test.org")));
+        assertEquals(8080, URLUtil.getSourcePort(resolve, new URL("https://127.0.0.2:8080")));
+        resolve.setSourcePort(22);
+        assertEquals(22, URLUtil.getSourcePort(resolve, new URL("https://127.0.0.2:8080")));
+        assertEquals(22, URLUtil.getSourcePort(resolve, new URL("http://www.test.com")));
     }
 
     @Test

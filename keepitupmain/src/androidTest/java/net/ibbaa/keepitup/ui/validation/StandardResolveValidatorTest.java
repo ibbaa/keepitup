@@ -30,6 +30,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class StandardResolveValidatorTest {
@@ -134,6 +136,30 @@ public class StandardResolveValidatorTest {
         result = validator.validateSourcePort("not set");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Match port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+    }
+
+    @Test
+    public void testValidateSourceExists() {
+        Resolve resolve1 = new Resolve();
+        resolve1.setSourceAddress("example.com");
+        resolve1.setSourcePort(443);
+        Resolve resolve2 = new Resolve();
+        resolve2.setSourceAddress("");
+        resolve2.setSourcePort(-1);
+        ValidationResult result = validator.validateSourceExists(List.of(resolve1), "example.com:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Match host/port", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve1), "example.com:80");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Match host/port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve2), null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(), "example.com:443");
+        assertTrue(result.isValidationSuccessful());
         assertEquals("Validation successful", result.getMessage());
     }
 

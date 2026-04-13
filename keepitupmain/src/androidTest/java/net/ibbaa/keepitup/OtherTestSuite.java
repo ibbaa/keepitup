@@ -125,6 +125,7 @@ import net.ibbaa.keepitup.ui.validation.PingCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolveHostFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.ResolveHostMatchExistsFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolveHostMatchFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortMatchFieldValidatorTest;
@@ -283,6 +284,7 @@ import org.junit.runners.Suite;
         PingPackageSizeFieldValidatorTest.class,
         PortFieldValidatorTest.class,
         ResolveHostFieldValidatorTest.class,
+        ResolveHostMatchExistsFieldValidatorTest.class,
         ResolveHostMatchFieldValidatorTest.class,
         ResolvePortFieldValidatorTest.class,
         ResolvePortMatchFieldValidatorTest.class,

@@ -159,4 +159,25 @@ public class StringUtilTest {
         assertEquals(2, StringUtil.splitAtFirstColon(null).length);
         assertArrayEquals(new String[]{"   ", "   "}, StringUtil.splitAtFirstColon("   :   "));
     }
+
+    @Test
+    public void testSplitAtLastColon() {
+        assertArrayEquals(new String[]{"key", "value"}, StringUtil.splitAtLastColon("key:value"));
+        assertArrayEquals(new String[]{"key:val", "ue"}, StringUtil.splitAtLastColon("key:val:ue"));
+        assertArrayEquals(new String[]{"2001:0db8:85a3:08d3::0370:7344", "80"}, StringUtil.splitAtLastColon("2001:0db8:85a3:08d3::0370:7344:80"));
+        assertArrayEquals(new String[]{"", "value"}, StringUtil.splitAtLastColon(":value"));
+        assertArrayEquals(new String[]{"key", ""}, StringUtil.splitAtLastColon("key:"));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtLastColon(":"));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtLastColon("abcdefghijklmn"));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtLastColon(""));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtLastColon(null));
+        assertArrayEquals(new String[]{"", ""}, StringUtil.splitAtLastColon("   "));
+        assertArrayEquals(new String[]{"key ", " value"}, StringUtil.splitAtLastColon("key : value"));
+        assertNotNull(StringUtil.splitAtLastColon(null));
+        assertNotNull(StringUtil.splitAtLastColon(null)[0]);
+        assertNotNull(StringUtil.splitAtLastColon(null)[1]);
+        assertEquals(2, StringUtil.splitAtLastColon("key:value").length);
+        assertEquals(2, StringUtil.splitAtLastColon(null).length);
+        assertArrayEquals(new String[]{"   ", "   "}, StringUtil.splitAtLastColon("   :   "));
+    }
 }

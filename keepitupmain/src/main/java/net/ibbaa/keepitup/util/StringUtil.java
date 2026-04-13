@@ -100,6 +100,16 @@ public class StringUtil {
         return Base64.decode(data, Base64.NO_WRAP);
     }
 
+    public static String[] splitAtLastColon(String input) {
+        if (input == null || !input.contains(":")) {
+            return new String[]{"", ""};
+        }
+        int index = input.lastIndexOf(':');
+        String before = input.substring(0, index);
+        String after = input.substring(index + 1);
+        return new String[]{before, after};
+    }
+
     public static String[] splitAtFirstColon(String input) {
         if (input == null || !input.contains(":")) {
             return new String[]{"", ""};

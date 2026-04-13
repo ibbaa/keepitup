@@ -35,12 +35,9 @@
     <dimen name="linearlayout_dialog_network_task_edit_ping_package_size_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_ping_package_size_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_ping_package_size_width">120dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_connect_to_host_margin_top">20dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_connect_to_host_margin_left">10dp</dimen>
-    <dimen name="edittext_dialog_network_task_edit_connect_to_host_width">120dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_connect_to_port_margin_top">20dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_connect_to_port_margin_left">10dp</dimen>
-    <dimen name="edittext_dialog_network_task_edit_connect_to_port_width">120dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_resolve_rules_margin_top">20dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_resolve_rules_margin_left">10dp</dimen>
+    <dimen name="edittext_dialog_network_task_edit_resolve_rules_width">120dp</dimen>
     <dimen name="textview_dialog_network_task_edit_stop_on_success_label_margin_top">14dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_stop_on_success_margin_top">12dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_stop_on_success_margin_left">10dp</dimen>
@@ -83,5 +80,6 @@
     <dimen name="linearlayout_dialog_network_task_edit_ok_cancel_padding_top">10dp</dimen>
     <dimen name="edittext_network_task_edit_line_size">2dp</dimen>
     <dimen name="edittext_network_task_edit_line_height">4dp</dimen>
-    <dimen name="textview_dialog_network_task_label_max_width">100dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_label_max_width">100dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_value_max_width">100dp</dimen>
 </resources>

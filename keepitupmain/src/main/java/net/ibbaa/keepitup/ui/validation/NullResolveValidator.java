@@ -23,12 +23,22 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 
+import java.util.List;
+
 public class NullResolveValidator implements ResolveValidator {
 
     private final Context context;
 
     public NullResolveValidator(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public ValidationResult validateSourceExists(List<Resolve> resolves, String value) {
+        Log.d(NullResolveValidator.class.getName(), "validateSourceExists, value object is " + value);
+        String fieldName = getResources().getString(R.string.resolve_all_fields);
+        String failedMessage = getResources().getString(R.string.invalid_exists);
+        return new ValidationResult(false, fieldName, failedMessage);
     }
 
     @Override

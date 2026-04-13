@@ -23,12 +23,23 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 
+import java.util.List;
+
 public class StandardResolveValidator implements ResolveValidator {
 
     private final Context context;
 
     public StandardResolveValidator(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public ValidationResult validateSourceExists(List<Resolve> resolves, String value) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourceExists, value is " + value);
+        String fieldName = getResources().getString(R.string.resolve_match_host_port_field_name);
+        ValidationResult result = new ResolveHostMatchExistsFieldValidator(fieldName, resolves, getContext()).validate(value);
+        Log.d(StandardHeaderValidator.class.getName(), ResolveHostMatchExistsFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
     }
 
     @Override

@@ -22,8 +22,11 @@
     <string name="label_dialog_network_task_edit_ping_count">Ping count:</string>
     <string name="label_dialog_network_task_edit_connect_count">Connect count:</string>
     <string name="label_dialog_network_task_edit_ping_package_size">Package size:</string>
-    <string name="label_dialog_network_task_edit_connect_to_host">Connect-to host:</string>
-    <string name="label_dialog_network_task_edit_connect_to_port">Connect-to port:</string>
+    <string name="label_dialog_network_task_edit_resolve_rules">Resolve rules:</string>
+    <plurals name="text_dialog_network_task_edit_resolve_rules_value">
+        <item quantity="one">Click here (%d rule)</item>
+        <item quantity="other">Click here (%d rules)</item>
+    </plurals>
     <string name="label_dialog_network_task_edit_stop_on_success">Stop on success:</string>
     <string name="label_dialog_network_task_edit_use_default_headers">Use default headers:</string>
     <string name="label_dialog_network_task_edit_headers">HTTP Headers:</string>

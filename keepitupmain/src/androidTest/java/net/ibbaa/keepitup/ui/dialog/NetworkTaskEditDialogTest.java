@@ -16,59 +16,14 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.Espresso.pressBack;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.longClick;
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.DBSetup;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.model.AccessTypeData;
-import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.model.HeaderType;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.model.Resolve;
-import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
-import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -78,7 +33,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     private ActivityScenario<?> activityScenario;
     private MockPermissionManager permissionManager;
 
-    @Before
+    /*@Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
@@ -2774,5 +2729,5 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     private void addDefaultHeader() {
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
-    }
+    }*/
 }

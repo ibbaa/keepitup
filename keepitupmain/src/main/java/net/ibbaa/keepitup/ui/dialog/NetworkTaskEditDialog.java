@@ -481,7 +481,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareResolveFields() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields");
-        connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
+        /*connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
         prepareConnectToHostEditTextListener();
         connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
         connectToHostEditText.setOnFocusChangeListener(new PlaceholderFocusChangeListener(connectToHostEditText, getResources().getString(R.string.string_not_set)));
@@ -490,7 +490,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareConnectToPortEditTextListener();
         connectToPortEditText.setOnLongClickListener(this::onEditTextLongClicked);
         connectToPortEditText.setOnFocusChangeListener(new PlaceholderFocusChangeListener(connectToPortEditText, getResources().getString(R.string.string_not_set)));
-        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), getFirstResolve().getTargetPort()));
+        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), getFirstResolve().getTargetPort()));*/
     }
 
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -511,7 +511,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             return;
         }
         AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-        LinearLayout connectToHostLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_host);
+        /*LinearLayout connectToHostLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_host);
         LinearLayout connectToPortLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_port);
         TextView connectToHostTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_host_label);
         TextView connectToPortTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_port_label);
@@ -529,7 +529,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             connectToPortTextView.setVisibility(View.GONE);
             connectToHostEditText.setVisibility(View.GONE);
             connectToPortEditText.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     private void prepareHeadersFieldVisibility() {

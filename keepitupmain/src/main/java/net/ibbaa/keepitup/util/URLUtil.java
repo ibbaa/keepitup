@@ -83,6 +83,36 @@ public class URLUtil {
         return true;
     }
 
+    public static boolean isSameHostAndPort(String host1, int port1, String host2, int port2) {
+        boolean bothHostsEmpty = StringUtil.isEmpty(host1) && StringUtil.isEmpty(host2);
+        boolean bothPortsNegative = port1 < 0 && port2 < 0;
+        if (!bothHostsEmpty) {
+            String normalizedHost1 = normalizeHost(host1);
+            String normalizedHost2 = normalizeHost(host2);
+            boolean sameHost;
+            if (normalizedHost1 == null || normalizedHost2 == null) {
+                sameHost = normalizedHost1 == null && normalizedHost2 == null;
+            } else if (isValidIPAddress(normalizedHost1) && isValidIPAddress(normalizedHost2)) {
+                try {
+                    InetAddress address1 = InetAddress.getByName(normalizedHost1);
+                    InetAddress address2 = InetAddress.getByName(normalizedHost2);
+                    sameHost = address1.equals(address2);
+                } catch (Exception exc) {
+                    sameHost = false;
+                }
+            } else {
+                sameHost = normalizedHost1.equalsIgnoreCase(normalizedHost2);
+            }
+            if (!sameHost) {
+                return false;
+            }
+        }
+        if (!bothPortsNegative) {
+            return port1 == port2;
+        }
+        return true;
+    }
+
     public static boolean isSameHostAndPort(URL url1, URL url2) {
         if (url1 == null || url2 == null) {
             return false;
@@ -118,6 +148,20 @@ public class URLUtil {
             return host.substring(1, host.length() - 1);
         }
         return host;
+    }
+
+    public static String getSourceAddress(Resolve resolve, URL url) {
+        if (StringUtil.isEmpty(resolve.getSourceAddress())) {
+            return url.getHost();
+        }
+        return resolve.getSourceAddress();
+    }
+
+    public static int getSourcePort(Resolve resolve, URL url) {
+        if (resolve.getSourcePort() < 0) {
+            return getPort(url);
+        }
+        return resolve.getSourcePort();
     }
 
     public static String getTargetAddress(Resolve resolve, URL url) {

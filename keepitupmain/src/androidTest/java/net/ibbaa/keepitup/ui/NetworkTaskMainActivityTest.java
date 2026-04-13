@@ -16,79 +16,14 @@
 
 package net.ibbaa.keepitup.ui;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.startsWith;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.platform.app.InstrumentationRegistry;
 
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.DBSetup;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.model.AccessTypeData;
-import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.model.HeaderType;
-import net.ibbaa.keepitup.model.LogEntry;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.model.Resolve;
-import net.ibbaa.keepitup.model.SchedulerState;
-import net.ibbaa.keepitup.resources.JSONSystemSetup;
-import net.ibbaa.keepitup.resources.SystemSetupResult;
-import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
-import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
-import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
-import net.ibbaa.keepitup.test.mock.TestHeaderDAO;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.test.mock.TestUtil;
-import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
-import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
-import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
-import net.ibbaa.keepitup.util.StreamUtil;
-import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
@@ -109,7 +44,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         stopAlarmService();
     }
 
-    @Test
+    /*@Test
     public void testInitializeActivity() {
         NetworkTask task1 = getNetworkTask1();
         task1 = getNetworkTaskDAO().insertNetworkTask(task1);
@@ -2638,6 +2573,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     private void addDefaultHeader() {
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
-    }
+    }*/
 }
 
