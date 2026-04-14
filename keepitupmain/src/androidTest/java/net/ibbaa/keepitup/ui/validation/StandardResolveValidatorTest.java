@@ -25,11 +25,13 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.List;
 
 @SmallTest
@@ -147,18 +149,40 @@ public class StandardResolveValidatorTest {
         Resolve resolve2 = new Resolve();
         resolve2.setSourceAddress("");
         resolve2.setSourcePort(-1);
-        ValidationResult result = validator.validateSourceExists(List.of(resolve1), "example.com:443");
+        ValidationResult result = validator.validateSourceExists(List.of(resolve1), null, "example.com:443");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Match host/port", result.getFieldName());
         assertEquals("Value already exists", result.getMessage());
-        result = validator.validateSourceExists(List.of(resolve1), "example.com:80");
+        result = validator.validateSourceExists(List.of(resolve1), null, "example.com:80");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Match host/port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateSourceExists(List.of(resolve2), null);
+        result = validator.validateSourceExists(List.of(resolve2), null, null);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Value already exists", result.getMessage());
-        result = validator.validateSourceExists(List.of(), "example.com:443");
+        result = validator.validateSourceExists(List.of(), null, "example.com:443");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        URL url = URLUtil.getURL("http://example.com:443");
+        result = validator.validateSourceExists(List.of(resolve1), url, "example.com:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve1), url, ":443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve1), url, ":");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve2), url, "example.com:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve2), url, ":");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateSourceExists(List.of(resolve1), url, ":80");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateSourceExists(List.of(), url, ":");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Validation successful", result.getMessage());
     }

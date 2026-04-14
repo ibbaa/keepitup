@@ -42,6 +42,7 @@ import net.ibbaa.keepitup.ui.support.ResolvesSupport;
 import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -306,6 +307,11 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
         return (ResolvesAdapter) getResolvesRecyclerView().getAdapter();
     }
 
+    @Override
+    public List<Resolve> getExistingResolves() {
+        return new ArrayList<>(getAdapter().getAllItems());
+    }
+
     private ResolvesSupport getResolvesSupport() {
         Log.d(ResolvesDialog.class.getName(), "getResolvesSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
@@ -331,6 +337,7 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
         ResolveEditDialog resolveEditDialog = new ResolveEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(resolveEditDialog.getResolveKey(), resolve.toBundle());
         bundle = BundleUtil.integerToBundle(resolveEditDialog.getPositionKey(), position, bundle);
+        bundle = BundleUtil.stringToBundle(resolveEditDialog.getNetworkTaskURLKey(), getNetworkTaskURL(), bundle);
         resolveEditDialog.setArguments(bundle);
         showDialog(resolveEditDialog, ResolveEditDialog.class.getName());
     }

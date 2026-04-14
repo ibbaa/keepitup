@@ -257,12 +257,11 @@ public class URLUtil {
         return false;
     }
 
-    public static String getHostAndPort(URL url) {
-        int port = url.getPort();
-        if (port < 0) {
-            return url.getHost();
-        }
-        return url.getHost() + ":" + port;
+    public static String getHostAndPort(String address, int port, URL url) {
+        String actualAddress = StringUtil.isTrimmedEmpty(address) ? url.getHost() : address.trim();
+        actualAddress = URLUtil.isValidIP6Address(actualAddress) ? "[" + actualAddress + "]" : actualAddress;
+        int actualPort = port < 0 ? URLUtil.getPort(url) : port;
+        return actualAddress + ":" + actualPort;
     }
 
     public static boolean isHTTP(URL url) {

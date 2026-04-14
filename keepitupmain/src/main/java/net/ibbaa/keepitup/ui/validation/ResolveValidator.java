@@ -18,11 +18,12 @@ package net.ibbaa.keepitup.ui.validation;
 
 import net.ibbaa.keepitup.model.Resolve;
 
+import java.net.URL;
 import java.util.List;
 
 public interface ResolveValidator {
 
-    ValidationResult validateSourceExists(List<Resolve> resolves, String value);
+    ValidationResult validateSourceExists(List<Resolve> resolves, URL url, String value);
 
     ValidationResult validateValueSet(Resolve resolve);
 

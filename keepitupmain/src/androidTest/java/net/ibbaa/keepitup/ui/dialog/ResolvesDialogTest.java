@@ -586,6 +586,118 @@ public class ResolvesDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testMatchHostExists() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match1.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withText("Match host/port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value already exists"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match2.host.com"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withText("Match host/port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value already exists"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9089"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 2))).check(matches(withText("Match: match2.host.com:9089")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 2))).check(matches(withText("Connect-to: not set")));
+        List<Resolve> items = getDialog().getAdapter().getAllItems();
+        assertEquals(3, items.size());
+        assertEquals(2, items.get(2).getIndex());
+        assertEquals("match2.host.com", items.get(2).getSourceAddress());
+        assertEquals(9089, items.get(2).getSourcePort());
+        assertEquals("", items.get(2).getTargetAddress());
+        assertEquals(-1, items.get(2).getTargetPort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchHostExistsValuesNotSet() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        showResolvesDialog(Collections.emptyList());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("example.com"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withText("Match host/port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value already exists"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("example.com"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withText("Match host/port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value already exists"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("8080"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withText("Match host/port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value already exists"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("example1.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: example1.com:8080")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: example.com:123")));
+        List<Resolve> items = getDialog().getAdapter().getAllItems();
+        assertEquals(2, items.size());
+        assertEquals(0, items.get(0).getIndex());
+        assertEquals("", items.get(0).getSourceAddress());
+        assertEquals(-1, items.get(0).getSourcePort());
+        assertEquals("example.com", items.get(0).getTargetAddress());
+        assertEquals(-1, items.get(0).getTargetPort());
+        assertEquals(1, items.get(1).getIndex());
+        assertEquals("example1.com", items.get(1).getSourceAddress());
+        assertEquals(-1, items.get(1).getSourcePort());
+        assertEquals("", items.get(1).getTargetAddress());
+        assertEquals(123, items.get(1).getTargetPort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchHostExistsOpenEntry() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        showResolvesDialog(List.of(getResolve(1), getResolve(2)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: match2.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: connect2.host.com:443")));
+        onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: match2.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: connect2.host.com:123")));
+        List<Resolve> items = getDialog().getAdapter().getAllItems();
+        assertEquals(2, items.size());
+        assertEquals(0, items.get(0).getIndex());
+        assertEquals("match1.host.com", items.get(0).getSourceAddress());
+        assertEquals(9090, items.get(0).getSourcePort());
+        assertEquals("connect1.host.com", items.get(0).getTargetAddress());
+        assertEquals(443, items.get(0).getTargetPort());
+        assertEquals(1, items.get(1).getIndex());
+        assertEquals("match2.host.com", items.get(1).getSourceAddress());
+        assertEquals(9090, items.get(1).getSourcePort());
+        assertEquals("connect2.host.com", items.get(1).getTargetAddress());
+        assertEquals(123, items.get(1).getTargetPort());
+        activityScenario.close();
+    }
+
+    @Test
     public void testAddResolveDefaultValuesPreferencesMatchHostSet() {
         getPreferenceManager().setPreferenceResolveMatchAddress("match.host.com");
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());

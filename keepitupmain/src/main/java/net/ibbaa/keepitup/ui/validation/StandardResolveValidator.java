@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 
+import java.net.URL;
 import java.util.List;
 
 public class StandardResolveValidator implements ResolveValidator {
@@ -34,10 +35,10 @@ public class StandardResolveValidator implements ResolveValidator {
     }
 
     @Override
-    public ValidationResult validateSourceExists(List<Resolve> resolves, String value) {
-        Log.d(StandardResolveValidator.class.getName(), "validateSourceExists, value is " + value);
+    public ValidationResult validateSourceExists(List<Resolve> resolves, URL url, String value) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourceExists, url is " + url + ", value is " + value);
         String fieldName = getResources().getString(R.string.resolve_match_host_port_field_name);
-        ValidationResult result = new ResolveHostMatchExistsFieldValidator(fieldName, resolves, getContext()).validate(value);
+        ValidationResult result = new ResolveHostMatchExistsFieldValidator(fieldName, resolves, url, getContext()).validate(value);
         Log.d(StandardHeaderValidator.class.getName(), ResolveHostMatchExistsFieldValidator.class.getSimpleName() + " returned " + result);
         return result;
     }

@@ -16,11 +16,16 @@
 
 package net.ibbaa.keepitup.ui.support;
 
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
+
+import java.util.List;
 
 public interface ResolveEditSupport {
 
     void onResolveEditDialogOkClicked(ResolveEditDialog resolveEditDialog, int position);
 
     void onResolveEditDialogCancelClicked(ResolveEditDialog resolveEditDialog);
+
+    List<Resolve> getExistingResolves();
 }

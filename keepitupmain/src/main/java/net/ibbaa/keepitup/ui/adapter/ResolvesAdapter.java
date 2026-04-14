@@ -116,10 +116,7 @@ public class ResolvesAdapter extends RecyclerView.Adapter<ResolveViewHolder> {
         if (url == null) {
             return getResources().getString(R.string.string_not_set);
         }
-        String resolvedAddress = StringUtil.isEmpty(address) ? url.getHost() : address;
-        resolvedAddress = URLUtil.isValidIP6Address(resolvedAddress) ? "[" + resolvedAddress + "]" : resolvedAddress;
-        int resolvedPort = port < 0 ? URLUtil.getPort(url) : port;
-        return resolvedAddress + ":" + resolvedPort;
+        return URLUtil.getHostAndPort(address, port, url);
     }
 
     public Bundle saveStateToBundle() {

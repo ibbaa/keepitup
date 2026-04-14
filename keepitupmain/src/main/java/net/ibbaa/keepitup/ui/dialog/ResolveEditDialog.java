@@ -44,8 +44,11 @@ import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
@@ -204,6 +207,14 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
         return StringUtil.notNull(connectToPortEditText.getText());
     }
 
+    public String getNetworkTaskURLKey() {
+        return ResolveEditDialog.class.getSimpleName() + ".NetworkTaskURL";
+    }
+
+    public String getNetworkTaskURL() {
+        return BundleUtil.stringFromBundle(getNetworkTaskURLKey(), requireArguments());
+    }
+
     public Resolve getResolve() {
         Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
         Resolve resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
@@ -222,7 +233,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
     private void onOkClicked(View view) {
         Log.d(ResolveEditDialog.class.getName(), "onOkClicked");
         int position = BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
-        List<ValidationResult> validationResult = validateInput();
+        List<ValidationResult> validationResult = validateInput(position);
         if (!hasErrors(validationResult)) {
             Log.d(ResolveEditDialog.class.getName(), "Validation was successful");
             ResolveEditSupport resolveEditSupport = getResolveEditSupport();
@@ -285,8 +296,8 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
         return result.isValidationSuccessful();
     }
 
-    private List<ValidationResult> validateInput() {
-        Log.d(ResolveEditDialog.class.getName(), "validateInput");
+    private List<ValidationResult> validateInput(int position) {
+        Log.d(ResolveEditDialog.class.getName(), "validateInput for position " + position);
         List<ValidationResult> validationResults = new ArrayList<>();
         ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult matchHostResult = validator.validateSourceAddress(getMatchHost());
@@ -311,6 +322,20 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
             ValidationResult valueResult = validator.validateValueSet(resolve);
             if (!valueResult.isValidationSuccessful()) {
                 validationResults.add(valueResult);
+            }
+        }
+        if (validationResults.isEmpty()) {
+            String host = UIUtil.getEmptyIfNotSet(requireContext(), getMatchHost());
+            String port = UIUtil.getEmptyIfNotSet(requireContext(), getMatchPort());
+            ResolveEditSupport resolveEditSupport = getResolveEditSupport();
+            List<Resolve> existingResolves = resolveEditSupport != null ? resolveEditSupport.getExistingResolves() : Collections.emptyList();
+            if (position >= 0 && position < existingResolves.size()) {
+                existingResolves.remove(position);
+            }
+            URL url = URLUtil.getURL(getNetworkTaskURL());
+            ValidationResult existsResult = validator.validateSourceExists(existingResolves, url, host + ":" + port);
+            if (!existsResult.isValidationSuccessful()) {
+                validationResults.add(existsResult);
             }
         }
         return validationResults;

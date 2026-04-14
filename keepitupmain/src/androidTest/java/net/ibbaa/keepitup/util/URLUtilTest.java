@@ -291,12 +291,22 @@ public class URLUtilTest {
 
     @Test
     public void testGetHostAndPort() throws MalformedURLException {
-        assertEquals("www.host.com", URLUtil.getHostAndPort(new URL("http://www.host.com")));
-        assertEquals("www.host.com:8080", URLUtil.getHostAndPort(new URL("http://www.host.com:8080")));
-        assertEquals("www.host.com:8080", URLUtil.getHostAndPort(new URL("http://www.host.com:8080/test/url?query")));
-        assertEquals("127.0.0.1:0", URLUtil.getHostAndPort(new URL("http://127.0.0.1:0")));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", URLUtil.getHostAndPort(new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]")));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:123", URLUtil.getHostAndPort(new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:123")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort("www.host.com", 443, new URL("http://other.com:8080")));
+        assertEquals("127.0.0.1:80", URLUtil.getHostAndPort("127.0.0.1", 80, new URL("http://other.com:8080")));
+        assertEquals("[::1]:443", URLUtil.getHostAndPort("::1", 443, new URL("http://other.com:8080")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:123", URLUtil.getHostAndPort("3ffe:1900:4545:3:200:f8ff:fe21:67cf", 123, new URL("http://other.com:8080")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(null, 443, new URL("http://www.host.com:8080")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort("", 443, new URL("http://www.host.com:8080")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort("  ", 443, new URL("http://www.host.com:8080")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:443", URLUtil.getHostAndPort(null, 443, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080")));
+        assertEquals("other.com:8080", URLUtil.getHostAndPort("other.com", -1, new URL("http://www.host.com:8080")));
+        assertEquals("other.com:80", URLUtil.getHostAndPort("other.com", -1, new URL("http://www.host.com")));
+        assertEquals("other.com:443", URLUtil.getHostAndPort("other.com", -1, new URL("https://www.host.com")));
+        assertEquals("www.host.com:8080", URLUtil.getHostAndPort(null, -1, new URL("http://www.host.com:8080")));
+        assertEquals("www.host.com:80", URLUtil.getHostAndPort(null, -1, new URL("http://www.host.com")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(null, -1, new URL("https://www.host.com")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080", URLUtil.getHostAndPort(null, -1, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80", URLUtil.getHostAndPort(null, -1, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]")));
     }
 
     @Test

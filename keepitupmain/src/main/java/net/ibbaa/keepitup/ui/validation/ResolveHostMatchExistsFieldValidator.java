@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
+import java.net.URL;
 import java.util.List;
 
 public class ResolveHostMatchExistsFieldValidator implements FieldValidator {
@@ -33,11 +34,13 @@ public class ResolveHostMatchExistsFieldValidator implements FieldValidator {
     private final String field;
     private final Context context;
     private final List<Resolve> resolves;
+    private final URL url;
 
-    public ResolveHostMatchExistsFieldValidator(String field, List<Resolve> resolves, Context context) {
+    public ResolveHostMatchExistsFieldValidator(String field, List<Resolve> resolves, URL url, Context context) {
         this.field = field;
         this.resolves = resolves;
         this.context = context;
+        this.url = url;
     }
 
     @Override
@@ -48,9 +51,20 @@ public class ResolveHostMatchExistsFieldValidator implements FieldValidator {
         String[] hostPort = StringUtil.splitAtLastColon(value);
         String host = hostPort[0].trim();
         int port = NumberUtil.getIntValue(hostPort[1].trim(), -1);
+        if (url != null) {
+            host = StringUtil.isEmpty(host) ? url.getHost() : host;
+            port = port < 0 ? URLUtil.getPort(url) : port;
+        }
         for (Resolve resolve : resolves) {
-            String currentHost = StringUtil.trim(resolve.getSourceAddress());
-            int currentPort = resolve.getSourcePort();
+            String currentHost;
+            int currentPort;
+            if (url != null) {
+                currentHost = URLUtil.getSourceAddress(resolve, url);
+                currentPort = URLUtil.getSourcePort(resolve, url);
+            } else {
+                currentHost = StringUtil.trim(resolve.getSourceAddress());
+                currentPort = resolve.getSourcePort();
+            }
             if (URLUtil.isSameHostAndPort(host, port, currentHost, currentPort)) {
                 Log.d(ResolveHostMatchExistsFieldValidator.class.getName(), "validate, value exists");
                 return new ValidationResult(false, field, failedMessage);

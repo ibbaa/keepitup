@@ -25,10 +25,12 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class ResolveHostMatchExistsFieldValidatorTest {
         resolve4.setSourceAddress("");
         resolve4.setSourcePort(8080);
         List<Resolve> resolves = List.of(resolve1, resolve2, resolve3, resolve4);
-        ResolveHostMatchExistsFieldValidator validator = new ResolveHostMatchExistsFieldValidator("testfield", resolves, TestRegistry.getContext());
+        ResolveHostMatchExistsFieldValidator validator = new ResolveHostMatchExistsFieldValidator("testfield", resolves, null, TestRegistry.getContext());
         ValidationResult result = validator.validate(null);
         assertTrue(result.isValidationSuccessful());
         assertEquals("testfield", result.getFieldName());
@@ -106,15 +108,14 @@ public class ResolveHostMatchExistsFieldValidatorTest {
         result = validator.validate("[127.0.0.1]:");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Value already exists", result.getMessage());
-        ResolveHostMatchExistsFieldValidator emptyValidator = new ResolveHostMatchExistsFieldValidator("testfield", new ArrayList<>(), TestRegistry.getContext());
+        ResolveHostMatchExistsFieldValidator emptyValidator = new ResolveHostMatchExistsFieldValidator("testfield", new ArrayList<>(), null, TestRegistry.getContext());
         result = emptyValidator.validate("example.com:443");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Validation successful", result.getMessage());
-        // resolve with both empty address and negative port matches null/empty input (both sides empty+negative → equal)
         Resolve catchAllResolve = new Resolve();
         catchAllResolve.setSourceAddress("");
         catchAllResolve.setSourcePort(-1);
-        ResolveHostMatchExistsFieldValidator catchAllValidator = new ResolveHostMatchExistsFieldValidator("testfield", List.of(catchAllResolve), TestRegistry.getContext());
+        ResolveHostMatchExistsFieldValidator catchAllValidator = new ResolveHostMatchExistsFieldValidator("testfield", List.of(catchAllResolve), null, TestRegistry.getContext());
         result = catchAllValidator.validate(null);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Value already exists", result.getMessage());
@@ -132,7 +133,7 @@ public class ResolveHostMatchExistsFieldValidatorTest {
         resolve2.setSourceAddress("::1");
         resolve2.setSourcePort(-1);
         List<Resolve> resolves = List.of(resolve1, resolve2);
-        ResolveHostMatchExistsFieldValidator validator = new ResolveHostMatchExistsFieldValidator("testfield", resolves, TestRegistry.getContext());
+        ResolveHostMatchExistsFieldValidator validator = new ResolveHostMatchExistsFieldValidator("testfield", resolves, null, TestRegistry.getContext());
         ValidationResult result = validator.validate("::1:443");
         assertFalse(result.isValidationSuccessful());
         assertEquals("testfield", result.getFieldName());
@@ -153,6 +154,63 @@ public class ResolveHostMatchExistsFieldValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Value already exists", result.getMessage());
         result = validator.validate("::2:443");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+    }
+
+    @Test
+    public void testValidateWithUrl() {
+        URL url = URLUtil.getURL("http://example.com:443");
+        Resolve resolveExplicit = new Resolve();
+        resolveExplicit.setSourceAddress("example.com");
+        resolveExplicit.setSourcePort(443);
+        Resolve resolveEmpty = new Resolve();
+        resolveEmpty.setSourceAddress("");
+        resolveEmpty.setSourcePort(-1);
+        ResolveHostMatchExistsFieldValidator validator = new ResolveHostMatchExistsFieldValidator("testfield", List.of(resolveExplicit), url, TestRegistry.getContext());
+        ValidationResult result = validator.validate("example.com:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testfield", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validate(":443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validate("example.com:");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validate(":");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validate("other.com:443");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validate(":80");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validate("other.com:");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        ResolveHostMatchExistsFieldValidator validatorEmpty = new ResolveHostMatchExistsFieldValidator("testfield", List.of(resolveEmpty), url, TestRegistry.getContext());
+        result = validatorEmpty.validate(":");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validatorEmpty.validate(":443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validatorEmpty.validate("example.com:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validatorEmpty.validate(":80");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        ResolveHostMatchExistsFieldValidator validatorNullUrl = new ResolveHostMatchExistsFieldValidator("testfield", List.of(resolveExplicit), null, TestRegistry.getContext());
+        result = validatorNullUrl.validate("example.com:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validatorNullUrl.validate(":443");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        result = validatorNullUrl.validate("example.com:");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Validation successful", result.getMessage());
     }
