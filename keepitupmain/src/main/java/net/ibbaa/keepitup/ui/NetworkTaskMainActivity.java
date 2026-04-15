@@ -565,37 +565,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
         openNetworkTaskEditDialog(task, data, null, null, -1);
-
-        /*Resolve resolve1 = new Resolve(1L);
-        resolve1.setSourceAddress("192.168.1.1");
-        resolve1.setSourcePort(-1);
-        resolve1.setTargetAddress("10.0.0.1");
-        resolve1.setTargetPort(8080);
-
-        Resolve resolve2 = new Resolve(1L);
-        resolve2.setSourceAddress("");
-        resolve2.setSourcePort(443);
-        resolve2.setTargetAddress("");
-        resolve2.setTargetPort(-1);
-
-        Resolve resolve3 = new Resolve(1L);
-        resolve3.setSourceAddress("2001:db8::1");
-        resolve3.setSourcePort(-1);
-        resolve3.setTargetAddress("2001:db8::2");
-        resolve3.setTargetPort(-1);
-
-        List<Resolve> resolves = new ArrayList<>();
-        resolves.add(resolve1);
-        resolves.add(resolve2);
-        resolves.add(resolve3);
-
-        ResolvesDialog dialog = new ResolvesDialog();
-        Bundle bundle = new Bundle();
-        bundle.putLong(dialog.getNetworkTaskIdKey(), 1L);
-        bundle.putString(dialog.getNetworkTaskURLKey(), "https://example.com:443/path");
-        bundle = BundleUtil.resolveListToBundle(dialog.getInitialResolvesKey(), resolves, bundle);
-        dialog.setArguments(bundle);
-        dialog.show(getSupportFragmentManager(), ResolvesDialog.class.getName());*/
     }
 
     public void onMainStartStopClicked(int position) {

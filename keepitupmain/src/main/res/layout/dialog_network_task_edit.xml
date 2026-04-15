@@ -324,7 +324,7 @@
                     android:id="@+id/textview_dialog_network_task_edit_resolve_rules_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Click here (1 rule)" />
+                    android:text="" />
 
             </LinearLayout>
 

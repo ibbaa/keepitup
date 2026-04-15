@@ -174,10 +174,6 @@ public class NetworkTaskHandler {
                 data.setNetworkTaskId(task.getId());
                 data = accessTypeDataDAO.updateAccessTypeData(data);
             }
-            if (running) {
-                Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
-                task = scheduler.start(task);
-            }
             if (resolves != null) {
                 ResolveSyncHandler resolveSyncHandler = new ResolveSyncHandler(mainActivity);
                 resolveSyncHandler.synchronizeResolves(task.getId(), resolves);
@@ -191,6 +187,10 @@ public class NetworkTaskHandler {
                     headers = headerDAO.readHeadersForNetworkTask(task.getId());
                     showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
                 }
+            }
+            if (running) {
+                Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
+                task = scheduler.start(task);
             }
             getAdapter().replaceNetworkTask(task, data, resolves, headers, null);
         } catch (Exception exc) {

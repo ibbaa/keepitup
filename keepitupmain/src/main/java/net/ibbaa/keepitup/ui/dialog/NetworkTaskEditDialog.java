@@ -496,7 +496,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private void prepareResolvesText() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields");
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolvesText");
         resolveText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_resolve_rules_value);
         int size = CollectionUtil.getSize(currentResolves);
         String formattedHeaderText = getResources().getQuantityString(R.plurals.text_dialog_network_task_edit_resolve_rules_value, size, size);

@@ -40,11 +40,10 @@ import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.util.CollectionUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
-import net.ibbaa.keepitup.util.URLUtil;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +84,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindInstances(networkTaskViewHolder, networkTask);
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
-        bindConnectTo(networkTaskViewHolder, networkTask, resolves);
+        bindResolves(networkTaskViewHolder, networkTask, resolves);
         bindHeaders(position, networkTaskViewHolder, networkTask, accessTypeData, headers);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
@@ -178,29 +177,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setAddress(formattedAddressText);
     }
 
-    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
-    private void bindConnectTo(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<Resolve> resolves) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindConnectTo, networkTask is " + networkTask + ", resolve objects are " + resolves);
+    private void bindResolves(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<Resolve> resolves) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindResolves, networkTask is " + networkTask + ", resolve objects are " + resolves);
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
-            networkTaskViewHolder.showConnectToTextView();
-            String hostAndPort;
-            if (resolves == null || resolves.isEmpty()) {
-                hostAndPort = getResources().getString(R.string.string_not_set);
-            } else {
-                URL url = URLUtil.getURL(networkTask.getAddress());
-                if (url == null) {
-                    hostAndPort = getResources().getString(R.string.string_not_set);
-                } else {
-                    String targetAddress = URLUtil.getTargetAddress(resolves.get(0), url);
-                    targetAddress = URLUtil.isValidIP6Address(targetAddress) ? "[" + targetAddress + "]" : targetAddress;
-                    int targetPort = URLUtil.getTargetPort(resolves.get(0), url);
-                    hostAndPort = targetAddress + ":" + targetPort;
-                }
-            }
-            String formattedConnectToText = getResources().getString(R.string.list_item_network_task_connect_to, hostAndPort);
+            String formattedConnectToText = getResources().getString(R.string.list_item_network_task_resolve_rules, CollectionUtil.getSize(resolves) + " " + getResources().getString(R.string.string_defined));
             networkTaskViewHolder.setConnectTo(formattedConnectToText);
         } else {
-            networkTaskViewHolder.hideConnectToTextView();
+            networkTaskViewHolder.hideResolveTextView();
         }
 
     }

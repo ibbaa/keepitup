@@ -90,7 +90,7 @@ public class ResolvesAdapter extends RecyclerView.Adapter<ResolveViewHolder> {
 
     private String getConnectToText(Resolve resolve) {
         URL url = URLUtil.getURL(resolvesDialog.getNetworkTaskURL());
-        String connectTo =  URLUtil.getHostAndPort(getContext(), resolve.getTargetAddress(), resolve.getTargetPort(), url);
+        String connectTo = URLUtil.getHostAndPort(getContext(), resolve.getTargetAddress(), resolve.getTargetPort(), url);
         return getResources().getString(R.string.list_item_resolve_connect_to, connectTo);
     }
 

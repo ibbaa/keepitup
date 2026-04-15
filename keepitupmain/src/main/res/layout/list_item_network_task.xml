@@ -168,14 +168,14 @@
                 android:text="@string/list_item_network_task_address" />
 
             <TextView
-                android:id="@+id/textview_list_item_network_task_connect_to"
+                android:id="@+id/textview_list_item_network_task_resolve_rules"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill_horizontal"
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
-                android:text="@string/list_item_network_task_connect_to" />
+                android:text="@string/list_item_network_task_resolve_rules" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_headers"
