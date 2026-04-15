@@ -177,7 +177,7 @@ public class ResolvesDialogTest extends BaseUITest {
         resolve.setSourceAddress(null);
         resolve.setSourcePort(-1);
         showResolvesDialog(List.of(resolve));
-        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
         activityScenario.close();
     }
@@ -191,7 +191,7 @@ public class ResolvesDialogTest extends BaseUITest {
         resolve.setTargetPort(-1);
         showResolvesDialog(List.of(resolve));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
-        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
         activityScenario.close();
     }
 
@@ -201,8 +201,8 @@ public class ResolvesDialogTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setIndex(0);
         showResolvesDialog(List.of(resolve));
-        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
-        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:8080")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
         activityScenario.close();
     }
 
@@ -544,7 +544,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("1111"));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:1111")));
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(1, items.size());
@@ -574,7 +574,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("1111"));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:1111")));
-        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(1, items.size());
         assertEquals(0, items.get(0).getIndex());
@@ -606,7 +606,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9089"));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 2))).check(matches(withText("Match: match2.host.com:9089")));
-        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 2))).check(matches(withText("Connect-to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 2))).check(matches(withText("Connect-to: example.com:8080")));
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(3, items.size());
         assertEquals(2, items.get(2).getIndex());
@@ -645,7 +645,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("example1.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: example1.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: example.com:123")));
@@ -711,7 +711,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("not set")));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:8080")));
-        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(1, items.size());
         assertEquals(0, items.get(0).getIndex());
@@ -735,7 +735,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("target.host.com")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("not set")));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: target.host.com:8080")));
         List<Resolve> items = getDialog().getAdapter().getAllItems();
         assertEquals(1, items.size());
@@ -1056,7 +1056,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: added.host.com:7070")));
-        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: example.com:8080")));
         onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("added.host.com")));
@@ -1092,7 +1092,7 @@ public class ResolvesDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
-        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: not set")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: example.com:8080")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: added.host.com:7070")));
         onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
         onView(isRoot()).perform(waitFor(500));
@@ -1150,11 +1150,91 @@ public class ResolvesDialogTest extends BaseUITest {
         activityScenario.close();
     }
 
+    @Test
+    public void testMatchAndConnectToTextAllFieldsSetInvalidURL() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        showResolvesDialog(List.of(getResolve(1)), "invalid-url");
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchAndConnectToTextWithInvalidURLFallbackPort() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = new Resolve();
+        resolve.setIndex(0);
+        resolve.setSourceAddress("match.host.com");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("connect.host.com");
+        resolve.setTargetPort(-1);
+        showResolvesDialog(List.of(resolve), "invalid-url");
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:undefined")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect.host.com:undefined")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchAndConnectToTextWithInvalidURLFallbackHost() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = new Resolve();
+        resolve.setIndex(0);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(9090);
+        resolve.setTargetAddress("");
+        resolve.setTargetPort(443);
+        showResolvesDialog(List.of(resolve), "invalid-url");
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: undefined:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: undefined:443")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchTextEmptyResolveInvalidURL() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = getResolve(1);
+        resolve.setIndex(0);
+        resolve.setSourceAddress(null);
+        resolve.setSourcePort(-1);
+        showResolvesDialog(List.of(resolve), "invalid-url");
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: undefined")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConnectToTextEmptyResolveInvalidURL() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = getResolve(1);
+        resolve.setIndex(0);
+        resolve.setTargetAddress(null);
+        resolve.setTargetPort(-1);
+        showResolvesDialog(List.of(resolve), "invalid-url");
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: undefined")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testMatchAndConnectToTextEmptyResolveInvalidURL() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        Resolve resolve = new Resolve();
+        resolve.setIndex(0);
+        showResolvesDialog(List.of(resolve), "invalid-url");
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: undefined")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: undefined")));
+        activityScenario.close();
+    }
+
     private void showResolvesDialog(List<Resolve> resolves) {
+        showResolvesDialog(resolves, "https://example.com:8080/path");
+    }
+
+    private void showResolvesDialog(List<Resolve> resolves, String url) {
         ResolvesDialog resolvesDialog = new ResolvesDialog();
         Bundle bundle = BundleUtil.resolveListToBundle(resolvesDialog.getInitialResolvesKey(), resolves);
         BundleUtil.longToBundle(resolvesDialog.getNetworkTaskIdKey(), 1L, bundle);
-        BundleUtil.stringToBundle(resolvesDialog.getNetworkTaskURLKey(), "https://example.com:8080/path", bundle);
+        BundleUtil.stringToBundle(resolvesDialog.getNetworkTaskURLKey(), url, bundle);
         resolvesDialog.setArguments(bundle);
         resolvesDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ResolvesDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));

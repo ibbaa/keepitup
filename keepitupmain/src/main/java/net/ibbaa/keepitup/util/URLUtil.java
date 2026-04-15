@@ -16,9 +16,12 @@
 
 package net.ibbaa.keepitup.util;
 
+import android.content.Context;
+
 import com.google.common.net.InetAddresses;
 import com.google.common.net.InternetDomainName;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 
@@ -257,11 +260,21 @@ public class URLUtil {
         return false;
     }
 
-    public static String getHostAndPort(String address, int port, URL url) {
-        String actualAddress = StringUtil.isTrimmedEmpty(address) ? url.getHost() : address.trim();
-        actualAddress = URLUtil.isValidIP6Address(actualAddress) ? "[" + actualAddress + "]" : actualAddress;
-        int actualPort = port < 0 ? URLUtil.getPort(url) : port;
-        return actualAddress + ":" + actualPort;
+    public static String getHostAndPort(Context context, String address, int port, URL url) {
+        String urlHost = url != null ? url.getHost() : null;
+        int urlPort = url != null ? URLUtil.getPort(url) : -1;
+        String actualAddress = StringUtil.isTrimmedEmpty(address) ? urlHost : address.trim();
+        if (URLUtil.isValidIP6Address(actualAddress)) {
+            actualAddress = "[" + actualAddress + "]";
+        }
+        int actualPort = port < 0 ? urlPort : port;
+        String undefined = context.getResources().getString(R.string.string_undefined);
+        if (StringUtil.isTrimmedEmpty(actualAddress) && actualPort < 0) {
+            return undefined;
+        }
+        String displayAddress = StringUtil.isTrimmedEmpty(actualAddress) ? undefined : actualAddress;
+        String displayPort = actualPort < 0 ? undefined : String.valueOf(actualPort);
+        return displayAddress + ":" + displayPort;
     }
 
     public static boolean isHTTP(URL url) {

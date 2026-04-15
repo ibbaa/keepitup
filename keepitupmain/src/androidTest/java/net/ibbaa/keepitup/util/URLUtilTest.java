@@ -26,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -291,22 +292,30 @@ public class URLUtilTest {
 
     @Test
     public void testGetHostAndPort() throws MalformedURLException {
-        assertEquals("www.host.com:443", URLUtil.getHostAndPort("www.host.com", 443, new URL("http://other.com:8080")));
-        assertEquals("127.0.0.1:80", URLUtil.getHostAndPort("127.0.0.1", 80, new URL("http://other.com:8080")));
-        assertEquals("[::1]:443", URLUtil.getHostAndPort("::1", 443, new URL("http://other.com:8080")));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:123", URLUtil.getHostAndPort("3ffe:1900:4545:3:200:f8ff:fe21:67cf", 123, new URL("http://other.com:8080")));
-        assertEquals("www.host.com:443", URLUtil.getHostAndPort(null, 443, new URL("http://www.host.com:8080")));
-        assertEquals("www.host.com:443", URLUtil.getHostAndPort("", 443, new URL("http://www.host.com:8080")));
-        assertEquals("www.host.com:443", URLUtil.getHostAndPort("  ", 443, new URL("http://www.host.com:8080")));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:443", URLUtil.getHostAndPort(null, 443, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080")));
-        assertEquals("other.com:8080", URLUtil.getHostAndPort("other.com", -1, new URL("http://www.host.com:8080")));
-        assertEquals("other.com:80", URLUtil.getHostAndPort("other.com", -1, new URL("http://www.host.com")));
-        assertEquals("other.com:443", URLUtil.getHostAndPort("other.com", -1, new URL("https://www.host.com")));
-        assertEquals("www.host.com:8080", URLUtil.getHostAndPort(null, -1, new URL("http://www.host.com:8080")));
-        assertEquals("www.host.com:80", URLUtil.getHostAndPort(null, -1, new URL("http://www.host.com")));
-        assertEquals("www.host.com:443", URLUtil.getHostAndPort(null, -1, new URL("https://www.host.com")));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080", URLUtil.getHostAndPort(null, -1, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080")));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80", URLUtil.getHostAndPort(null, -1, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "www.host.com", 443, new URL("http://other.com:8080")));
+        assertEquals("127.0.0.1:80", URLUtil.getHostAndPort(TestRegistry.getContext(), "127.0.0.1", 80, new URL("http://other.com:8080")));
+        assertEquals("[::1]:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "::1", 443, new URL("http://other.com:8080")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:123", URLUtil.getHostAndPort(TestRegistry.getContext(), "3ffe:1900:4545:3:200:f8ff:fe21:67cf", 123, new URL("http://other.com:8080")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), null, 443, new URL("http://www.host.com:8080")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "", 443, new URL("http://www.host.com:8080")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "  ", 443, new URL("http://www.host.com:8080")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:443", URLUtil.getHostAndPort(TestRegistry.getContext(), null, 443, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080")));
+        assertEquals("other.com:8080", URLUtil.getHostAndPort(TestRegistry.getContext(), "other.com", -1, new URL("http://www.host.com:8080")));
+        assertEquals("other.com:80", URLUtil.getHostAndPort(TestRegistry.getContext(), "other.com", -1, new URL("http://www.host.com")));
+        assertEquals("other.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "other.com", -1, new URL("https://www.host.com")));
+        assertEquals("www.host.com:8080", URLUtil.getHostAndPort(TestRegistry.getContext(), null, -1, new URL("http://www.host.com:8080")));
+        assertEquals("www.host.com:80", URLUtil.getHostAndPort(TestRegistry.getContext(), null, -1, new URL("http://www.host.com")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), null, -1, new URL("https://www.host.com")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080", URLUtil.getHostAndPort(TestRegistry.getContext(), null, -1, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:8080")));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]:80", URLUtil.getHostAndPort(TestRegistry.getContext(), null, -1, new URL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]")));
+        assertEquals("www.host.com:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "www.host.com", 443, null));
+        assertEquals("[::1]:80", URLUtil.getHostAndPort(TestRegistry.getContext(), "::1", 80, null));
+        assertEquals("www.host.com:undefined", URLUtil.getHostAndPort(TestRegistry.getContext(), "www.host.com", -1, null));
+        assertEquals("undefined:443", URLUtil.getHostAndPort(TestRegistry.getContext(), null, 443, null));
+        assertEquals("undefined:443", URLUtil.getHostAndPort(TestRegistry.getContext(), "", 443, null));
+        assertEquals("undefined", URLUtil.getHostAndPort(TestRegistry.getContext(), null, -1, null));
+        assertEquals("undefined", URLUtil.getHostAndPort(TestRegistry.getContext(), "", -1, null));
+        assertEquals("undefined", URLUtil.getHostAndPort(TestRegistry.getContext(), "  ", -1, null));
     }
 
     @Test

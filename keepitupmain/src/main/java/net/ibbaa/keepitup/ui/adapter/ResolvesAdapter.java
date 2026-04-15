@@ -31,7 +31,6 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.ui.dialog.ResolvesDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
-import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.URL;
@@ -84,39 +83,15 @@ public class ResolvesAdapter extends RecyclerView.Adapter<ResolveViewHolder> {
     }
 
     private String getMatchText(Resolve resolve) {
-        String match;
-        if (isMatchEmpty(resolve)) {
-            match = getResources().getString(R.string.string_not_set);
-        } else {
-            match = getHostAndPort(resolve.getSourceAddress(), resolve.getSourcePort());
-        }
+        URL url = URLUtil.getURL(resolvesDialog.getNetworkTaskURL());
+        String match = URLUtil.getHostAndPort(getContext(), resolve.getSourceAddress(), resolve.getSourcePort(), url);
         return getResources().getString(R.string.list_item_resolve_match, match);
     }
 
     private String getConnectToText(Resolve resolve) {
-        String connectTo;
-        if (isConnectToEmpty(resolve)) {
-            connectTo = getResources().getString(R.string.string_not_set);
-        } else {
-            connectTo = getHostAndPort(resolve.getTargetAddress(), resolve.getTargetPort());
-        }
-        return getResources().getString(R.string.list_item_resolve_connect_to, connectTo);
-    }
-
-    private boolean isMatchEmpty(Resolve resolve) {
-        return StringUtil.isEmpty(resolve.getSourceAddress()) && resolve.getSourcePort() < 0;
-    }
-
-    private boolean isConnectToEmpty(Resolve resolve) {
-        return StringUtil.isEmpty(resolve.getTargetAddress()) && resolve.getTargetPort() < 0;
-    }
-
-    private String getHostAndPort(String address, int port) {
         URL url = URLUtil.getURL(resolvesDialog.getNetworkTaskURL());
-        if (url == null) {
-            return getResources().getString(R.string.string_not_set);
-        }
-        return URLUtil.getHostAndPort(address, port, url);
+        String connectTo =  URLUtil.getHostAndPort(getContext(), resolve.getTargetAddress(), resolve.getTargetPort(), url);
+        return getResources().getString(R.string.list_item_resolve_connect_to, connectTo);
     }
 
     public Bundle saveStateToBundle() {

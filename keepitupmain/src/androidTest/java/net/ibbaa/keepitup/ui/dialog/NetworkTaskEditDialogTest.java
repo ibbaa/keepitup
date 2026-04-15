@@ -16,14 +16,59 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
+import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -33,7 +78,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     private ActivityScenario<?> activityScenario;
     private MockPermissionManager permissionManager;
 
-    /*@Before
+    @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
@@ -201,8 +246,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(data.isStopOnSuccess());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test.com"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("test.com"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
@@ -239,8 +282,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("  https://test.com  "));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("   test.com   "));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withTextColor(R.color.textColor)));
         dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         task = dialog.getNetworkTask();
         assertEquals("https://test.com", task.getAddress());
@@ -358,8 +399,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
@@ -368,8 +407,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
     }
 
     @Test
@@ -442,47 +479,20 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testResolveFields() {
+    public void testResolveFieldsVisibilty() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(not(isDisplayed())));
         onView(withText("Ping")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(not(isDisplayed())));
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(isDisplayed()));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testResolveFieldsNotSetHandling() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host.com"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("11"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host.com")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("11")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host.com")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("11")));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(withText("Resolve rules:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
     }
 
     @Test
@@ -1191,24 +1201,16 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http:/test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("my host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("URL")).check(matches(isDisplayed()));
         onView(withText("No valid URL")).check(matches(isDisplayed()));
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
-        onView(withText("Connect-to host")).check(matches(isDisplayed()));
-        onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
-        onView(withText("Connect-to port")).check(matches(isDisplayed()));
-        onView(withText("Maximum: 65535")).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("55"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("myhost"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("12345"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
@@ -1231,22 +1233,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-    }
-
-    @Test
-    public void testResolveFieldsNoValueAllowed() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://address"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("not set"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("not set"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -1304,22 +1290,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testInputErrorColorResolveFields() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("my host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("99999"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("myhost"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("11111"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withTextColor(R.color.textColor)));
-    }
-
-    @Test
     public void testErrorColorOnAccessTypeChange() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
@@ -1331,8 +1301,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.xyz.com"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withTextColor(R.color.textColor)));
         onView(withText("Ping")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withTextColor(R.color.textColor)));
@@ -1453,8 +1421,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("host.com")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("50")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("22")));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_ignore_ssl_error_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isChecked()));
@@ -1488,14 +1454,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("22"));
         rotateScreen(activityScenario);
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("22")));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_ignore_ssl_error_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isChecked()));
@@ -2385,309 +2347,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testConnectToHostCopyPasteCancel() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("123");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("123", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToHostCopyPasteCancelScreenRotation() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("9");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        rotateScreen(activityScenario);
-        rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-    }
-
-    @Test
-    public void testConnectToHostCopyOption() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("host", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToHostCopyNotSet() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("not set", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToHostCopyOptionScreenRotation() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("host", clipboardManager.getData());
-        rotateScreen(activityScenario);
-    }
-
-    @Test
-    public void testConnectToHostPasteOption() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("host");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("host", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToHostOptionScreenRotation() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText(""));
-        rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("host");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(longClick());
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("host");
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("host", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToPortCopyPasteNoOption() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        clipboardManager.putData("abc");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-    }
-
-    @Test
-    public void testConnectToPortCopyPasteCancel() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("1");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("5"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("5")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("1", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToPortCopyPasteCancelScreenRotation() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("22");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("2"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        rotateScreen(activityScenario);
-        rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("2")));
-    }
-
-    @Test
-    public void testConnectToPortCopyOption() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("22"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("22")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("22", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToPortCopyNotSet() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("not set", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToPortCopyOptionScreenRotation() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        prepareMockClipboardManager();
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("80"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("80")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("80", clipboardManager.getData());
-        rotateScreen(activityScenario);
-    }
-
-    @Test
-    public void testConnectToPortPasteOption() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("3");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("3")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("3", clipboardManager.getData());
-    }
-
-    @Test
-    public void testConnectToPortOptionScreenRotation() {
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
-        rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("21");
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(longClick());
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager();
-        clipboardManager.putData("21");
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
-        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("21")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("21", clipboardManager.getData());
-    }
-
-    @Test
     public void testNotificationWithPermission() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isEnabled()));
@@ -2729,5 +2388,5 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     private void addDefaultHeader() {
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
-    }*/
+    }
 }
