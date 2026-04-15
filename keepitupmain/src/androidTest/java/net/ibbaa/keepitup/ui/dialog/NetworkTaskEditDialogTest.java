@@ -515,6 +515,361 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testResolveRulesInitialState() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> initialResolves = dialog.getInitialResolves();
+        List<Resolve> resolves = dialog.getResolves();
+        assertNotNull(initialResolves);
+        assertTrue(initialResolves.isEmpty());
+        assertNotNull(resolves);
+        assertTrue(resolves.isEmpty());
+    }
+
+    @Test
+    public void testResolveRulesInitialStateScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
+        rotateScreen(activityScenario);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialResolves().isEmpty());
+        assertTrue(dialog.getResolves().isEmpty());
+    }
+
+    @Test
+    public void testResolveRulesOpenDialogValidURL() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_resolves_label)).check(matches(withText("Resolve rules")));
+        onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect.host.com:443")));
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialResolves().isEmpty());
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(1, resolves.size());
+        assertEquals("match.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesOpenDialogValidURLScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect.host.com:443")));
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(1, resolves.size());
+        assertEquals("match.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesOpenDialogInvalidURL() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("invalid-url"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_resolves_label)).check(matches(withText("Resolve rules")));
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect.host.com:443")));
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("8443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: undefined")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: connect2.host.com:8443")));
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(2, resolves.size());
+        assertEquals("match.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+        assertEquals("", resolves.get(1).getSourceAddress());
+        assertEquals(-1, resolves.get(1).getSourcePort());
+        assertEquals("connect2.host.com", resolves.get(1).getTargetAddress());
+        assertEquals(8443, resolves.get(1).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesChangeCancelZeroResolves() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_cancel)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialResolves().isEmpty());
+        assertTrue(dialog.getResolves().isEmpty());
+    }
+
+    @Test
+    public void testResolveRulesChangeCancelZeroResolvesScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialResolves().isEmpty());
+        assertTrue(dialog.getResolves().isEmpty());
+    }
+
+    @Test
+    public void testResolveRulesChangeOkOneResolve() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialResolves().isEmpty());
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(1, resolves.size());
+        assertEquals(0, resolves.get(0).getIndex());
+        assertEquals("match.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesChangeOkOneResolveScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(1, resolves.size());
+        assertEquals(0, resolves.get(0).getIndex());
+        assertEquals("match.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesChangeOkMultipleResolves() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match1.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect1.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("7070"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("8443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: match2.host.com:7070")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: connect2.host.com:8443")));
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialResolves().isEmpty());
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(2, resolves.size());
+        assertEquals(0, resolves.get(0).getIndex());
+        assertEquals("match1.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect1.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+        assertEquals(1, resolves.get(1).getIndex());
+        assertEquals("match2.host.com", resolves.get(1).getSourceAddress());
+        assertEquals(7070, resolves.get(1).getSourcePort());
+        assertEquals("connect2.host.com", resolves.get(1).getTargetAddress());
+        assertEquals(8443, resolves.get(1).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesChangeOkMultipleResolvesScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match1.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect1.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("7070"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("8443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(2, resolves.size());
+        assertEquals(0, resolves.get(0).getIndex());
+        assertEquals("match1.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect1.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+        assertEquals(1, resolves.get(1).getIndex());
+        assertEquals("match2.host.com", resolves.get(1).getSourceAddress());
+        assertEquals(7070, resolves.get(1).getSourcePort());
+        assertEquals("connect2.host.com", resolves.get(1).getTargetAddress());
+        assertEquals(8443, resolves.get(1).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesInitialOneResolve() {
+        activityScenario.close();
+        NetworkTask task = getNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        Resolve resolve = getResolve(task.getId(), 0, "match.host.com", 9090, "connect.host.com", 443);
+        getResolveDAO().insertResolve(resolve);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_resolves_label)).check(matches(withText("Resolve rules")));
+        onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect.host.com:443")));
+        onView(withId(R.id.imageview_dialog_resolves_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> initialResolves = dialog.getInitialResolves();
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(1, initialResolves.size());
+        assertEquals("match.host.com", initialResolves.get(0).getSourceAddress());
+        assertEquals(9090, initialResolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", initialResolves.get(0).getTargetAddress());
+        assertEquals(443, initialResolves.get(0).getTargetPort());
+        assertEquals(1, resolves.size());
+        assertEquals("match.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(9090, resolves.get(0).getSourcePort());
+        assertEquals("connect.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(443, resolves.get(0).getTargetPort());
+    }
+
+    @Test
+    public void testResolveRulesInitialMultipleResolves() {
+        activityScenario.close();
+        NetworkTask task = getNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        Resolve resolve1 = getResolve(task.getId(), 0, "match1.host.com", 9090, "connect1.host.com", 443);
+        Resolve resolve2 = getResolve(task.getId(), 1, "match2.host.com", 7070, "connect2.host.com", 8443);
+        getResolveDAO().insertResolve(resolve1);
+        getResolveDAO().insertResolve(resolve2);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Match: match2.host.com:7070")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).check(matches(withText("Connect-to: connect2.host.com:8443")));
+        onView(withId(R.id.imageview_dialog_resolves_cancel)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<Resolve> initialResolves = dialog.getInitialResolves();
+        List<Resolve> resolves = dialog.getResolves();
+        assertEquals(2, initialResolves.size());
+        assertEquals("match1.host.com", initialResolves.get(0).getSourceAddress());
+        assertEquals(9090, initialResolves.get(0).getSourcePort());
+        assertEquals("match2.host.com", initialResolves.get(1).getSourceAddress());
+        assertEquals(7070, initialResolves.get(1).getSourcePort());
+        assertEquals(2, resolves.size());
+        assertEquals("match1.host.com", resolves.get(0).getSourceAddress());
+        assertEquals("match2.host.com", resolves.get(1).getSourceAddress());
+    }
+
+    @Test
     public void testHeadersFields() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
@@ -2407,5 +2762,36 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     private void addDefaultHeader() {
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
+    }
+
+    private NetworkTask getNetworkTask() {
+        NetworkTask task = new NetworkTask();
+        task.setIndex(0);
+        task.setAddress("https://example.com:8080/path");
+        task.setAccessType(AccessType.DOWNLOAD);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(false);
+        task.setRunning(false);
+        return task;
+    }
+
+    private AccessTypeData getAccessTypeData(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(networkTaskId);
+        data.setUseDefaultHeaders(false);
+        data.setIgnoreSSLError(false);
+        data.setStopOnSuccess(false);
+        return data;
+    }
+
+    private Resolve getResolve(long networkTaskId, int index, String sourceAddress, int sourcePort, String targetAddress, int targetPort) {
+        Resolve resolve = new Resolve(networkTaskId);
+        resolve.setIndex(index);
+        resolve.setSourceAddress(sourceAddress);
+        resolve.setSourcePort(sourcePort);
+        resolve.setTargetAddress(targetAddress);
+        resolve.setTargetPort(targetPort);
+        return resolve;
     }
 }
