@@ -479,7 +479,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testResolveFieldsVisibilty() {
+    public void testResolveFieldsVisibility() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(not(isDisplayed())));
@@ -488,6 +488,25 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(not(isDisplayed())));
         onView(withText("Download")).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(withText("Resolve rules:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
+    }
+
+    @Test
+    public void testResolveFieldsVisibilityScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(not(isDisplayed())));
+        rotateScreen(activityScenario);
+        onView(withText("Ping")).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(not(isDisplayed())));
+        onView(withText("Download")).perform(click());
+        rotateScreen(activityScenario);
         onView(withId(R.id.linearlayout_dialog_network_task_edit_resolve_rules)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_label)).check(matches(withText("Resolve rules:")));
