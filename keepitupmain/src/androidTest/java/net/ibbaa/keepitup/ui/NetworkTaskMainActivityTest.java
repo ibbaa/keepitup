@@ -2427,6 +2427,91 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
+    @Test
+    public void testExistingResolvesChangedAddEditDelete() {
+        NetworkTask task = getNetworkTask1();
+        task.setAccessType(AccessType.DOWNLOAD);
+        task.setAddress("https://www.test.com");
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        getResolveDAO().insertResolve(getResolve(task.getId(), 0, "match1.host.com", 9090, "connect1.host.com", 443));
+        getResolveDAO().insertResolve(getResolve(task.getId(), 1, "match2.host.com", 7070, "connect2.host.com", 8443));
+        getResolveDAO().insertResolve(getResolve(task.getId(), 2, "match3.host.com", 5050, "connect3.host.com", 6060));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (3 rules)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.cardview_list_item_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("m1edited.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("1111"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("c1edited.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("2222"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_resolve_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.new.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("3333"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.new.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("4444"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 3 defined")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withTextColor(R.color.textColor)));
+        List<Resolve> resolves = getResolveDAO().readAllResolvesForNetworkTask(task.getId());
+        assertEquals(3, resolves.size());
+        assertEquals(0, resolves.get(0).getIndex());
+        assertEquals("m1edited.host.com", resolves.get(0).getSourceAddress());
+        assertEquals(1111, resolves.get(0).getSourcePort());
+        assertEquals("c1edited.host.com", resolves.get(0).getTargetAddress());
+        assertEquals(2222, resolves.get(0).getTargetPort());
+        assertEquals(1, resolves.get(1).getIndex());
+        assertEquals("match3.host.com", resolves.get(1).getSourceAddress());
+        assertEquals(5050, resolves.get(1).getSourcePort());
+        assertEquals("connect3.host.com", resolves.get(1).getTargetAddress());
+        assertEquals(6060, resolves.get(1).getTargetPort());
+        assertEquals(2, resolves.get(2).getIndex());
+        assertEquals("match.new.com", resolves.get(2).getSourceAddress());
+        assertEquals(3333, resolves.get(2).getSourcePort());
+        assertEquals("connect.new.com", resolves.get(2).getTargetAddress());
+        assertEquals(4444, resolves.get(2).getTargetPort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testExistingResolvesNotChanged() {
+        NetworkTask task = getNetworkTask1();
+        task.setAccessType(AccessType.DOWNLOAD);
+        task.setAddress("https://www.test.com");
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve(task.getId(), 0, "match1.host.com", 9090, "connect1.host.com", 443));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve(task.getId(), 1, "match2.host.com", 7070, "connect2.host.com", 8443));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("30"));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 2 defined")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withTextColor(R.color.textColor)));
+        List<Resolve> resolves = getResolveDAO().readAllResolvesForNetworkTask(task.getId());
+        assertEquals(2, resolves.size());
+        assertTrue(resolve1.isEqual(resolves.get(0)));
+        assertTrue(resolve2.isEqual(resolves.get(1)));
+        activityScenario.close();
+    }
+
     private void startAlarmService(NetworkTask task) {
         if (AlarmService.isRunning()) {
             return;
@@ -2602,6 +2687,16 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     private void addDefaultHeader() {
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
+    }
+
+    private Resolve getResolve(long networkTaskId, int index, String sourceAddress, int sourcePort, String targetAddress, int targetPort) {
+        Resolve resolve = new Resolve(networkTaskId);
+        resolve.setIndex(index);
+        resolve.setSourceAddress(sourceAddress);
+        resolve.setSourcePort(sourcePort);
+        resolve.setTargetAddress(targetAddress);
+        resolve.setTargetPort(targetPort);
+        return resolve;
     }
 }
 
