@@ -16,14 +16,79 @@
 
 package net.ibbaa.keepitup.ui;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.HeaderType;
+import net.ibbaa.keepitup.model.LogEntry;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SchedulerState;
+import net.ibbaa.keepitup.resources.JSONSystemSetup;
+import net.ibbaa.keepitup.resources.SystemSetupResult;
+import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
+import net.ibbaa.keepitup.resources.encryption.JSONEncryptSetup;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
+import net.ibbaa.keepitup.test.mock.TestHeaderDAO;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestUtil;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.util.StreamUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 @MediumTest
 @SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
@@ -44,7 +109,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         stopAlarmService();
     }
 
-    /*@Test
+    @Test
     public void testInitializeActivity() {
         NetworkTask task1 = getNetworkTask1();
         task1 = getNetworkTaskDAO().insertNetworkTask(task1);
@@ -90,7 +155,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: https://localhost")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Resolve rules: 0 defined")));
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Headers: default")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 40 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Ignore SSL errors: yes")));
@@ -128,7 +193,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 0 defined")));
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: default")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 40 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Ignore SSL errors: yes")));
@@ -392,7 +457,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: http://test")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Resolve rules: 0 defined")));
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Headers: default")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 60 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Ignore SSL errors: yes")));
@@ -750,78 +815,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
         assertTrue(resolvesBefore.isEmpty());
         assertTrue(resolvesAfter.isEmpty());
-        activityScenario.close();
-    }
-
-    @Test
-    public void testEditResolveDataAddedChangedAndRemoved() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        injectPermissionManager(activityScenario);
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
-        List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("localhost"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("22"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
-        List<Resolve> resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
-        assertTrue(resolvesBefore.isEmpty());
-        assertFalse(resolvesAfter.isEmpty());
-        assertEquals("localhost", resolvesAfter.get(0).getTargetAddress());
-        assertEquals(22, resolvesAfter.get(0).getTargetPort());
-        onView(isRoot()).perform(waitFor(500));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("127.0.0.1"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("443"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
-        assertEquals("127.0.0.1", resolvesAfter.get(0).getTargetAddress());
-        assertEquals(443, resolvesAfter.get(0).getTargetPort());
-        onView(isRoot()).perform(waitFor(500));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("not set"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        resolvesAfter = getResolveDAO().readAllResolvesForNetworkTask(taskAfter.getId());
-        assertTrue(resolvesAfter.isEmpty());
-        activityScenario.close();
-    }
-
-    @Test
-    public void testEditConnectToField() {
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
-        injectPermissionManager(activityScenario);
-        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: not set")));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("22"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: localhost:22")));
-        onView(isRoot()).perform(waitFor(500));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("127.0.0.1"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: 127.0.0.1:22")));
-        onView(isRoot()).perform(waitFor(500));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("::1"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: [::1]:22")));
         activityScenario.close();
     }
 
@@ -2573,6 +2566,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     private void addDefaultHeader() {
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
-    }*/
+    }
 }
 
