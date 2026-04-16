@@ -1474,7 +1474,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testAddEditDelete() {
+    public void testAddEditDeleteHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
@@ -1529,7 +1529,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testAddEditDeleteScreenRotation() {
+    public void testAddEditDeleteHeaderScreenRotation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
@@ -2388,6 +2388,42 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals(1, headers.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("User-Agent", headers.get(0).getName());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testResolveRules() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 0 defined")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 1 defined")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("8080"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("connect2.host.com"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("8443"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 2 defined")));
         activityScenario.close();
     }
 
