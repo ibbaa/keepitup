@@ -497,7 +497,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, List<Header> invalidHeaders, boolean hostOverridden, boolean success) {
         InetAddress connectToAddress = hostOverridden ? getConnectToAddress().resolvedAddress() : null;
         int connectToPort = hostOverridden ? getConnectToAddress().resolve().getTargetPort() : -1;
-        return new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, invalidHeaders, success);
+        return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, invalidHeaders, success);
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {

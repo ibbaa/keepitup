@@ -51,6 +51,8 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -312,55 +314,79 @@ public abstract class NetworkTaskWorker implements Runnable {
         return null;
     }
 
-    @SuppressWarnings("resource")
     public DNSExecutionResult executeDNSLookup(String host, boolean preferIp4) {
-        Log.d(NetworkTaskWorker.class.getName(), "executeDNSLookup, host is " + host + ", preferIp4 is " + preferIp4);
-        Callable<DNSLookupResult> dnsLookup = getDNSLookup(host);
-        int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
+        List<DNSExecutionResult> result = executeDNSLookup(Collections.singletonList(host), preferIp4);
+        if (result.isEmpty()) {
+            return new DNSExecutionResult(false, new LogEntry(), null);
+        }
+        return result.get(0);
+    }
+
+    @SuppressWarnings("resource")
+    public List<DNSExecutionResult> executeDNSLookup(List<String> hosts, boolean preferIp4) {
+        Log.d(NetworkTaskWorker.class.getName(), "executeDNSLookup, hosts is " + hosts + ", preferIp4 is " + preferIp4);
+        List<Callable<DNSLookupResult>> dnsLookups = new ArrayList<>();
+        for (String host : hosts) {
+            dnsLookups.add(getDNSLookup(host));
+        }
+        int timeout = getDNSLookupTimeout();
         Log.d(NetworkTaskWorker.class.getName(), "Creating ExecutorService");
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Future<DNSLookupResult> dnsLookupResultFuture = null;
-        LogEntry logEntry = new LogEntry();
-        boolean interrupted = false;
+        int poolSize = Math.min(hosts.size(), getResources().getInteger(R.integer.dns_max_parallel_lookups));
+        ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
+        List<DNSExecutionResult> executionResults = new ArrayList<>();
         try {
-            Log.d(NetworkTaskWorker.class.getName(), "Executing " + dnsLookup.getClass().getSimpleName() + " with a timeout of " + timeout);
-            dnsLookupResultFuture = executorService.submit(dnsLookup);
-            DNSLookupResult dnsLookupResult = dnsLookupResultFuture.get(timeout, TimeUnit.SECONDS);
-            Log.d(NetworkTaskWorker.class.getName(), dnsLookup.getClass().getSimpleName() + " returned " + dnsLookupResult);
-            if (dnsLookupResult.getException() == null) {
-                Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was successful");
-                List<InetAddress> addresses = dnsLookupResult.getAddresses();
-                if (addresses == null || addresses.isEmpty()) {
-                    Log.e(NetworkTaskWorker.class.getName(), "DNS lookup returned no addresses");
+            Log.d(NetworkTaskWorker.class.getName(), "Executing DNS lookups with a timeout of " + timeout);
+            List<Future<DNSLookupResult>> dnsLookupResultFutures = executorService.invokeAll(dnsLookups, timeout, TimeUnit.SECONDS);
+            Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned " + dnsLookupResultFutures.size() + " results");
+            for (int ii = 0; ii < dnsLookupResultFutures.size(); ii++) {
+                Future<DNSLookupResult> dnsLookupResultFuture = dnsLookupResultFutures.get(ii);
+                if (dnsLookupResultFuture.isCancelled()) {
+                    LogEntry logEntry = new LogEntry();
                     logEntry.setSuccess(false);
-                    logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_error, dnsLookupResult.getHost()) + " " + getResources().getString(R.string.text_dns_lookup_no_address));
+                    logEntry.setMessage(getTimeoutMessage(getResources().getString(R.string.text_dns_lookup_error, hosts.get(ii)), timeout));
+                    executionResults.add(new DNSExecutionResult(false, logEntry, null));
                 } else {
-                    Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned the following addresses " + addresses);
-                    InetAddress address = findAddress(addresses, preferIp4);
-                    Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
-                    logEntry.setSuccess(true);
-                    logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), address.getHostAddress()));
-                    return new DNSExecutionResult(false, logEntry, address);
+                    DNSLookupResult dnsLookupResult = dnsLookupResultFuture.get(timeout, TimeUnit.SECONDS);
+                    if (dnsLookupResult.getException() == null) {
+                        Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was successful");
+                        List<InetAddress> addresses = dnsLookupResult.getAddresses();
+                        if (addresses == null || addresses.isEmpty()) {
+                            Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned no addresses");
+                            LogEntry logEntry = new LogEntry();
+                            logEntry.setSuccess(false);
+                            logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_error, dnsLookupResult.getHost()) + " " + getResources().getString(R.string.text_dns_lookup_no_address));
+                            executionResults.add(new DNSExecutionResult(false, logEntry, null));
+                        } else {
+                            Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned the following addresses " + addresses);
+                            InetAddress address = findAddress(addresses, preferIp4);
+                            Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
+                            LogEntry logEntry = new LogEntry();
+                            logEntry.setSuccess(true);
+                            logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), address.getHostAddress()));
+                            executionResults.add(new DNSExecutionResult(false, logEntry, address));
+                        }
+                    } else {
+                        Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
+                        LogEntry logEntry = new LogEntry();
+                        logEntry.setSuccess(false);
+                        logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, dnsLookupResult.getHost()), dnsLookupResult.getException(), timeout));
+                        executionResults.add(new DNSExecutionResult(false, logEntry, null));
+                    }
                 }
-            } else {
-                Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
-                logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, dnsLookupResult.getHost()), dnsLookupResult.getException(), timeout));
             }
         } catch (Throwable exc) {
-            Log.e(NetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);
-            logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), exc, timeout));
-            if (dnsLookupResultFuture != null && isInterrupted(exc)) {
-                Log.d(NetworkTaskWorker.class.getName(), "Cancelling " + dnsLookup.getClass().getSimpleName());
-                dnsLookupResultFuture.cancel(true);
-                interrupted = true;
+            Log.e(NetworkTaskWorker.class.getName(), "Exception executing DNS lookup", exc);
+            for (String host : hosts) {
+                LogEntry logEntry = new LogEntry();
+                logEntry.setSuccess(false);
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), exc, timeout));
+                executionResults.add(new DNSExecutionResult(isInterrupted(exc), logEntry, null));
             }
         } finally {
             Log.d(NetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
-        return new DNSExecutionResult(interrupted, logEntry, null);
+        return executionResults;
     }
 
     private InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
@@ -375,10 +401,18 @@ public abstract class NetworkTaskWorker implements Runnable {
         return addresses.get(0);
     }
 
+    protected int getDNSLookupTimeout() {
+        return getResources().getInteger(R.integer.dns_lookup_timeout);
+    }
+
+    protected String getTimeoutMessage(String prefixMessage, int timeout) {
+        String unit = getResources().getQuantityString(R.plurals.string_second, timeout);
+        return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit + ".";
+    }
+
     protected String getMessageFromException(String prefixMessage, Throwable exc, int timeout) {
         if (isTimeout(exc)) {
-            String unit = getResources().getQuantityString(R.plurals.string_second, timeout);
-            return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit + ".";
+            return getTimeoutMessage(prefixMessage, timeout);
         }
         if (isInterrupted(exc)) {
             return prefixMessage + " " + getResources().getString(R.string.text_interrupted);

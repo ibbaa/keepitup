@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
@@ -167,15 +168,29 @@ public class URLUtilTest {
     }
 
     @Test
-    public void testNormalizeHost() {
+    public void testRemoveIPv6Brackets() {
+        assertNull(URLUtil.removeIPv6Brackets(null));
+        assertEquals("", URLUtil.removeIPv6Brackets(""));
+        assertEquals("a", URLUtil.removeIPv6Brackets("a"));
+        assertEquals("", URLUtil.removeIPv6Brackets("[]"));
+        assertEquals("www.host.com", URLUtil.removeIPv6Brackets("www.host.com"));
+        assertEquals("[www.host.com", URLUtil.removeIPv6Brackets("[www.host.com"));
+        assertEquals("www.host.com", URLUtil.removeIPv6Brackets("[www.host.com]"));
+        assertEquals("3ffe:1900:4545:3:200:f8ff:fe21:67cf", URLUtil.removeIPv6Brackets("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
+    }
+
+    @Test
+    public void testNormalizeHost() throws Exception {
         assertNull(URLUtil.normalizeHost(null));
         assertEquals("", URLUtil.normalizeHost(""));
-        assertEquals("a", URLUtil.normalizeHost("a"));
-        assertEquals("", URLUtil.normalizeHost("[]"));
-        assertEquals("www.host.com", URLUtil.normalizeHost("www.host.com"));
-        assertEquals("[www.host.com", URLUtil.normalizeHost("[www.host.com"));
-        assertEquals("www.host.com", URLUtil.normalizeHost("[www.host.com]"));
-        assertEquals("3ffe:1900:4545:3:200:f8ff:fe21:67cf", URLUtil.normalizeHost("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
+        assertEquals("test.com", URLUtil.normalizeHost("test.com"));
+        assertEquals("test.com", URLUtil.normalizeHost("TEST.COM"));
+        assertEquals("test.com", URLUtil.normalizeHost("Test.Com"));
+        assertEquals("127.0.0.1", URLUtil.normalizeHost("127.0.0.1"));
+        assertEquals(InetAddress.getByName("::1").getHostAddress(), URLUtil.normalizeHost("::1"));
+        assertEquals(URLUtil.normalizeHost("::1"), URLUtil.normalizeHost("0:0:0:0:0:0:0:1"));
+        assertEquals(URLUtil.normalizeHost("::1"), URLUtil.normalizeHost("[::1]"));
+        assertEquals(InetAddress.getByName("3ffe:1900:4545:3:200:f8ff:fe21:67cf").getHostAddress(), URLUtil.normalizeHost("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
     }
 
     @Test

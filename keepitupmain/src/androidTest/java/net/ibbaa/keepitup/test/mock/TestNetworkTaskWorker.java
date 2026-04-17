@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
     private MockDNSLookup mockDNSLookup;
+    private int mockDNSLookupTimeout = -1;
     private final boolean success;
     private final int maxInstances;
     private int instancesOnExecute;
@@ -95,6 +96,18 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {
         this.mockDNSLookup = mockDNSLookup;
+    }
+
+    public void setMockDNSLookupTimeout(int timeout) {
+        this.mockDNSLookupTimeout = timeout;
+    }
+
+    @Override
+    protected int getDNSLookupTimeout() {
+        if (mockDNSLookupTimeout >= 0) {
+            return mockDNSLookupTimeout;
+        }
+        return super.getDNSLookupTimeout();
     }
 
     public void setStoragePermissionManager(MockStoragePermissionManager storagePermissionManager) {

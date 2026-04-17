@@ -90,8 +90,8 @@ public class URLUtil {
         boolean bothHostsEmpty = StringUtil.isEmpty(host1) && StringUtil.isEmpty(host2);
         boolean bothPortsNegative = port1 < 0 && port2 < 0;
         if (!bothHostsEmpty) {
-            String normalizedHost1 = normalizeHost(host1);
-            String normalizedHost2 = normalizeHost(host2);
+            String normalizedHost1 = removeIPv6Brackets(host1);
+            String normalizedHost2 = removeIPv6Brackets(host2);
             boolean sameHost;
             if (normalizedHost1 == null || normalizedHost2 == null) {
                 sameHost = normalizedHost1 == null && normalizedHost2 == null;
@@ -120,8 +120,8 @@ public class URLUtil {
         if (url1 == null || url2 == null) {
             return false;
         }
-        String host1 = normalizeHost(url1.getHost());
-        String host2 = normalizeHost(url2.getHost());
+        String host1 = removeIPv6Brackets(url1.getHost());
+        String host2 = removeIPv6Brackets(url2.getHost());
         boolean sameHost;
         if (isValidIPAddress(host1) && isValidIPAddress(host2)) {
             try {
@@ -143,7 +143,7 @@ public class URLUtil {
         return url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
     }
 
-    public static String normalizeHost(String host) {
+    public static String removeIPv6Brackets(String host) {
         if (host == null || host.length() < 2) {
             return host;
         }
@@ -151,6 +151,24 @@ public class URLUtil {
             return host.substring(1, host.length() - 1);
         }
         return host;
+    }
+
+    public static String normalizeHost(String host) {
+        if (host == null) {
+            return null;
+        }
+        String stripped = removeIPv6Brackets(host);
+        if (StringUtil.isEmpty(stripped)) {
+            return stripped;
+        }
+        if (isValidIPAddress(stripped)) {
+            try {
+                return InetAddress.getByName(stripped).getHostAddress();
+            } catch (Exception exc) {
+                Log.d(URLUtil.class.getName(), "Exception normalizing IP address " + host, exc);
+            }
+        }
+        return stripped.toLowerCase();
     }
 
     public static String getSourceAddress(Resolve resolve, URL url) {

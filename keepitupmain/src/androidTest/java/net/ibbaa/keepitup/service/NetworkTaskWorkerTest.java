@@ -58,6 +58,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -1080,6 +1083,71 @@ public class NetworkTaskWorkerTest {
         assertNull(address);
         assertFalse(logEntry.isSuccess());
         assertEquals("DNS lookup for abc.com failed. IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupTimeout() {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        testNetworkTaskWorker.setMockDNSLookupTimeout(1);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("host.com", null, 30000, null));
+        NetworkTaskWorker.DNSExecutionResult dnsExecutionResult = testNetworkTaskWorker.executeDNSLookup("host.com", true);
+        assertNull(dnsExecutionResult.getAddress());
+        assertFalse(dnsExecutionResult.isInterrupted());
+        assertFalse(dnsExecutionResult.getLogEntry().isSuccess());
+        assertEquals("DNS lookup for host.com failed. No response within 1 second.", dnsExecutionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupMultipleHosts() throws Exception {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(List.of(InetAddress.getByName("127.0.0.1")), "abc.com", null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        List<NetworkTaskWorker.DNSExecutionResult> results = testNetworkTaskWorker.executeDNSLookup(Arrays.asList("host1.com", "host2.com", "host3.com"), true);
+        assertEquals(3, results.size());
+        for (NetworkTaskWorker.DNSExecutionResult result : results) {
+            assertFalse(result.isInterrupted());
+            assertTrue(result.getLogEntry().isSuccess());
+            assertEquals(InetAddress.getByName("127.0.0.1"), result.getAddress());
+            assertEquals("DNS lookup for abc.com successful. Resolved address is 127.0.0.1.", result.getLogEntry().getMessage());
+        }
+    }
+
+    @Test
+    public void testExecuteDNSLookupMultipleHostsAllFailed() {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), "abc.com", exception);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        List<NetworkTaskWorker.DNSExecutionResult> results = testNetworkTaskWorker.executeDNSLookup(Arrays.asList("host1.com", "host2.com", "host3.com"), true);
+        assertEquals(3, results.size());
+        for (NetworkTaskWorker.DNSExecutionResult result : results) {
+            assertFalse(result.isInterrupted());
+            assertFalse(result.getLogEntry().isSuccess());
+            assertNull(result.getAddress());
+            assertEquals("DNS lookup for abc.com failed. IllegalArgumentException: TestException", result.getLogEntry().getMessage());
+        }
+    }
+
+    @Test
+    public void testExecuteDNSLookupInterrupted() throws Exception {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        CountDownLatch startedLatch = new CountDownLatch(1);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("host.com", null, 60000, startedLatch));
+        AtomicReference<List<NetworkTaskWorker.DNSExecutionResult>> results = new AtomicReference<>();
+        CountDownLatch doneLatch = new CountDownLatch(1);
+        Thread thread = new Thread(() -> {
+            results.set(testNetworkTaskWorker.executeDNSLookup(Collections.singletonList("host.com"), true));
+            doneLatch.countDown();
+        });
+        thread.start();
+        assertTrue(startedLatch.await(5, TimeUnit.SECONDS));
+        thread.interrupt();
+        assertTrue(doneLatch.await(5, TimeUnit.SECONDS));
+        List<NetworkTaskWorker.DNSExecutionResult> executionResults = results.get();
+        assertEquals(1, executionResults.size());
+        assertTrue(executionResults.get(0).isInterrupted());
+        assertFalse(executionResults.get(0).getLogEntry().isSuccess());
+        assertEquals("DNS lookup for host.com failed. The task was stopped.", executionResults.get(0).getLogEntry().getMessage());
     }
 
     private void setCurrentTime(TestNetworkTaskWorker testNetworkTaskWorker) {
