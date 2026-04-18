@@ -320,7 +320,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             int urlPort = URLUtil.getPort(currentURL);
             String host = connectToAddress.resolve().getSourceAddress();
             int port = connectToAddress.resolve().getSourcePort();
-            if (URLUtil.isSameHostAndPort(host, port, urlHost, urlPort) && !StringUtil.isEmpty(host) && port >= 0) {
+            String targetHost = connectToAddress.resolve().getTargetAddress();
+            int targetPort = connectToAddress.resolve().getTargetPort();
+            if (URLUtil.isSameHostAndPort(host, port, urlHost, urlPort) && !StringUtil.isEmpty(targetHost) && targetPort >= 0) {
                 return connectToAddress;
             }
         }
