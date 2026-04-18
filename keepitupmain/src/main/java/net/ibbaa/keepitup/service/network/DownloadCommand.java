@@ -316,7 +316,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             return null;
         }
         for (ConnectToAddress connectToAddress : connectToAddresses) {
-            String urlHost =  StringUtil.trim(currentURL.getHost());
+            String urlHost = StringUtil.trim(currentURL.getHost());
             int urlPort = URLUtil.getPort(currentURL);
             String host = connectToAddress.resolve().getSourceAddress();
             int port = connectToAddress.resolve().getSourcePort();
@@ -615,10 +615,6 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     public ITimeService getTimeService() {
         return timeService;
-    }
-
-    private List<ConnectToAddress> getConnectToAddresses() {
-        return connectToAddresses;
     }
 
     private Context getContext() {

@@ -1323,6 +1323,78 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testSuccessWithTwoRedirectsAndMultipleConnectToAddresses() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        List<net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress> connectToAddresses = getTwoConnectToAddressList("test.com", 80, "host1.com", 11, InetAddress.getByName("1.2.3.4"), "test2.com", 80, "host2.com", 22, InetAddress.getByName("5.6.7.8"));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, connectToAddresses, null);
+        setCurrentTime(downloadCommand);
+        Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test2.com/file.jpg"));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
+        Response response2 = prepareResponse("http://test2.com/file.jpg", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://test.com", response1);
+        downloadCommand.addResponse("http://test2.com/file.jpg", response2);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(2, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertEquals("1.2.3.4", result.connectResults().get(0).connectAddress().getHostAddress());
+        assertEquals(11, result.connectResults().get(0).connectPort());
+        assertTrue(result.connectResults().get(1).success());
+        assertEquals("test2.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
+        assertEquals("5.6.7.8", result.connectResults().get(1).connectAddress().getHostAddress());
+        assertEquals(22, result.connectResults().get(1).connectPort());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(2, result.httpResponseCodes().size());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(1).intValue());
+        assertEquals("file.jpg", result.fileName());
+        assertNull(result.exception());
+        response1.close();
+        response2.close();
+    }
+
+    @Test
+    public void testConnectionFailedAtRedirectWithMultipleConnectToAddresses() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        List<net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress> connectToAddresses = getTwoConnectToAddressList("test.com", 80, "host1.com", 11, InetAddress.getByName("1.2.3.4"), "test2.com", 80, "host2.com", 22, InetAddress.getByName("5.6.7.8"));
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, connectToAddresses, null);
+        setCurrentTimeInverted(downloadCommand);
+        Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test2.com"));
+        downloadCommand.addResponse("http://test.com", response1);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(2, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertEquals("1.2.3.4", result.connectResults().get(0).connectAddress().getHostAddress());
+        assertEquals(11, result.connectResults().get(0).connectPort());
+        assertFalse(result.connectResults().get(1).success());
+        assertEquals("test2.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
+        assertEquals("5.6.7.8", result.connectResults().get(1).connectAddress().getHostAddress());
+        assertEquals(22, result.connectResults().get(1).connectPort());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(1, result.httpResponseCodes().size());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        response1.close();
+    }
+
+    @Test
     public void testGlobalHeadersNoHeadersSet() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         headerDAO.deleteAllHeaders();
@@ -1572,5 +1644,20 @@ public class DownloadCommandTest {
         resolve.setTargetAddress(targetAddress);
         resolve.setTargetPort(targetPort);
         return List.of(new net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress(resolve, inetAddress, ""));
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private List<net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress> getTwoConnectToAddressList(String sourceAddress1, int sourcePort1, String targetAddress1, int targetPort1, InetAddress inetAddress1, String sourceAddress2, int sourcePort2, String targetAddress2, int targetPort2, InetAddress inetAddress2) {
+        Resolve resolve1 = new Resolve();
+        resolve1.setSourceAddress(sourceAddress1);
+        resolve1.setSourcePort(sourcePort1);
+        resolve1.setTargetAddress(targetAddress1);
+        resolve1.setTargetPort(targetPort1);
+        Resolve resolve2 = new Resolve();
+        resolve2.setSourceAddress(sourceAddress2);
+        resolve2.setSourcePort(sourcePort2);
+        resolve2.setTargetAddress(targetAddress2);
+        resolve2.setTargetPort(targetPort2);
+        return List.of(new net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress(resolve1, inetAddress1, ""), new net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress(resolve2, inetAddress2, ""));
     }
 }

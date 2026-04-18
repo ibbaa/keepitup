@@ -32,13 +32,16 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
     private MockDNSLookup mockDNSLookup;
+    private final Map<String, MockDNSLookup> mockDNSLookupsByHost = new HashMap<>();
     private MockDownloadCommand mockDownloadCommand;
     private MockFileManager mockFileManager;
     private MockStoragePermissionManager storagePermissionManager;
@@ -52,6 +55,10 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {
         this.mockDNSLookup = mockDNSLookup;
+    }
+
+    public void setMockDNSLookup(String host, MockDNSLookup mockDNSLookup) {
+        mockDNSLookupsByHost.put(host, mockDNSLookup);
     }
 
     public void setMockDownloadCommand(MockDownloadCommand mockDownloadCommand) {
@@ -72,7 +79,8 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
     @Override
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
-        return mockDNSLookup;
+        MockDNSLookup hostLookup = mockDNSLookupsByHost.get(host);
+        return hostLookup != null ? hostLookup : mockDNSLookup;
     }
 
     @Override
