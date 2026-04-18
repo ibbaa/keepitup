@@ -85,7 +85,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final URL url;
     private final String folder;
     private final boolean delete;
-    private final ConnectToAddress connectToAddress;
+    private final List<ConnectToAddress> connectToAddresses;
     private final List<Header> headers;
     private boolean valid;
     private boolean stopped;
@@ -95,14 +95,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         this(context, networkTask, accessTypeData, url, folder, delete, null, null);
     }
 
-    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, List<Header> headers) {
+    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, List<ConnectToAddress> connectToAddresses, List<Header> headers) {
         this.context = context;
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
         this.url = url;
         this.folder = folder;
         this.delete = delete;
-        this.connectToAddress = connectToAddress;
+        this.connectToAddresses = connectToAddresses;
         this.headers = headers;
         this.timeService = createTimeService();
     }
@@ -119,7 +119,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         boolean downloadSuccess = false;
         boolean fileExists;
         boolean deleteSuccess = false;
-        boolean overrideConnect = false;
+        ConnectToAddress overrideAddress = null;
         List<Integer> httpCodes = new ArrayList<>();
         List<String> httpMessages = new ArrayList<>();
         List<DownloadConnectResult> connectResults = new ArrayList<>();
@@ -138,14 +138,19 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 connectSuccess = false;
                 start = timeService.getCurrentTimestamp();
                 closeResponse(response);
-                overrideConnect = shouldConnectHostBeOverridden(downloadUrl);
-                response = openResponse(downloadUrl, overrideConnect);
-                if (response == null) {
+                overrideAddress = findConnectToAddress(downloadUrl);
+                if (overrideAddress != null && overrideAddress.resolvedAddress() == null) {
                     long end = timeService.getCurrentTimestamp();
-                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideConnect, false));
+                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, false));
                     return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
-                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideConnect, true));
+                response = openResponse(downloadUrl, overrideAddress);
+                if (response == null) {
+                    long end = timeService.getCurrentTimestamp();
+                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, false));
+                    return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
+                }
+                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, true));
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");
                 int httpCode = response.code();
@@ -220,7 +225,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             }
             long end = timeService.getCurrentTimestamp();
             if (!connectSuccess) {
-                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideConnect, false));
+                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, false));
             }
             return createDownloadCommandResult(downloadUrl, connectResults, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
@@ -237,15 +242,15 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return URLUtil.getURL(downloadURL, location);
     }
 
-    protected Response openResponse(URL url, boolean overrideConnectHost) throws IOException, KeyManagementException, NoSuchAlgorithmException {
-        Log.d(DownloadCommand.class.getName(), "openResponse to " + url + " with overrideConnectHost of " + overrideConnectHost);
+    protected Response openResponse(URL url, ConnectToAddress connectToAddress) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        Log.d(DownloadCommand.class.getName(), "openResponse to " + url + " with connectToAddress of " + connectToAddress);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
             return null;
         }
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(getResources().getInteger(R.integer.download_connect_timeout), TimeUnit.SECONDS).readTimeout(getResources().getInteger(R.integer.download_read_timeout), TimeUnit.SECONDS).followRedirects(false);
-        if (overrideConnectHost) {
-            overrideConnectHost(clientBuilder, isIgnoreSSLError());
+        if (connectToAddress != null) {
+            overrideConnectHost(clientBuilder, isIgnoreSSLError(), connectToAddress);
         }
         if (isIgnoreSSLError()) {
             disableSSLCheck(clientBuilder);
@@ -294,7 +299,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return headers;
     }
 
-    private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError) {
+    private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError, ConnectToAddress connectToAddress) {
         Log.d(DownloadCommand.class.getName(), "overrideConnectHost");
         String overrideHost = connectToAddress.resolvedAddress().getHostAddress();
         int overridePort = connectToAddress.resolve().getTargetPort();
@@ -305,15 +310,21 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private boolean shouldConnectHostBeOverridden(URL currentURL) {
-        Log.d(DownloadCommand.class.getName(), "shouldConnectHostBeOverridden for " + currentURL);
-        if (connectToAddress == null || connectToAddress.resolve() == null || connectToAddress.resolvedAddress() == null) {
-            return false;
+    private ConnectToAddress findConnectToAddress(URL currentURL) {
+        Log.d(DownloadCommand.class.getName(), "findConnectToAddress for " + currentURL);
+        if (connectToAddresses == null || connectToAddresses.isEmpty()) {
+            return null;
         }
-        if (StringUtil.isEmpty(connectToAddress.resolve().getTargetAddress()) || connectToAddress.resolve().getTargetPort() < 0) {
-            return false;
+        for (ConnectToAddress connectToAddress : connectToAddresses) {
+            String urlHost =  StringUtil.trim(currentURL.getHost());
+            int urlPort = URLUtil.getPort(currentURL);
+            String host = connectToAddress.resolve().getSourceAddress();
+            int port = connectToAddress.resolve().getSourcePort();
+            if (URLUtil.isSameHostAndPort(host, port, urlHost, urlPort) && !StringUtil.isEmpty(host) && port >= 0) {
+                return connectToAddress;
+            }
         }
-        return URLUtil.isSameHostAndPort(currentURL, url);
+        return null;
     }
 
     private void disableSSLCheck(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
@@ -494,10 +505,17 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, List<Header> invalidHeaders, boolean hostOverridden, boolean success) {
-        InetAddress connectToAddress = hostOverridden ? getConnectToAddress().resolvedAddress() : null;
-        int connectToPort = hostOverridden ? getConnectToAddress().resolve().getTargetPort() : -1;
-        return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, invalidHeaders, success);
+    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, List<Header> invalidHeaders, ConnectToAddress overrideAddress, boolean success) {
+        if (overrideAddress == null) {
+            return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, null, invalidHeaders, success);
+        }
+        InetAddress connectToAddress = overrideAddress.resolvedAddress();
+        int connectToPort = overrideAddress.resolve().getTargetPort();
+        String connectMessage = overrideAddress.resolveMessage();
+        if (!StringUtil.isEmpty(connectMessage)) {
+            connectMessage = getResources().getString(R.string.text_connect_connect_to_error) + " " + connectMessage;
+        }
+        return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, connectMessage, invalidHeaders, success);
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {
@@ -599,8 +617,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return timeService;
     }
 
-    private ConnectToAddress getConnectToAddress() {
-        return connectToAddress;
+    private List<ConnectToAddress> getConnectToAddresses() {
+        return connectToAddresses;
     }
 
     private Context getContext() {
@@ -611,7 +629,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return getContext().getResources();
     }
 
-    public record ConnectToAddress(Resolve resolve, InetAddress resolvedAddress) {
+    public record ConnectToAddress(Resolve resolve, InetAddress resolvedAddress, String resolveMessage) {
 
     }
 }

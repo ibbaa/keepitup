@@ -62,6 +62,7 @@
     <string name="text_connect_average_time">%s average time.</string>
     <string name="text_connect_time">%s connect time.</string>
     <string name="text_connect_last_error">Last error:</string>
+    <string name="text_connect_connect_to_error">Error accessing the host configured in the resolve rules.</string>
     <string name="text_download_error">The download from %s failed.</string>
     <string name="text_download_connect_success">Request to %s was successful.</string>
     <string name="text_download_connect_error">Request to %s failed.</string>

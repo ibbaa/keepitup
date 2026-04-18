@@ -40,10 +40,9 @@ import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.io.File;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -72,7 +71,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "execute, network task is " + networkTask + " and access type data is " + data);
         List<Header> headers = getHeaders(networkTask, data);
-        Resolve resolve = getResolve(networkTask);
+        List<Resolve> resolves = getResolves(networkTask);
         URL url = determineURL(networkTask.getAddress());
         if (url == null) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined url is null");
@@ -83,39 +82,20 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             return new ExecutionResult(false, logEntry);
         }
         Log.d(DownloadNetworkTaskWorker.class.getName(), "URL is " + url.toExternalForm());
-        if (resolve == null) {
+        if (resolves == null || resolves.isEmpty()) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "No valid resolve object present");
-            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, null, headers);
+            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, Collections.emptyList(), headers);
             LogEntry logEntry = downloadExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
             return downloadExecutionResult;
         }
-        String targetAddress = URLUtil.getTargetAddress(resolve, url);
-        resolve.setTargetAddress(targetAddress);
-        int targetPort = URLUtil.getTargetPort(resolve, url);
-        resolve.setTargetPort(targetPort);
-        DNSExecutionResult dnsExecutionResult = executeDNSLookup(targetAddress, getResources().getBoolean(R.bool.network_prefer_ipv4));
-        if (dnsExecutionResult.getAddress() != null) {
-            InetAddress address = dnsExecutionResult.getAddress();
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
-            boolean ip6 = address instanceof Inet6Address;
-            if (ip6) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
-            } else {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
-            }
-            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, new DownloadCommand.ConnectToAddress(resolve, address), headers);
-            LogEntry logEntry = downloadExecutionResult.getLogEntry();
-            completeLogEntry(networkTask, logEntry);
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
-            return downloadExecutionResult;
-        }
-        Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
-        LogEntry logEntry = dnsExecutionResult.getLogEntry();
+        List<DownloadCommand.ConnectToAddress> connectToAddresses = prepareConnectToAddresses(resolves, url);
+        ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, connectToAddresses, headers);
+        LogEntry logEntry = downloadExecutionResult.getLogEntry();
         completeLogEntry(networkTask, logEntry);
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);
-        return dnsExecutionResult;
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
+        return downloadExecutionResult;
     }
 
     private void completeLogEntry(NetworkTask networkTask, LogEntry logEntry) {
@@ -123,19 +103,52 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
-    private Resolve getResolve(NetworkTask networkTask) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "getResolve for network task " + networkTask);
+    private List<DownloadCommand.ConnectToAddress> prepareConnectToAddresses(List<Resolve> resolves, URL url) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectToAddresses, resolve objects are " + resolves);
+        List<String> targetHosts = new ArrayList<>();
+        for (Resolve resolve : resolves) {
+            completeResolve(resolve, url);
+            targetHosts.add(resolve.getTargetAddress());
+        }
+        List<DNSExecutionResult> dnsExecutionResults = executeDNSLookup(targetHosts, getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (dnsExecutionResults == null || dnsExecutionResults.isEmpty() || dnsExecutionResults.size() < resolves.size()) {
+            Log.e(DownloadNetworkTaskWorker.class.getName(), "prepareConnectToAddresses, DNS lookup returned inconsistent result");
+            return Collections.emptyList();
+        }
+        return prepareConnectToAddresses(resolves, dnsExecutionResults);
+    }
+
+    private List<DownloadCommand.ConnectToAddress> prepareConnectToAddresses(List<Resolve> resolves, List<DNSExecutionResult> dnsExecutionResults) {
+        List<DownloadCommand.ConnectToAddress> connectToAddresses = new ArrayList<>();
+        for (int ii = 0; ii < dnsExecutionResults.size(); ii++) {
+            DNSExecutionResult dnsExecutionResult = dnsExecutionResults.get(ii);
+            Resolve resolve = resolves.get(ii);
+            if (dnsExecutionResult.getLogEntry().isSuccess()) {
+                connectToAddresses.add(new DownloadCommand.ConnectToAddress(resolve, dnsExecutionResult.getAddress(), ""));
+            } else {
+                connectToAddresses.add(new DownloadCommand.ConnectToAddress(resolve, null, dnsExecutionResult.getLogEntry().getMessage()));
+            }
+        }
+        return connectToAddresses;
+    }
+
+    private void completeResolve(Resolve resolve, URL url) {
+        String sourceAddress = URLUtil.getSourceAddress(resolve, url);
+        String targetAddress = URLUtil.getTargetAddress(resolve, url);
+        int sourcePort = URLUtil.getSourcePort(resolve, url);
+        int targetPort = URLUtil.getTargetPort(resolve, url);
+        resolve.setSourceAddress(sourceAddress);
+        resolve.setTargetAddress(targetAddress);
+        resolve.setSourcePort(sourcePort);
+        resolve.setTargetPort(targetPort);
+    }
+
+    private List<Resolve> getResolves(NetworkTask networkTask) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "getResolves for network task " + networkTask);
         ResolveDAO resolveDAO = new ResolveDAO(getContext());
         List<Resolve> resolves = resolveDAO.readAllResolvesForNetworkTask(networkTask.getId());
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Resolve objects from database: " + resolves);
-        if (resolves == null || resolves.isEmpty()) {
-            return null;
-        }
-        Resolve resolve = resolves.get(0);
-        if (resolve.isEmpty()) {
-            return null;
-        }
-        return resolve;
+        return resolves;
     }
 
     private List<Header> getHeaders(NetworkTask networkTask, AccessTypeData accessTypeData) {
@@ -148,7 +161,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @SuppressWarnings("resource")
-    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, DownloadCommand.ConnectToAddress connectToAddress, List<Header> headers) {
+    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, List<DownloadCommand.ConnectToAddress> connectToAddresses, List<Header> headers) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
@@ -173,7 +186,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         }
         boolean delete = determineDeleteDownloadedFile();
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
-        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete, connectToAddress, headers);
+        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete, connectToAddresses, headers);
         int timeout = getResources().getInteger(R.integer.download_timeout);
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -453,7 +466,14 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         if (connectResult.success()) {
             return getResources().getString(R.string.text_download_connect_success, getHostAndPortMessage(connectResult));
         }
-        return getResources().getString(R.string.text_download_connect_error, getHostAndPortMessage(connectResult));
+        String connectMessage = "";
+        if (!StringUtil.isEmpty(connectResult.connectMessage())) {
+            connectMessage = " " + connectResult.connectMessage();
+            if (!connectMessage.endsWith(".")) {
+                connectMessage += ".";
+            }
+        }
+        return getResources().getString(R.string.text_download_connect_error, getHostAndPortMessage(connectResult)) + connectMessage;
     }
 
     private String getInvalidHeaderMessage(DownloadConnectResult connectResult) {
@@ -558,7 +578,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new SystemFileManager(getContext());
     }
 
-    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommand.ConnectToAddress connectToAddress, List<Header> headers) {
-        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete, connectToAddress, headers);
+    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, List<DownloadCommand.ConnectToAddress> connectToAddresses, List<Header> headers) {
+        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete, connectToAddresses, headers);
     }
 }

@@ -148,7 +148,7 @@ public class DownloadCommandTest {
     @Test
     public void testConnectionFailedWithConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, getConnectToAddress("192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, getConnectToAddressList("127.0.0.1", 443, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(1, result.connectResults().size());
@@ -173,7 +173,7 @@ public class DownloadCommandTest {
     @Test
     public void testConnectionFailedWithRedirectAndConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddress("192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddressList("test.com", 80, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null).newBuilder().header("Location", "http://www.host.com").build();
         downloadCommand.addResponse("http://test.com", testResponse);
         setCurrentTimeInverted(downloadCommand);
@@ -245,7 +245,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkWithConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, getConnectToAddress("host.com", 33, InetAddress.getByName("192.168.179.1")), null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, getConnectToAddressList("test.com", 333, "host.com", 33, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com:333", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
         downloadCommand.addResponse("http://test.com:333", testResponse);
@@ -462,7 +462,7 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkRedirectsExceededRecursiveWithConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddress("host.com", 12345, InetAddress.getByName("127.0.0.1")), null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddressList("test.com", 80, "host.com", 12345, InetAddress.getByName("127.0.0.1")), null);
         setCurrentTime(downloadCommand);
         Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "http://test.com"));
         downloadCommand.addResponse("http://test.com", testResponse);
@@ -1140,7 +1140,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddress("host.com", 33, InetAddress.getByName("192.168.179.1")), null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddressList("test.com", 80, "host.com", 33, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTimeInverted(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "/abc"));
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
@@ -1287,7 +1287,7 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddress("host.com", 56, InetAddress.getByName("192.168.179.1")), null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true, getConnectToAddressList("test.com", 80, "host.com", 56, InetAddress.getByName("192.168.179.1")), null);
         setCurrentTime(downloadCommand);
         Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null, Map.of("Location", "/abc"));
         Response response2 = prepareResponse("http://test.com/abc", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null, Map.of("Location", "http://www.host.com/test.jpg"));
@@ -1565,10 +1565,12 @@ public class DownloadCommandTest {
         return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
     }
 
-    private net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress getConnectToAddress(String address, int port, InetAddress inetAddress) {
+    private List<net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress> getConnectToAddressList(String sourceAddress, int sourcePort, String targetAddress, int targetPort, InetAddress inetAddress) {
         Resolve resolve = new Resolve();
-        resolve.setTargetAddress(address);
-        resolve.setTargetPort(port);
-        return new net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress(resolve, inetAddress);
+        resolve.setSourceAddress(sourceAddress);
+        resolve.setSourcePort(sourcePort);
+        resolve.setTargetAddress(targetAddress);
+        resolve.setTargetPort(targetPort);
+        return List.of(new net.ibbaa.keepitup.service.network.DownloadCommand.ConnectToAddress(resolve, inetAddress, ""));
     }
 }

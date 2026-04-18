@@ -173,14 +173,17 @@ public class DownloadNetworkTaskWorkerTest {
         networkTask = networkTaskDAO.insertNetworkTask(networkTask);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getConnectToAddress());
+        assertTrue(downloadCommand.getConnectToAddresses().isEmpty());
         Resolve resolve = getResolve(networkTask.getId());
         resolve.setTargetAddress("");
         resolve.setTargetPort(-1);
         resolveDAO.insertResolve(resolve);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getConnectToAddress());
+        assertFalse(downloadCommand.getConnectToAddresses().isEmpty());
+        assertEquals("test.com", downloadCommand.getConnectToAddresses().get(0).resolve().getTargetAddress());
+        assertEquals(443, downloadCommand.getConnectToAddresses().get(0).resolve().getTargetPort());
+        assertEquals("127.0.0.1", downloadCommand.getConnectToAddresses().get(0).resolvedAddress().getHostAddress());
     }
 
     @Test
@@ -198,7 +201,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("DNS lookup for host failed. IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("Request to test.com:443 failed. Error accessing the host configured in the resolve rules. DNS lookup for host failed. IllegalArgumentException: TestException. The download from https://test.com failed.", logEntry.getMessage());
     }
 
     @Test
@@ -211,14 +214,14 @@ public class DownloadNetworkTaskWorkerTest {
         networkTask = networkTaskDAO.insertNetworkTask(networkTask);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getConnectToAddress());
+        assertTrue(downloadCommand.getConnectToAddresses().isEmpty());
         Resolve resolve = getResolve(networkTask.getId());
         resolveDAO.insertResolve(resolve);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertEquals("192.168.178.1", downloadCommand.getConnectToAddress().resolve().getTargetAddress());
-        assertEquals(22, downloadCommand.getConnectToAddress().resolve().getTargetPort());
-        assertEquals("127.0.0.1", downloadCommand.getConnectToAddress().resolvedAddress().getHostAddress());
+        assertEquals("192.168.178.1", downloadCommand.getConnectToAddresses().get(0).resolve().getTargetAddress());
+        assertEquals(22, downloadCommand.getConnectToAddresses().get(0).resolve().getTargetPort());
+        assertEquals("127.0.0.1", downloadCommand.getConnectToAddresses().get(0).resolvedAddress().getHostAddress());
     }
 
     @Test
@@ -231,15 +234,15 @@ public class DownloadNetworkTaskWorkerTest {
         networkTask = networkTaskDAO.insertNetworkTask(networkTask);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getConnectToAddress());
+        assertTrue(downloadCommand.getConnectToAddresses().isEmpty());
         Resolve resolve = getResolve(networkTask.getId());
         resolve.setTargetAddress("");
         resolveDAO.insertResolve(resolve);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertEquals("test.com", downloadCommand.getConnectToAddress().resolve().getTargetAddress());
-        assertEquals(22, downloadCommand.getConnectToAddress().resolve().getTargetPort());
-        assertEquals("127.0.0.1", downloadCommand.getConnectToAddress().resolvedAddress().getHostAddress());
+        assertEquals("test.com", downloadCommand.getConnectToAddresses().get(0).resolve().getTargetAddress());
+        assertEquals(22, downloadCommand.getConnectToAddresses().get(0).resolve().getTargetPort());
+        assertEquals("127.0.0.1", downloadCommand.getConnectToAddresses().get(0).resolvedAddress().getHostAddress());
     }
 
     @Test
@@ -2112,7 +2115,7 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
-        return new DownloadConnectResult(host, port, connectAddress, connectPort, invalidHeader, success);
+        return new DownloadConnectResult(host, port, connectAddress, connectPort, "", invalidHeader, success);
     }
 
     private NetworkTask getNetworkTask() {

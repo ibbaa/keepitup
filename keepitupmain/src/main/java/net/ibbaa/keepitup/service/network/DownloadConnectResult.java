@@ -21,5 +21,5 @@ import net.ibbaa.keepitup.model.Header;
 import java.net.InetAddress;
 import java.util.List;
 
-public record DownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
+public record DownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, String connectMessage, List<Header> invalidHeader, boolean success) {
 }
