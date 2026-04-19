@@ -42,8 +42,11 @@ import net.ibbaa.keepitup.util.URLUtil;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -105,17 +108,38 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     private List<DownloadCommand.ConnectToAddress> prepareConnectToAddresses(List<Resolve> resolves, URL url) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectToAddresses, resolve objects are " + resolves);
-        List<String> targetHosts = new ArrayList<>();
-        for (Resolve resolve : resolves) {
+        Map<String, List<Integer>> hostToIndices = new LinkedHashMap<>();
+        for (int ii = 0; ii < resolves.size(); ii++) {
+            Resolve resolve = resolves.get(ii);
             completeResolve(resolve, url);
-            targetHosts.add(resolve.getTargetAddress());
+            String normalizedHost = URLUtil.normalizeHost(resolve.getTargetAddress());
+            List<Integer> indices = hostToIndices.get(normalizedHost);
+            if (indices == null) {
+                indices = new ArrayList<>();
+                hostToIndices.put(normalizedHost, indices);
+            }
+            indices.add(ii);
         }
-        List<DNSExecutionResult> dnsExecutionResults = executeDNSLookup(targetHosts, getResources().getBoolean(R.bool.network_prefer_ipv4));
-        if (dnsExecutionResults == null || dnsExecutionResults.isEmpty() || dnsExecutionResults.size() < resolves.size()) {
+        List<String> uniqueHosts = new ArrayList<>(hostToIndices.keySet());
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectToAddresses, " + resolves.size() + " resolves, " + uniqueHosts.size() + " unique hosts");
+        List<DNSExecutionResult> dnsExecutionResults = executeDNSLookup(uniqueHosts, getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (dnsExecutionResults == null || dnsExecutionResults.isEmpty() || dnsExecutionResults.size() < uniqueHosts.size()) {
             Log.e(DownloadNetworkTaskWorker.class.getName(), "prepareConnectToAddresses, DNS lookup returned inconsistent result");
             return Collections.emptyList();
         }
-        return prepareConnectToAddresses(resolves, dnsExecutionResults);
+        Map<String, DNSExecutionResult> hostToResult = new LinkedHashMap<>();
+        int resultIndex = 0;
+        for (String host : hostToIndices.keySet()) {
+            hostToResult.put(host, dnsExecutionResults.get(resultIndex++));
+        }
+        DNSExecutionResult[] resultByIndex = new DNSExecutionResult[resolves.size()];
+        for (Map.Entry<String, List<Integer>> entry : hostToIndices.entrySet()) {
+            DNSExecutionResult result = hostToResult.get(entry.getKey());
+            for (int index : entry.getValue()) {
+                resultByIndex[index] = result;
+            }
+        }
+        return prepareConnectToAddresses(resolves, Arrays.asList(resultByIndex));
     }
 
     private List<DownloadCommand.ConnectToAddress> prepareConnectToAddresses(List<Resolve> resolves, List<DNSExecutionResult> dnsExecutionResults) {
