@@ -187,6 +187,10 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
         return ResolveEditDialog.class.getName() + ".Resolve";
     }
 
+    public String getValidateListKey() {
+        return ResolveEditDialog.class.getName() + ".ValidateList";
+    }
+
     public String getPositionKey() {
         return ResolveEditDialog.class.getSimpleName() + ".Position";
     }
@@ -233,7 +237,8 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
     private void onOkClicked(View view) {
         Log.d(ResolveEditDialog.class.getName(), "onOkClicked");
         int position = BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
-        List<ValidationResult> validationResult = validateInput(position);
+        boolean validateList = BundleUtil.booleanFromBundle(getValidateListKey(), requireArguments());
+        List<ValidationResult> validationResult = validateInput(position, validateList);
         if (!hasErrors(validationResult)) {
             Log.d(ResolveEditDialog.class.getName(), "Validation was successful");
             ResolveEditSupport resolveEditSupport = getResolveEditSupport();
@@ -296,8 +301,8 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
         return result.isValidationSuccessful();
     }
 
-    private List<ValidationResult> validateInput(int position) {
-        Log.d(ResolveEditDialog.class.getName(), "validateInput for position " + position);
+    private List<ValidationResult> validateInput(int position, boolean validateList) {
+        Log.d(ResolveEditDialog.class.getName(), "validateInput for position " + position + ", validateList is " + validateList);
         List<ValidationResult> validationResults = new ArrayList<>();
         ResolveValidator validator = new StandardResolveValidator(requireContext());
         ValidationResult matchHostResult = validator.validateSourceAddress(getMatchHost());
@@ -315,6 +320,9 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
         }
         if (!connectToPortResult.isValidationSuccessful()) {
             validationResults.add(connectToPortResult);
+        }
+        if (!validateList) {
+            return validationResults;
         }
         if (validationResults.isEmpty()) {
             Resolve resolve = new Resolve();

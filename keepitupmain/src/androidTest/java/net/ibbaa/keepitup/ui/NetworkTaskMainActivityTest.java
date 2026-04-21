@@ -2512,6 +2512,39 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
+    @Test
+    public void testChangeDefaultResolve() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Defaults")).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("12"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("match.host")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("12")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("resolve.host")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("25")));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host:12")));
+        onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: resolve.host:25")));
+        onView(withId(R.id.imageview_dialog_resolves_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
     private void startAlarmService(NetworkTask task) {
         if (AlarmService.isRunning()) {
             return;

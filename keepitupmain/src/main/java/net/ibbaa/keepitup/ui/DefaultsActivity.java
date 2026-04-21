@@ -46,13 +46,16 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
+import net.ibbaa.keepitup.ui.support.ResolveEditSupport;
 import net.ibbaa.keepitup.ui.sync.DBSyncResult;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
@@ -61,15 +64,10 @@ import net.ibbaa.keepitup.ui.validation.IntervalFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidator;
-import net.ibbaa.keepitup.ui.validation.ResolveHostFieldValidator;
-import net.ibbaa.keepitup.ui.validation.ResolveHostMatchFieldValidator;
-import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidator;
-import net.ibbaa.keepitup.ui.validation.ResolvePortMatchFieldValidator;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
-import net.ibbaa.keepitup.util.UIUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,7 +76,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport {
+public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport {
 
     private RadioGroup accessTypeGroup;
     private TextView addressText;
@@ -88,10 +86,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     private TextView pingCountText;
     private TextView pingPackageSizeText;
     private TextView connectCountText;
-    private TextView matchHostText;
-    private TextView matchPortText;
-    private TextView connectToHostText;
-    private TextView connectToPortText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
     private SwitchMaterial ignoreSSLErrorSwitch;
@@ -120,10 +114,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         preparePingCountField();
         preparePingPackageSizeField();
         prepareConnectCountField();
-        prepareMatchHostField();
-        prepareMatchPortField();
-        prepareConnectToHostField();
-        prepareConnectToPortField();
+        prepareResolveRulesField();
         prepareStopOnSuccessSwitch();
         prepareIgnoreSSLErrorSwitch();
         prepareGlobalHeadersField();
@@ -274,48 +265,10 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
-    private void prepareMatchHostField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareMatchHostField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        matchHostText = findViewById(R.id.textview_activity_defaults_match_host);
-        String matchHost = preferenceManager.getPreferenceResolveMatchAddress();
-        matchHost = UIUtil.getNotSetIfEmpty(this, matchHost);
-        setMatchHost(matchHost);
-        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_match_host);
-        matchHostCardView.setOnClickListener(this::showMatchHostInputDialog);
-    }
-
-    private void prepareMatchPortField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareMatchPortField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        matchPortText = findViewById(R.id.textview_activity_defaults_match_port);
-        int resolveMatchPort = preferenceManager.getPreferenceResolveMatchPort();
-        String matchPort = UIUtil.getNotSetIfNegative(this, resolveMatchPort);
-        setMatchPort(matchPort);
-        CardView matchPortCardView = findViewById(R.id.cardview_activity_defaults_match_port);
-        matchPortCardView.setOnClickListener(this::showMatchPortInputDialog);
-    }
-
-    private void prepareConnectToHostField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareConnectToHostField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        connectToHostText = findViewById(R.id.textview_activity_defaults_connect_to_host);
-        String connectToHost = preferenceManager.getPreferenceResolveAddress();
-        connectToHost = UIUtil.getNotSetIfEmpty(this, connectToHost);
-        setConnectToHost(connectToHost);
-        CardView connectToHostCardView = findViewById(R.id.cardview_activity_defaults_connect_to_host);
-        connectToHostCardView.setOnClickListener(this::showConnectToHostInputDialog);
-    }
-
-    private void prepareConnectToPortField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareConnectToPortField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        connectToPortText = findViewById(R.id.textview_activity_defaults_connect_to_port);
-        int resolvePort = preferenceManager.getPreferenceResolvePort();
-        String connectToPort = UIUtil.getNotSetIfNegative(this, resolvePort);
-        setConnectToPort(connectToPort);
-        CardView connectToPortCardView = findViewById(R.id.cardview_activity_defaults_connect_to_port);
-        connectToPortCardView.setOnClickListener(this::showConnectToPortInputDialog);
+    private void prepareResolveRulesField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareResolveRulesField");
+        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_resolve_rules);
+        matchHostCardView.setOnClickListener(this::showResolveEditDialog);
     }
 
     private void prepareStopOnSuccessSwitch() {
@@ -640,38 +593,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
-    private String getMatchHost() {
-        return StringUtil.notNull(matchHostText.getText());
-    }
-
-    private void setMatchHost(String matchHost) {
-        matchHostText.setText(StringUtil.notNull(matchHost));
-    }
-
-    private String getMatchPort() {
-        return StringUtil.notNull(matchPortText.getText());
-    }
-
-    private void setMatchPort(String matchPort) {
-        matchPortText.setText(StringUtil.notNull(matchPort));
-    }
-
-    private String getConnectToHost() {
-        return StringUtil.notNull(connectToHostText.getText());
-    }
-
-    private void setConnectToHost(String connectToHost) {
-        connectToHostText.setText(StringUtil.notNull(connectToHost));
-    }
-
-    private String getConnectToPort() {
-        return StringUtil.notNull(connectToPortText.getText());
-    }
-
-    private void setConnectToPort(String connectToPort) {
-        connectToPortText.setText(StringUtil.notNull(connectToPort));
-    }
-
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
@@ -714,36 +635,16 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         showInputDialog(input.toBundle());
     }
 
-    private void showMatchHostInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showMatchHostInputDialog");
-        List<String> validators = Collections.singletonList(ResolveHostMatchFieldValidator.class.getName());
-        String matchAddress = getMatchHost().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getMatchHost();
-        SettingsInput input = new SettingsInput(SettingsInput.Type.MATCHADDRESS, matchAddress, getResources().getString(R.string.label_activity_defaults_match_host), validators);
-        showInputDialog(input.toBundle());
-    }
-
-    private void showMatchPortInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showMatchPortInputDialog");
-        List<String> validators = Collections.singletonList(ResolvePortMatchFieldValidator.class.getName());
-        String matchPort = getMatchPort().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getMatchPort();
-        SettingsInput input = new SettingsInput(SettingsInput.Type.MATCHPORT, matchPort, getResources().getString(R.string.label_activity_defaults_match_port), validators);
-        showInputDialog(input.toBundle());
-    }
-
-    private void showConnectToHostInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showConnectToHostInputDialog");
-        List<String> validators = Collections.singletonList(ResolveHostFieldValidator.class.getName());
-        String connectToAddress = getConnectToHost().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getConnectToHost();
-        SettingsInput input = new SettingsInput(SettingsInput.Type.RESOLVEADDRESS, connectToAddress, getResources().getString(R.string.label_activity_defaults_connect_to_host), validators);
-        showInputDialog(input.toBundle());
-    }
-
-    private void showConnectToPortInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showConnectToPortInputDialog");
-        List<String> validators = Collections.singletonList(ResolvePortFieldValidator.class.getName());
-        String connectToPort = getConnectToPort().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getConnectToPort();
-        SettingsInput input = new SettingsInput(SettingsInput.Type.RESOLVEPORT, connectToPort, getResources().getString(R.string.label_activity_defaults_connect_to_port), validators);
-        showInputDialog(input.toBundle());
+    private void showResolveEditDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showResolveEditDialog");
+        ResolveEditDialog resolveEditDialog = new ResolveEditDialog();
+        Resolve resolve = new Resolve(this);
+        Bundle bundle = BundleUtil.bundleToBundle(resolveEditDialog.getResolveKey(), resolve.toBundle());
+        bundle = BundleUtil.integerToBundle(resolveEditDialog.getPositionKey(), -1, bundle);
+        bundle = BundleUtil.booleanToBundle(resolveEditDialog.getValidateListKey(), false, bundle);
+        bundle = BundleUtil.stringToBundle(resolveEditDialog.getNetworkTaskURLKey(), "", bundle);
+        resolveEditDialog.setArguments(bundle);
+        resolveEditDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
     }
 
     private void showInputDialog(Bundle bundle) {
@@ -788,42 +689,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
-        } else if (SettingsInput.Type.MATCHADDRESS.equals(type.getType())) {
-            String matchAddress = StringUtil.notNull(inputDialog.getValue()).trim();
-            if (StringUtil.isEmpty(UIUtil.getEmptyIfNotSet(this, matchAddress))) {
-                setMatchHost(getResources().getString(R.string.string_not_set));
-                preferenceManager.removePreferenceResolveMatchAddress();
-            } else {
-                setMatchHost(matchAddress);
-                preferenceManager.setPreferenceResolveMatchAddress(matchAddress);
-            }
-        } else if (SettingsInput.Type.MATCHPORT.equals(type.getType())) {
-            String matchPort = StringUtil.notNull(inputDialog.getValue()).trim();
-            if (StringUtil.isEmpty(UIUtil.getEmptyIfNotSet(this, matchPort))) {
-                setMatchPort(getResources().getString(R.string.string_not_set));
-                preferenceManager.removePreferenceResolveMatchPort();
-            } else {
-                setMatchPort(matchPort);
-                preferenceManager.setPreferenceResolveMatchPort(NumberUtil.getIntValue(matchPort, getResources().getInteger(R.integer.resolve_port_match_default)));
-            }
-        } else if (SettingsInput.Type.RESOLVEADDRESS.equals(type.getType())) {
-            String resolveAddress = StringUtil.notNull(inputDialog.getValue()).trim();
-            if (StringUtil.isEmpty(UIUtil.getEmptyIfNotSet(this, resolveAddress))) {
-                setConnectToHost(getResources().getString(R.string.string_not_set));
-                preferenceManager.removePreferenceResolveAddress();
-            } else {
-                setConnectToHost(resolveAddress);
-                preferenceManager.setPreferenceResolveAddress(resolveAddress);
-            }
-        } else if (SettingsInput.Type.RESOLVEPORT.equals(type.getType())) {
-            String resolvePort = StringUtil.notNull(inputDialog.getValue()).trim();
-            if (StringUtil.isEmpty(UIUtil.getEmptyIfNotSet(this, resolvePort))) {
-                setConnectToPort(getResources().getString(R.string.string_not_set));
-                preferenceManager.removePreferenceResolvePort();
-            } else {
-                setConnectToPort(resolvePort);
-                preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(resolvePort, getResources().getInteger(R.integer.resolve_port_default)));
-            }
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }
@@ -851,6 +716,49 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     public void onHeadersDialogCancelClicked(HeadersDialog headersDialog) {
         Log.d(DefaultsActivity.class.getName(), "onHeadersDialogCancelClicked");
         headersDialog.dismiss();
+    }
+
+    @Override
+    public void onResolveEditDialogOkClicked(ResolveEditDialog resolveEditDialog, int position) {
+        Log.d(DefaultsActivity.class.getName(), "onResolveEditDialogOkClicked with position " + position);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        Resolve resolve = resolveEditDialog.getResolve();
+        String matchAddress = StringUtil.notNull(resolve.getSourceAddress()).trim();
+        if (StringUtil.isEmpty(matchAddress)) {
+            preferenceManager.removePreferenceResolveMatchAddress();
+        } else {
+            preferenceManager.setPreferenceResolveMatchAddress(matchAddress);
+        }
+        int matchPort = resolve.getSourcePort();
+        if (matchPort < 0) {
+            preferenceManager.removePreferenceResolveMatchPort();
+        } else {
+            preferenceManager.setPreferenceResolveMatchPort(NumberUtil.getIntValue(matchPort, getResources().getInteger(R.integer.resolve_port_match_default)));
+        }
+        String connectToAddress = StringUtil.notNull(resolve.getTargetAddress()).trim();
+        if (StringUtil.isEmpty(connectToAddress)) {
+            preferenceManager.removePreferenceResolveAddress();
+        } else {
+            preferenceManager.setPreferenceResolveAddress(connectToAddress);
+        }
+        int connectToPort = resolve.getTargetPort();
+        if (connectToPort < 0) {
+            preferenceManager.removePreferenceResolvePort();
+        } else {
+            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(connectToPort, getResources().getInteger(R.integer.resolve_port_default)));
+        }
+        resolveEditDialog.dismiss();
+    }
+
+    @Override
+    public void onResolveEditDialogCancelClicked(ResolveEditDialog resolveEditDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onResolveEditDialogCancelClicked");
+        resolveEditDialog.dismiss();
+    }
+
+    @Override
+    public List<Resolve> getExistingResolves() {
+        return Collections.emptyList();
     }
 
     private String getGlobalHeadersExpandedKey() {

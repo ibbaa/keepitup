@@ -556,6 +556,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("443"));
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect.host.com:443")));
@@ -1743,14 +1744,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("22"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());

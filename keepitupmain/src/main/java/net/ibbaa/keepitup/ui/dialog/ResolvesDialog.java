@@ -337,6 +337,7 @@ public class ResolvesDialog extends DialogFragmentBase implements ResolveEditSup
         ResolveEditDialog resolveEditDialog = new ResolveEditDialog();
         Bundle bundle = BundleUtil.bundleToBundle(resolveEditDialog.getResolveKey(), resolve.toBundle());
         bundle = BundleUtil.integerToBundle(resolveEditDialog.getPositionKey(), position, bundle);
+        bundle = BundleUtil.booleanToBundle(resolveEditDialog.getValidateListKey(), true, bundle);
         bundle = BundleUtil.stringToBundle(resolveEditDialog.getNetworkTaskURLKey(), getNetworkTaskURL(), bundle);
         resolveEditDialog.setArguments(bundle);
         showDialog(resolveEditDialog, ResolveEditDialog.class.getName());
