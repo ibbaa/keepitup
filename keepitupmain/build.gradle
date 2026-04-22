@@ -45,15 +45,25 @@ android {
             disable 'ExpiredTargetSdkVersion'
         }
     }
-    android {
-        sourceSets {
-            androidTest {
-                assets.srcDirs += ["src/main/java"]
-            }
-        }
-    }
     namespace 'net.ibbaa.keepitup'
 }
+
+def javaAssetsDir = layout.buildDirectory.dir("generated/java-assets")
+
+android {
+    sourceSets {
+        androidTest {
+            assets.srcDirs += [javaAssetsDir]
+        }
+    }
+}
+
+tasks.register('copyJavaSourceAssets', Copy) {
+    from('src/main/java')
+    into(javaAssetsDir)
+}
+
+preBuild.dependsOn 'copyJavaSourceAssets'
 
 androidComponents {
     onVariants(selector().all()) { variant ->
