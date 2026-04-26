@@ -225,7 +225,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 List<Header> taskInvalidHeaders = headers.get(networkTaskId);
                 if (taskInvalidHeaders != null) {
                     boolean useDefaultHeaders = currentItem.getAccessTypeData() == null || currentItem.getAccessTypeData().isUseDefaultHeaders();
-                    if (useDefaultHeaders) {
+                    boolean isDownload = task.getAccessType() != null && task.getAccessType().isDownload();
+                    if (useDefaultHeaders || !isDownload) {
                         if (toDelete != null) {
                             toDelete.addAll(taskInvalidHeaders);
                         }

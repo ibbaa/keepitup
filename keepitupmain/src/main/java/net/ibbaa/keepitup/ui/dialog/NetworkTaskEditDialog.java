@@ -582,6 +582,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         TextView stopOnSuccessTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stop_on_success_label);
         TextView useDefaultHeadersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_use_default_headers_label);
         TextView headersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_label);
+        TextView headersTextValueView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
         TextView ignoreSSLErrorTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_label);
         if (accessType.isPing()) {
             PreferenceManager preferenceManager = new PreferenceManager(requireContext());
@@ -636,6 +637,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             useDefaultHeadersSwitch.setVisibility(View.GONE);
             useDefaultHeadersLinearLayout.setVisibility(View.GONE);
             headersTextView.setVisibility(View.GONE);
+            headersTextValueView.setVisibility(View.GONE);
             headersLinearLayout.setVisibility(View.GONE);
             ignoreSSLErrorTextView.setVisibility(View.GONE);
             ignoreSSLErrorSwitch.setVisibility(View.GONE);

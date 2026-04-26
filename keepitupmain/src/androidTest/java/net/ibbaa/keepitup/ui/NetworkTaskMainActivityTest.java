@@ -2180,6 +2180,42 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testInvalidAuthorizationHeaderDeletedNotDownload() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("www.test.com"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask task1 = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task1.getId());
+        assertEquals(2, headers.size());
+        corruptKey();
+        activityScenario.onActivity(Activity::recreate);
+        onView(isRoot()).perform(waitFor(500));
+        headers = getHeaderDAO().readHeadersForNetworkTask(task1.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
+        assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
+        assertTrue(headers.get(0).isValueValid());
+        activityScenario.close();
+    }
+
+    @Test
     public void testInvalidAuthorizationHeaderBasicAuthValidation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
@@ -2387,6 +2423,121 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals(1, globalHeaders.size());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
+        assertEquals("User-Agent", headers.get(0).getName());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderBasicAuthValidationExportNotEncryptedNotDownload() throws Exception {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("www.test.com"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().readAllAccessTypeData();
+        getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
+        inputStream.close();
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = systemSetup.importData(jsonData);
+        assertTrue(result.success());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask task = tasks.get(0);
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
+        assertEquals("User-Agent", headers.get(0).getName());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthorizationHeaderBasicAuthValidationExportNotEncryptedDefaultHeaders() throws Exception {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().readAllAccessTypeData();
+        getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
+        inputStream.close();
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = systemSetup.importData(jsonData);
+        assertTrue(result.success());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask task = tasks.get(0);
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
         activityScenario.close();
     }
