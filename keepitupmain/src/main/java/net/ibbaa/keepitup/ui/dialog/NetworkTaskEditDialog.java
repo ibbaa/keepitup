@@ -892,14 +892,14 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (isResolvesVisible()) {
             return currentResolves;
         }
-        return Collections.emptyList();
+        return resolves;
     }
 
     public List<Header> getHeaders() {
         if (isHeadersVisible()) {
             return currentHeaders;
         }
-        return null;
+        return headers;
     }
 
     private void onOkClicked(View view) {
