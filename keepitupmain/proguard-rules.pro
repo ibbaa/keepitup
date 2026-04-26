@@ -35,6 +35,8 @@
 -keep public class net.ibbaa.keepitup.service.DownloadNetworkTaskWorker {
     public <methods>;
 }
+-keep class org.snmp4j.** { *; }
+-dontwarn org.slf4j.**
 -keepclassmembers enum * { *; }
 -dontwarn com.google.**
 -assumenosideeffects class net.ibbaa.keepitup.logging.Log {
