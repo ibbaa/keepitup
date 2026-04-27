@@ -287,10 +287,15 @@ public class DBMigrateTest {
 
     @Test
     public void testUpgradeFrom7To8() {
+        setup.createTables();
+        setup.dropNetworkTaskTable();
         setup.dropResolveTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutLastSysUpTime());
         migrate.doUpgrade(TestRegistry.getContext(), 7, 8);
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
         resolveDAO.insertResolve(new Resolve());
     }
 
@@ -437,6 +442,7 @@ public class DBMigrateTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;
@@ -457,6 +463,7 @@ public class DBMigrateTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
         return task;
@@ -477,6 +484,7 @@ public class DBMigrateTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(0);
         task.setHighPrio(false);
         return task;

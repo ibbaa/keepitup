@@ -140,6 +140,11 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getAddNameColumnStatement());
     }
 
+    public void addLastSysUpTimeColumnToNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addLastSysUpTimeColumnToNetworkTaskTable, adding column " + networkTaskDBConstants.getLastSysUpTimeColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getAddLastSysUpTimeColumnStatement());
+    }
+
     public void initializeFailureCountColumn(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeFailureCountColumn");
         Log.d(DBSetup.class.getName(), "Setting " + networkTaskDBConstants.getFailureCountColumnName() + " to 0 in " + networkTaskDBConstants.getTableName());
@@ -307,6 +312,11 @@ public class DBSetup {
     public void dropNameColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropNameColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getNameColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropNameColumnStatement());
+    }
+
+    public void dropLastSysUpTimeColumnFromNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropLastSysUpTimeColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getLastSysUpTimeColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getDropLastSysUpTimeColumnStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
@@ -508,6 +518,10 @@ public class DBSetup {
         addNameColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addLastSysUpTimeColumnToNetworkTaskTable() {
+        addLastSysUpTimeColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void addStopOnSuccessColumnToAccessTypeDataTable() {
         addStopOnSuccessColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -613,6 +627,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropNameColumnFromNetworkTaskTable() {
         dropNameColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropLastSysUpTimeColumnFromNetworkTaskTable() {
+        dropLastSysUpTimeColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropLogTable() {

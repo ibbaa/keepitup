@@ -234,6 +234,11 @@ public class DBMigrate {
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "addIndexColumnToResolveTable failed ", exc);
         }
+        try {
+            setup.addLastSysUpTimeColumnToNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addLastSysUpTimeColumnToNetworkTaskTable failed ", exc);
+        }
     }
 
     private void version8DowngradeTo7(SQLiteDatabase db) {
@@ -242,6 +247,11 @@ public class DBMigrate {
             setup.dropIndexColumnFromResolveTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "dropIndexColumnFromResolveTable failed ", exc);
+        }
+        try {
+            setup.dropLastSysUpTimeColumnFromNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropLastSysUpTimeColumnFromNetworkTaskTable failed ", exc);
         }
     }
 

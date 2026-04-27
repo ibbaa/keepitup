@@ -225,6 +225,16 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddLastSysUpTimeColumn() {
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutLastSysUpTime());
+        setup.addLastSysUpTimeColumnToNetworkTaskTable();
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+    }
+
+    @Test
     public void testAddStopOnSuccessColumn() {
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
@@ -1310,6 +1320,7 @@ public class DBSetupTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;
@@ -1330,6 +1341,7 @@ public class DBSetupTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -1350,6 +1362,7 @@ public class DBSetupTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
         return task;
