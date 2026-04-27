@@ -291,6 +291,7 @@ public class LogDAOTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;

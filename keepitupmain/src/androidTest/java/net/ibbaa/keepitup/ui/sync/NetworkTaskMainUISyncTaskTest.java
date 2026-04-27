@@ -218,6 +218,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -238,6 +239,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;
@@ -258,6 +260,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(3);
         task.setHighPrio(true);
         return task;

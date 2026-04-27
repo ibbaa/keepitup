@@ -28,7 +28,6 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
-import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
@@ -37,6 +36,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -811,6 +811,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -831,6 +832,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -851,6 +853,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(3);
         task.setHighPrio(false);
         return task;

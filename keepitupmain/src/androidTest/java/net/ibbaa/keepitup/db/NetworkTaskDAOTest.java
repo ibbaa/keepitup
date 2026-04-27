@@ -649,6 +649,7 @@ public class NetworkTaskDAOTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;
@@ -669,6 +670,7 @@ public class NetworkTaskDAOTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
         return task;
@@ -689,6 +691,7 @@ public class NetworkTaskDAOTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(0);
         task.setHighPrio(false);
         return task;

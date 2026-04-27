@@ -475,6 +475,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setNotification(true);
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
+        networkTask.setLastSysUpTime(0);
         networkTask.setFailureCount(1);
         networkTask.setHighPrio(true);
         return networkTask;
@@ -495,6 +496,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setNotification(false);
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
+        networkTask.setLastSysUpTime(0);
         networkTask.setFailureCount(2);
         networkTask.setHighPrio(false);
         return networkTask;
@@ -515,6 +517,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setNotification(true);
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
+        networkTask.setLastSysUpTime(0);
         networkTask.setFailureCount(3);
         networkTask.setHighPrio(true);
         return networkTask;
@@ -535,6 +538,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setNotification(false);
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
+        networkTask.setLastSysUpTime(0);
         networkTask.setFailureCount(4);
         networkTask.setHighPrio(false);
         return networkTask;

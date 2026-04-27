@@ -219,6 +219,7 @@ public class DBMigrateTest {
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
+        setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
         data.setNetworkTaskId(task1.getId());
@@ -242,6 +243,7 @@ public class DBMigrateTest {
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
+        setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
         data.setNetworkTaskId(task1.getId());
@@ -327,6 +329,7 @@ public class DBMigrateTest {
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 6);
+        setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
         data.setNetworkTaskId(task1.getId());
@@ -365,6 +368,7 @@ public class DBMigrateTest {
         HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 7);
+        setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
         data.setNetworkTaskId(task1.getId());

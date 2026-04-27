@@ -102,6 +102,7 @@ public class NetworkTaskUIWrapperTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;
