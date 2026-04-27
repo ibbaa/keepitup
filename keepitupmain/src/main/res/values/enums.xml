@@ -34,4 +34,6 @@
     <string name="AccessType_DOWNLOAD_data_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_data_validator">net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator</string>
     <string name="ContextOption_COPY_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_COPY_name">Copy</string>
     <string name="ContextOption_PASTE_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_PASTE_name">Paste</string>
+    <string name="SNMPVersion_V1_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V1_name">v1</string>
+    <string name="SNMPVersion_V2C_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V2C_name">v2c</string>
 </resources>

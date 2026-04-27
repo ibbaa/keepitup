@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidator;
@@ -80,5 +81,11 @@ public class EnumMappingTest {
     public void testGetContextOptionName() {
         assertEquals("Copy", enumMapping.getContextOptionName(ContextOption.COPY));
         assertEquals("Paste", enumMapping.getContextOptionName(ContextOption.PASTE));
+    }
+
+    @Test
+    public void testGetSNMPVersionName() {
+        assertEquals("v1", enumMapping.getSNMPVersionName(SNMPVersion.V1));
+        assertEquals("v2c", enumMapping.getSNMPVersionName(SNMPVersion.V2C));
     }
 }

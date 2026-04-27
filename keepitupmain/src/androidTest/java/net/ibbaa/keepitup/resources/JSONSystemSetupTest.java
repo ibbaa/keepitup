@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
@@ -378,6 +379,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -423,6 +426,8 @@ public class JSONSystemSetupTest {
         assertEquals(789, defaultsData.getInt("preferenceResolveMatchPort"));
         assertEquals("127.0.0.1", defaultsData.getString("preferenceResolveAddress"));
         assertEquals(456, defaultsData.getInt("preferenceResolvePort"));
+        assertEquals(SNMPVersion.V1, SNMPVersion.forCode(defaultsData.getInt("preferenceSNMPVersion")));
+        assertEquals(162, defaultsData.getInt("preferenceSNMPPort"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
         assertEquals("fileExport", systemSettingsData.getString("preferenceLastArbitraryExportFile"));
@@ -443,6 +448,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingPackageSize(12345678);
         preferenceManager.setPreferenceResolveMatchPort(12345678);
         preferenceManager.setPreferenceResolvePort(12345678);
+        preferenceManager.setPreferenceSNMPPort(12345678);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -465,6 +471,7 @@ public class JSONSystemSetupTest {
         assertEquals(12345678, defaultsData.getInt("preferencePingPackageSize"));
         assertEquals(12345678, defaultsData.getInt("preferenceResolveMatchPort"));
         assertEquals(12345678, defaultsData.getInt("preferenceResolvePort"));
+        assertEquals(12345678, defaultsData.getInt("preferenceSNMPPort"));
     }
 
     @Test
@@ -1223,6 +1230,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -1267,6 +1276,8 @@ public class JSONSystemSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals("fileExport", preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -1302,6 +1313,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingPackageSize(12345678);
         preferenceManager.setPreferenceResolveMatchPort(12345678);
         preferenceManager.setPreferenceResolvePort(12345678);
+        preferenceManager.setPreferenceSNMPPort(12345678);
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -1318,6 +1330,8 @@ public class JSONSystemSetupTest {
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());

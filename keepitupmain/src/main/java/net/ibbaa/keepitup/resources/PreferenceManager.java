@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -289,6 +290,36 @@ public class PreferenceManager {
     public void removePreferenceResolvePort() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceResolvePort");
         removePreferenceValue(getResources().getString(R.string.resolve_port_key));
+    }
+
+    public SNMPVersion getPreferenceSNMPVersion() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPVersion");
+        return SNMPVersion.forCode(getPreferenceInt(getResources().getString(R.string.snmp_version_key), getResources().getInteger(R.integer.snmp_version_default)));
+    }
+
+    public void setPreferenceSNMPVersion(SNMPVersion version) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPVersion, version is " + version);
+        setPreferenceInt(getResources().getString(R.string.snmp_version_key), version.getCode());
+    }
+
+    public void removePreferenceSNMPVersion() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPVersion");
+        removePreferenceValue(getResources().getString(R.string.snmp_version_key));
+    }
+
+    public int getPreferenceSNMPPort() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPPort");
+        return getPreferenceInt(getResources().getString(R.string.task_snmp_port_key), getResources().getInteger(R.integer.task_snmp_port_default));
+    }
+
+    public void setPreferenceSNMPPort(int port) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPPort, port is " + port);
+        setPreferenceInt(getResources().getString(R.string.task_snmp_port_key), port);
+    }
+
+    public void removePreferenceSNMPPort() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPPort");
+        removePreferenceValue(getResources().getString(R.string.task_snmp_port_key));
     }
 
     public int getPreferencePingCount() {

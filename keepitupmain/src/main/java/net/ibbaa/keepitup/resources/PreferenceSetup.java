@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
@@ -81,6 +82,8 @@ public class PreferenceSetup {
         defaults.put("preferenceResolveMatchPort", preferenceManager.getPreferenceResolveMatchPort());
         defaults.put("preferenceResolveAddress", preferenceManager.getPreferenceResolveAddress());
         defaults.put("preferenceResolvePort", preferenceManager.getPreferenceResolvePort());
+        defaults.put("preferenceSNMPVersion", preferenceManager.getPreferenceSNMPVersion() != null ? preferenceManager.getPreferenceSNMPVersion().getCode() : -1);
+        defaults.put("preferenceSNMPPort", preferenceManager.getPreferenceSNMPPort());
         return defaults;
     }
 
@@ -295,6 +298,21 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceResolvePort();
         }
+        Object snmpVersion = defaults.get("preferenceSNMPVersion");
+        if (isValidSNMPVersion(snmpVersion)) {
+            preferenceManager.setPreferenceSNMPVersion(Objects.requireNonNull(SNMPVersion.forCode(NumberUtil.getIntValue(snmpVersion, -1))));
+        } else {
+            preferenceManager.removePreferenceSNMPVersion();
+        }
+        Object snmpPort = defaults.get("preferenceSNMPPort");
+        int snmpPortMin = getResources().getInteger(R.integer.task_snmp_port_minimum);
+        int snmpPortMax = getResources().getInteger(R.integer.task_snmp_port_maximum);
+        int snmpPortDefault = getResources().getInteger(R.integer.task_snmp_port_default);
+        if (isValidInteger(snmpPort, snmpPortMin, snmpPortMax)) {
+            preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(snmpPort, snmpPortDefault));
+        } else {
+            preferenceManager.removePreferenceSNMPPort();
+        }
     }
 
     public void importPingAndConnectCount(Map<String, ?> map) {
@@ -425,6 +443,13 @@ public class PreferenceSetup {
         return AccessType.forCode(NumberUtil.getIntValue(value, -1)) != null;
     }
 
+    private boolean isValidSNMPVersion(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return SNMPVersion.forCode(NumberUtil.getIntValue(value, -1)) != null;
+    }
+
     private boolean isValidNotificationType(Object value) {
         if (!NumberUtil.isValidIntValue(value)) {
             return false;
@@ -473,6 +498,8 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceResolveMatchPort();
         preferenceManager.removePreferenceResolveAddress();
         preferenceManager.removePreferenceResolvePort();
+        preferenceManager.removePreferenceSNMPVersion();
+        preferenceManager.removePreferenceSNMPPort();
     }
 
     public void removeSystemSettings() {

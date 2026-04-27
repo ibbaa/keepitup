@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
@@ -110,6 +111,11 @@ public class EnumMapping {
     public String getContextOptionName(ContextOption contextOption) {
         Log.d(EnumMapping.class.getName(), "getContextOptionName for context option " + contextOption);
         return getResources().getString(getResources().getIdentifier(contextOption.getClass().getSimpleName() + "_" + contextOption.name() + "_name", "string", context.getPackageName()));
+    }
+
+    public String getSNMPVersionName(SNMPVersion snmpVersion) {
+        Log.d(EnumMapping.class.getName(), "getSNMPVersionName for SNMP version " + snmpVersion);
+        return getResources().getString(getResources().getIdentifier(snmpVersion.getClass().getSimpleName() + "_" + snmpVersion.name() + "_name", "string", context.getPackageName()));
     }
 
     private Context getContext() {

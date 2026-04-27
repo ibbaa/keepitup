@@ -28,6 +28,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.EncryptionInfo;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
@@ -122,6 +123,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -238,6 +241,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -300,6 +305,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -418,6 +425,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -480,6 +489,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -603,6 +614,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -651,6 +664,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -704,6 +719,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
