@@ -154,6 +154,13 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testInsertResetLastSysUpTime() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        assertEquals(-1, insertedTask1.getLastSysUpTime());
+    }
+
+    @Test
     public void testInsertResetFailureCount() {
         NetworkTask insertedTask1 = getNetworkTask1();
         insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
@@ -296,6 +303,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(-1, readTask1.getLastSysUpTime());
         assertEquals(0, readTask1.getFailureCount());
     }
 
@@ -477,6 +485,25 @@ public class NetworkTaskDAOTest {
         NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(readTask1.getId()));
+    }
+
+    @Test
+    public void testUpdateNetworkTaskLastSysUpTime() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        networkTaskDAO.updateNetworkTaskLastSysUpTime(insertedTask1.getId(), 125);
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        assertEquals(125, readTask1.getLastSysUpTime());
+    }
+
+    @Test
+    public void testResetNetworkTaskLastSysUpTime() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        networkTaskDAO.updateNetworkTaskLastSysUpTime(insertedTask1.getId(), 125);
+        networkTaskDAO.resetNetworkTaskLastSysUpTime(insertedTask1.getId());
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        assertEquals(-1, readTask1.getLastSysUpTime());
     }
 
     @Test

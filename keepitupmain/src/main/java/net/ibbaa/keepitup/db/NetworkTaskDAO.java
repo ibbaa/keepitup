@@ -147,6 +147,23 @@ public class NetworkTaskDAO extends BaseDAO {
         dumpDatabase("Dump after resetNetworkTaskLastScheduled call");
     }
 
+    public void updateNetworkTaskLastSysUpTime(long taskId, long lastSysUpTime) {
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTaskLastSysUpTime, updating last sys up time to " + lastSysUpTime + " for task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        networkTask.setLastSysUpTime(lastSysUpTime);
+        executeDBOperationInTransaction(networkTask, this::updateNetworkTaskLastSysUpTime);
+        dumpDatabase("Dump after updateNetworkTaskLastSysUpTime call");
+    }
+
+    public void resetNetworkTaskLastSysUpTime(long taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastSysUpTime, resetting last sys up time for task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        executeDBOperationInTransaction(networkTask, this::resetNetworkTaskLastSysUpTime);
+        dumpDatabase("Dump after resetNetworkTaskLastSysUpTime call");
+    }
+
     public void resetNetworkTaskLastScheduledAndFailureCount(long taskId) {
         Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastScheduledAndFailureCount, resetting last scheduled timestamp and failure count for task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
@@ -241,6 +258,7 @@ public class NetworkTaskDAO extends BaseDAO {
         }
         networkTask.setInstances(0);
         networkTask.setLastScheduled(-1);
+        networkTask.setLastSysUpTime(-1);
         networkTask.setFailureCount(0);
         values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
@@ -254,6 +272,7 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
         values.put(dbConstants.getRunningColumnName(), networkTask.isRunning() ? 1 : 0);
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
+        values.put(dbConstants.getLastSysUpTimeColumnName(), networkTask.getLastSysUpTime());
         values.put(dbConstants.getFailureCountColumnName(), networkTask.getFailureCount());
         values.put(dbConstants.getHighPrioColumnName(), networkTask.isHighPrio() ? 1 : 0);
         Log.d(NetworkTaskDAO.class.getName(), "Inserting...");
@@ -413,6 +432,27 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
+    private int updateNetworkTaskLastSysUpTime(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTaskLastSysUpTime, task is " + networkTask);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getLastSysUpTimeColumnName(), networkTask.getLastSysUpTime());
+        Log.d(NetworkTaskDAO.class.getName(), "Updating to " + networkTask.getLastSysUpTime());
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
+    private int resetNetworkTaskLastSysUpTime(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastSysUpTime, task is " + networkTask);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getLastSysUpTimeColumnName(), -1);
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
     private int resetNetworkTaskLastScheduledAndFailureCount(NetworkTask networkTask, SQLiteDatabase db) {
         Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastScheduledAndFailureCount, task is " + networkTask);
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
@@ -480,6 +520,7 @@ public class NetworkTaskDAO extends BaseDAO {
         }
         networkTask.setInstances(0);
         networkTask.setLastScheduled(-1);
+        networkTask.setLastSysUpTime(-1);
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
         values.put(dbConstants.getNameColumnName(), networkTask.getName());
@@ -492,6 +533,7 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
+        values.put(dbConstants.getLastSysUpTimeColumnName(), networkTask.getLastSysUpTime());
         values.put(dbConstants.getHighPrioColumnName(), networkTask.isHighPrio() ? 1 : 0);
         Log.d(NetworkTaskDAO.class.getName(), "Updating...");
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
@@ -715,6 +757,7 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getNotificationColumnName());
         int indexRunningColumn = cursor.getColumnIndex(dbConstants.getRunningColumnName());
         int indexLastScheduledColumn = cursor.getColumnIndex(dbConstants.getLastScheduledColumnName());
+        int indexLastSysUpTimeColumn = cursor.getColumnIndex(dbConstants.getLastSysUpTimeColumnName());
         int indexFailureCountColumn = cursor.getColumnIndex(dbConstants.getFailureCountColumnName());
         int indexHighPrioColumn = cursor.getColumnIndex(dbConstants.getHighPrioColumnName());
         networkTask.setId(cursor.getLong(indexIdColumn));
@@ -734,6 +777,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
         networkTask.setRunning(cursor.getInt(indexRunningColumn) >= 1);
         networkTask.setLastScheduled(cursor.getLong(indexLastScheduledColumn));
+        networkTask.setLastSysUpTime(cursor.getLong(indexLastSysUpTimeColumn));
         networkTask.setFailureCount(cursor.getInt(indexFailureCountColumn));
         networkTask.setHighPrio(cursor.getInt(indexHighPrioColumn) >= 1);
         return networkTask;
