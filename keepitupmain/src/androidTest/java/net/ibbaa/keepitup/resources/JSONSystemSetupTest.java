@@ -603,6 +603,9 @@ public class JSONSystemSetupTest {
         Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(readTask1.getId()).get(0);
         Resolve readResolve2 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(0);
         Resolve readResolve3 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(1);
+        resolve1.setIndex(0);
+        resolve2.setIndex(0);
+        resolve3.setIndex(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
         assertTrue(resolve3.isTechnicallyEqual(readResolve3));
