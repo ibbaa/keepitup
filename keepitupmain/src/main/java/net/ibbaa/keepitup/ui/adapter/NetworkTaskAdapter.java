@@ -373,7 +373,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public boolean isNetworkTaskIndexConsistent() {
-        Log.d(NetworkTaskAdapter.class.getName(), "isIndexConsistent");
+        Log.d(NetworkTaskAdapter.class.getName(), "isNetworkTaskIndexConsistent");
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTask currentTask = networkTaskWrapperList.get(ii).getNetworkTask();
             if (currentTask.getIndex() != ii) {
@@ -384,7 +384,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public boolean isResolveIndexConsistent() {
-        Log.d(NetworkTaskAdapter.class.getName(), "isIndexConsistent");
+        Log.d(NetworkTaskAdapter.class.getName(), "isResolveIndexConsistent");
         for (NetworkTaskUIWrapper currentWrapper : networkTaskWrapperList) {
             List<Resolve> resolves = currentWrapper.getResolves();
             if (resolves != null) {
