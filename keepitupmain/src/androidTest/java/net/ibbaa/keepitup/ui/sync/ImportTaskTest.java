@@ -207,6 +207,9 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
+        resolve1.setIndex(0);
+        resolve2.setIndex(0);
+        resolve3.setIndex(1);
         Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
         Resolve readResolve2 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(0);
         Resolve readResolve3 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(1);
@@ -391,6 +394,9 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
+        resolve1.setIndex(0);
+        resolve2.setIndex(0);
+        resolve3.setIndex(1);
         Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
         Resolve readResolve2 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(0);
         Resolve readResolve3 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(1);
@@ -583,6 +589,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
         Resolve readResolve2 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(0);
         Resolve readResolve3 = getResolveDAO().readAllResolvesForNetworkTask(readTask2.getId()).get(1);
+        resolve1.setIndex(0);
+        resolve2.setIndex(0);
+        resolve3.setIndex(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
         assertTrue(resolve3.isTechnicallyEqual(readResolve3));
