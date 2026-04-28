@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Equality;
@@ -157,13 +158,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     @SuppressWarnings("NotifyDataSetChanged")
     private void checkIndexConsistency() {
         Log.d(NetworkTaskMainActivity.class.getName(), "checkIndexConsistency");
-        boolean isIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isIndexConsistent();
-        if (!isIndexConsistent) {
+        boolean isNetworkTaskIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isNetworkTaskIndexConsistent();
+        if (!isNetworkTaskIndexConsistent) {
             Log.e(NetworkTaskMainActivity.class.getName(), "UI index is inconsistent. Repairing...");
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(this);
             networkTaskDAO.normalizeUIIndex();
             ((NetworkTaskAdapter) getAdapter()).replaceItems(readNetworkTasksFromDatabase());
             getAdapter().notifyDataSetChanged();
+        }
+        boolean isResolveIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isResolveIndexConsistent();
+        if (!isResolveIndexConsistent) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "Resolve index is inconsistent. Repairing...");
+            ResolveDAO resolveDAO = new ResolveDAO(this);
+            resolveDAO.normalizeUIIndex();
         }
     }
 
