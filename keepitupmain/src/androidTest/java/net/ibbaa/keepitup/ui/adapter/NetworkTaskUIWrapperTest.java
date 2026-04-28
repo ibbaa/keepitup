@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,6 +129,9 @@ public class NetworkTaskUIWrapperTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 

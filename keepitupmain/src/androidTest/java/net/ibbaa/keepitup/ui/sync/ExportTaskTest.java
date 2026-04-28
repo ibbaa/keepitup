@@ -780,6 +780,9 @@ public class ExportTaskTest extends BaseUITest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(true);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community1");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -793,6 +796,9 @@ public class ExportTaskTest extends BaseUITest {
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity(null);
+        data.setSnmpCommunityValid(true);
         return data;
     }
 

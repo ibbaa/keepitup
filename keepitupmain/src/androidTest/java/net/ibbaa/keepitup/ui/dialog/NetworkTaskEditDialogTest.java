@@ -56,6 +56,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -2775,6 +2776,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         data.setUseDefaultHeaders(false);
         data.setIgnoreSSLError(false);
         data.setStopOnSuccess(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 

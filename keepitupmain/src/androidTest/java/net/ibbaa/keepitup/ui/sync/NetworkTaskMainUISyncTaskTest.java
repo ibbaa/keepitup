@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -276,6 +277,9 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -289,6 +293,9 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(true);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity("community");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -301,6 +308,9 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setConnectCount(1);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity(null);
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
