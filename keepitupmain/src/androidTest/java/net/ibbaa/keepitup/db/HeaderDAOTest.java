@@ -139,7 +139,7 @@ public class HeaderDAOTest {
         Header header1 = getHeader2();
         Header header2 = getHeader4();
         header1 = headerDAO.insertHeader(header1);
-        header2 = headerDAO.insertHeaderUnencrypted(header2);
+        header2 = headerDAO.insertHeader(header2);
         Header readHeader1 = headerDAO.readAllHeaders().get(0);
         Header readHeader2 = headerDAO.readAllHeaders().get(1);
         assertTrue(header1.isTechnicallyEqual(readHeader1));
@@ -148,8 +148,10 @@ public class HeaderDAOTest {
         Map<String, String> encryptedValues2 = headerDAO.readEncryptedValueAndValueIV(header2.getId());
         assertNotNull(encryptedValues1.get("VALUE"));
         assertNotNull(encryptedValues1.get("VALUEIV"));
-        assertEquals("value4", encryptedValues2.get("VALUE"));
-        assertNull(encryptedValues2.get("VALUEIV"));
+        assertNotEquals("value2", encryptedValues1.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUE"));
+        assertNotNull(encryptedValues2.get("VALUEIV"));
+        assertNotEquals("value4", encryptedValues2.get("VALUE"));
     }
 
     @Test

@@ -292,13 +292,18 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropNetworkTaskTable();
         setup.dropResolveTable();
+        setup.dropAccessTypeDataTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutLastSysUpTime());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 7, 8);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         resolveDAO.insertResolve(new Resolve());
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
     }
 
     @Test(expected = SQLiteException.class)

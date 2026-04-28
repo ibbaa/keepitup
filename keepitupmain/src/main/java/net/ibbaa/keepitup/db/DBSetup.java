@@ -184,7 +184,6 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getCreateTableStatement());
     }
 
-    @SuppressWarnings({"ExtractMethodRecommender"})
     public void initializeAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeAccessTypeDataTable");
         executeDBOperationInTransaction(db, database -> database.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement()));
@@ -197,6 +196,7 @@ public class DBSetup {
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
+        values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
         executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
     }
 
@@ -213,6 +213,21 @@ public class DBSetup {
     public void addUseDefaultHeadersColumnToAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "addUseDefaultHeadersColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddUseDefaultHeadersColumnStatement());
+    }
+
+    public void addSnmpVersionColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpVersionColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpVersionColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpVersionColumnStatement());
+    }
+
+    public void addSnmpCommunityColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpCommunityColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpCommunityColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpCommunityColumnStatement());
+    }
+
+    public void addSnmpCommunityIVColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpCommunityIVColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpCommunityIVColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpCommunityIVColumnStatement());
     }
 
     public void createResolveTable(SQLiteDatabase db) {
@@ -399,6 +414,21 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getDropUseDefaultHeadersColumnStatement());
     }
 
+    public void dropSnmpVersionColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpVersionColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpVersionColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpVersionColumnStatement());
+    }
+
+    public void dropSnmpCommunityColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpCommunityColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpCommunityColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpCommunityColumnStatement());
+    }
+
+    public void dropSnmpCommunityIVColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpCommunityIVColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpCommunityIVColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpCommunityIVColumnStatement());
+    }
+
     public void dropResolveTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropResolveTable, table is " + resolveDBConstants.getTableName());
         db.execSQL(resolveDBConstants.getDropTableStatement());
@@ -534,6 +564,18 @@ public class DBSetup {
         addUseDefaultHeadersColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addSnmpVersionColumnToAccessTypeDataTable() {
+        addSnmpVersionColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpCommunityColumnToAccessTypeDataTable() {
+        addSnmpCommunityColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpCommunityIVColumnToAccessTypeDataTable() {
+        addSnmpCommunityIVColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void initializeFailureCountColumn() {
         initializeFailureCountColumn(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -622,6 +664,21 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropUseDefaultHeadersColumnFromAccessTypeDataTable() {
         dropUseDefaultHeadersColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpVersionColumnFromAccessTypeDataTable() {
+        dropSnmpVersionColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpCommunityColumnFromAccessTypeDataTable() {
+        dropSnmpCommunityColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpCommunityIVColumnFromAccessTypeDataTable() {
+        dropSnmpCommunityIVColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})

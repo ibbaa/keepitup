@@ -20,38 +20,39 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
+import net.ibbaa.keepitup.db.AccessTypeDataDBConstants;
 import net.ibbaa.keepitup.db.HeaderDAO;
-import net.ibbaa.keepitup.db.HeaderDBConstants;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.AccessTypeData;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestHeaderDAO extends HeaderDAO {
+public class TestAccessTypeDataDAO extends AccessTypeDataDAO {
 
-    public TestHeaderDAO(Context context) {
+    public TestAccessTypeDataDAO(Context context) {
         super(context);
     }
 
-    public Map<String, String> readEncryptedValueAndValueIV(long id) {
-        Header header = new Header();
-        header.setId(id);
-        return executeDBOperationInTransaction(header, this::readEncryptedValueAndValueIV);
+    public Map<String, String> readEncryptedCommunityAndCommunityIV(long id) {
+        AccessTypeData accessTypeData = new AccessTypeData();
+        accessTypeData.setId(id);
+        return executeDBOperationInTransaction(accessTypeData, this::readEncryptedCommunityAndCommunityIV);
     }
 
     @SuppressWarnings("TryFinallyCanBeTryWithResources")
-    private Map<String, String> readEncryptedValueAndValueIV(Header header, SQLiteDatabase db) {
+    private Map<String, String> readEncryptedCommunityAndCommunityIV(AccessTypeData accessTypeData, SQLiteDatabase db) {
         Map<String, String> result = new HashMap<>();
         Cursor cursor = null;
-        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
         try {
-            cursor = db.rawQuery(dbConstants.getReadEncryptedValueAndValueIV(), new String[]{String.valueOf(header.getId())});
+            cursor = db.rawQuery(dbConstants.getReadEncryptedCommunityAndCommunityIV(), new String[]{String.valueOf(accessTypeData.getId())});
             while (cursor.moveToNext()) {
-                int indexValueColumn = cursor.getColumnIndex(dbConstants.getValueColumnName());
-                int indexIVColumn = cursor.getColumnIndex(dbConstants.getValueIVColumnName());
-                result.put(dbConstants.getValueColumnName(), cursor.getString(indexValueColumn));
-                result.put(dbConstants.getValueIVColumnName(), cursor.getString(indexIVColumn));
+                int indexCommunityColumn = cursor.getColumnIndex(dbConstants.getSnmpCommunityColumnName());
+                int indexIVColumn = cursor.getColumnIndex(dbConstants.getSnmpCommunityIVColumnName());
+                result.put(dbConstants.getSnmpCommunityColumnName(), cursor.getString(indexCommunityColumn));
+                result.put(dbConstants.getSnmpCommunityIVColumnName(), cursor.getString(indexIVColumn));
             }
         } finally {
             if (cursor != null) {

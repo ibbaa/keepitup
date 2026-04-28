@@ -18,17 +18,26 @@ package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPVersion;
+import net.ibbaa.keepitup.test.mock.TestAccessTypeDataDAO;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,13 +52,13 @@ import java.util.Map;
 @RunWith(AndroidJUnit4.class)
 public class AccessTypeDataDAOTest {
 
-    private AccessTypeDataDAO accessTypeDataDAO;
+    private TestAccessTypeDataDAO accessTypeDataDAO;
     private NetworkTaskDAO networkTaskDAO;
 
     @Before
     public void beforeEachTestMethod() {
         Dump.initialize(null);
-        accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
+        accessTypeDataDAO = new TestAccessTypeDataDAO(TestRegistry.getContext());
         accessTypeDataDAO.deleteAllAccessTypeData();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
@@ -96,6 +105,34 @@ public class AccessTypeDataDAOTest {
         assertTrue(doesAccessTypeDataListContain(readDataList, data3));
         accessTypeDataDAO.deleteAllAccessTypeData();
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+    }
+
+    @Test
+    public void testInsertEncrypted() {
+        AccessTypeData accessTypeData1 = getAccessTypeData1();
+        accessTypeData1 = accessTypeDataDAO.insertAccessTypeData(accessTypeData1);
+        AccessTypeData accessTypeData2 = getAccessTypeData2();
+        accessTypeData2 = accessTypeDataDAO.insertAccessTypeData(accessTypeData2);
+        Map<String, String> encryptedValues1 = accessTypeDataDAO.readEncryptedCommunityAndCommunityIV(accessTypeData1.getId());
+        Map<String, String> encryptedValues2 = accessTypeDataDAO.readEncryptedCommunityAndCommunityIV(accessTypeData2.getId());
+        assertNotNull(encryptedValues1.get("SNMPCOMMUNITY"));
+        assertNotNull(encryptedValues1.get("SNMPCOMMUNITYIV"));
+        assertNotEquals("community1", encryptedValues1.get("SNMPCOMMUNITY"));
+        assertNull(encryptedValues2.get("SNMPCOMMUNITY"));
+        assertNull(encryptedValues2.get("SNMPCOMMUNITYIV"));
+    }
+
+    @Test
+    public void testReadEncryptedKeyInvalid() {
+        AccessTypeData accessTypeData1 = getAccessTypeData1();
+        accessTypeDataDAO.insertAccessTypeData(accessTypeData1);
+        corruptKey();
+        AccessTypeData readData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(0);
+        assertNull(readData.getSnmpCommunity());
+        assertFalse(readData.isSnmpCommunityValid());
+        readData = accessTypeDataDAO.readAllAccessTypeData().get(0);
+        assertNull(readData.getSnmpCommunity());
+        assertFalse(readData.isSnmpCommunityValid());
     }
 
     @Test
@@ -148,6 +185,23 @@ public class AccessTypeDataDAOTest {
     }
 
     @Test
+    public void testUpdateEncrypted() {
+        AccessTypeData accessTypeData = getAccessTypeData2();
+        accessTypeData = accessTypeDataDAO.insertAccessTypeData(accessTypeData);
+        accessTypeData.setSnmpCommunity("mycommunity");
+        accessTypeDataDAO.updateAccessTypeData(accessTypeData);
+        Map<String, String> encryptedValues = accessTypeDataDAO.readEncryptedCommunityAndCommunityIV(accessTypeData.getId());
+        assertNotNull(encryptedValues.get("SNMPCOMMUNITY"));
+        assertNotNull(encryptedValues.get("SNMPCOMMUNITYIV"));
+        assertNotEquals("mycommunity", encryptedValues.get("SNMPCOMMUNITY"));
+        accessTypeData.setSnmpCommunity(null);
+        accessTypeDataDAO.updateAccessTypeData(accessTypeData);
+        encryptedValues = accessTypeDataDAO.readEncryptedCommunityAndCommunityIV(accessTypeData.getId());
+        assertNull(encryptedValues.get("SNMPCOMMUNITY"));
+        assertNull(encryptedValues.get("SNMPCOMMUNITYIV"));
+    }
+
+    @Test
     public void testDeleteOrphan() {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         AccessTypeData data1 = getAccessTypeData1();
@@ -174,6 +228,14 @@ public class AccessTypeDataDAOTest {
             }
         }
         return false;
+    }
+
+    private void corruptKey() {
+        String main_key_prefs_file = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_file);
+        String mainKeyPrefsKey = TestRegistry.getContext().getResources().getString(R.string.main_key_prefs_key);
+        SharedPreferences.Editor mainKeyPreferences = TestRegistry.getContext().getSharedPreferences(main_key_prefs_file, Context.MODE_PRIVATE).edit();
+        mainKeyPreferences.putString(mainKeyPrefsKey, StringUtil.byteArrayToBase64(new byte[32]));
+        mainKeyPreferences.commit();
     }
 
     private NetworkTask getNetworkTask() {
@@ -207,6 +269,9 @@ public class AccessTypeDataDAOTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity("community1");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -220,6 +285,9 @@ public class AccessTypeDataDAOTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity(null);
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -233,6 +301,9 @@ public class AccessTypeDataDAOTest {
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
         data.setUseDefaultHeaders(true);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community3");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 }

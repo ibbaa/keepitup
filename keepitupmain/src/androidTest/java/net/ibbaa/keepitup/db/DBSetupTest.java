@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
@@ -250,6 +251,18 @@ public class DBSetupTest {
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutUseDefaultHeaders());
         setup.addUseDefaultHeadersColumnToAccessTypeDataTable();
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+    }
+
+    @Test
+    public void testAddSnmpColumnsToAccessTypeDataTable() {
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPColumns());
+        setup.addSnmpVersionColumnToAccessTypeDataTable();
+        setup.addSnmpCommunityColumnToAccessTypeDataTable();
+        setup.addSnmpCommunityIVColumnToAccessTypeDataTable();
         accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
         assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
     }
@@ -1464,6 +1477,9 @@ public class DBSetupTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 

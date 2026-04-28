@@ -37,12 +37,15 @@ public class AccessTypeDataDBConstantsTest {
         assertEquals(getResourceString(R.string.accesstypedata_table_name), dbConstants.getTableName());
         assertEquals(getResourceString(R.string.accesstypedata_id_column_name), dbConstants.getIdColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_taskid_column_name), dbConstants.getNetworkTaskIdColumnName());
-        assertEquals(getResourceString(R.string.accesstypedata_pingcount_column_name), dbConstants.getPingCountColumnName());
-        assertEquals(getResourceString(R.string.accesstypedata_pingpackagesize_column_name), dbConstants.getPingPackageSizeColumnName());
-        assertEquals(getResourceString(R.string.accesstypedata_connectcount_column_name), dbConstants.getConnectCountColumnName());
-        assertEquals(getResourceString(R.string.accesstypedata_stoponsuccess_column_name), dbConstants.getStopOnSuccessColumnName());
-        assertEquals(getResourceString(R.string.accesstypedata_ignoresslerror_column_name), dbConstants.getIgnoreSSLErrorColumnName());
-        assertEquals(getResourceString(R.string.accesstypedata_usedefaultheaders_column_name), dbConstants.getUseDefaultHeadersColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_ping_count_column_name), dbConstants.getPingCountColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_ping_package_size_column_name), dbConstants.getPingPackageSizeColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_connect_count_column_name), dbConstants.getConnectCountColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_stop_on_success_column_name), dbConstants.getStopOnSuccessColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_ignore_ssl_error_column_name), dbConstants.getIgnoreSSLErrorColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_use_default_headers_column_name), dbConstants.getUseDefaultHeadersColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_version_column_name), dbConstants.getSnmpVersionColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_community_column_name), dbConstants.getSnmpCommunityColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_community_iv_column_name), dbConstants.getSnmpCommunityIVColumnName());
     }
 
     private String getResourceString(int id) {

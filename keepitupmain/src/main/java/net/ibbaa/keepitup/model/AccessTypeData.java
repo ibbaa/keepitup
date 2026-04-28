@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,9 @@ public class AccessTypeData {
     private boolean stopOnSuccess;
     private boolean ignoreSSLError;
     private boolean useDefaultHeaders;
+    private SNMPVersion snmpVersion;
+    private String snmpCommunity;
+    private boolean snmpCommunityValid;
 
     public AccessTypeData() {
         this.id = -1;
@@ -49,6 +53,9 @@ public class AccessTypeData {
         this.stopOnSuccess = false;
         this.ignoreSSLError = false;
         this.useDefaultHeaders = true;
+        this.snmpVersion = null;
+        this.snmpCommunity = null;
+        this.snmpCommunityValid = true;
     }
 
     public AccessTypeData(AccessTypeData otherData) {
@@ -59,6 +66,8 @@ public class AccessTypeData {
         this.stopOnSuccess = otherData.isStopOnSuccess();
         this.ignoreSSLError = otherData.isIgnoreSSLError();
         this.useDefaultHeaders = otherData.isUseDefaultHeaders();
+        this.snmpVersion = otherData.getSnmpVersion();
+        this.snmpCommunity = otherData.getSnmpCommunity();
     }
 
     public AccessTypeData(Context context) {
@@ -70,6 +79,7 @@ public class AccessTypeData {
         this.stopOnSuccess = preferenceManager.getPreferenceStopOnSuccess();
         this.ignoreSSLError = preferenceManager.getPreferenceIgnoreSSLError();
         this.useDefaultHeaders = preferenceManager.getPreferenceUseDefaultHeaders();
+        this.snmpVersion = preferenceManager.getPreferenceSNMPVersion();
     }
 
     public AccessTypeData(PersistableBundle bundle) {
@@ -86,6 +96,11 @@ public class AccessTypeData {
         this.stopOnSuccess = bundle.getInt("stopOnSuccess") >= 1;
         this.ignoreSSLError = bundle.getInt("ignoreSSLError") >= 1;
         this.useDefaultHeaders = bundle.getInt("useDefaultHeaders") >= 1;
+        if (bundle.containsKey("snmpVersion")) {
+            snmpVersion = SNMPVersion.forCode(bundle.getInt("snmpVersion"));
+        }
+        this.snmpCommunity = bundle.getString("snmpCommunity");
+        this.snmpCommunityValid = bundle.getInt("snmpCommunityValid") >= 1;
     }
 
     public AccessTypeData(Map<String, ?> map) {
@@ -113,6 +128,15 @@ public class AccessTypeData {
         }
         if (map.get("useDefaultHeaders") != null) {
             this.useDefaultHeaders = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
+        }
+        if (NumberUtil.isValidIntValue(map.get("snmpVersion"))) {
+            snmpVersion = SNMPVersion.forCode(NumberUtil.getIntValue(map.get("snmpVersion"), -1));
+        }
+        if (map.get("snmpCommunity") != null) {
+            this.snmpCommunity = Objects.requireNonNull(map.get("snmpCommunity")).toString();
+        }
+        if (map.get("snmpCommunityValid") != null) {
+            this.snmpCommunityValid = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("snmpCommunityValid")).toString());
         }
     }
 
@@ -180,6 +204,30 @@ public class AccessTypeData {
         this.useDefaultHeaders = useDefaultHeaders;
     }
 
+    public SNMPVersion getSnmpVersion() {
+        return snmpVersion;
+    }
+
+    public void setSnmpVersion(SNMPVersion snmpVersion) {
+        this.snmpVersion = snmpVersion;
+    }
+
+    public String getSnmpCommunity() {
+        return snmpCommunity;
+    }
+
+    public void setSnmpCommunity(String snmpCommunity) {
+        this.snmpCommunity = snmpCommunity;
+    }
+
+    public boolean isSnmpCommunityValid() {
+        return snmpCommunityValid;
+    }
+
+    public void setSnmpCommunityValid(boolean snmpCommunityValid) {
+        this.snmpCommunityValid = snmpCommunityValid;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -190,6 +238,13 @@ public class AccessTypeData {
         bundle.putInt("stopOnSuccess", stopOnSuccess ? 1 : 0);
         bundle.putInt("ignoreSSLError", ignoreSSLError ? 1 : 0);
         bundle.putInt("useDefaultHeaders", useDefaultHeaders ? 1 : 0);
+        if (snmpVersion != null) {
+            bundle.putInt("snmpVersion", snmpVersion.getCode());
+        }
+        if (snmpCommunity != null) {
+            bundle.putString("snmpCommunity", snmpCommunity);
+        }
+        bundle.putInt("snmpCommunityValid", snmpCommunityValid ? 1 : 0);
         return bundle;
     }
 
@@ -207,6 +262,13 @@ public class AccessTypeData {
         map.put("stopOnSuccess", stopOnSuccess);
         map.put("ignoreSSLError", ignoreSSLError);
         map.put("useDefaultHeaders", useDefaultHeaders);
+        if (snmpVersion != null) {
+            map.put("snmpVersion", snmpVersion.getCode());
+        }
+        if (snmpCommunity != null) {
+            map.put("snmpCommunity", snmpCommunity);
+        }
+        map.put("snmpCommunityValid", snmpCommunityValid);
         return map;
     }
 
@@ -235,7 +297,16 @@ public class AccessTypeData {
         if (useDefaultHeaders != other.useDefaultHeaders) {
             return false;
         }
-        return Objects.equals(ignoreSSLError, other.ignoreSSLError);
+        if (!Objects.equals(ignoreSSLError, other.ignoreSSLError)) {
+            return false;
+        }
+        if (!Objects.equals(snmpVersion, other.snmpVersion)) {
+            return false;
+        }
+        if (!Objects.equals(snmpCommunity, other.snmpCommunity)) {
+            return false;
+        }
+        return snmpCommunityValid == other.snmpCommunityValid;
     }
 
     public boolean isTechnicallyEqual(AccessTypeData other) {
@@ -260,7 +331,16 @@ public class AccessTypeData {
         if (useDefaultHeaders != other.useDefaultHeaders) {
             return false;
         }
-        return Objects.equals(ignoreSSLError, other.ignoreSSLError);
+        if (!Objects.equals(ignoreSSLError, other.ignoreSSLError)) {
+            return false;
+        }
+        if (!Objects.equals(snmpVersion, other.snmpVersion)) {
+            return false;
+        }
+        if (!Objects.equals(snmpCommunity, other.snmpCommunity)) {
+            return false;
+        }
+        return snmpCommunityValid == other.snmpCommunityValid;
     }
 
     @NonNull
@@ -275,6 +355,9 @@ public class AccessTypeData {
                 ", stopOnSuccess=" + stopOnSuccess +
                 ", ignoreSSLError=" + ignoreSSLError +
                 ", useDefaultHeaders=" + useDefaultHeaders +
+                ", snmpVersion=" + snmpVersion +
+                ", snmpCommunity='" + StringUtil.maskSecret(snmpCommunity, true) + '\'' +
+                ", snmpCommunityValid=" + snmpCommunityValid +
                 '}';
     }
 }

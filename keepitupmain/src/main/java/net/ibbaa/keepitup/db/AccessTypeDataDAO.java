@@ -25,6 +25,7 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPVersion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,6 +95,47 @@ public class AccessTypeDataDAO extends BaseDAO {
         dumpDatabase("Dump after deleteAllAccessTypeData call");
     }
 
+    private boolean encrypt(ContentValues values, AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataDAO.class.getName(), "encrypt, accessTypeData is " + accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        String communityColumn = dbConstants.getSnmpCommunityColumnName();
+        String ivColumn = dbConstants.getSnmpCommunityIVColumnName();
+        String community = accessTypeData.getSnmpCommunity();
+        if (community == null) {
+            values.putNull(communityColumn);
+            values.putNull(ivColumn);
+            return true;
+        }
+        EncryptResult result = encrypt(values, communityColumn, ivColumn, community);
+        accessTypeData.setSnmpCommunityValid(result.success());
+        if (!result.success()) {
+            values.putNull(communityColumn);
+            values.putNull(ivColumn);
+        }
+        return result.success();
+    }
+
+    private void decrypt(Cursor cursor, AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataDAO.class.getName(), "decrypt, accessTypeData is " + accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        String communityColumn = dbConstants.getSnmpCommunityColumnName();
+        String ivColumn = dbConstants.getSnmpCommunityIVColumnName();
+        int indexIVColumn = cursor.getColumnIndex(ivColumn);
+        if (!cursor.isNull(indexIVColumn)) {
+            DecryptResult result = decrypt(cursor, communityColumn, ivColumn);
+            if (result.success()) {
+                accessTypeData.setSnmpCommunity(result.plainText());
+                accessTypeData.setSnmpCommunityValid(true);
+            } else {
+                accessTypeData.setSnmpCommunity(null);
+                accessTypeData.setSnmpCommunityValid(false);
+            }
+            return;
+        }
+        accessTypeData.setSnmpCommunity(null);
+        accessTypeData.setSnmpCommunityValid(true);
+    }
+
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
             Dump.dump(AccessTypeDataDAO.class.getName(), message, AccessTypeData.class.getSimpleName().toLowerCase(), this::readAllAccessTypeData);
@@ -111,14 +153,20 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
+        values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
+        values.putNull(dbConstants.getSnmpCommunityIVColumnName());
+        boolean encryptSuccess = encrypt(values, accessTypeData);
+        Log.d(AccessTypeDataDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
         }
         accessTypeData.setId(rowid);
+        accessTypeData.setSnmpCommunityValid(encryptSuccess);
         return accessTypeData;
     }
 
+    @SuppressWarnings({"ExtractMethodRecommender"})
     private AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
         Log.d(AccessTypeDataDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
@@ -132,7 +180,12 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
+        values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
+        values.putNull(dbConstants.getSnmpCommunityIVColumnName());
+        boolean encryptSuccess = encrypt(values, accessTypeData);
+        Log.d(AccessTypeDataDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+        accessTypeData.setSnmpCommunityValid(encryptSuccess);
         return accessTypeData;
     }
 
@@ -235,6 +288,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexStopOnSuccessColumn = cursor.getColumnIndex(dbConstants.getStopOnSuccessColumnName());
         int indexIgnoreSSLErrorColumn = cursor.getColumnIndex(dbConstants.getIgnoreSSLErrorColumnName());
         int indexUseDefaultHeadersColumn = cursor.getColumnIndex(dbConstants.getUseDefaultHeadersColumnName());
+        int indexSnmpVersionColumn = cursor.getColumnIndex(dbConstants.getSnmpVersionColumnName());
         accessTypeData.setId(cursor.getLong(indexIdColumn));
         accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
@@ -243,6 +297,12 @@ public class AccessTypeDataDAO extends BaseDAO {
         accessTypeData.setStopOnSuccess(cursor.getInt(indexStopOnSuccessColumn) >= 1);
         accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
         accessTypeData.setUseDefaultHeaders(cursor.getInt(indexUseDefaultHeadersColumn) >= 1);
+        if (cursor.isNull(indexSnmpVersionColumn)) {
+            accessTypeData.setSnmpVersion(null);
+        } else {
+            accessTypeData.setSnmpVersion(SNMPVersion.forCode(cursor.getInt(indexSnmpVersionColumn)));
+        }
+        decrypt(cursor, accessTypeData);
         return accessTypeData;
     }
 

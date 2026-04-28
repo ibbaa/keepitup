@@ -530,7 +530,6 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
-        values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
         values.put(dbConstants.getLastSysUpTimeColumnName(), networkTask.getLastSysUpTime());
