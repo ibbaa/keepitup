@@ -798,8 +798,10 @@ public class DBSetup {
 
     public void normalizeUIIndex() {
         Log.d(DBSetup.class.getName(), "normalizeUIIndex");
-        NetworkTaskDAO dao = new NetworkTaskDAO(getContext());
-        dao.normalizeUIIndex();
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        networkTaskDAO.normalizeUIIndex();
+        ResolveDAO resolveDAO = new ResolveDAO(getContext());
+        resolveDAO.normalizeUIIndex();
     }
 
     public List<Map<String, ?>> exportNetworkTasks() {

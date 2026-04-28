@@ -527,12 +527,26 @@ public class DBSetupTest {
         NetworkTask insertedTask2 = getNetworkTask2();
         insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
         insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        Resolve insertedResolve1 = getResolve(insertedTask1.getId(), 2);
+        Resolve insertedResolve2 = getResolve(insertedTask1.getId(), 6);
+        Resolve insertedResolve3 = getResolve(insertedTask2.getId(), 5);
+        Resolve insertedResolve4 = getResolve(insertedTask2.getId(), 6);
+        resolveDAO.insertResolve(insertedResolve1);
+        resolveDAO.insertResolve(insertedResolve2);
+        resolveDAO.insertResolve(insertedResolve3);
+        resolveDAO.insertResolve(insertedResolve4);
         setup.normalizeUIIndex();
         List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         assertEquals(0, readTasks.get(0).getIndex());
         assertEquals(1, readTasks.get(1).getIndex());
         assertTrue(insertedTask1.isTechnicallyEqual(readTasks.get(0)));
         assertTrue(insertedTask2.isTechnicallyEqual(readTasks.get(1)));
+        List<Resolve> readResolves1 = resolveDAO.readAllResolvesForNetworkTask(insertedTask1.getId());
+        List<Resolve> readResolves2 = resolveDAO.readAllResolvesForNetworkTask(insertedTask2.getId());
+        assertEquals(0, readResolves1.get(0).getIndex());
+        assertEquals(1, readResolves1.get(1).getIndex());
+        assertEquals(0, readResolves2.get(0).getIndex());
+        assertEquals(1, readResolves2.get(1).getIndex());
     }
 
     @Test

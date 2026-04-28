@@ -372,12 +372,28 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         this.networkTaskWrapperList.addAll(networkTaskWrapperList);
     }
 
-    public boolean isIndexConsistent() {
+    public boolean isNetworkTaskIndexConsistent() {
         Log.d(NetworkTaskAdapter.class.getName(), "isIndexConsistent");
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTask currentTask = networkTaskWrapperList.get(ii).getNetworkTask();
             if (currentTask.getIndex() != ii) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isResolveIndexConsistent() {
+        Log.d(NetworkTaskAdapter.class.getName(), "isIndexConsistent");
+        for (NetworkTaskUIWrapper currentWrapper : networkTaskWrapperList) {
+            List<Resolve> resolves = currentWrapper.getResolves();
+            if (resolves != null) {
+                for (int ii = 0; ii < resolves.size(); ii++) {
+                    Resolve currentResolve = resolves.get(ii);
+                    if (currentResolve.getIndex() != ii) {
+                        return false;
+                    }
+                }
             }
         }
         return true;
