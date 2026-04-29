@@ -51,6 +51,7 @@ import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -97,6 +98,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -122,6 +125,11 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_snmp_version_label)).check(matches(withText("SNMP Version")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port_label)).check(matches(withText("SNMP Port")));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("161")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("no")));
@@ -164,6 +172,8 @@ public class DefaultsActivityTest extends BaseUITest {
         preferenceManager.setPreferenceConnectCount(9);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceOnlyWifi(false);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -190,6 +200,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("no")));
@@ -248,6 +261,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -274,6 +293,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
@@ -383,6 +405,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -399,6 +427,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(9, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -464,6 +494,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
@@ -471,6 +505,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2435,6 +2470,108 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testSetPreferencesSNMPVersion() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isChecked()));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).perform(click());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isNotChecked()));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPPortInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("70000"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 65535"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("161")));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("162")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPPortCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("162");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("163"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("163")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("163", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("163")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPPortCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("163"));
+        rotateScreen(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("162");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("162");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("163")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("163", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("163")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testIntervalInput() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
@@ -2813,6 +2950,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -2848,6 +2991,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("161")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("no")));
@@ -2879,6 +3025,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -2911,6 +3059,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -2930,9 +3084,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
+        onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
@@ -2950,9 +3107,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
+        onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
@@ -3247,6 +3407,61 @@ public class DefaultsActivityTest extends BaseUITest {
     public void testValidationErrorColorScreenRotationConnectCount() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConfirmDialogOnScreenRotationSNMPPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("161")));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("162")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorScreenRotationSNMPPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorColorScreenRotationSNMPPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         rotateScreen(activityScenario);
