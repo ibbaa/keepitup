@@ -149,6 +149,7 @@ import net.ibbaa.keepitup.util.HTTPUtilTest;
 import net.ibbaa.keepitup.util.JSONUtilTest;
 import net.ibbaa.keepitup.util.LogUtilTest;
 import net.ibbaa.keepitup.util.NumberUtilTest;
+import net.ibbaa.keepitup.util.SNMPUtilTest;
 import net.ibbaa.keepitup.util.StreamUtilTest;
 import net.ibbaa.keepitup.util.StringUtilTest;
 import net.ibbaa.keepitup.util.TimeUtilTest;
@@ -310,6 +311,7 @@ import org.junit.runners.Suite;
         JSONUtilTest.class,
         LogUtilTest.class,
         NumberUtilTest.class,
+        SNMPUtilTest.class,
         StreamUtilTest.class,
         StringUtilTest.class,
         TimeUtilTest.class,

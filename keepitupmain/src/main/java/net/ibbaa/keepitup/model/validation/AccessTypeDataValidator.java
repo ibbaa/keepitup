@@ -21,6 +21,8 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.util.SNMPUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 public class AccessTypeDataValidator {
 
@@ -32,7 +34,7 @@ public class AccessTypeDataValidator {
 
     public boolean validate(AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataValidator.class.getName(), "validate accessTypeData " + accessTypeData);
-        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData);
+        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateSNMPVersion(accessTypeData) && validateSNMPCommunity(accessTypeData);
     }
 
     public boolean validatePingCount(AccessTypeData accessTypeData) {
@@ -68,6 +70,35 @@ public class AccessTypeDataValidator {
             return false;
         }
         Log.d(AccessTypeDataValidator.class.getName(), "connectCount is valid. Returning true.");
+        return true;
+    }
+
+    public boolean validateSNMPVersion(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPVersion of accessTypeData " + accessTypeData);
+        if (accessTypeData.getSnmpVersion() == null) {
+            Log.d(AccessTypeDataValidator.class.getName(), "SNMPVersion is null. Returning false.");
+            return false;
+        }
+        Log.d(AccessTypeDataValidator.class.getName(), "SNMPVersion is valid. Returning true.");
+        return true;
+    }
+
+    public boolean validateSNMPCommunity(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPCommunity of accessTypeData " + accessTypeData);
+        String snmpCommunity = accessTypeData.getSnmpCommunity();
+        if (StringUtil.isTrimmedEmpty(snmpCommunity)) {
+            return true;
+        }
+        int communityMaxLength = context.getResources().getInteger(R.integer.snmp_community_max_length);
+        if (snmpCommunity.length() > communityMaxLength) {
+            Log.d(AccessTypeDataValidator.class.getName(), "Community string is too long. Returning false.");
+            return false;
+        }
+        if (!SNMPUtil.validateCommunity(snmpCommunity)) {
+            Log.d(AccessTypeDataValidator.class.getName(), "Community string has invalid characters. Returning false.");
+            return false;
+        }
+        Log.d(AccessTypeDataValidator.class.getName(), "Community string is valid. Returning true.");
         return true;
     }
 }

@@ -887,7 +887,14 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "exportAccessTypeDataForNetworkTask, networkTaskId is " + networkTaskId);
         AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
         AccessTypeData accessTypeData = dao.readAccessTypeDataForNetworkTask(networkTaskId);
-        return accessTypeData != null ? accessTypeData.toMap() : null;
+        if (accessTypeData != null) {
+            if (!accessTypeData.isSnmpCommunityValid()) {
+                accessTypeData.setSnmpCommunityValid(true);
+                accessTypeData.setSnmpCommunity(null);
+            }
+            return accessTypeData.toMap();
+        }
+        return null;
     }
 
     public List<Map<String, ?>> exportResolvesForNetworkTask(long networkTaskId) {
@@ -1021,7 +1028,7 @@ public class DBSetup {
         AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(accessTypeDataMap);
         accessTypeData.setNetworkTaskId(task.getId());
         Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
-        if (accessTypeDataValidator.validate(accessTypeData)) {
+        if (accessTypeDataValidator.validate(accessTypeData) && accessTypeData.isSnmpCommunityValid()) {
             Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
             accessTypeDataDAO.insertAccessTypeData(accessTypeData);
         } else {

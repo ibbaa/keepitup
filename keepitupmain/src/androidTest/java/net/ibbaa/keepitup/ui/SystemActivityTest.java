@@ -2515,7 +2515,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         getResolveDAO().deleteAllResolves();
@@ -2575,6 +2575,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2746,7 +2747,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         getResolveDAO().deleteAllResolves();
@@ -2993,7 +2994,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         getResolveDAO().deleteAllResolves();
@@ -3053,6 +3054,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());

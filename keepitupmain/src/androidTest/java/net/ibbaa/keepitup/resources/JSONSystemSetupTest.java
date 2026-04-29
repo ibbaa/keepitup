@@ -295,6 +295,22 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testExportDatabaseAccessTypeData() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        corruptKey();
+        SystemSetupResult result = encryptedSetup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
+        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        accessData1.setSnmpCommunity(null);
+        assertTrue(task1AccessData.isEqual(accessData1));
+    }
+
+    @Test
     public void testExportDatabaseSecretHeaders() throws Exception {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         Header header1 = getHeader1(task1.getId());
@@ -901,6 +917,52 @@ public class JSONSystemSetupTest {
         task1 = networkTaskDAO.insertNetworkTask(task1);
         data1 = getAccessTypeData1(task1.getId());
         data1.setConnectCount(0);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        resolveDAO.insertResolve(getResolve1(task1.getId()));
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        defaultData = new AccessTypeData(TestRegistry.getContext());
+        defaultData.setNetworkTaskId(task1.getId());
+        assertTrue(defaultData.isTechnicallyEqual(data1));
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
+        assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        data1 = getAccessTypeData1(task1.getId());
+        data1.setSnmpVersion(null);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        resolveDAO.insertResolve(getResolve1(task1.getId()));
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        defaultData = new AccessTypeData(TestRegistry.getContext());
+        defaultData.setNetworkTaskId(task1.getId());
+        assertTrue(defaultData.isTechnicallyEqual(data1));
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
+        assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        data1 = getAccessTypeData1(task1.getId());
+        data1.setSnmpCommunityValid(false);
         accessTypeDataDAO.insertAccessTypeData(data1);
         resolveDAO.insertResolve(getResolve1(task1.getId()));
         exportResult = setup.exportData();

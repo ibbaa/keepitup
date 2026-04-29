@@ -93,6 +93,44 @@ public class AccessTypeDataValidatorTest {
         assertTrue(validator.validate(data));
     }
 
+    @Test
+    public void testValidateSNMPVersion() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPVersion(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpVersion(null);
+        assertFalse(validator.validateSNMPVersion(data));
+        assertFalse(validator.validate(data));
+    }
+
+    @Test
+    public void testValidateSNMPCommunity() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity(null);
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("");
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("   ");
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("x".repeat(256));
+        assertFalse(validator.validateSNMPCommunity(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpCommunity("x".repeat(255));
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("invalid community");
+        assertFalse(validator.validateSNMPCommunity(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpCommunity("valid_community!");
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+    }
+
     private AccessTypeData getAccessTypeData() {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);
