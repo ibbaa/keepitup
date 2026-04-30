@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -46,8 +45,8 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
@@ -79,7 +78,7 @@ import java.util.List;
 @SuppressWarnings({"unused"})
 public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport {
 
-    private RadioGroup accessTypeGroup;
+    private GridLayout accessTypeGroup;
     private TextView snmpPortText;
     private TextView addressText;
     private TextView portText;
@@ -178,7 +177,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         Log.d(DefaultsActivity.class.getName(), "prepareAccessTypeRadioButtons");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         accessTypeGroup = findViewById(R.id.radiogroup_activity_defaults_accesstype);
-        accessTypeGroup.setOnCheckedChangeListener(null);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
         AccessType type = preferenceManager.getPreferenceAccessType();
@@ -195,22 +193,22 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
                 newRadioButton.setChecked(accessType.equals(type));
             }
             newRadioButton.setTag(accessType);
-            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-            accessTypeGroup.addView(newRadioButton, ii, layoutParams);
+            newRadioButton.setOnClickListener(this::onAccessTypeChanged);
+            accessTypeGroup.addView(newRadioButton);
         }
-        accessTypeGroup.setOnCheckedChangeListener(this::onAccessTypeChanged);
     }
 
-    private void onAccessTypeChanged(RadioGroup group, int checkedId) {
+    private void onAccessTypeChanged(View view) {
         Log.d(DefaultsActivity.class.getName(), "onAccessTypeChanged");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(checkedId);
-        if (selectedAccessTypeRadioButton != null) {
-            AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-            Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
-            if (accessType != null) {
-                preferenceManager.setPreferenceAccessType(accessType);
-            }
+        for (int ii = 0; ii < accessTypeGroup.getChildCount(); ii++) {
+            ((RadioButton) accessTypeGroup.getChildAt(ii)).setChecked(false);
+        }
+        RadioButton selected = (RadioButton) view;
+        selected.setChecked(true);
+        AccessType accessType = (AccessType) selected.getTag();
+        Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
+        if (accessType != null) {
+            new PreferenceManager(this).setPreferenceAccessType(accessType);
         }
     }
 

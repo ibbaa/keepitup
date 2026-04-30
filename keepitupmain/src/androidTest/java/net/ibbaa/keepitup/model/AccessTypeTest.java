@@ -38,16 +38,25 @@ public class AccessTypeTest {
         assertTrue(type.isPing());
         assertFalse(type.isConnect());
         assertFalse(type.isDownload());
+        assertFalse(type.isSNMP());
         type = AccessType.CONNECT;
         assertTrue(type.needsPort());
         assertFalse(type.isPing());
         assertTrue(type.isConnect());
         assertFalse(type.isDownload());
+        assertFalse(type.isSNMP());
         type = AccessType.DOWNLOAD;
         assertFalse(type.needsPort());
         assertFalse(type.isPing());
         assertFalse(type.isConnect());
         assertTrue(type.isDownload());
+        assertFalse(type.isSNMP());
+        type = AccessType.SNMP;
+        assertTrue(type.needsPort());
+        assertFalse(type.isPing());
+        assertFalse(type.isConnect());
+        assertFalse(type.isDownload());
+        assertTrue(type.isSNMP());
     }
 
     @Test
@@ -55,6 +64,7 @@ public class AccessTypeTest {
         assertEquals(AccessType.PING, AccessType.forCode(AccessType.PING.getCode()));
         assertEquals(AccessType.CONNECT, AccessType.forCode(AccessType.CONNECT.getCode()));
         assertEquals(AccessType.DOWNLOAD, AccessType.forCode(AccessType.DOWNLOAD.getCode()));
-        assertNull(AccessType.forCode(AccessType.DOWNLOAD.getCode() + 1));
+        assertEquals(AccessType.SNMP, AccessType.forCode(AccessType.SNMP.getCode()));
+        assertNull(AccessType.forCode(AccessType.SNMP.getCode() + 1));
     }
 }

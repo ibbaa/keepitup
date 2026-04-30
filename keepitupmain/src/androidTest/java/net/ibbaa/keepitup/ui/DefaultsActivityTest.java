@@ -104,7 +104,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
-        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(4)));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
@@ -179,7 +179,7 @@ public class DefaultsActivityTest extends BaseUITest {
         preferenceManager.setPreferenceHighPrio(true);
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
-        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(4)));
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("127.0.0.1")));

@@ -24,6 +24,7 @@
     <string name="accesstypedata_ping_count_field_name">Ping count</string>
     <string name="accesstypedata_ping_package_size_field_name">Package size</string>
     <string name="accesstypedata_connect_count_field_name">Connect count</string>
+    <string name="accesstypedata_snmp_community_field_name">SNMP community</string>
     <string name="resolve_host_field_name">Connect-to host</string>
     <string name="resolve_port_field_name">Connect-to port</string>
     <string name="resolve_match_host_field_name">Match host</string>
@@ -34,6 +35,7 @@
     <string name="header_value_field_name">Header value</string>
     <string name="basic_auth_username_field_name">Basic auth username</string>
     <string name="basic_auth_password_field_name">Basic auth password</string>
+    <string name="snmp_community_field_name">SNMP community</string>
     <string name="username_field_name">Username</string>
     <string name="password_field_name">Password</string>
     <string name="password_confirm_field_name">Confirm password</string>

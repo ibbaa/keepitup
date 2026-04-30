@@ -130,6 +130,7 @@ import net.ibbaa.keepitup.ui.validation.ResolveHostMatchExistsFieldValidatorTest
 import net.ibbaa.keepitup.ui.validation.ResolveHostMatchFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortMatchFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPCommunityFieldNameValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHeaderValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
@@ -291,6 +292,7 @@ import org.junit.runners.Suite;
         ResolveHostMatchFieldValidatorTest.class,
         ResolvePortFieldValidatorTest.class,
         ResolvePortMatchFieldValidatorTest.class,
+        SNMPCommunityFieldNameValidatorTest.class,
         StandardAccessTypeDataValidatorTest.class,
         StandardHeaderValidatorTest.class,
         StandardHostPortValidatorTest.class,

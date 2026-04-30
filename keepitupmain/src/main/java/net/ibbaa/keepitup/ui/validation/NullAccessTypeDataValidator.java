@@ -54,6 +54,14 @@ public class NullAccessTypeDataValidator implements AccessTypeDataValidator {
         return new ValidationResult(false, fieldName, failedMessage);
     }
 
+    @Override
+    public ValidationResult validateSNMPCommunity(String snmpCommunity) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validateSNMPCommunity, snmpCommunity is " + snmpCommunity);
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_community_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
     private Context getContext() {
         return context;
     }
