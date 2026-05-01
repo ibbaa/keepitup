@@ -686,11 +686,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         AccessType currentAccessType = getAccessType();
         snmpPortActive = currentAccessType != null && currentAccessType.isSNMP();
-        Log.d(NetworkTaskEditDialog.class.getName(), "preparePortValues, currentPort=" + currentPort + ", currentSNMPPort=" + currentSNMPPort + ", snmpPortActive=" + snmpPortActive);
+        Log.d(NetworkTaskEditDialog.class.getName(), "preparePortValues, currentPort is " + currentPort + ", currentSNMPPort is " + currentSNMPPort + ", snmpPortActive is " + snmpPortActive);
     }
 
     private void swapPortValues() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "swapPortValues, snmpPortActive=" + snmpPortActive);
+        Log.d(NetworkTaskEditDialog.class.getName(), "swapPortValues, snmpPortActive is " + snmpPortActive);
         if (isPortVisible()) {
             if (NumberUtil.isValidIntValue(getPort())) {
                 if (snmpPortActive) {
@@ -703,7 +703,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         AccessType newAccessType = getAccessType();
         snmpPortActive = newAccessType != null && newAccessType.isSNMP();
         portEditText.setText(String.valueOf(snmpPortActive ? currentSNMPPort : currentPort));
-        Log.d(NetworkTaskEditDialog.class.getName(), "swapPortValues, currentPort=" + currentPort + ", currentSNMPPort=" + currentSNMPPort + ", snmpPortActive=" + snmpPortActive);
+        Log.d(NetworkTaskEditDialog.class.getName(), "swapPortValues, currentPort is " + currentPort + ", currentSNMPPort is " + currentSNMPPort + ", snmpPortActive is " + snmpPortActive);
     }
 
     private void prepareAccessTypeDataFieldsVisibility() {
