@@ -329,12 +329,110 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/textview_dialog_network_task_edit_snmp_version_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_snmp_version_label_margin_top"
+                android:textStyle="bold"
+                android:layout_row="7"
+                android:layout_column="0"
+                android:ellipsize="none"
+                android:singleLine="false"
+                android:breakStrategy="simple"
+                android:maxWidth="@dimen/textview_dialog_network_task_edit_label_max_width"
+                android:text="@string/label_dialog_network_task_edit_snmp_version" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_snmp_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_snmp_version_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_snmp_version_margin_top"
+                android:layout_row="7"
+                android:layout_column="1">
+
+                <RadioGroup
+                    android:id="@+id/radiogroup_dialog_network_task_edit_snmp_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radiobutton_dialog_network_task_edit_snmp_version_v1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/radiobutton_dialog_network_task_edit_snmp_version_padding_top"
+                        android:paddingBottom="@dimen/radiobutton_dialog_network_task_edit_snmp_version_padding_bottom"
+                        android:minHeight="@dimen/radiobutton_dialog_network_task_edit_snmp_version_min_height"
+                        android:text="@string/SNMPVersion_V1_name" />
+
+                    <RadioButton
+                        android:id="@+id/radiobutton_dialog_network_task_edit_snmp_version_v2c"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/radiobutton_dialog_network_task_edit_snmp_version_padding_top"
+                        android:paddingBottom="@dimen/radiobutton_dialog_network_task_edit_snmp_version_padding_bottom"
+                        android:minHeight="@dimen/radiobutton_dialog_network_task_edit_snmp_version_min_height"
+                        android:text="@string/SNMPVersion_V2C_name" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textview_dialog_network_task_edit_snmp_community_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_snmp_community_margin_top"
+                android:textStyle="bold"
+                android:layout_row="8"
+                android:layout_column="0"
+                android:ellipsize="none"
+                android:singleLine="false"
+                android:breakStrategy="simple"
+                android:maxWidth="@dimen/textview_dialog_network_task_edit_label_max_width"
+                android:text="@string/label_dialog_network_task_edit_snmp_community" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_snmp_community"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_snmp_community_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_snmp_community_margin_top"
+                android:layout_row="8"
+                android:layout_column="1"
+                android:animateLayoutChanges="true">
+
+                <EditText
+                    android:id="@+id/edittext_dialog_network_task_edit_snmp_community"
+                    style="@style/EditTextTheme"
+                    android:layout_width="@dimen/edittext_dialog_network_task_edit_snmp_community_width"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/edittext_dialog_basic_auth_password_padding_end"
+                    android:drawablePadding="@dimen/edittext_dialog_basic_auth_password_drawable_padding"
+                    android:importantForAutofill="no"
+                    android:longClickable="false"
+                    android:textIsSelectable="false"
+                    android:inputType="textPassword|textNoSuggestions"
+                    android:drawableTint="@color/textColorPrimary"
+                    android:drawableEnd="@drawable/ic_visibility_off"
+                    tools:ignore="RtlSymmetry,UnusedAttribute" />
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/textview_dialog_network_task_edit_use_default_headers_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_use_default_headers_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="8"
+                android:layout_row="9"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -351,7 +449,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_use_default_headers_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_use_default_headers_margin_top"
-                android:layout_row="8"
+                android:layout_row="9"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -380,7 +478,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_headers_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="9"
+                android:layout_row="10"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -397,7 +495,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_headers_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_headers_margin_top"
-                android:layout_row="9"
+                android:layout_row="10"
                 android:layout_column="1">
 
                 <TextView
@@ -415,7 +513,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_ignore_ssl_error_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="10"
+                android:layout_row="11"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -432,7 +530,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_top"
-                android:layout_row="10"
+                android:layout_row="11"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -461,7 +559,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_stop_on_success_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="11"
+                android:layout_row="12"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -478,7 +576,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_stop_on_success_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_stop_on_success_margin_top"
-                android:layout_row="11"
+                android:layout_row="12"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -507,7 +605,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_only_wifi_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="12"
+                android:layout_row="13"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -524,7 +622,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_only_wifi_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_only_wifi_margin_top"
-                android:layout_row="12"
+                android:layout_row="13"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -553,7 +651,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_notification_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="13"
+                android:layout_row="14"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -570,7 +668,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_notification_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_notification_margin_top"
-                android:layout_row="13"
+                android:layout_row="14"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -599,7 +697,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_high_prio_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="14"
+                android:layout_row="15"
                 android:layout_column="0"
                 android:ellipsize="none"
                 android:singleLine="false"
@@ -616,7 +714,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_high_prio_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_high_prio_margin_top"
-                android:layout_row="14"
+                android:layout_row="15"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial

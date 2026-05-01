@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -93,6 +95,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextColorValidatingWatcher connectCountEditTextWatcher;
     private EditText pingPackageSizeEditText;
     private TextColorValidatingWatcher pingPackageSizeEditTextWatcher;
+    private RadioGroup snmpVersionGroup;
+    private EditText snmpCommunityEditText;
+    private PasswordToggleTouchListener snmpCommunityToggleTouchListener;
+    private boolean snmpCommunityToggleOpen;
     private TextView resolveText;
     private SwitchMaterial useDefaultHeadersSwitch;
     private TextView useDefaultHeadersOnOffText;
@@ -163,7 +169,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareHeadersFieldVisibility();
         prepareIgnoreSSLErrorSwitch();
         prepareStopOnSuccessSwitch();
-        prepareAccessTypeDataFields();
+        prepareAccessTypeDataFields(savedInstanceState);
         prepareAccessTypeDataFieldsVisibility();
         prepareResolvesField();
         prepareResolveFieldVisibility();
@@ -189,6 +195,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (currentHeaders != null) {
             BundleUtil.headerListToBundle(getCurrentHeadersKey(), currentHeaders, outState);
         }
+        if (snmpCommunityToggleTouchListener != null) {
+            outState.putBoolean(getSNMPCommunityVisibleKey(), snmpCommunityToggleTouchListener.isVisible());
+        }
+        outState.putBoolean(getSNMPCommunityToggleOpenKey(), snmpCommunityToggleOpen);
     }
 
     public int getPosition() {
@@ -270,6 +280,18 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return StringUtil.notNull(pingPackageSizeEditText.getText());
     }
 
+    private SNMPVersion getSNMPVersion() {
+        int checkedId = snmpVersionGroup.getCheckedRadioButtonId();
+        if (checkedId == R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c) {
+            return SNMPVersion.V2C;
+        }
+        return SNMPVersion.V1;
+    }
+
+    private String getSNMPCommunity() {
+        return StringUtil.notNull(snmpCommunityEditText.getText());
+    }
+
     private boolean isPortVisible() {
         return portEditText.getVisibility() == View.VISIBLE;
     }
@@ -300,6 +322,14 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isIgnoreSSLErrorVisible() {
         return ignoreSSLErrorSwitch.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isSNMPVersionVisible() {
+        return snmpVersionGroup.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isSNMPCommunityVisible() {
+        return snmpCommunityEditText.getVisibility() == View.VISIBLE;
     }
 
     private boolean isStopOnSuccessVisible() {
@@ -542,7 +572,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
     }
 
-    private void prepareAccessTypeDataFields() {
+    private void prepareAccessTypeDataFields(Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFields with acccess type data of " + accessTypeData);
         pingCountEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_ping_count);
         preparePingCountEditTextListener();
@@ -556,11 +586,61 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         preparePingPackageSizeEditTextListener();
         pingPackageSizeEditText.setOnLongClickListener(this::onEditTextLongClicked);
         pingPackageSizeEditText.setText(String.valueOf(accessTypeData.getPingPackageSize()));
+        prepareSNMPVersionRadioButtons();
+        prepareSNMPCommunityTextField(savedInstanceState);
+    }
+
+    private void prepareSNMPVersionRadioButtons() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSNMPVersionRadioButtons");
+        snmpVersionGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_snmp_version);
+        snmpVersionGroup.setOnCheckedChangeListener(null);
+        SNMPVersion version = accessTypeData.getSnmpVersion();
+        RadioButton v1RadioButton = dialogView.findViewById(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1);
+        RadioButton v2cRadioButton = dialogView.findViewById(R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c);
+        v1RadioButton.setTextColor(getColor(R.color.textColor));
+        v1RadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        v2cRadioButton.setTextColor(getColor(R.color.textColor));
+        v2cRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        v1RadioButton.setChecked(version == null || version.isV1());
+        v2cRadioButton.setChecked(version != null && version.isV2C());
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void prepareSNMPCommunityTextField(Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSNMPCommunityTextField");
+        snmpCommunityEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_snmp_community);
+        snmpCommunityToggleTouchListener = new PasswordToggleTouchListener(snmpCommunityEditText);
+        if (savedInstanceState != null) {
+            boolean wasVisible = savedInstanceState.getBoolean(getSNMPCommunityVisibleKey(), false);
+            snmpCommunityToggleTouchListener.setVisible(wasVisible);
+            snmpCommunityToggleOpen = savedInstanceState.getBoolean(getSNMPCommunityToggleOpenKey(), true);
+        } else {
+            snmpCommunityToggleOpen = true;
+        }
+        snmpCommunityToggleTouchListener.setEnabled(snmpCommunityToggleOpen);
+        snmpCommunityEditText.setOnTouchListener(snmpCommunityToggleTouchListener);
+        snmpCommunityEditText.setOnFocusChangeListener(this::onSNMPCommunityFieldFocusChanged);
+        snmpCommunityEditText.setText(StringUtil.notNull(accessTypeData.getSnmpCommunity()));
+    }
+
+    private void onSNMPCommunityFieldFocusChanged(View view, boolean hasFocus) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPCommunityFieldFocusChanged, hasFocus is " + hasFocus);
+        snmpCommunityToggleOpen = true;
+        if (snmpCommunityToggleTouchListener != null) {
+            snmpCommunityToggleTouchListener.setEnabled(true);
+        }
+    }
+
+    private String getSNMPCommunityVisibleKey() {
+        return NetworkTaskEditDialog.class.getSimpleName() + ".SNMPCommunityVisible";
+    }
+
+    private String getSNMPCommunityToggleOpenKey() {
+        return NetworkTaskEditDialog.class.getSimpleName() + ".SNMPCommunityToggleOpen";
     }
 
     private void prepareAccessTypeDataFieldsVisibility() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFieldsVisibility with acccess type data of " + accessTypeData);
-        EnumMapping mapping = new EnumMapping(requireContext());
         RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_accesstype);
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
         RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
@@ -572,6 +652,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         LinearLayout pingCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_count);
         LinearLayout connectCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_count);
         LinearLayout pingPackageSizeLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_package_size);
+        LinearLayout snmpVersionLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_snmp_version);
+        LinearLayout snmpCommunityLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_snmp_community);
         LinearLayout stopOnSuccessLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_stop_on_success);
         LinearLayout useDefaultHeadersLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_use_default_headers);
         LinearLayout headersLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_headers);
@@ -579,6 +661,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         TextView pingCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_count_label);
         TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
         TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
+        TextView snmpVersionTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_version_label);
+        TextView snmpCommunityTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_community_label);
         TextView stopOnSuccessTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stop_on_success_label);
         TextView useDefaultHeadersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_use_default_headers_label);
         TextView headersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_label);
@@ -589,9 +673,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             pingCountTextView.setVisibility(View.VISIBLE);
             pingCountEditText.setVisibility(View.VISIBLE);
             pingCountLinearLayout.setVisibility(View.VISIBLE);
-            stopOnSuccessTextView.setVisibility(View.VISIBLE);
-            stopOnSuccessSwitch.setVisibility(View.VISIBLE);
-            stopOnSuccessLinearLayout.setVisibility(View.VISIBLE);
             if (preferenceManager.getPreferenceEnforceDefaultPingPackageSize()) {
                 pingPackageSizeTextView.setVisibility(View.GONE);
                 pingPackageSizeEditText.setVisibility(View.GONE);
@@ -613,13 +694,25 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             connectCountTextView.setVisibility(View.VISIBLE);
             connectCountEditText.setVisibility(View.VISIBLE);
             connectCountLinearLayout.setVisibility(View.VISIBLE);
-            stopOnSuccessTextView.setVisibility(View.VISIBLE);
-            stopOnSuccessSwitch.setVisibility(View.VISIBLE);
-            stopOnSuccessLinearLayout.setVisibility(View.VISIBLE);
         } else {
             connectCountTextView.setVisibility(View.GONE);
             connectCountEditText.setVisibility(View.GONE);
             connectCountLinearLayout.setVisibility(View.GONE);
+        }
+        if (accessType.isSNMP()) {
+            snmpVersionTextView.setVisibility(View.VISIBLE);
+            snmpVersionGroup.setVisibility(View.VISIBLE);
+            snmpVersionLinearLayout.setVisibility(View.VISIBLE);
+            snmpCommunityTextView.setVisibility(View.VISIBLE);
+            snmpCommunityEditText.setVisibility(View.VISIBLE);
+            snmpCommunityLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            snmpVersionTextView.setVisibility(View.GONE);
+            snmpVersionGroup.setVisibility(View.GONE);
+            snmpVersionLinearLayout.setVisibility(View.GONE);
+            snmpCommunityTextView.setVisibility(View.GONE);
+            snmpCommunityEditText.setVisibility(View.GONE);
+            snmpCommunityLinearLayout.setVisibility(View.GONE);
         }
         if (accessType.isDownload()) {
             useDefaultHeadersTextView.setVisibility(View.VISIBLE);
@@ -629,9 +722,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             ignoreSSLErrorTextView.setVisibility(View.VISIBLE);
             ignoreSSLErrorSwitch.setVisibility(View.VISIBLE);
             ignoreSSLErrorLinearLayout.setVisibility(View.VISIBLE);
-            stopOnSuccessTextView.setVisibility(View.GONE);
-            stopOnSuccessSwitch.setVisibility(View.GONE);
-            stopOnSuccessLinearLayout.setVisibility(View.GONE);
         } else {
             useDefaultHeadersTextView.setVisibility(View.GONE);
             useDefaultHeadersSwitch.setVisibility(View.GONE);
@@ -642,6 +732,17 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             ignoreSSLErrorTextView.setVisibility(View.GONE);
             ignoreSSLErrorSwitch.setVisibility(View.GONE);
             ignoreSSLErrorLinearLayout.setVisibility(View.GONE);
+        }
+        if (accessType.isPing() || accessType.isConnect()) {
+            stopOnSuccessTextView.setVisibility(View.VISIBLE);
+            stopOnSuccessSwitch.setVisibility(View.VISIBLE);
+            stopOnSuccessOnOffText.setVisibility(View.VISIBLE);
+            stopOnSuccessLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            stopOnSuccessTextView.setVisibility(View.GONE);
+            stopOnSuccessSwitch.setVisibility(View.GONE);
+            stopOnSuccessOnOffText.setVisibility(View.GONE);
+            stopOnSuccessLinearLayout.setVisibility(View.GONE);
         }
     }
 
@@ -884,6 +985,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (isStopOnSuccessVisible()) {
             accessTypeData.setStopOnSuccess(stopOnSuccessSwitch.isChecked());
         }
+        if (isSNMPVersionVisible()) {
+            accessTypeData.setSnmpVersion(getSNMPVersion());
+        }
+        if (isSNMPCommunityVisible()) {
+            accessTypeData.setSnmpCommunity(getSNMPCommunity());
+        }
         Log.d(NetworkTaskEditDialog.class.getName(), "getAccessTypeData, access type data task is " + accessTypeData);
         return accessTypeData;
     }
@@ -1051,6 +1158,15 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             }
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "ping package size count validation skipped");
+        }
+        if (isSNMPCommunityVisible()) {
+            ValidationResult result = accessTypeDataValidator.validateSNMPCommunity(getSNMPCommunity());
+            Log.d(NetworkTaskEditDialog.class.getName(), "SNMP community validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                validationResultList.add(result);
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "SNMP community validation skipped");
         }
     }
 

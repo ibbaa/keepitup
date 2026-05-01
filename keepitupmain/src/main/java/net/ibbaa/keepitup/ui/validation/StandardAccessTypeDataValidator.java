@@ -60,7 +60,7 @@ public class StandardAccessTypeDataValidator implements AccessTypeDataValidator 
     @Override
     public ValidationResult validateSNMPCommunity(String snmpCommunity) {
         Log.d(StandardAccessTypeDataValidator.class.getName(), "validateSNMPCommunity, snmpCommunity is " + snmpCommunity);
-        String fieldName = getResources().getString(R.string.snmp_community_field_name);
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_community_field_name);
         ValidationResult result = new SNMPCommunityFieldNameValidator(fieldName, getContext()).validate(snmpCommunity);
         Log.d(StandardAccessTypeDataValidator.class.getName(), SNMPCommunityFieldNameValidator.class.getSimpleName() + " returned " + result);
         return result;

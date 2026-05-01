@@ -37,6 +37,15 @@
     <dimen name="edittext_dialog_network_task_edit_ping_package_size_width">120dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_resolve_rules_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_resolve_rules_margin_left">10dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_snmp_version_label_margin_top">24dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_version_margin_top">20dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_version_margin_left">10dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_version_padding_top">0dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_version_padding_bottom">0dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_version_min_height">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_community_margin_top">10dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_community_margin_left">10dp</dimen>
+    <dimen name="edittext_dialog_network_task_edit_snmp_community_width">120dp</dimen>
     <dimen name="textview_dialog_network_task_edit_stop_on_success_label_margin_top">14dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_stop_on_success_margin_top">12dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_stop_on_success_margin_left">10dp</dimen>
