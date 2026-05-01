@@ -510,7 +510,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_system triggered");
             Intent intent = new Intent(this, SystemActivity.class);
             intent.setPackage(getPackageName());
-            Bundle bundle = prepareSystemActivityCredentionInfoBundle();
+            Bundle bundle = prepareSystemActivityCredentialInfoBundle();
             if (bundle != null) {
                 intent.putExtra(SystemActivity.getCredentialsKey(), bundle);
             }
@@ -525,8 +525,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private Bundle prepareSystemActivityCredentionInfoBundle() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareSystemActivityCredentionInfoBundle");
+    private Bundle prepareSystemActivityCredentialInfoBundle() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "prepareSystemActivityCredentialInfoBundle");
         NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
         Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
         Map<Long, List<Header>> secretHeaders = adapter.getSecretHeaders();
