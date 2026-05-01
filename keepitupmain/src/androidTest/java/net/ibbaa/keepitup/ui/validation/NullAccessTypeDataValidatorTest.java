@@ -55,7 +55,7 @@ public class NullAccessTypeDataValidatorTest {
         assertEquals("No value specified", result.getMessage());
         result = validator.validateSNMPCommunity("xyz");
         assertFalse(result.isValidationSuccessful());
-        assertEquals("SNMP community", result.getFieldName());
+        assertEquals("Community", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
     }
 }

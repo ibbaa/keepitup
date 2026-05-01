@@ -358,7 +358,8 @@
                     android:id="@+id/radiogroup_dialog_network_task_edit_snmp_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UselessParent">
 
                     <RadioButton
                         android:id="@+id/radiobutton_dialog_network_task_edit_snmp_version_v1"

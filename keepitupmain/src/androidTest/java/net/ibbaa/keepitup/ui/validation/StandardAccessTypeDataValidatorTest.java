@@ -128,23 +128,23 @@ public class StandardAccessTypeDataValidatorTest {
     public void testValidateSNMPCommunity() {
         ValidationResult result = validator.validateSNMPCommunity("public");
         assertTrue(result.isValidationSuccessful());
-        assertEquals("SNMP community", result.getFieldName());
+        assertEquals("Community", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validateSNMPCommunity("public community");
         assertFalse(result.isValidationSuccessful());
-        assertEquals("SNMP community", result.getFieldName());
+        assertEquals("Community", result.getFieldName());
         assertEquals("Value contains invalid characters", result.getMessage());
         result = validator.validateSNMPCommunity("a".repeat(256));
         assertFalse(result.isValidationSuccessful());
-        assertEquals("SNMP community", result.getFieldName());
+        assertEquals("Community", result.getFieldName());
         assertEquals("Maximum length: 255", result.getMessage());
         result = validator.validateSNMPCommunity("");
         assertTrue(result.isValidationSuccessful());
-        assertEquals("SNMP community", result.getFieldName());
+        assertEquals("Community", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validateSNMPCommunity(null);
         assertTrue(result.isValidationSuccessful());
-        assertEquals("SNMP community", result.getFieldName());
+        assertEquals("Community", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
     }
 }

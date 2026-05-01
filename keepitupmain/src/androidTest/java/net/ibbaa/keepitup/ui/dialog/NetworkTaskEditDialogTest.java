@@ -23,8 +23,8 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
@@ -1741,6 +1741,39 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testOnOkCancelClickedErrorDialogSNMP() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("123.456"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("invalid community"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withText("Host")).check(matches(isDisplayed()));
+        onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
+        onView(withText("Interval")).check(matches(isDisplayed()));
+        onView(withText("Minimum: 1")).check(matches(isDisplayed()));
+        onView(withText("Community")).check(matches(isDisplayed()));
+        onView(withText("Value contains invalid characters")).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("15"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("public"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withText("Host")).check(matches(isDisplayed()));
+        onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
+        onView(withText("Interval")).check(doesNotExist());
+        onView(withText("Minimum: 1")).check(doesNotExist());
+        onView(withText("Community")).check(doesNotExist());
+        onView(withText("Value contains invalid characters")).check(doesNotExist());
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
     public void testOnOkCancelClickedErrorDialogNoValue() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
@@ -3001,6 +3034,124 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testPortSwitchToSNMPShowsDefaultSNMPPort() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(161, dialog.getNetworkTask().getPort());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
+        assertEquals(22, dialog.getNetworkTask().getPort());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testPortSwitchFromSNMPTaskToConnect() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(161, dialog.getNetworkTask().getPort());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
+        assertEquals(22, dialog.getNetworkTask().getPort());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
+        assertEquals(161, dialog.getNetworkTask().getPort());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testPortPreservedAfterSwitchToSNMPAndBack() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("443"));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("443")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(443, dialog.getNetworkTask().getPort());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSNMPPortPreservedAfterSwitchToConnectAndBack() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("163"));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("163")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(163, dialog.getNetworkTask().getPort());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testPortSwitchPreservedOnScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("443"));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(161, dialog.getNetworkTask().getPort());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("443")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("443")));
+        dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(443, dialog.getNetworkTask().getPort());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSNMPPortPreservedOnScreenRotation() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("163"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("163")));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("163")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(163, dialog.getNetworkTask().getPort());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
     }
 

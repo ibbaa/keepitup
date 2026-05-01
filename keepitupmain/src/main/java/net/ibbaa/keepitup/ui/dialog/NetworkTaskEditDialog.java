@@ -42,9 +42,9 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -82,6 +82,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private List<Resolve> currentResolves;
     private List<Header> headers;
     private List<Header> currentHeaders;
+    private int currentPort;
+    private int currentSNMPPort;
+    private boolean snmpPortActive;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -161,6 +164,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareHeaders();
         prepareCurrentHeaders(savedInstanceState);
         prepareAccessTypeRadioButtons(savedInstanceState);
+        preparePortValues(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
@@ -199,6 +203,17 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             outState.putBoolean(getSNMPCommunityVisibleKey(), snmpCommunityToggleTouchListener.isVisible());
         }
         outState.putBoolean(getSNMPCommunityToggleOpenKey(), snmpCommunityToggleOpen);
+        if (isPortVisible()) {
+            if (NumberUtil.isValidIntValue(getPort())) {
+                if (snmpPortActive) {
+                    currentSNMPPort = NumberUtil.getIntValue(getPort(), currentSNMPPort);
+                } else {
+                    currentPort = NumberUtil.getIntValue(getPort(), currentPort);
+                }
+            }
+        }
+        outState.putInt(getCurrentPortKey(), currentPort);
+        outState.putInt(getCurrentSNMPPortKey(), currentSNMPPort);
     }
 
     public int getPosition() {
@@ -435,6 +450,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
+        swapPortValues();
         prepareAddressTextFieldsVisibility();
         prepareAccessTypeDataFieldsVisibility();
         prepareResolveFieldVisibility();
@@ -450,7 +466,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         portEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_port);
         portEditText.setOnLongClickListener(this::onEditTextLongClicked);
         preparePortEditTextListener();
-        portEditText.setText(String.valueOf(task.getPort()));
+        portEditText.setText(String.valueOf(snmpPortActive ? currentSNMPPort : currentPort));
     }
 
     private void prepareAddressTextFieldsVisibility() {
@@ -643,6 +659,51 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private String getSNMPCommunityToggleOpenKey() {
         return NetworkTaskEditDialog.class.getSimpleName() + ".SNMPCommunityToggleOpen";
+    }
+
+    private String getCurrentPortKey() {
+        return NetworkTaskEditDialog.class.getSimpleName() + ".CurrentPort";
+    }
+
+    private String getCurrentSNMPPortKey() {
+        return NetworkTaskEditDialog.class.getSimpleName() + ".CurrentSNMPPort";
+    }
+
+    private void preparePortValues(Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "preparePortValues");
+        if (savedInstanceState != null) {
+            currentPort = savedInstanceState.getInt(getCurrentPortKey(), task.getPort());
+            currentSNMPPort = savedInstanceState.getInt(getCurrentSNMPPortKey(), task.getPort());
+        } else {
+            PreferenceManager preferenceManager = new PreferenceManager(requireContext());
+            if (task.getAccessType() != null && task.getAccessType().isSNMP()) {
+                currentSNMPPort = task.getPort();
+                currentPort = preferenceManager.getPreferencePort();
+            } else {
+                currentPort = task.getPort();
+                currentSNMPPort = preferenceManager.getPreferenceSNMPPort();
+            }
+        }
+        AccessType currentAccessType = getAccessType();
+        snmpPortActive = currentAccessType != null && currentAccessType.isSNMP();
+        Log.d(NetworkTaskEditDialog.class.getName(), "preparePortValues, currentPort=" + currentPort + ", currentSNMPPort=" + currentSNMPPort + ", snmpPortActive=" + snmpPortActive);
+    }
+
+    private void swapPortValues() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "swapPortValues, snmpPortActive=" + snmpPortActive);
+        if (isPortVisible()) {
+            if (NumberUtil.isValidIntValue(getPort())) {
+                if (snmpPortActive) {
+                    currentSNMPPort = NumberUtil.getIntValue(getPort(), currentSNMPPort);
+                } else {
+                    currentPort = NumberUtil.getIntValue(getPort(), currentPort);
+                }
+            }
+        }
+        AccessType newAccessType = getAccessType();
+        snmpPortActive = newAccessType != null && newAccessType.isSNMP();
+        portEditText.setText(String.valueOf(snmpPortActive ? currentSNMPPort : currentPort));
+        Log.d(NetworkTaskEditDialog.class.getName(), "swapPortValues, currentPort=" + currentPort + ", currentSNMPPort=" + currentSNMPPort + ", snmpPortActive=" + snmpPortActive);
     }
 
     private void prepareAccessTypeDataFieldsVisibility() {
