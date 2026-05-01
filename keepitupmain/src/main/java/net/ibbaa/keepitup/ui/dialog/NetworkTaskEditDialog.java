@@ -613,9 +613,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (savedInstanceState != null) {
             boolean wasVisible = savedInstanceState.getBoolean(getSNMPCommunityVisibleKey(), false);
             snmpCommunityToggleTouchListener.setVisible(wasVisible);
-            snmpCommunityToggleOpen = savedInstanceState.getBoolean(getSNMPCommunityToggleOpenKey(), true);
+            snmpCommunityToggleOpen = savedInstanceState.getBoolean(getSNMPCommunityToggleOpenKey(), false);
         } else {
-            snmpCommunityToggleOpen = true;
+            snmpCommunityToggleOpen = StringUtil.isEmpty(accessTypeData.getSnmpCommunity());
         }
         snmpCommunityToggleTouchListener.setEnabled(snmpCommunityToggleOpen);
         snmpCommunityEditText.setOnTouchListener(snmpCommunityToggleTouchListener);
@@ -625,6 +625,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void onSNMPCommunityFieldFocusChanged(View view, boolean hasFocus) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPCommunityFieldFocusChanged, hasFocus is " + hasFocus);
+        if (!hasFocus) {
+            return;
+        }
+        if (!snmpCommunityToggleOpen) {
+            snmpCommunityEditText.setText("");
+        }
         snmpCommunityToggleOpen = true;
         if (snmpCommunityToggleTouchListener != null) {
             snmpCommunityToggleTouchListener.setEnabled(true);

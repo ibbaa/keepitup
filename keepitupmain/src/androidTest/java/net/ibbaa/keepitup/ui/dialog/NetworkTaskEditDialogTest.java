@@ -20,8 +20,10 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -264,6 +266,27 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, data.getConnectCount());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isStopOnSuccess());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        task = dialog.getNetworkTask();
+        data = dialog.getAccessTypeData();
+        assertNotNull(task);
+        assertEquals(AccessType.SNMP, task.getAccessType());
+        assertEquals("http://test.com", task.getAddress());
+        assertEquals(60, task.getInterval());
+        assertFalse(task.isOnlyWifi());
+        assertFalse(task.isNotification());
+        assertFalse(task.isHighPrio());
+        assertEquals(SNMPVersion.V1, data.getSnmpVersion());
+        assertEquals("testcommunity", data.getSnmpCommunity());
+        assertFalse(data.isStopOnSuccess());
+        onView(withText("Ping")).perform(click());
+        task = dialog.getNetworkTask();
+        data = dialog.getAccessTypeData();
+        assertEquals(AccessType.PING, task.getAccessType());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
     }
 
     @Test
@@ -472,6 +495,26 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_stop_on_success)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(not(isDisplayed())));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.radiogroup_dialog_network_task_edit_snmp_version)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_stop_on_success)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isDisplayed()));
@@ -2735,6 +2778,126 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
     }
 
+    @Test
+    public void testSNMPCommunityToggle() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSNMPCommunityToggleScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSNMPCommunityToggleDisabledWithInitialCommunity() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSNMPCommunityToggleDisabledWithInitialCommunityScreenRotation() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        rotateScreen(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSNMPCommunityTogglePreservedOnAccessTypeChange() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withText("Download")).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
+        onView(withText("Ping")).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
     private MockClipboardManager prepareMockClipboardManager() {
         onView(isRoot()).perform(waitFor(500));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
@@ -2763,6 +2926,19 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         task.setIndex(0);
         task.setAddress("https://example.com:8080/path");
         task.setAccessType(AccessType.DOWNLOAD);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(false);
+        task.setRunning(false);
+        return task;
+    }
+
+    private NetworkTask getSNMPNetworkTask() {
+        NetworkTask task = new NetworkTask();
+        task.setIndex(0);
+        task.setAddress("192.168.1.1");
+        task.setAccessType(AccessType.SNMP);
+        task.setPort(161);
         task.setInterval(15);
         task.setOnlyWifi(false);
         task.setNotification(false);
