@@ -128,6 +128,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
     }
 
     @Test
@@ -231,6 +233,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(9, data.getConnectCount());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isStopOnSuccess());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
         onView(withText("Ping")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
@@ -247,6 +251,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isStopOnSuccess());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).perform(click());
@@ -266,6 +272,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, data.getConnectCount());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isStopOnSuccess());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
@@ -287,6 +295,98 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
         assertNull(data.getSnmpCommunity());
+    }
+
+    @Test
+    public void testHiddenNetworkTaskPortNotReturnedAfterChange() {
+        activityScenario.close();
+        NetworkTask task = new NetworkTask();
+        task.setIndex(0);
+        task.setAddress("localhost");
+        task.setAccessType(AccessType.CONNECT);
+        task.setPort(80);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(false);
+        task.setRunning(false);
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData accessTypeData = new AccessTypeData();
+        accessTypeData.setNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(accessTypeData);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("443"));
+        onView(withText("Download")).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        NetworkTask resultTask = dialog.getNetworkTask();
+        assertEquals(AccessType.DOWNLOAD, resultTask.getAccessType());
+        assertEquals(80, resultTask.getPort());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testHiddenAccessTypeDataFieldsNotReturnedAfterChange() {
+        activityScenario.close();
+        NetworkTask task = new NetworkTask();
+        task.setIndex(0);
+        task.setAddress("localhost");
+        task.setAccessType(AccessType.CONNECT);
+        task.setPort(80);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(false);
+        task.setRunning(false);
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData accessTypeData = new AccessTypeData();
+        accessTypeData.setNetworkTaskId(task.getId());
+        accessTypeData.setConnectCount(5);
+        accessTypeData.setStopOnSuccess(true);
+        getAccessTypeDataDAO().insertAccessTypeData(accessTypeData);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(withText("5")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("9"));
+        onView(withText("Download")).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        NetworkTask resultTask = dialog.getNetworkTask();
+        AccessTypeData resultData = dialog.getAccessTypeData();
+        assertEquals(AccessType.DOWNLOAD, resultTask.getAccessType());
+        assertEquals(80, resultTask.getPort());
+        assertEquals(5, resultData.getConnectCount());
+        assertTrue(resultData.isStopOnSuccess());
+        assertFalse(resultData.isIgnoreSSLError());
+        assertNull(resultData.getSnmpVersion());
+        assertNull(resultData.getSnmpCommunity());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
+    public void testHiddenSNMPFieldsNotReturnedAfterChange() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c)).perform(click());
+        onView(withText("Ping")).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        NetworkTask resultTask = dialog.getNetworkTask();
+        AccessTypeData resultData = dialog.getAccessTypeData();
+        assertEquals(AccessType.PING, resultTask.getAccessType());
+        assertEquals(161, resultTask.getPort());
+        assertEquals(SNMPVersion.V1, resultData.getSnmpVersion());
+        assertEquals("community", resultData.getSnmpCommunity());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
     }
 
     @Test
@@ -337,6 +437,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(65000, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
     }
 
     @Test
@@ -373,6 +475,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertNotEquals(initialAccessTypeData.getConnectCount(), data.getConnectCount());
         assertEquals(initialAccessTypeData.isIgnoreSSLError(), data.isIgnoreSSLError());
         assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
+        assertEquals(initialAccessTypeData.getSnmpVersion(), data.getSnmpVersion());
+        assertEquals(initialAccessTypeData.getSnmpCommunity(), data.getSnmpCommunity());
         assertNull(initialHeaders);
         assertNull(headers);
         assertTrue(initialResolves.isEmpty());
@@ -400,6 +504,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialAccessTypeData.isIgnoreSSLError(), data.isIgnoreSSLError());
         assertNotEquals(initialAccessTypeData.getConnectCount(), data.getConnectCount());
         assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
+        assertEquals(initialAccessTypeData.getSnmpVersion(), data.getSnmpVersion());
+        assertEquals(initialAccessTypeData.getSnmpCommunity(), data.getSnmpCommunity());
     }
 
     @Test
