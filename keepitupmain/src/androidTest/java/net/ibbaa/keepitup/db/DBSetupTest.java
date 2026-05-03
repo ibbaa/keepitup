@@ -604,9 +604,11 @@ public class DBSetupTest {
     public void testExportAccessTypeDataForNetworkTask() {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = getAccessTypeData(task.getId());
+        data.setSnmpCommunityValid(false);
         accessTypeDataDAO.insertAccessTypeData(data);
-        Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId());
-        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(getAccessTypeData(task.getId())));
+        Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId(), true);
+        data.setSnmpCommunityValid(true);
+        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
     }
 
     @Test
@@ -615,7 +617,20 @@ public class DBSetupTest {
         AccessTypeData data = getAccessTypeData(task.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         corruptKey();
-        Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId());
+        Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId(), true);
+        data = getAccessTypeData(task.getId());
+        data.setSnmpCommunityValid(true);
+        data.setSnmpCommunity(null);
+        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
+    }
+
+    @Test
+    public void testExportAccessTypeDataForNetworkTaskNotEncrypted() {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = getAccessTypeData(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        corruptKey();
+        Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId(), false);
         data = getAccessTypeData(task.getId());
         data.setSnmpCommunityValid(true);
         data.setSnmpCommunity(null);

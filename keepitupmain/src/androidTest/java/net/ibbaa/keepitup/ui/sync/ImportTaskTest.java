@@ -205,6 +205,8 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
+        accessData1.setSnmpCommunity(null);
+        accessData2.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
         resolve1.setIndex(0);
@@ -326,7 +328,7 @@ public class ImportTaskTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = setup.exportData();
         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(TestRegistry.getContext());
         EncryptionSetupResult encryptResult = encryptSetup.encrypt("password123", result.data());
@@ -513,7 +515,7 @@ public class ImportTaskTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = setup.exportData();
         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(TestRegistry.getContext());
         EncryptionSetupResult encryptResult = encryptSetup.encrypt("password123", result.data());

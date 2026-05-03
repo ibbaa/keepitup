@@ -71,23 +71,39 @@ public class UIUtilTest {
     }
 
     @Test
-    public void testToCredentialInfoList() {
+    public void testSNMPCommunitiesToCredentialInfoList() {
+        assertTrue(UIUtil.snmpCommunitiesToCredentialInfoList(TestRegistry.getContext(), null).isEmpty());
+        assertTrue(UIUtil.snmpCommunitiesToCredentialInfoList(TestRegistry.getContext(), Collections.emptyList()).isEmpty());
+        NetworkTask task1 = new NetworkTask();
+        task1.setName("My Task");
+        NetworkTask task2 = new NetworkTask();
+        task2.setIndex(2);
+        List<CredentialInfo> credentialInfoList = UIUtil.snmpCommunitiesToCredentialInfoList(TestRegistry.getContext(), List.of(task1, task2));
+        assertEquals(2, credentialInfoList.size());
+        assertEquals("My Task", credentialInfoList.get(0).getName());
+        assertEquals("SNMP community", credentialInfoList.get(0).getMessage());
+        assertEquals("Network task 3", credentialInfoList.get(1).getName());
+        assertEquals("SNMP community", credentialInfoList.get(1).getMessage());
+    }
+
+    @Test
+    public void testHeadersToCredentialInfoList() {
         NetworkTask task = new NetworkTask();
         task.setName("My Task");
-        assertTrue(UIUtil.toCredentialInfoList(TestRegistry.getContext(), null, Collections.emptyList()).isEmpty());
-        assertTrue(UIUtil.toCredentialInfoList(TestRegistry.getContext(), task, null).isEmpty());
-        assertTrue(UIUtil.toCredentialInfoList(TestRegistry.getContext(), task, Collections.emptyList()).isEmpty());
+        assertTrue(UIUtil.headersToCredentialInfoList(TestRegistry.getContext(), null, Collections.emptyList()).isEmpty());
+        assertTrue(UIUtil.headersToCredentialInfoList(TestRegistry.getContext(), task, null).isEmpty());
+        assertTrue(UIUtil.headersToCredentialInfoList(TestRegistry.getContext(), task, Collections.emptyList()).isEmpty());
         Header header1 = new Header();
         Header header2 = new Header();
         header1.setName("header1");
         header2.setName("header2");
-        List<CredentialInfo> credentialInfoList = UIUtil.toCredentialInfoList(TestRegistry.getContext(), task, List.of(header1, header2));
+        List<CredentialInfo> credentialInfoList = UIUtil.headersToCredentialInfoList(TestRegistry.getContext(), task, List.of(header1, header2));
         assertEquals(2, credentialInfoList.size());
         assertEquals("My Task", credentialInfoList.get(0).getName());
         assertEquals("header1 (header)", credentialInfoList.get(0).getMessage());
         assertEquals("My Task", credentialInfoList.get(1).getName());
         assertEquals("header2 (header)", credentialInfoList.get(1).getMessage());
-        credentialInfoList = UIUtil.toCredentialInfoList(TestRegistry.getContext(), null, List.of(header1, header2));
+        credentialInfoList = UIUtil.headersToCredentialInfoList(TestRegistry.getContext(), null, List.of(header1, header2));
         assertEquals(2, credentialInfoList.size());
         assertEquals("Default", credentialInfoList.get(0).getName());
         assertEquals("header1 (header)", credentialInfoList.get(0).getMessage());

@@ -16,6 +16,8 @@
 
 package net.ibbaa.keepitup.util;
 
+import net.ibbaa.keepitup.model.NetworkTask;
+
 import java.util.regex.Pattern;
 
 public class SNMPUtil {
@@ -24,5 +26,9 @@ public class SNMPUtil {
 
     public static boolean validateCommunity(String community) {
         return COMMUNITY_PATTERN.matcher(community).matches();
+    }
+
+    public static boolean isSNMPTask(NetworkTask task) {
+        return task != null && task.getAccessType() != null && task.getAccessType().isSNMP();
     }
 }

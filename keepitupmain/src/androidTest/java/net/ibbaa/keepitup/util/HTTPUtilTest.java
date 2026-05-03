@@ -25,8 +25,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
+import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -45,6 +47,22 @@ import okhttp3.ResponseBody;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class HTTPUtilTest {
+
+    @Test
+    public void testIsDownloadTask() {
+        assertFalse(HTTPUtil.isDownloadTask(null));
+        NetworkTask task = new NetworkTask();
+        task.setAccessType(null);
+        assertFalse(HTTPUtil.isDownloadTask(task));
+        task.setAccessType(AccessType.PING);
+        assertFalse(HTTPUtil.isDownloadTask(task));
+        task.setAccessType(AccessType.CONNECT);
+        assertFalse(HTTPUtil.isDownloadTask(task));
+        task.setAccessType(AccessType.SNMP);
+        assertFalse(HTTPUtil.isDownloadTask(task));
+        task.setAccessType(AccessType.DOWNLOAD);
+        assertTrue(HTTPUtil.isDownloadTask(task));
+    }
 
     @Test
     public void testValidateHeaderName() {

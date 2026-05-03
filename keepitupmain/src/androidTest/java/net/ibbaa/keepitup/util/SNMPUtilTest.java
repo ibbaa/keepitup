@@ -22,6 +22,9 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NetworkTask;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,5 +46,21 @@ public class SNMPUtilTest {
         assertFalse(SNMPUtil.validateCommunity("public\nprivate"));
         assertFalse(SNMPUtil.validateCommunity("public" + (char) 0x7F));
         assertFalse(SNMPUtil.validateCommunity("publicä"));
+    }
+
+    @Test
+    public void testIsSNMPTask() {
+        assertFalse(SNMPUtil.isSNMPTask(null));
+        NetworkTask task = new NetworkTask();
+        task.setAccessType(null);
+        assertFalse(SNMPUtil.isSNMPTask(task));
+        task.setAccessType(AccessType.PING);
+        assertFalse(SNMPUtil.isSNMPTask(task));
+        task.setAccessType(AccessType.CONNECT);
+        assertFalse(SNMPUtil.isSNMPTask(task));
+        task.setAccessType(AccessType.DOWNLOAD);
+        assertFalse(SNMPUtil.isSNMPTask(task));
+        task.setAccessType(AccessType.SNMP);
+        assertTrue(SNMPUtil.isSNMPTask(task));
     }
 }

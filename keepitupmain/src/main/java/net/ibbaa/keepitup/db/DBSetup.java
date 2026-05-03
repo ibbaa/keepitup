@@ -883,18 +883,26 @@ public class DBSetup {
         return exportedList;
     }
 
-    public Map<String, ?> exportAccessTypeDataForNetworkTask(long networkTaskId) {
-        Log.d(DBSetup.class.getName(), "exportAccessTypeDataForNetworkTask, networkTaskId is " + networkTaskId);
+    public Map<String, ?> exportAccessTypeDataForNetworkTask(long networkTaskId, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "exportAccessTypeDataForNetworkTask, networkTaskId is " + networkTaskId + ", encrypted is " + encrypted);
         AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
         AccessTypeData accessTypeData = dao.readAccessTypeDataForNetworkTask(networkTaskId);
         if (accessTypeData != null) {
-            if (!accessTypeData.isSnmpCommunityValid()) {
-                accessTypeData.setSnmpCommunityValid(true);
+            if (!shouldExportSNMPCommunity(accessTypeData, encrypted)) {
                 accessTypeData.setSnmpCommunity(null);
             }
+            accessTypeData.setSnmpCommunityValid(true);
             return accessTypeData.toMap();
         }
         return null;
+    }
+
+    private boolean shouldExportSNMPCommunity(AccessTypeData accessTypeData, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExportSNMPCommunity, accessTypeData is " + accessTypeData + ", encrypted is " + encrypted);
+        if (!accessTypeData.isSnmpCommunityValid()) {
+            return false;
+        }
+        return encrypted;
     }
 
     public List<Map<String, ?>> exportResolvesForNetworkTask(long networkTaskId) {
@@ -914,7 +922,7 @@ public class DBSetup {
         List<Header> headerList = dao.readHeadersForNetworkTask(networkTaskId);
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Header header : headerList) {
-            if (shouldExport(header, encrypted)) {
+            if (shouldExportHeader(header, encrypted)) {
                 exportedList.add(header.toMap());
             }
         }
@@ -938,15 +946,15 @@ public class DBSetup {
         List<Header> headerList = dao.readGlobalHeaders();
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Header header : headerList) {
-            if (shouldExport(header, encrypted)) {
+            if (shouldExportHeader(header, encrypted)) {
                 exportedList.add(header.toMap());
             }
         }
         return exportedList;
     }
 
-    private boolean shouldExport(Header header, boolean encrypted) {
-        Log.d(DBSetup.class.getName(), "shouldExport, header is " + header + ", encrypted is " + encrypted);
+    private boolean shouldExportHeader(Header header, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExportHeader, header is " + header + ", encrypted is " + encrypted);
         if (!header.isValueValid()) {
             return false;
         }

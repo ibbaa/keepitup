@@ -85,6 +85,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private int currentPort;
     private int currentSNMPPort;
     private boolean snmpPortActive;
+    private boolean snmpCommunityToggleOpen;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -101,7 +102,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private RadioGroup snmpVersionGroup;
     private EditText snmpCommunityEditText;
     private PasswordToggleTouchListener snmpCommunityToggleTouchListener;
-    private boolean snmpCommunityToggleOpen;
     private TextView resolveText;
     private SwitchMaterial useDefaultHeadersSwitch;
     private TextView useDefaultHeadersOnOffText;
@@ -624,6 +624,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     @SuppressLint("ClickableViewAccessibility")
     private void prepareSNMPCommunityTextField(Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareSNMPCommunityTextField");
+        TextView snmpCommunityLabel = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_community_label);
+        int color = accessTypeData != null && !accessTypeData.isSnmpCommunityValid() ? getColor(R.color.textErrorColor) : getColor(R.color.textColor);
+        snmpCommunityLabel.setTextColor(color);
         snmpCommunityEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_snmp_community);
         snmpCommunityToggleTouchListener = new PasswordToggleTouchListener(snmpCommunityEditText);
         if (savedInstanceState != null) {
@@ -1058,6 +1061,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (isSNMPCommunityVisible()) {
             accessTypeData.setSnmpCommunity(getSNMPCommunity());
         }
+        accessTypeData.setSnmpCommunityValid(true);
         Log.d(NetworkTaskEditDialog.class.getName(), "getAccessTypeData, access type data task is " + accessTypeData);
         return accessTypeData;
     }

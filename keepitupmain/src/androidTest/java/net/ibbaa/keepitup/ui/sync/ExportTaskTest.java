@@ -209,6 +209,8 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
+        accessData1.setSnmpCommunity(null);
+        accessData2.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
         Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);

@@ -295,11 +295,26 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testExportDatabaseAccessTypeData() throws Exception {
+    public void testExportDatabaseAccessTypeDataInvalidKey() throws Exception {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         corruptKey();
         SystemSetupResult result = encryptedSetup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
+        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        accessData1.setSnmpCommunity(null);
+        assertTrue(task1AccessData.isEqual(accessData1));
+    }
+
+    @Test
+    public void testExportDatabaseAccessTypeDataNotEncrypted() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject databaseData = (JSONObject) jsonData.get("database");
@@ -1014,7 +1029,7 @@ public class JSONSystemSetupTest {
         resolve1 = getResolve1(task1.getId());
         resolve1.setTargetPort(123456789);
         resolveDAO.insertResolve(resolve1);
-        exportResult = setup.exportData();
+        exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
@@ -1036,7 +1051,7 @@ public class JSONSystemSetupTest {
         resolve1 = getResolve1(task1.getId());
         resolve1.setSourcePort(9999999);
         resolveDAO.insertResolve(resolve1);
-        exportResult = setup.exportData();
+        exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
@@ -1058,7 +1073,7 @@ public class JSONSystemSetupTest {
         resolve1 = getResolve1(task1.getId());
         resolve1.setSourceAddress("wrong host");
         resolveDAO.insertResolve(resolve1);
-        exportResult = setup.exportData();
+        exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();

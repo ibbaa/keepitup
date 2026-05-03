@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.sync.ResolveSyncHandler;
+import net.ibbaa.keepitup.util.SNMPUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,9 +87,7 @@ public class NetworkTaskHandler {
                 mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_network_task));
             } else {
                 long taskId = task.getId();
-                AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
-                data.setNetworkTaskId(taskId);
-                accessTypeDataDAO.insertAccessTypeData(data);
+                data = insertAccessTypeData(data, task);
                 LogDAO logDAO = new LogDAO(mainActivity);
                 logDAO.deleteAllLogsForNetworkTask(taskId);
                 insertResolves(resolves, taskId);
@@ -99,6 +98,17 @@ public class NetworkTaskHandler {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_network_task));
         }
+    }
+
+    private AccessTypeData insertAccessTypeData(AccessTypeData data, NetworkTask task) {
+        AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
+        data.setNetworkTaskId(task.getId());
+        data = accessTypeDataDAO.insertAccessTypeData(data);
+        if (SNMPUtil.isSNMPTask(task) && !data.isSnmpCommunityValid()) {
+            Log.e(NetworkTaskHandler.class.getName(), "Error encrypting snmp community. Showing error dialog.");
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_snmp_commuity_encryption));
+        }
+        return data;
     }
 
     private void insertResolves(List<Resolve> resolves, long taskId) {
@@ -173,6 +183,10 @@ public class NetworkTaskHandler {
                 AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
                 data.setNetworkTaskId(task.getId());
                 data = accessTypeDataDAO.updateAccessTypeData(data);
+                if (SNMPUtil.isSNMPTask(task) && !data.isSnmpCommunityValid()) {
+                    Log.e(NetworkTaskHandler.class.getName(), "Error encrypting snmp community. Showing error dialog.");
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_snmp_commuity_encryption));
+                }
             }
             if (resolves != null) {
                 ResolveSyncHandler resolveSyncHandler = new ResolveSyncHandler(mainActivity);

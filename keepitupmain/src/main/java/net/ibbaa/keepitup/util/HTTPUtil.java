@@ -21,6 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.io.UnsupportedEncodingException;
@@ -40,6 +41,10 @@ public class HTTPUtil {
     private static final Pattern MIME_TYPE = Pattern.compile("\\s*(\\w*/\\w*)\\s*", Pattern.CASE_INSENSITIVE);
     private static final Pattern HEADER_NAME_PATTERN = Pattern.compile("^[!#$%&'*+\\-.^_`|~0-9A-Za-z]+$");
     private static final Pattern HEADER_VALUE_PATTERN = Pattern.compile("^[\\t\\x20-\\x7E\\x80-\\uFFFF]*$");
+
+    public static boolean isDownloadTask(NetworkTask task) {
+        return task != null && task.getAccessType() != null && task.getAccessType().isDownload();
+    }
 
     public static boolean validateHeaderName(String name) {
         return HEADER_NAME_PATTERN.matcher(name).matches();

@@ -251,7 +251,7 @@ public class JSONSystemSetup {
             long id = getId(taskMap);
             if (id >= 0) {
                 List<Map<String, ?>> logs = dbSetup.exportLogsForNetworkTask(id);
-                Map<String, ?> acccessTypeDataMap = dbSetup.exportAccessTypeDataForNetworkTask(id);
+                Map<String, ?> acccessTypeDataMap = dbSetup.exportAccessTypeDataForNetworkTask(id, encrypted);
                 List<Map<String, ?>> resolves = dbSetup.exportResolvesForNetworkTask(id);
                 List<Map<String, ?>> headers = dbSetup.exportHeadersForNetworkTask(id, encrypted);
                 JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap, resolves, headers);

@@ -43,6 +43,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView accessTypeText;
     private final TextView addressText;
     private final TextView resolveText;
+    private final TextView communityText;
     private final TextView headersText;
     private final TextView intervalText;
     private final TextView notificationText;
@@ -74,6 +75,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         instancesText = itemView.findViewById(R.id.textview_list_item_network_task_instances);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
+        communityText = itemView.findViewById(R.id.textview_list_item_network_task_snmp_community);
         resolveText = itemView.findViewById(R.id.textview_list_item_network_task_resolve_rules);
         headersText = itemView.findViewById(R.id.textview_list_item_network_task_headers);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
@@ -118,6 +120,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setHeaders(String headers) {
         headersText.setText(headers);
+    }
+
+    public void setCommunityColor(int color) {
+        communityText.setTextColor(color);
     }
 
     public void setHeadersColor(int color) {
@@ -188,6 +194,18 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         stopOnSuccessText.setVisibility(View.GONE);
     }
 
+    public void showCommunityTextView() {
+        communityText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideCommunityTextView() {
+        communityText.setVisibility(View.GONE);
+    }
+
+    public void setCommunity(String community) {
+        communityText.setText(community);
+    }
+
     public void showResolveTextView() {
         resolveText.setVisibility(View.VISIBLE);
     }
@@ -234,6 +252,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
                 instancesText,
                 accessTypeText,
                 addressText,
+                communityText,
                 resolveText,
                 headersText,
                 intervalText,

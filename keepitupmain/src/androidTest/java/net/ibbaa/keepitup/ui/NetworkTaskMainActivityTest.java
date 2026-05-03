@@ -1914,7 +1914,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testInvalidAuthorizationHeader() {
+    public void testInvalidCommunityAndAuthorizationHeader() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
@@ -1930,13 +1930,19 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         corruptKey();
         activityScenario.onActivity(Activity::recreate);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
-        onView(allOf(withText("Network task 1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Network task 2"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP community"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 2 defined")));
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1961,7 +1967,20 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Headers: 2 defined")));
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withTextColor(R.color.textColor)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Community: invalid")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(not(isDisplayed())));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask task1 = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        NetworkTask task2 = getNetworkTaskDAO().readAllNetworkTasks().get(1);
         List<Header> headers1 = getHeaderDAO().readHeadersForNetworkTask(task1.getId());
         assertEquals(2, headers1.size());
         Header header1 = headers1.get(0);
@@ -1974,6 +1993,10 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", header2.getValue());
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertTrue(header2.isValueValid());
+        AccessTypeData accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task2.getId());
+        assertEquals(SNMPVersion.V2C, accessTypeData.getSnmpVersion());
+        assertEquals("testcommunity", accessTypeData.getSnmpCommunity());
+        assertTrue(accessTypeData.isSnmpCommunityValid());
         activityScenario.close();
     }
 
@@ -2207,12 +2230,70 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         corruptKey();
         activityScenario.onActivity(Activity::recreate);
         onView(isRoot()).perform(waitFor(500));
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         headers = getHeaderDAO().readHeadersForNetworkTask(task1.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
         assertEquals("Mozilla/5.0 (Linux; Android) KeepItUp/-", headers.get(0).getValue());
         assertEquals(HeaderType.GENERIC, headers.get(0).getHeaderType());
         assertTrue(headers.get(0).isValueValid());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testInvalidCommunityDeletedNotSNMP() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        corruptKey();
+        activityScenario.onActivity(Activity::recreate);
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        NetworkTask task1 = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        AccessTypeData data1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task1.getId());
+        assertFalse(data1.isSnmpCommunityValid());
+        assertEquals(SNMPVersion.V2C, data1.getSnmpVersion());
+        assertNull(data1.getSnmpCommunity());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testInvalidCommunitySwitchToConnect() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        corruptKey();
+        activityScenario.onActivity(Activity::recreate);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Re-enter credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following"))));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP community"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
+        onView(isRoot()).perform(waitFor(500));
+        activityScenario.onActivity(Activity::recreate);
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        NetworkTask task1 = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        AccessTypeData accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task1.getId());
+        assertEquals(SNMPVersion.V2C, accessTypeData.getSnmpVersion());
+        assertNull(accessTypeData.getSnmpCommunity());
+        assertTrue(accessTypeData.isSnmpCommunityValid());
         activityScenario.close();
     }
 
@@ -2269,7 +2350,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testInvalidAuthorizationHeaderBasicAuthValidationExport() throws Exception {
+    public void testInvalidAuthorizationHeaderBasicAuthAndCommunityValidationExport() throws Exception {
         addDefaultHeader();
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
@@ -2286,6 +2367,10 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
@@ -2309,10 +2394,12 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Invalid credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following credentials"))));
-        onView(allOf(withText("Default"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(allOf(withText("Network task 1"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Network task 2"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP community"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Default"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
@@ -2326,7 +2413,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
@@ -2341,14 +2428,17 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         SystemSetupResult result = systemSetup.importData(encryptResult.data());
         assertTrue(result.success());
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
-        NetworkTask task = tasks.get(0);
+        NetworkTask task1 = tasks.get(0);
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
         List<Header> globalHeaders = getHeaderDAO().readGlobalHeaders();
-        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
+        List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task1.getId());
         assertEquals(1, globalHeaders.size());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("User-Agent", headers.get(0).getName());
+        NetworkTask task2 = tasks.get(1);
+        AccessTypeData accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task2.getId());
+        assertNull(accessTypeData.getSnmpCommunity());
         activityScenario.close();
     }
 
@@ -2404,7 +2494,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
@@ -2425,6 +2515,55 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals(1, headers.size());
         assertEquals("User-Agent", globalHeaders.get(0).getName());
         assertEquals("User-Agent", headers.get(0).getName());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testCommunityValidationExportNotEncrypted() throws Exception {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The configuration"))));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP community"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
+        getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
+        inputStream.close();
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = systemSetup.importData(jsonData);
+        assertTrue(result.success());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask task = tasks.get(0);
+        AccessTypeData data = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertTrue(data.isSnmpCommunityValid());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
         activityScenario.close();
     }
 
@@ -2465,7 +2604,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();
@@ -2483,6 +2622,51 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         List<Header> headers = getHeaderDAO().readHeadersForNetworkTask(task.getId());
         assertEquals(1, headers.size());
         assertEquals("User-Agent", headers.get(0).getName());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testCommunityValidationExportNotEncryptedNotSNMP() throws Exception {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
+        getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
+        inputStream.close();
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = systemSetup.importData(jsonData);
+        assertTrue(result.success());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask task = tasks.get(0);
+        AccessTypeData data = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertTrue(data.isSnmpCommunityValid());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
         activityScenario.close();
     }
 
@@ -2522,7 +2706,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         resetGlobalHeaderHandler();

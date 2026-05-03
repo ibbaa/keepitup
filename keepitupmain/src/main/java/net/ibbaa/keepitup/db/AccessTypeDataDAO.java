@@ -162,6 +162,9 @@ public class AccessTypeDataDAO extends BaseDAO {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
         }
         accessTypeData.setId(rowid);
+        if (!encryptSuccess) {
+            accessTypeData.setSnmpCommunity(null);
+        }
         accessTypeData.setSnmpCommunityValid(encryptSuccess);
         return accessTypeData;
     }
@@ -185,6 +188,9 @@ public class AccessTypeDataDAO extends BaseDAO {
         boolean encryptSuccess = encrypt(values, accessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+        if (!encryptSuccess) {
+            accessTypeData.setSnmpCommunity(null);
+        }
         accessTypeData.setSnmpCommunityValid(encryptSuccess);
         return accessTypeData;
     }
