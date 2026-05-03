@@ -75,6 +75,8 @@ import java.util.Objects;
 @SuppressWarnings({"unused"})
 public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport, ResolvesSupport {
 
+    static final String COMMUNITY_PLACEHOLDER = "xxxxxxxx";
+
     private View dialogView;
     private NetworkTask task;
     private AccessTypeData accessTypeData;
@@ -86,6 +88,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private int currentSNMPPort;
     private boolean snmpPortActive;
     private boolean snmpCommunityToggleOpen;
+    private String initialSNMPCommunity;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -203,6 +206,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             outState.putBoolean(getSNMPCommunityVisibleKey(), snmpCommunityToggleTouchListener.isVisible());
         }
         outState.putBoolean(getSNMPCommunityToggleOpenKey(), snmpCommunityToggleOpen);
+        if (initialSNMPCommunity != null) {
+            outState.putString(getInitialSNMPCommunityKey(), initialSNMPCommunity);
+        }
         if (isPortVisible()) {
             if (NumberUtil.isValidIntValue(getPort())) {
                 if (snmpPortActive) {
@@ -304,7 +310,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private String getSNMPCommunity() {
-        return StringUtil.notNull(snmpCommunityEditText.getText());
+        return snmpCommunityToggleOpen ? StringUtil.notNull(snmpCommunityEditText.getText()) : StringUtil.notNull(initialSNMPCommunity);
     }
 
     private boolean isPortVisible() {
@@ -629,17 +635,31 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         snmpCommunityLabel.setTextColor(color);
         snmpCommunityEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_snmp_community);
         snmpCommunityToggleTouchListener = new PasswordToggleTouchListener(snmpCommunityEditText);
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            String community = accessTypeData.getSnmpCommunity();
+            if (community != null) {
+                initialSNMPCommunity = community;
+                snmpCommunityToggleOpen = false;
+                snmpCommunityEditText.setText(COMMUNITY_PLACEHOLDER);
+            } else {
+                initialSNMPCommunity = null;
+                snmpCommunityToggleOpen = true;
+                snmpCommunityEditText.setText("");
+            }
+        } else {
             boolean wasVisible = savedInstanceState.getBoolean(getSNMPCommunityVisibleKey(), false);
             snmpCommunityToggleTouchListener.setVisible(wasVisible);
             snmpCommunityToggleOpen = savedInstanceState.getBoolean(getSNMPCommunityToggleOpenKey(), false);
-        } else {
-            snmpCommunityToggleOpen = StringUtil.isEmpty(accessTypeData.getSnmpCommunity());
+            if (savedInstanceState.containsKey(getInitialSNMPCommunityKey())) {
+                initialSNMPCommunity = savedInstanceState.getString(getInitialSNMPCommunityKey());
+            }
+            if (!snmpCommunityToggleOpen && initialSNMPCommunity != null) {
+                snmpCommunityEditText.setText(COMMUNITY_PLACEHOLDER);
+            }
         }
         snmpCommunityToggleTouchListener.setEnabled(snmpCommunityToggleOpen);
         snmpCommunityEditText.setOnTouchListener(snmpCommunityToggleTouchListener);
         snmpCommunityEditText.setOnFocusChangeListener(this::onSNMPCommunityFieldFocusChanged);
-        snmpCommunityEditText.setText(StringUtil.notNull(accessTypeData.getSnmpCommunity()));
     }
 
     private void onSNMPCommunityFieldFocusChanged(View view, boolean hasFocus) {
@@ -662,6 +682,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private String getSNMPCommunityToggleOpenKey() {
         return NetworkTaskEditDialog.class.getSimpleName() + ".SNMPCommunityToggleOpen";
+    }
+
+    private String getInitialSNMPCommunityKey() {
+        return NetworkTaskEditDialog.class.getSimpleName() + ".InitialSNMPCommunity";
     }
 
     private String getCurrentPortKey() {
@@ -1230,7 +1254,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "ping package size count validation skipped");
         }
-        if (isSNMPCommunityVisible()) {
+        if (isSNMPCommunityVisible() && snmpCommunityToggleOpen) {
             ValidationResult result = accessTypeDataValidator.validateSNMPCommunity(getSNMPCommunity());
             Log.d(NetworkTaskEditDialog.class.getName(), "SNMP community validation result: " + result);
             if (!result.isValidationSuccessful()) {

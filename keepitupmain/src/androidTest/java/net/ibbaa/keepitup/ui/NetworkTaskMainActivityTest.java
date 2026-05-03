@@ -1971,6 +1971,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
