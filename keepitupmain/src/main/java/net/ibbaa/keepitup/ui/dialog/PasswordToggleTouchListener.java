@@ -80,7 +80,7 @@ public class PasswordToggleTouchListener implements View.OnTouchListener {
             if (editText.getCompoundDrawables()[drawableEnd] == null) {
                 return false;
             }
-            int iconStart = editText.getRight() - editText.getCompoundDrawables()[drawableEnd].getBounds().width() - editText.getPaddingEnd();
+            int iconStart = editText.getWidth() - editText.getCompoundDrawables()[drawableEnd].getBounds().width() - editText.getPaddingEnd();
             if (event.getX() >= iconStart) {
                 if (enabled) {
                     toggle();
