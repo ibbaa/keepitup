@@ -94,6 +94,11 @@ public class BasicAuthDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertEquals("abc", dialog.getUsername());
@@ -160,20 +165,13 @@ public class BasicAuthDialogTest extends BaseUITest {
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Username"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(allOf(withText("Password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
-        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("abc"));
-        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertEquals("", dialog.getUsername());
-        assertEquals("abc", dialog.getPassword());
-        assertEquals(":abc", dialog.getUsernameAndPassword());
+        assertEquals("", dialog.getPassword());
+        assertEquals(":", dialog.getUsernameAndPassword());
         activityScenario.close();
     }
 
@@ -186,23 +184,17 @@ public class BasicAuthDialogTest extends BaseUITest {
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("Username"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(allOf(withText("Password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
-        rotateScreen(activityScenario);
-        onView(allOf(withText("Password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("abc"));
+        rotateScreen(activityScenario);
         BasicAuthDialog dialog = getDialog();
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        assertEquals("", dialog.getUsername());
+        assertEquals("abc", dialog.getUsername());
         assertEquals("abc", dialog.getPassword());
-        assertEquals(":abc", dialog.getUsernameAndPassword());
+        assertEquals("abc:abc", dialog.getUsernameAndPassword());
         activityScenario.close();
     }
 
@@ -243,19 +235,19 @@ public class BasicAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog("abc:123");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog("");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog(":abc");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog("abc:");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         activityScenario.close();
     }
@@ -265,21 +257,21 @@ public class BasicAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog("abc:123");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("123")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         rotateScreen(activityScenario);
         openBasicAuthDialog("");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog(":abc");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         rotateScreen(activityScenario);
         openBasicAuthDialog("abc:");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         activityScenario.close();
     }
@@ -306,6 +298,7 @@ public class BasicAuthDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("456"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText("456")));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(false)));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(togglePassword());
@@ -322,7 +315,7 @@ public class BasicAuthDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testInitialUsernameAndPasswordEmptyReturnsInitialPassword() {
+    public void testInitialUsernameAndPasswordFieldEmptySubmitsEmpty() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog("abc:123");
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("456"));
@@ -334,7 +327,7 @@ public class BasicAuthDialogTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertEquals("abc", dialog.getUsername());
         assertEquals("", dialog.getPassword());
-        assertEquals("abc:123", dialog.getUsernameAndPassword());
+        assertEquals("abc:", dialog.getUsernameAndPassword());
         activityScenario.close();
     }
 

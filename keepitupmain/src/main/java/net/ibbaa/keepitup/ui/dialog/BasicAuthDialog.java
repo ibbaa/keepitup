@@ -50,6 +50,8 @@ import java.util.List;
 @SuppressWarnings({"unused", "SameReturnValue"})
 public class BasicAuthDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
+    static final String PASSWORD_PLACEHOLDER = "xxxxxxxx";
+
     private View dialogView;
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -148,11 +150,11 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
                 String initialUsernameAndPassword = BundleUtil.stringFromBundle(getInitialUsernameAndPasswordKey(), requireArguments());
                 String[] usernameAndPassword = StringUtil.splitAtFirstColon(initialUsernameAndPassword);
                 usernameEditText.setText(usernameAndPassword[0]);
-                passwordEditText.setText(StringUtil.notNull(usernameAndPassword[1]));
-                initialPassword = StringUtil.isEmpty(usernameAndPassword[1]) ? null : usernameAndPassword[1];
-                passwordToggleOpen = initialPassword == null;
+                initialPassword = usernameAndPassword[1];
+                passwordToggleOpen = false;
+                passwordEditText.setText(PASSWORD_PLACEHOLDER);
                 if (passwordToggleTouchListener != null) {
-                    passwordToggleTouchListener.setEnabled(passwordToggleOpen);
+                    passwordToggleTouchListener.setEnabled(false);
                 }
             } else {
                 Log.d(BasicAuthDialog.class.getName(), "prepareInitialUsernameAndPassword, initializing dialog with empty data");
@@ -170,6 +172,9 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
                 initialPassword = savedInstanceState.getString(getInitialPasswordKey());
             }
             passwordToggleOpen = savedInstanceState.getBoolean(getPasswordToggleOpenKey());
+            if (!passwordToggleOpen && initialPassword != null) {
+                passwordEditText.setText(PASSWORD_PLACEHOLDER);
+            }
             if (passwordToggleTouchListener != null) {
                 passwordToggleTouchListener.setEnabled(passwordToggleOpen);
             }
@@ -225,10 +230,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
 
     public String getUsernameAndPassword() {
         String username = getUsername();
-        String password = getPassword();
-        if (StringUtil.isEmpty(password) && initialPassword != null) {
-            password = initialPassword;
-        }
+        String password = passwordToggleOpen ? getPassword() : StringUtil.notNull(initialPassword);
         return username + ":" + password;
     }
 
@@ -286,7 +288,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
         if (!usernameResult.isValidationSuccessful()) {
             validationResults.add(usernameResult);
         }
-        if (!StringUtil.isEmpty(getPassword()) || StringUtil.isEmpty(initialPassword)) {
+        if (passwordToggleOpen) {
             BasicAuthPasswordFieldValidator passwordValidator = new BasicAuthPasswordFieldValidator(getResources().getString(R.string.password_field_name), getContext());
             ValidationResult passwordResult = passwordValidator.validate(getPassword());
             if (!passwordResult.isValidationSuccessful()) {
