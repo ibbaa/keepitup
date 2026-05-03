@@ -1932,7 +1932,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         corruptKey();
         activityScenario.onActivity(Activity::recreate);
@@ -1971,9 +1971,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
-        onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("testcommunity"));
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(not(isDisplayed())));
@@ -2097,7 +2095,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("ABC")));
@@ -2130,7 +2128,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
@@ -2249,7 +2247,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withText("Connect")).perform(click());
@@ -2273,7 +2271,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         corruptKey();
         activityScenario.onActivity(Activity::recreate);
@@ -2368,7 +2366,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
@@ -2523,7 +2521,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
@@ -2630,7 +2628,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());

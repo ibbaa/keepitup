@@ -42,6 +42,7 @@ import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -235,19 +236,19 @@ public class BasicAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog("abc:123");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog("");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog(":abc");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog("abc:");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         activityScenario.close();
     }
@@ -257,21 +258,21 @@ public class BasicAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog("abc:123");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         rotateScreen(activityScenario);
         openBasicAuthDialog("");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         openBasicAuthDialog(":abc");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         rotateScreen(activityScenario);
         openBasicAuthDialog("abc:");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(BasicAuthDialog.PASSWORD_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.imageview_dialog_basic_auth_cancel)).perform(click());
         activityScenario.close();
     }

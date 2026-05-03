@@ -171,6 +171,7 @@ public class DownloadCommandTest {
     }
 
     @Test
+    @SuppressWarnings("resource")
     public void testConnectionFailedWithRedirectAndConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddressList("test.com", 80, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);

@@ -50,8 +50,6 @@ import java.util.List;
 @SuppressWarnings({"unused", "SameReturnValue"})
 public class BasicAuthDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
-    static final String PASSWORD_PLACEHOLDER = "xxxxxxxx";
-
     private View dialogView;
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -152,7 +150,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
                 usernameEditText.setText(usernameAndPassword[0]);
                 initialPassword = usernameAndPassword[1];
                 passwordToggleOpen = false;
-                passwordEditText.setText(PASSWORD_PLACEHOLDER);
+                passwordEditText.setText(StringUtil.getSecretPlaceholder());
                 if (passwordToggleTouchListener != null) {
                     passwordToggleTouchListener.setEnabled(false);
                 }
@@ -173,7 +171,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
             }
             passwordToggleOpen = savedInstanceState.getBoolean(getPasswordToggleOpenKey());
             if (!passwordToggleOpen && initialPassword != null) {
-                passwordEditText.setText(PASSWORD_PLACEHOLDER);
+                passwordEditText.setText(StringUtil.getSecretPlaceholder());
             }
             if (passwordToggleTouchListener != null) {
                 passwordToggleTouchListener.setEnabled(passwordToggleOpen);

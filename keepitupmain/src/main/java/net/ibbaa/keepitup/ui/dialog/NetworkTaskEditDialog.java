@@ -75,8 +75,6 @@ import java.util.Objects;
 @SuppressWarnings({"unused"})
 public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport, ResolvesSupport {
 
-    static final String COMMUNITY_PLACEHOLDER = "xxxxxxxx";
-
     private View dialogView;
     private NetworkTask task;
     private AccessTypeData accessTypeData;
@@ -640,7 +638,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             if (community != null) {
                 initialSNMPCommunity = community;
                 snmpCommunityToggleOpen = false;
-                snmpCommunityEditText.setText(COMMUNITY_PLACEHOLDER);
+                snmpCommunityEditText.setText(StringUtil.getSecretPlaceholder());
             } else {
                 initialSNMPCommunity = null;
                 snmpCommunityToggleOpen = true;
@@ -654,7 +652,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
                 initialSNMPCommunity = savedInstanceState.getString(getInitialSNMPCommunityKey());
             }
             if (!snmpCommunityToggleOpen && initialSNMPCommunity != null) {
-                snmpCommunityEditText.setText(COMMUNITY_PLACEHOLDER);
+                snmpCommunityEditText.setText(StringUtil.getSecretPlaceholder());
             }
         }
         snmpCommunityToggleTouchListener.setEnabled(snmpCommunityToggleOpen);

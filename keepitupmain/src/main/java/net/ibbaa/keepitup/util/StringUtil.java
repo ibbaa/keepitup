@@ -26,6 +26,8 @@ import java.text.NumberFormat;
 
 public class StringUtil {
 
+    private static final String SECRET_PLACEHOLDER = "************";
+
     public static String getStringValue(Object value, String defaultValue) {
         if (value == null) {
             return defaultValue;
@@ -60,8 +62,12 @@ public class StringUtil {
         return value == null ? "" : value.toString();
     }
 
+    public static String getSecretPlaceholder() {
+        return SECRET_PLACEHOLDER;
+    }
+
     public static String maskSecret(String value, boolean confidential) {
-        return confidential ? "************" : value;
+        return confidential ? SECRET_PLACEHOLDER : value;
     }
 
     public static String normalizeString(String value) {

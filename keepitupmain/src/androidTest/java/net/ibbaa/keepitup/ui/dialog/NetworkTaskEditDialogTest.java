@@ -65,6 +65,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -276,7 +277,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertNull(data.getSnmpCommunity());
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
         assertNotNull(task);
@@ -374,7 +375,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         injectPermissionManager();
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(NetworkTaskEditDialog.COMMUNITY_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
@@ -1747,7 +1748,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("123.456"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("invalid community"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("invalid community"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
@@ -1759,7 +1760,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("15"));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("public"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("public"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
@@ -2960,7 +2961,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(NetworkTaskEditDialog.COMMUNITY_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         onView(isRoot()).perform(waitFor(500));
@@ -2988,12 +2989,12 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(NetworkTaskEditDialog.COMMUNITY_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(NetworkTaskEditDialog.COMMUNITY_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         rotateScreen(activityScenario);
@@ -3026,12 +3027,12 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(NetworkTaskEditDialog.COMMUNITY_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withText("Download")).perform(click());
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(NetworkTaskEditDialog.COMMUNITY_PLACEHOLDER)));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         onView(isRoot()).perform(waitFor(500));
