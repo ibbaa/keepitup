@@ -127,9 +127,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         task3 = getNetworkTaskDAO().insertNetworkTask(task3);
         AccessTypeData data3 = getAccessTypeDataWithNetworkTaskId(task3.getId());
         getAccessTypeDataDAO().insertAccessTypeData(data3);
+        NetworkTask task4 = getNetworkTask4();
+        task4 = getNetworkTaskDAO().insertNetworkTask(task4);
+        AccessTypeData data4 = getAccessTypeDataWithNetworkTaskId(task4.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data4);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
-        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(4)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Status: Stopped")));
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Instances: 0 active")));
@@ -163,6 +167,17 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Notifications: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Last execution: not executed")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Network task 4")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Status: Stopped")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Instances: 0 active")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Type: SNMPv2c")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Host: 192.168.1.1 Port: 161")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Stop on success: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Notifications: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Last execution: not executed")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(not(isDisplayed())));
         activityScenario.close();
     }
 
@@ -465,6 +480,23 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Notifications (high priority): yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Last execution: not executed")));
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.1"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("30"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Network task 4")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Status: Stopped")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Instances: 0 active")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Type: SNMPv2c")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Host: 192.168.1.1 Port: 161")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Interval: 30 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Stop on success: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Notifications: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Last execution: not executed")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(not(isDisplayed())));
         activityScenario.close();
     }
 
@@ -816,6 +848,84 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
         assertTrue(resolvesBefore.isEmpty());
         assertTrue(resolvesAfter.isEmpty());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEditAccessTypeDataSNMPValueChanged() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("public"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
+        assertTrue(taskBefore.isTechnicallyEqual(taskAfter));
+        assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
+        assertEquals("", dataBefore.getSnmpCommunity());
+        assertEquals("public", dataAfter.getSnmpCommunity());
+        assertEquals(SNMPVersion.V2C, dataBefore.getSnmpVersion());
+        assertEquals(SNMPVersion.V1, dataAfter.getSnmpVersion());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPNetworkTaskStoredAndRetrieved() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.100"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("10"));
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("public"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        assertEquals(1, tasks.size());
+        NetworkTask task = tasks.get(0);
+        assertEquals(AccessType.SNMP, task.getAccessType());
+        assertEquals("192.168.1.100", task.getAddress());
+        assertEquals(161, task.getPort());
+        assertEquals(10, task.getInterval());
+        AccessTypeData accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertNotNull(accessTypeData);
+        assertEquals(SNMPVersion.V1, accessTypeData.getSnmpVersion());
+        assertEquals("public", accessTypeData.getSnmpCommunity());
+        assertTrue(accessTypeData.isSnmpCommunityValid());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAccessTypeDataNotSNMPCommunityNull() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.100"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("10"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        assertEquals(1, tasks.size());
+        NetworkTask task = tasks.get(0);
+        AccessTypeData accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertNull(accessTypeData.getSnmpCommunity());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("15"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        assertEquals(1, tasks.size());
+        task = tasks.get(0);
+        accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertNull(accessTypeData.getSnmpCommunity());
         activityScenario.close();
     }
 
@@ -3132,6 +3242,27 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setLastScheduled(1);
         networkTask.setLastSysUpTime(0);
         networkTask.setFailureCount(1);
+        networkTask.setHighPrio(false);
+        return networkTask;
+    }
+
+    private NetworkTask getNetworkTask4() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(3);
+        networkTask.setSchedulerId(-1);
+        networkTask.setName("Network task");
+        networkTask.setInstances(0);
+        networkTask.setAddress("192.168.1.1");
+        networkTask.setPort(161);
+        networkTask.setAccessType(AccessType.SNMP);
+        networkTask.setInterval(15);
+        networkTask.setOnlyWifi(false);
+        networkTask.setNotification(false);
+        networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setLastSysUpTime(0);
+        networkTask.setFailureCount(0);
         networkTask.setHighPrio(false);
         return networkTask;
     }
