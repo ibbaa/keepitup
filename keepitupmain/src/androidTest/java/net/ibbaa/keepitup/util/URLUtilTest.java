@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -493,6 +494,16 @@ public class URLUtilTest {
         assertEquals("https://www.example.com/test", URLUtil.assembleURL("https", null, "www.example.com", -1, "/test", null, null));
         assertEquals("https://user:pass@host.com:8080/path?a=b&c=d#frag", URLUtil.assembleURL("https", "user:pass", "host.com", 8080, "/path", "a=b&c=d", "frag"));
         assertEquals("http://example.com", URLUtil.assembleURL("http", null, "example.com", -1, null, null, null));
+    }
+
+    @Test
+    public void testGetHostAddress() throws Exception {
+        assertEquals("127.0.0.1", URLUtil.getHostAddress(InetAddress.getByName("127.0.0.1")));
+        assertEquals(InetAddress.getByName("::1").getHostAddress(), URLUtil.getHostAddress(InetAddress.getByName("::1")));
+        Inet6Address ipv6WithScope = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        String withScope = Objects.requireNonNull(ipv6WithScope.getHostAddress());
+        assertTrue(withScope.contains("%"));
+        assertEquals(withScope.substring(0, withScope.indexOf('%')), URLUtil.getHostAddress(ipv6WithScope));
     }
 
     @Test

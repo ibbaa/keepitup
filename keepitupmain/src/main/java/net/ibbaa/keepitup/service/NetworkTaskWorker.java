@@ -46,6 +46,7 @@ import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.ExceptionUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -362,7 +363,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                             Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
                             LogEntry logEntry = new LogEntry();
                             logEntry.setSuccess(true);
-                            logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), address.getHostAddress()));
+                            logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), URLUtil.getHostAddress(address)));
                             executionResults.add(new DNSExecutionResult(false, logEntry, address));
                         }
                     } else {

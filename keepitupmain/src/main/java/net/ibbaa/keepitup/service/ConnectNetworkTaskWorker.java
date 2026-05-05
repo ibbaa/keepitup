@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.ConnectCommand;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -85,7 +86,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
 
     @SuppressWarnings("resource")
     private ExecutionResult executeConnectCommand(InetAddress address, int port, int connectCount, boolean stopOnSuccess, boolean ip6) {
-        Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port + ", connectCount is " + connectCount + ", ip6 is " + ip6);
+        Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port + ", connectCount is " + connectCount + ", stopOnSuccess is " + stopOnSuccess + ", ip6 is " + ip6);
         Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port, connectCount, stopOnSuccess);
         int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * connectCount * 2;
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
@@ -101,16 +102,16 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             if (connectResult.success()) {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was successful.");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(getConnectSuccessMessage(connectResult, address.getHostAddress(), port, ip6, connectTimeout));
+                logEntry.setMessage(getConnectSuccessMessage(connectResult, URLUtil.getHostAddress(address), port, ip6, connectTimeout));
             } else {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was not successful.");
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getConnectFailedMessage(connectResult, address.getHostAddress(), port, ip6, connectTimeout));
+                logEntry.setMessage(getConnectFailedMessage(connectResult, URLUtil.getHostAddress(address), port, ip6, connectTimeout));
             }
         } catch (Throwable exc) {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Error executing " + connectCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_failure, getAddressWithPort(address.getHostAddress(), port, ip6)), exc, connectTimeout));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_failure, getAddressWithPort(URLUtil.getHostAddress(address), port, ip6)), exc, connectTimeout));
             if (connectResultFuture != null && isInterrupted(exc)) {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), "Cancelling " + connectCommand.getClass().getSimpleName());
                 connectResultFuture.cancel(true);

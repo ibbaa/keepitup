@@ -89,6 +89,9 @@
     <string name="text_download_delete_error">The deletion of the downloaded file failed.</string>
     <string name="text_download_partial_delete_error">The deletion of the partially_downloaded file failed.</string>
     <string name="text_download_time">%s download time.</string>
+    <string name="text_snmp_success">SNMP request to %s successful.</string>
+    <string name="text_snmp_failure">SNMP request to %s failed.</string>
+    <string name="text_snmp_no_response">No response from host.</string>
     <plurals name="text_null_worker_max_instances_error">
         <item quantity="one">Currently is %d attempt active, which is the maximum. Skipped execution.</item>
         <item quantity="other">Currently are %d attempts active, which is the maximum. Skipped execution.</item>
@@ -104,5 +107,9 @@
     <plurals name="text_download_worker_max_instances_error">
         <item quantity="one">Currently is %d download active, which is the maximum. Skipped execution.</item>
         <item quantity="other">Currently are %d downloads active, which is the maximum. Skipped execution.</item>
+    </plurals>
+    <plurals name="text_snmp_worker_max_instances_error">
+        <item quantity="one">Currently is %d SNMP request active, which is the maximum. Skipped execution.</item>
+        <item quantity="other">Currently are %d SNMP requests active, which is the maximum. Skipped execution.</item>
     </plurals>
 </resources>

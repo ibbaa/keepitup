@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.service.network.PingCommand;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
 import net.ibbaa.keepitup.service.network.PingOutputParser;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -71,7 +72,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             PreferenceManager preferenceManager = new PreferenceManager(getContext());
             boolean enforceDefaultPackageSize = preferenceManager.getPreferenceEnforceDefaultPingPackageSize();
             Log.d(PingNetworkTaskWorker.class.getName(), "enforceDefaultPackageSize is " + enforceDefaultPackageSize);
-            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), data.isStopOnSuccess(), ip6);
+            ExecutionResult pingExecutionResult = executePingCommand(URLUtil.getHostAddress(address), data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), data.isStopOnSuccess(), ip6);
             LogEntry logEntry = pingExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
@@ -91,7 +92,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
 
     @SuppressWarnings("resource")
     private ExecutionResult executePingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", defaultPackageSize is " + defaultPackageSize + ", packageSize is " + packageSize + ", ip6 is " + ip6);
+        Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", defaultPackageSize is " + defaultPackageSize + ", packageSize is " + packageSize + ", stopOnSuccess is " + stopOnSuccess + ", ip6 is " + ip6);
         Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, defaultPackageSize, packageSize, stopOnSuccess, ip6);
         int timeout = getResources().getInteger(R.integer.ping_timeout) * pingCount * 2;
         Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");

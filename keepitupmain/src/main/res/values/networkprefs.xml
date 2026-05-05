@@ -29,6 +29,8 @@
     <integer name="download_read_timeout">30</integer>
     <integer name="download_valid_poll_interval">300</integer>
     <integer name="download_max_redirect">10</integer>
+    <integer name="snmp_request_timeout">60</integer>
+    <integer name="snmp_request_retries">1</integer>
     <integer name="dns_lookup_timeout">60</integer>
     <integer name="dns_max_parallel_lookups">10</integer>
     <string name="http_header_content_disposition">Content-Disposition</string>

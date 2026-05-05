@@ -163,12 +163,24 @@ public class URLUtil {
         }
         if (isValidIPAddress(stripped)) {
             try {
-                return InetAddress.getByName(stripped).getHostAddress();
+                return getHostAddress(InetAddress.getByName(stripped));
             } catch (Exception exc) {
                 Log.d(URLUtil.class.getName(), "Exception normalizing IP address " + host, exc);
             }
         }
         return stripped.toLowerCase();
+    }
+
+    public static String getHostAddress(InetAddress address) {
+        String hostAddress = address.getHostAddress();
+        if (hostAddress == null) {
+            return "";
+        }
+        int scopeIndex = hostAddress.indexOf('%');
+        if (scopeIndex >= 0) {
+            hostAddress = hostAddress.substring(0, scopeIndex);
+        }
+        return hostAddress;
     }
 
     public static String getSourceAddress(Resolve resolve, URL url) {

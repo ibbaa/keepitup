@@ -23,4 +23,5 @@
     <integer name="ping_worker_max_instances">100</integer>
     <integer name="connect_worker_max_instances">100</integer>
     <integer name="download_worker_max_instances">20</integer>
+    <integer name="snmp_worker_max_instances">20</integer>
 </resources>
