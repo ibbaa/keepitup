@@ -86,7 +86,7 @@ public class SNMPAccess {
             return new WalkResult(errors.isEmpty(), filteredResult, null, errors);
 
         } catch (Exception exc) {
-            Log.e(PingCommand.class.getName(), "Error on SNMP request", exc);
+            Log.e(SNMPAccess.class.getName(), "Error on SNMP request", exc);
             return new WalkResult(false, Collections.emptyMap(), exc, List.of(exc.getMessage() != null ? exc.getMessage() : ""));
         } finally {
             if (snmp != null) {

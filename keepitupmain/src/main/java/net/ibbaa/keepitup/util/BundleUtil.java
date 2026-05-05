@@ -136,6 +136,7 @@ public class BundleUtil {
         return bundle.getLong(key);
     }
 
+    @SuppressWarnings("unused")
     public static Bundle longToBundle(String key, long value) {
         return longToBundle(key, value, new Bundle());
     }
@@ -216,6 +217,7 @@ public class BundleUtil {
         return bundleListToBundle(baseKey, bundleList);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public static Bundle credentialInfoListToBundle(String baseKey, List<CredentialInfo> credentialInfoList, Bundle bundle) {
         if (baseKey == null || credentialInfoList == null) {
             return bundle;

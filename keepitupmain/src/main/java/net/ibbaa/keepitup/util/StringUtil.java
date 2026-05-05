@@ -28,13 +28,6 @@ public class StringUtil {
 
     private static final String SECRET_PLACEHOLDER = "************";
 
-    public static String getStringValue(Object value, String defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-        return value.toString();
-    }
-
     public static String trim(String value) {
         if (value == null) {
             return null;

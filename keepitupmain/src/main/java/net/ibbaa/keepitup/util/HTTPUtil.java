@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import okhttp3.Request;
 import okhttp3.Response;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class HTTPUtil {
 
     private static final Pattern FILENAME_STAR = Pattern.compile("filename\\*\\s*=\\s*([^']*)''([^;\\s]+)", Pattern.CASE_INSENSITIVE);
@@ -74,6 +75,7 @@ public class HTTPUtil {
         return response.header(context.getResources().getString(R.string.http_header_content_location));
     }
 
+    @SuppressWarnings("unused")
     public static void setUserAgent(Context context, Request.Builder builder) {
         ConstantPreferenceManager preferenceManager = new ConstantPreferenceManager(context);
         builder.header(context.getResources().getString(R.string.http_header_user_agent), preferenceManager.getPreferenceHTTPUserAgent());

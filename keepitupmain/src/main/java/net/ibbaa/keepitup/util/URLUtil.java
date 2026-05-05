@@ -116,29 +116,6 @@ public class URLUtil {
         return true;
     }
 
-    public static boolean isSameHostAndPort(URL url1, URL url2) {
-        if (url1 == null || url2 == null) {
-            return false;
-        }
-        String host1 = removeIPv6Brackets(url1.getHost());
-        String host2 = removeIPv6Brackets(url2.getHost());
-        boolean sameHost;
-        if (isValidIPAddress(host1) && isValidIPAddress(host2)) {
-            try {
-                InetAddress address1 = InetAddress.getByName(host1);
-                InetAddress address2 = InetAddress.getByName(host2);
-                sameHost = address1.equals(address2);
-            } catch (Exception exc) {
-                sameHost = false;
-            }
-        } else {
-            sameHost = host1.equalsIgnoreCase(host2);
-        }
-        int port1 = getPort(url1);
-        int port2 = getPort(url2);
-        return sameHost && port1 == port2;
-    }
-
     public static int getPort(URL url) {
         return url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
     }
@@ -233,10 +210,6 @@ public class URLUtil {
         } else {
             return "https://" + url;
         }
-    }
-
-    public static boolean isContentURL(String url) {
-        return StringUtil.notNull(url).startsWith("content:");
     }
 
     public static boolean isValidURL(String inputUrl) {

@@ -40,14 +40,6 @@ import java.util.Locale;
 public class StringUtilTest {
 
     @Test
-    public void testGetStringValue() {
-        assertEquals("123", StringUtil.getStringValue("123", ""));
-        assertEquals("123", StringUtil.getStringValue(new StringBuilder("123"), ""));
-        assertEquals("1", StringUtil.getStringValue(1, ""));
-        assertEquals("", StringUtil.getStringValue(null, ""));
-    }
-
-    @Test
     public void testTrim() {
         assertNull(StringUtil.trim(null));
         assertEquals("", StringUtil.trim(""));
