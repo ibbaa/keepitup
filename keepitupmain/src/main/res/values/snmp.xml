@@ -16,16 +16,17 @@
 
 <resources>
     <string name="system_oid"> 1.3.6.1.2.1.1</string>
-    <string name="sysDescr_oid">1.3.6.1.2.1.1.1.0</string>
-    <string name="sysDescr_label">System Description (sysDescr)</string>
-    <string name="sysUpTime_oid">1.3.6.1.2.1.1.3.0</string>
-    <string name="sysUpTime_label">System Uptime (sysUpTime)</string>
-    <string name="sysObjectID_oid">1.3.6.1.2.1.1.2.0</string>
-    <string name="sysObjectID_label">System Object ID (sysObjectID)</string>
-    <string name="sysContact_oid">1.3.6.1.2.1.1.4.0</string>
-    <string name="sysContact_label">System Contact (sysContact)</string>
-    <string name="sysName_oid">1.3.6.1.2.1.1.5.0</string>
-    <string name="sysName_label">System Name (sysName)</string>
-    <string name="sysLocation_oid">1.3.6.1.2.1.1.6.0</string>
-    <string name="sysLocation_label">System Location (sysLocation)</string>
+    <string name="sys_descr_oid">1.3.6.1.2.1.1.1.0</string>
+    <string name="sys_descr_label">System Description (sysDescr)</string>
+    <string name="sys_uptime_oid">1.3.6.1.2.1.1.3.0</string>
+    <string name="sys_uptime_label">System Uptime (sysUpTime)</string>
+    <string name="sys_object_id_oid">1.3.6.1.2.1.1.2.0</string>
+    <string name="sys_object_id_label">System Object ID (sysObjectID)</string>
+    <string name="sys_contact_oid">1.3.6.1.2.1.1.4.0</string>
+    <string name="sys_contact_label">System Contact (sysContact)</string>
+    <string name="sys_name_oid">1.3.6.1.2.1.1.5.0</string>
+    <string name="sys_name_label">System Name (sysName)</string>
+    <string name="sys_location_oid">1.3.6.1.2.1.1.6.0</string>
+    <string name="sys_location_label">System Location (sysLocation)</string>
+    <string name="sys_uptime_max_time_ticks">4294967295</string>
 </resources>

@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class SNMPAccess {
 
@@ -101,7 +102,7 @@ public class SNMPAccess {
 
     private Map<String, String> filterResult(Map<String, Variable> results) {
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        Map<String, String> filteredResults = new HashMap<>();
+        Map<String, String> filteredResults = new TreeMap<>();
         for (Map.Entry<String, Variable> entry : results.entrySet()) {
             String oid = entry.getKey();
             Variable variable = entry.getValue();

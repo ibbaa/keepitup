@@ -66,7 +66,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult connectExecutionResult = executeSNMPCommand(address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), ip6);
+            ExecutionResult connectExecutionResult = executeSNMPCommand(address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), networkTask.getLastSysUpTime(), ip6);
             LogEntry logEntry = connectExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(SNMPNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
@@ -85,9 +85,9 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @SuppressWarnings("resource")
-    private ExecutionResult executeSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, boolean ip6) {
-        Log.d(SNMPNetworkTaskWorker.class.getName(), "executeSNMPCommand, address is " + address + ", port is " + port + ", snmpVersion is " + snmpVersion + ", ip6 is " + ip6);
-        Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(address, port, snmpVersion, snmpCommunity, ip6);
+    private ExecutionResult executeSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "executeSNMPCommand, address is " + address + ", port is " + port + ", snmpVersion is " + snmpVersion + ", lastSysUpTime is " + lastSysUpTime + ", ip6 is " + ip6);
+        Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(address, port, snmpVersion, snmpCommunity, lastSysUpTime, ip6);
         int snmpTimeout = getResources().getInteger(R.integer.snmp_request_timeout) * 4;
         Log.d(SNMPNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -143,7 +143,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         return addressPort + ":" + port;
     }
 
-    protected Callable<SNMPCommandResult> getSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, boolean ip6) {
-        return new SNMPCommand(getContext(), address, port, snmpVersion, snmpCommunity, ip6);
+    protected Callable<SNMPCommandResult> getSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
+        return new SNMPCommand(getContext(), address, port, snmpVersion, snmpCommunity, lastSysUpTime, ip6);
     }
 }

@@ -16,7 +16,8 @@
 
 package net.ibbaa.keepitup.service.network;
 
+import java.util.List;
 import java.util.Map;
 
-public record SNMPCommandResult(boolean success, Map<String, String> result, Throwable exception) {
+public record SNMPCommandResult(boolean success, Map<String, String> result, boolean reboot, Throwable exception, List<String> errorMessages, long duration) {
 }

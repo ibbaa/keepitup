@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import org.snmp4j.smi.Variable;
@@ -39,19 +40,23 @@ public class SNMPMapping {
     }
 
     private void initOIDMap() {
-        oidLabels.put(getResources().getString(R.string.sysDescr_oid), getResources().getString(R.string.sysDescr_label));
-        oidLabels.put(getResources().getString(R.string.sysUpTime_oid), getResources().getString(R.string.sysUpTime_label));
-        oidLabels.put(getResources().getString(R.string.sysObjectID_oid), getResources().getString(R.string.sysObjectID_label));
-        oidLabels.put(getResources().getString(R.string.sysContact_oid), getResources().getString(R.string.sysContact_label));
-        oidLabels.put(getResources().getString(R.string.sysName_oid), getResources().getString(R.string.sysName_label));
-        oidLabels.put(getResources().getString(R.string.sysLocation_oid), getResources().getString(R.string.sysLocation_label));
+        oidLabels.put(getResources().getString(R.string.sys_descr_oid), getResources().getString(R.string.sys_descr_label));
+        oidLabels.put(getResources().getString(R.string.sys_uptime_oid), getResources().getString(R.string.sys_uptime_label));
+        oidLabels.put(getResources().getString(R.string.sys_object_id_oid), getResources().getString(R.string.sys_object_id_label));
+        oidLabels.put(getResources().getString(R.string.sys_contact_oid), getResources().getString(R.string.sys_contact_label));
+        oidLabels.put(getResources().getString(R.string.sys_name_oid), getResources().getString(R.string.sys_name_label));
+        oidLabels.put(getResources().getString(R.string.sys_location_oid), getResources().getString(R.string.sys_location_label));
+    }
+
+    public String getSystemOID() {
+        return getResources().getString(R.string.system_oid);
     }
 
     public String getValueForOID(String oid, Variable variable) {
         if (StringUtil.isEmpty(oid) || variable == null) {
             return null;
         }
-        if (getResources().getString(R.string.sysUpTime_oid).equals(oid)) {
+        if (getResources().getString(R.string.sys_uptime_oid).equals(oid)) {
             try {
                 return String.valueOf(variable.toLong());
             } catch (Exception exc) {
@@ -59,6 +64,17 @@ public class SNMPMapping {
             }
         }
         return variable.toString();
+    }
+
+    public long getSysUpTime(Map<String, String> values) {
+        if (values == null) {
+            return -1;
+        }
+        String sysUpString = values.get(getResources().getString(R.string.sys_uptime_oid));
+        if (sysUpString != null) {
+            return NumberUtil.getLongValue(sysUpString, -1);
+        }
+        return -1;
     }
 
     public boolean supportsOID(String oid) {

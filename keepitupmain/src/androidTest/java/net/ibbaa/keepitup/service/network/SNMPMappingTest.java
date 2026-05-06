@@ -33,6 +33,9 @@ import org.junit.runner.RunWith;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TimeTicks;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class SNMPMappingTest {
@@ -48,38 +51,59 @@ public class SNMPMappingTest {
     public void testSupportsOID() {
         assertFalse(snmpMapping.supportsOID(null));
         assertFalse(snmpMapping.supportsOID("unknown"));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getString(R.string.sysDescr_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getString(R.string.sysUpTime_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getString(R.string.sysObjectID_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getString(R.string.sysContact_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getString(R.string.sysName_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getString(R.string.sysLocation_oid)));
+        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
+        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
+        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_oid)));
+        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_contact_oid)));
+        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_name_oid)));
+        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_location_oid)));
     }
 
     @Test
     public void testGetLabelForOID() {
         assertNull(snmpMapping.getLabelForOID(null));
         assertNull(snmpMapping.getLabelForOID("unknown"));
-        assertEquals(TestRegistry.getContext().getString(R.string.sysDescr_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getString(R.string.sysDescr_oid)));
-        assertEquals(TestRegistry.getContext().getString(R.string.sysUpTime_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getString(R.string.sysUpTime_oid)));
-        assertEquals(TestRegistry.getContext().getString(R.string.sysObjectID_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getString(R.string.sysObjectID_oid)));
-        assertEquals(TestRegistry.getContext().getString(R.string.sysContact_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getString(R.string.sysContact_oid)));
-        assertEquals(TestRegistry.getContext().getString(R.string.sysName_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getString(R.string.sysName_oid)));
-        assertEquals(TestRegistry.getContext().getString(R.string.sysLocation_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getString(R.string.sysLocation_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_descr_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_contact_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_contact_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_name_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_name_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_location_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_location_oid)));
     }
 
     @Test
     public void testGetValueForOID() {
         assertNull(snmpMapping.getValueForOID(null, new OctetString("test")));
         assertNull(snmpMapping.getValueForOID("", new OctetString("test")));
-        assertNull(snmpMapping.getValueForOID(TestRegistry.getContext().getString(R.string.sysDescr_oid), null));
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sysUpTime_oid);
+        assertNull(snmpMapping.getValueForOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid), null));
+        String sysUpTimeOid = TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid);
         TimeTicks timeTicks = new TimeTicks(12345);
         assertEquals(String.valueOf(timeTicks.toLong()), snmpMapping.getValueForOID(sysUpTimeOid, timeTicks));
         OctetString octetString = new OctetString("text");
         assertEquals(octetString.toString(), snmpMapping.getValueForOID(sysUpTimeOid, octetString));
-        String sysDescrOid = TestRegistry.getContext().getString(R.string.sysDescr_oid);
+        String sysDescrOid = TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid);
         OctetString descrValue = new OctetString("System description");
         assertEquals(descrValue.toString(), snmpMapping.getValueForOID(sysDescrOid, descrValue));
+    }
+
+    @Test
+    public void testGetSysUpTime() {
+        assertEquals(-1, snmpMapping.getSysUpTime(null));
+        assertEquals(-1, snmpMapping.getSysUpTime(new HashMap<>()));
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        Map<String, String> valuesWithoutSysUpTime = new HashMap<>();
+        valuesWithoutSysUpTime.put(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid), "description");
+        assertEquals(-1, snmpMapping.getSysUpTime(valuesWithoutSysUpTime));
+        Map<String, String> valuesWithSysUpTime = new HashMap<>();
+        valuesWithSysUpTime.put(sysUpTimeOid, "12345");
+        assertEquals(12345, snmpMapping.getSysUpTime(valuesWithSysUpTime));
+        Map<String, String> valuesWithInvalidSysUpTime = new HashMap<>();
+        valuesWithInvalidSysUpTime.put(sysUpTimeOid, "invalid");
+        assertEquals(-1, snmpMapping.getSysUpTime(valuesWithInvalidSysUpTime));
+    }
+
+    @Test
+    public void testGetSystemOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.system_oid), snmpMapping.getSystemOID());
     }
 }
