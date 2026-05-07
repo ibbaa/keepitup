@@ -80,12 +80,20 @@ public class SNMPAccess {
             if (events == null || events.isEmpty()) {
                 return new WalkResult(false, Collections.emptyMap(), null, List.of(getResources().getString(R.string.text_snmp_no_response)));
             }
+            SNMPMapping snmpMapping = new SNMPMapping(getContext());
             Map<String, Variable> results = new HashMap<>();
             List<String> errors = new ArrayList<>();
             prepareResult(events, results, errors);
             Map<String, String> filteredResult = filterResult(results);
+            if (errors.isEmpty()) {
+                long currentSysUpTime = snmpMapping.getSysUpTime(filteredResult);
+                if (currentSysUpTime < 0) {
+                    String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
+                    String sysUpTimeError = getResources().getString(R.string.text_snmp_mandatory_oid_missing, sysUpTimeOIDValue);
+                    errors.add(sysUpTimeError);
+                }
+            }
             return new WalkResult(errors.isEmpty(), filteredResult, null, errors);
-
         } catch (Exception exc) {
             Log.e(SNMPAccess.class.getName(), "Error on SNMP request", exc);
             return new WalkResult(false, Collections.emptyMap(), exc, List.of(exc.getMessage() != null ? exc.getMessage() : ""));
@@ -120,7 +128,7 @@ public class SNMPAccess {
         Log.d(SNMPAccess.class.getName(), "prepareResult");
         for (TreeEvent event : events) {
             if (event.isError()) {
-                errors.add(event.getErrorMessage());
+                errors.add(StringUtil.notNull(event.getErrorMessage()).trim());
             } else {
                 VariableBinding[] bindings = event.getVariableBindings();
                 if (bindings != null) {

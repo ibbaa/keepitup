@@ -67,6 +67,24 @@ public class StringUtil {
         return Normalizer.normalize(notNull(value), Normalizer.Form.NFKC);
     }
 
+    public static String formatUpTime(long hundredths) {
+        long seconds = hundredths / 100;
+        long days = seconds / 86400;
+        long hours = (seconds % 86400) / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        if (days > 0) {
+            return days + "d " + hours + "h " + minutes + "m " + secs + "s";
+        }
+        if (hours > 0) {
+            return hours + "h " + minutes + "m " + secs + "s";
+        }
+        if (minutes > 0) {
+            return minutes + "m " + secs + "s";
+        }
+        return secs + "s";
+    }
+
     public static String formatTimeRange(double timeRange, Context context) {
         String unit = context.getResources().getString(R.string.string_msec);
         if (timeRange >= 1000) {

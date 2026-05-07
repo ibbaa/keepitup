@@ -64,7 +64,7 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
         long currentSysUpTime = snmpMapping.getSysUpTime(result);
         boolean rebooted = wasRebooted(currentSysUpTime);
         long end = timeService.getCurrentTimestamp();
-        return new SNMPCommandResult(currentSysUpTime >= 0, result, rebooted, walkResult.exception(), walkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+        return new SNMPCommandResult(walkResult.success(), result, rebooted, walkResult.exception(), walkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
     }
 
     private boolean wasRebooted(long currentSysUpTime) {

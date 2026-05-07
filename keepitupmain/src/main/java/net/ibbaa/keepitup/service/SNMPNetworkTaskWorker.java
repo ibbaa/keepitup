@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service;
 
 import android.content.Context;
 import android.os.PowerManager;
+import android.text.TextUtils;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
@@ -27,10 +28,15 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPCommand;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
+import net.ibbaa.keepitup.service.network.SNMPMapping;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -125,17 +131,120 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     private String getSNMPSuccessMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPSuccessMessage, snmpResult is " + snmpResult + ", address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout);
         String successMessage = getResources().getString(R.string.text_snmp_success, getAddressWithPort(address, port, ip6));
+        if (snmpResult.reboot()) {
+            successMessage += " " + getResources().getString(R.string.text_snmp_reboot);
+        }
+        Map<String, String> result = snmpResult.result();
+        String systemValues = getSystemValues(result);
+        String sysUpTimeMessage = getSysUpTime(result);
+        if (!StringUtil.isEmpty(systemValues) && !StringUtil.isEmpty(sysUpTimeMessage)) {
+            successMessage += " " + systemValues + ", " + sysUpTimeMessage;
+        } else if (!StringUtil.isEmpty(systemValues)) {
+            successMessage += " " + systemValues;
+        } else if (!StringUtil.isEmpty(sysUpTimeMessage)) {
+            successMessage += " " + sysUpTimeMessage;
+        }
+        String durationMessage = getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext()));
+        successMessage += ". " + durationMessage + ".";
+        Throwable exc = snmpResult.exception();
+        if (exc != null) {
+            successMessage = successMessage + " " + getResources().getString(R.string.text_connect_last_error);
+            return getMessageFromException(successMessage, exc, snmpTimeout);
+        }
         return successMessage;
     }
 
+    @SuppressWarnings("SizeReplaceableByIsEmpty")
     private String getSNMPFailedMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPFailedMessage, snmpResult is " + snmpResult + ", address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout);
         String failedMessage = getResources().getString(R.string.text_snmp_failure, getAddressWithPort(address, port, ip6));
+        if (snmpResult.reboot()) {
+            failedMessage += " " + getResources().getString(R.string.text_snmp_reboot);
+        }
+        List<String> errorMessages = snmpResult.errorMessages();
+        Map<String, String> result = snmpResult.result();
+        String errorMessage = getErrorMessages(errorMessages);
+        String systemValues = getSystemValues(result);
+        String sysUpTimeMessage = getSysUpTime(result);
+        StringBuilder builder = new StringBuilder();
+        if (!StringUtil.isEmpty(errorMessage)) {
+            builder.append(errorMessage);
+        }
+        if (!StringUtil.isEmpty(systemValues)) {
+            if (builder.length() > 0) builder.append(", ");
+            builder.append(systemValues);
+        }
+        if (!StringUtil.isEmpty(sysUpTimeMessage)) {
+            if (builder.length() > 0) builder.append(", ");
+            builder.append(sysUpTimeMessage);
+        }
+        if (builder.length() > 0) {
+            failedMessage += " " + builder;
+        }
+        String durationMessage = getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext()));
+        failedMessage += ". " + durationMessage + ".";
         Throwable exc = snmpResult.exception();
         if (exc != null) {
             return getMessageFromException(failedMessage, exc, snmpTimeout);
         }
         return failedMessage;
+    }
+
+    private String getSystemValues(Map<String, String> result) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSystemValues");
+        StringBuilder systemValues = new StringBuilder();
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        if (result != null) {
+            for (Map.Entry<String, String> entry : result.entrySet()) {
+                String oid = entry.getKey();
+                String value = entry.getValue();
+                String label = snmpMapping.getLabelForOID(oid);
+                if (!snmpMapping.isSysUpTimeOID(oid) && !StringUtil.isEmpty(value) && !StringUtil.isEmpty(label)) {
+                    if (!StringUtil.isEmpty(systemValues)) {
+                        systemValues.append(", ");
+                    }
+                    systemValues.append(label).append(": ").append(value);
+                }
+            }
+        }
+        return systemValues.toString();
+    }
+
+    private String getErrorMessages(List<String> errorMessages) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getErrorMessages");
+        List<String> validErrors = new ArrayList<>();
+        if (errorMessages != null) {
+            for (String message : errorMessages) {
+                if (message != null && message.endsWith(".")) {
+                    message = message.substring(0, message.length() - 1);
+                }
+                if (!StringUtil.isTrimmedEmpty(message)) {
+                    validErrors.add(message);
+                }
+            }
+        }
+        if (validErrors.isEmpty()) {
+            return "";
+        }
+        String errors = TextUtils.join(", ", validErrors);
+        return getResources().getQuantityString(R.plurals.text_snmp_errors, validErrors.size(), errors);
+    }
+
+    private String getSysUpTime(Map<String, String> result) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSysUpTime");
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        long sysUpTime = snmpMapping.getSysUpTime(result);
+        if (sysUpTime > 0) {
+            String sysUpTimeFormatted = StringUtil.formatUpTime(sysUpTime);
+            String oid = snmpMapping.getSysUpTimeOID();
+            String label = snmpMapping.getLabelForOID(oid);
+            if (!StringUtil.isEmpty(label)) {
+                return label + ": " + sysUpTimeFormatted;
+            }
+        }
+        return "";
     }
 
     private String getAddressWithPort(String address, int port, boolean ip6) {

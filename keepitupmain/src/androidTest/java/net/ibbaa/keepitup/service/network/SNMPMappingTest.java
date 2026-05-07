@@ -106,4 +106,21 @@ public class SNMPMappingTest {
     public void testGetSystemOID() {
         assertEquals(TestRegistry.getContext().getResources().getString(R.string.system_oid), snmpMapping.getSystemOID());
     }
+
+    @Test
+    public void testGetSysUpTimeOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid), snmpMapping.getSysUpTimeOID());
+    }
+
+    @Test
+    public void testIsSysUpTimeOID() {
+        String sysUpTimeOid = TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid);
+        assertFalse(snmpMapping.isSysUpTimeOID(null));
+        assertFalse(snmpMapping.isSysUpTimeOID(""));
+        assertFalse(snmpMapping.isSysUpTimeOID(" "));
+        assertFalse(snmpMapping.isSysUpTimeOID("unknown"));
+        assertFalse(snmpMapping.isSysUpTimeOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
+        assertTrue(snmpMapping.isSysUpTimeOID(sysUpTimeOid));
+        assertTrue(snmpMapping.isSysUpTimeOID(" " + sysUpTimeOid + " "));
+    }
 }

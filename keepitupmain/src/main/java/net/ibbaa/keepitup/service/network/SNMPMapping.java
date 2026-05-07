@@ -52,6 +52,10 @@ public class SNMPMapping {
         return getResources().getString(R.string.system_oid);
     }
 
+    public String getSysUpTimeOID() {
+        return getResources().getString(R.string.sys_uptime_oid);
+    }
+
     public String getValueForOID(String oid, Variable variable) {
         if (StringUtil.isEmpty(oid) || variable == null) {
             return null;
@@ -60,10 +64,17 @@ public class SNMPMapping {
             try {
                 return String.valueOf(variable.toLong());
             } catch (Exception exc) {
-                return variable.toString();
+                return variable.toString().trim();
             }
         }
-        return variable.toString();
+        return variable.toString().trim();
+    }
+
+    public boolean isSysUpTimeOID(String oid) {
+        if (StringUtil.isEmpty(oid)) {
+            return false;
+        }
+        return getResources().getString(R.string.sys_uptime_oid).equals(oid.trim());
     }
 
     public long getSysUpTime(Map<String, String> values) {
