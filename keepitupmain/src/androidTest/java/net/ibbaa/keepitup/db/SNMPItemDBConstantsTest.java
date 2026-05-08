@@ -29,18 +29,17 @@ import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class HeaderDBConstantsTest {
+public class SNMPItemDBConstantsTest {
 
     @Test
     public void testGetColumnNames() {
-        HeaderDBConstants dbConstants = new HeaderDBConstants(TestRegistry.getContext());
-        assertEquals(getResourceString(R.string.header_table_name), dbConstants.getTableName());
-        assertEquals(getResourceString(R.string.header_id_column_name), dbConstants.getIdColumnName());
-        assertEquals(getResourceString(R.string.header_taskid_column_name), dbConstants.getNetworkTaskIdColumnName());
-        assertEquals(getResourceString(R.string.header_headertype_column_name), dbConstants.getHeaderTypeColumnName());
-        assertEquals(getResourceString(R.string.header_name_column_name), dbConstants.getNameColumnName());
-        assertEquals(getResourceString(R.string.header_value_column_name), dbConstants.getValueColumnName());
-        assertEquals(getResourceString(R.string.header_value_iv_column_name), dbConstants.getValueIVColumnName());
+        SNMPItemDBConstants dbConstants = new SNMPItemDBConstants(TestRegistry.getContext());
+        assertEquals(getResourceString(R.string.snmpitem_table_name), dbConstants.getTableName());
+        assertEquals(getResourceString(R.string.snmpitem_id_column_name), dbConstants.getIdColumnName());
+        assertEquals(getResourceString(R.string.snmpitem_taskid_column_name), dbConstants.getNetworkTaskIdColumnName());
+        assertEquals(getResourceString(R.string.snmpitem_name_column_name), dbConstants.getNameColumnName());
+        assertEquals(getResourceString(R.string.snmpitem_oid_column_name), dbConstants.getOidColumnName());
+        assertEquals(getResourceString(R.string.snmpitem_oid_column_name), dbConstants.getMonitoredColumnName());
     }
 
     private String getResourceString(int id) {
