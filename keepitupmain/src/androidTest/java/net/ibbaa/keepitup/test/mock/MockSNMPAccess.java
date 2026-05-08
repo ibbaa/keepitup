@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.util;
+package net.ibbaa.keepitup.test.mock;
+
+import android.content.Context;
 
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import org.junit.Test;
 
 import java.net.InetAddress;
-import java.util.Map;
 
-public class SNMPTest {
+public class MockSNMPAccess extends SNMPAccess {
 
-    @Test
-    public void testAccess() throws Exception {
-        SNMPAccess access = new SNMPAccess(TestRegistry.getContext(), InetAddress.getByName("gaia.ibbaa.lan"), 161, SNMPVersion.V2C, "", false);
-        SNMPAccess.WalkResult walkResult = access.walk("1.3.6.1.2.1.1");
-        Map<String, String> result = walkResult.result();
+    private WalkResult walkResult;
+
+    public MockSNMPAccess(Context context) {
+        super(context, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", false);
+    }
+
+    public void setWalkResult(WalkResult walkResult) {
+        this.walkResult = walkResult;
+    }
+
+    @Override
+    public WalkResult walk(String oid) {
+        return walkResult;
     }
 }

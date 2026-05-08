@@ -75,6 +75,7 @@ import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationServiceTest;
 import net.ibbaa.keepitup.service.NetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.NullNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.PingNetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.SNMPNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.SystemDocumentManagerTest;
 import net.ibbaa.keepitup.service.SystemFileManagerTest;
 import net.ibbaa.keepitup.service.SystemThemeManagerTest;
@@ -87,6 +88,8 @@ import net.ibbaa.keepitup.service.network.ConnectCommandTest;
 import net.ibbaa.keepitup.service.network.DownloadCommandTest;
 import net.ibbaa.keepitup.service.network.PingCommandTest;
 import net.ibbaa.keepitup.service.network.PingOutputParserTest;
+import net.ibbaa.keepitup.service.network.SNMPAccessTest;
+import net.ibbaa.keepitup.service.network.SNMPCommandTest;
 import net.ibbaa.keepitup.service.network.SNMPMappingTest;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapperTest;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManagerTest;
@@ -231,6 +234,7 @@ import org.junit.runners.Suite;
         NetworkTaskWorkerTest.class,
         NullNetworkTaskWorkerTest.class,
         PingNetworkTaskWorkerTest.class,
+        SNMPNetworkTaskWorkerTest.class,
         SystemDocumentManagerTest.class,
         SystemFileManagerTest.class,
         SystemThemeManagerTest.class,
@@ -245,6 +249,8 @@ import org.junit.runners.Suite;
         DownloadCommandTest.class,
         PingCommandTest.class,
         PingOutputParserTest.class,
+        SNMPAccessTest.class,
+        SNMPCommandTest.class,
         SNMPMappingTest.class,
         //net.ibbaa.keepitup.ui.adaper
         NetworkTaskUIWrapperTest.class,

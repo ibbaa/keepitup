@@ -402,6 +402,16 @@ public abstract class NetworkTaskWorker implements Runnable {
         return addresses.get(0);
     }
 
+    public void updateNetworkTaskLastSysUpTime(long lastSysUpTime) {
+        Log.d(NetworkTaskWorker.class.getName(), "updateNetworkTaskLastSysUpTime, lastSysUpTime is " + lastSysUpTime);
+        try {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            networkTaskDAO.updateNetworkTaskLastSysUpTime(networkTask.getId(), lastSysUpTime);
+        } catch (Exception exc) {
+            Log.e(NetworkTaskWorker.class.getName(), "Exception updating lastSysUpTime", exc);
+        }
+    }
+
     protected int getDNSLookupTimeout() {
         return getResources().getInteger(R.integer.dns_lookup_timeout);
     }

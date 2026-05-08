@@ -105,6 +105,11 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             snmpResultFuture = executorService.submit(snmpCommand);
             SNMPCommandResult snmpResult = snmpResultFuture.get(snmpTimeout, TimeUnit.SECONDS);
             Log.d(SNMPNetworkTaskWorker.class.getName(), snmpCommand.getClass().getSimpleName() + " returned " + snmpResult);
+            SNMPMapping snmpMapping = new SNMPMapping(getContext());
+            long currentSysUpTime = snmpMapping.getSysUpTime(snmpResult.result());
+            if (currentSysUpTime >= 0) {
+                updateNetworkTaskLastSysUpTime(currentSysUpTime);
+            }
             if (snmpResult.success()) {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), "SNMP request was successful.");
                 logEntry.setSuccess(true);
@@ -117,7 +122,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         } catch (Throwable exc) {
             Log.d(SNMPNetworkTaskWorker.class.getName(), "Error executing " + snmpCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_snmp_failure, getAddressWithPort(URLUtil.getHostAddress(address), port, ip6)), exc, snmpTimeout));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_snmp_failure, getAddressWithPort(URLUtil.getHostAddress(address), port, ip6)) + ".", exc, snmpTimeout));
             if (snmpResultFuture != null && isInterrupted(exc)) {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), "Cancelling " + snmpResultFuture.getClass().getSimpleName());
                 snmpResultFuture.cancel(true);
@@ -134,17 +139,17 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPSuccessMessage, snmpResult is " + snmpResult + ", address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout);
         String successMessage = getResources().getString(R.string.text_snmp_success, getAddressWithPort(address, port, ip6));
         if (snmpResult.reboot()) {
-            successMessage += " " + getResources().getString(R.string.text_snmp_reboot);
+            successMessage += ". " + getResources().getString(R.string.text_snmp_reboot);
         }
         Map<String, String> result = snmpResult.result();
         String systemValues = getSystemValues(result);
         String sysUpTimeMessage = getSysUpTime(result);
         if (!StringUtil.isEmpty(systemValues) && !StringUtil.isEmpty(sysUpTimeMessage)) {
-            successMessage += " " + systemValues + ", " + sysUpTimeMessage;
+            successMessage += ". " + systemValues + ", " + sysUpTimeMessage;
         } else if (!StringUtil.isEmpty(systemValues)) {
-            successMessage += " " + systemValues;
+            successMessage += ". " + systemValues;
         } else if (!StringUtil.isEmpty(sysUpTimeMessage)) {
-            successMessage += " " + sysUpTimeMessage;
+            successMessage += ". " + sysUpTimeMessage;
         }
         String durationMessage = getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext()));
         successMessage += ". " + durationMessage + ".";
@@ -161,7 +166,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPFailedMessage, snmpResult is " + snmpResult + ", address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout);
         String failedMessage = getResources().getString(R.string.text_snmp_failure, getAddressWithPort(address, port, ip6));
         if (snmpResult.reboot()) {
-            failedMessage += " " + getResources().getString(R.string.text_snmp_reboot);
+            failedMessage += ". " + getResources().getString(R.string.text_snmp_reboot);
         }
         List<String> errorMessages = snmpResult.errorMessages();
         Map<String, String> result = snmpResult.result();
@@ -181,7 +186,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             builder.append(sysUpTimeMessage);
         }
         if (builder.length() > 0) {
-            failedMessage += " " + builder;
+            failedMessage += ". " + builder;
         }
         String durationMessage = getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext()));
         failedMessage += ". " + durationMessage + ".";

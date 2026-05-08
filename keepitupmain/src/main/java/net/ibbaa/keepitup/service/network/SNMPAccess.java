@@ -75,17 +75,14 @@ public class SNMPAccess {
             snmp = new Snmp(transport);
             transport.listen();
             CommunityTarget<?> target = configureCommunityTarget();
-            TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
-            List<TreeEvent> events = treeUtils.getSubtree(target, new OID(oid));
-            if (events == null || events.isEmpty()) {
-                return new WalkResult(false, Collections.emptyMap(), null, List.of(getResources().getString(R.string.text_snmp_no_response)));
-            }
-            SNMPMapping snmpMapping = new SNMPMapping(getContext());
             Map<String, Variable> results = new HashMap<>();
             List<String> errors = new ArrayList<>();
-            prepareResult(events, results, errors);
+            if (!fetchAndProcessSubtree(snmp, target, oid, results, errors)) {
+                return new WalkResult(false, Collections.emptyMap(), null, List.of(getResources().getString(R.string.text_snmp_no_response)));
+            }
             Map<String, String> filteredResult = filterResult(results);
             if (errors.isEmpty()) {
+                SNMPMapping snmpMapping = new SNMPMapping(getContext());
                 long currentSysUpTime = snmpMapping.getSysUpTime(filteredResult);
                 if (currentSysUpTime < 0) {
                     String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
@@ -106,6 +103,17 @@ public class SNMPAccess {
                 }
             }
         }
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors) {
+        TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+        List<TreeEvent> events = treeUtils.getSubtree(target, new OID(oid));
+        if (events == null || events.isEmpty()) {
+            return false;
+        }
+        prepareResult(events, results, errors);
+        return true;
     }
 
     private Map<String, String> filterResult(Map<String, Variable> results) {
