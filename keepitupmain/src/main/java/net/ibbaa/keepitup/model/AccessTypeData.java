@@ -130,7 +130,7 @@ public class AccessTypeData {
             this.useDefaultHeaders = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
         }
         if (NumberUtil.isValidIntValue(map.get("snmpVersion"))) {
-            snmpVersion = SNMPVersion.forCode(NumberUtil.getIntValue(map.get("snmpVersion"), -1));
+            this.snmpVersion = SNMPVersion.forCode(NumberUtil.getIntValue(map.get("snmpVersion"), -1));
         }
         if (map.get("snmpCommunity") != null) {
             this.snmpCommunity = Objects.requireNonNull(map.get("snmpCommunity")).toString();
