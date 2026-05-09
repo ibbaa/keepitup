@@ -43,9 +43,9 @@ public class NetworkTaskUIWrapperTest {
     @Test
     public void testIsEqual() {
         NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null, null, null);
         assertFalse(wrapper1.isEqual(wrapper2));
-        wrapper2 = new NetworkTaskUIWrapper(null, null, null, getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null, getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         wrapper2 = new NetworkTaskUIWrapper(null, null, null, List.of(getHeader1(), getHeader2()), getLogEntry());
@@ -83,8 +83,8 @@ public class NetworkTaskUIWrapperTest {
         wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(resolve), List.of(getHeader2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper1 = new NetworkTaskUIWrapper(null, null, null, null);
-        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
+        wrapper1 = new NetworkTaskUIWrapper(null, null, null, null, null);
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null, null);
         assertTrue(wrapper1.isEqual(wrapper2));
     }
 

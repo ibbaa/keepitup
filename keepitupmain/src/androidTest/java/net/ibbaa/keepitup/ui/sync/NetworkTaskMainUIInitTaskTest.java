@@ -150,7 +150,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, List.of(resolve2), List.of(header2), logEntry2);
         NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
-        adapter.addItem(new NetworkTaskUIWrapper(task3, null, List.of(resolve2), logEntry2));
+        adapter.addItem(new NetworkTaskUIWrapper(task3, null, List.of(resolve2), null, logEntry2));
         initTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper1 = adapter.getItem(0);
@@ -197,9 +197,9 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, List.of(resolve11, resolve12), List.of(header11, header12), logEntry1);
         final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, List.of(resolve2), List.of(header2), logEntry2);
-        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null);
+        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
-        adapter.addItem(new NetworkTaskUIWrapper(task3, null, List.of(resolve2), logEntry2));
+        adapter.addItem(new NetworkTaskUIWrapper(task3, null, List.of(resolve2), null, logEntry2));
         NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), null);
         nullInitTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -224,7 +224,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, List.of(resolve11, resolve12), List.of(header11, header12), logEntry1);
         NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, List.of(resolve2), List.of(header2), logEntry2);
-        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null);
+        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);

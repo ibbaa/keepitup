@@ -182,7 +182,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         handler.insertNetworkTask(task1, data1, null, null);
         LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
         logEntry = getLogDAO().insertAndDeleteLog(logEntry);
-        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, data1, null, logEntry));
+        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, data1, null, null, logEntry));
         handler.updateNetworkTaskName(task1, "otherName");
         assertEquals("otherName", task1.getName());
         task1 = getNetworkTaskDAO().readNetworkTask(task1.getId());

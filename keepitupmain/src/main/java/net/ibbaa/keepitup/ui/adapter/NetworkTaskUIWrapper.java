@@ -26,7 +26,6 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.util.CollectionUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
@@ -46,14 +45,6 @@ public class NetworkTaskUIWrapper {
         this.accessTypeData = accessTypeData;
         this.resolves = resolves;
         this.headers = headers;
-        this.logEntry = logEntry;
-    }
-
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, LogEntry logEntry) {
-        this.networkTask = networkTask;
-        this.accessTypeData = accessTypeData;
-        this.resolves = resolves;
-        this.headers = Collections.emptyList();
         this.logEntry = logEntry;
     }
 
