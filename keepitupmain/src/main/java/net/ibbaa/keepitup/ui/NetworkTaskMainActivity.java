@@ -406,20 +406,17 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "SAF is enabled. Not showing dialog.");
             return;
         }
-        if (canSAFBeEnabledInBackground()) {
-            Log.d(NetworkTaskMainActivity.class.getName(), "Assuming fresh install. Enabling SAF.");
-            preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
-        } else {
-            if (!preferenceManager.getPreferenceSAFNoticeShown()) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                String tag = GeneralMessageDialog.class.getName();
-                if (fragmentManager.findFragmentByTag(tag) == null) {
-                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name(), true);
-                }
+        //Set default to true in systemprefs.xml, remove initializeSAFFlag in StartupService, SystemActivity.onImportDone, SystemActivity.onPurgeDone
+        if (!preferenceManager.getPreferenceSAFNoticeShown()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            String tag = GeneralMessageDialog.class.getName();
+            if (fragmentManager.findFragmentByTag(tag) == null) {
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name(), true);
             }
         }
     }
 
+    @SuppressWarnings("unused")
     private boolean canSAFBeEnabledInBackground() {
         Log.d(NetworkTaskMainActivity.class.getName(), "canSAFBeEnabledInBackground");
         PreferenceManager preferenceManager = new PreferenceManager(this);
