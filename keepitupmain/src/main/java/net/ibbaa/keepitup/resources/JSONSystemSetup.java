@@ -187,6 +187,7 @@ public class JSONSystemSetup {
         String logKey = getResources().getString(R.string.logentry_json_key);
         String accessTypeDataKey = getResources().getString(R.string.accesstypedata_json_key);
         String headerKey = getResources().getString(R.string.header_json_key);
+        String snmpItemKey = getResources().getString(R.string.snmpitem_json_key);
         JSONObject taskData = (JSONObject) dbData.get(key);
         if (taskData.has(taskKey)) {
             Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
@@ -194,7 +195,8 @@ public class JSONSystemSetup {
             Map<String, ?> dataMap = taskData.has(accessTypeDataKey) ? JSONUtil.toMap((JSONObject) taskData.get(accessTypeDataKey)) : null;
             List<?> resolveList = getResolveList(taskData);
             List<?> headerList = taskData.has(headerKey) ? JSONUtil.toList((JSONArray) taskData.get(headerKey)) : null;
-            dbSetup.importNetworkTaskWithAssociatedObjects(taskMap, filterList(logList), dataMap, filterList(resolveList), filterList(headerList));
+            List<?> snmpItemList = taskData.has(snmpItemKey) ? JSONUtil.toList((JSONArray) taskData.get(snmpItemKey)) : null;
+            dbSetup.importNetworkTaskWithAssociatedObjects(taskMap, filterList(logList), dataMap, filterList(resolveList), filterList(headerList), filterList(snmpItemList));
         }
     }
 
@@ -254,7 +256,8 @@ public class JSONSystemSetup {
                 Map<String, ?> acccessTypeDataMap = dbSetup.exportAccessTypeDataForNetworkTask(id, encrypted);
                 List<Map<String, ?>> resolves = dbSetup.exportResolvesForNetworkTask(id);
                 List<Map<String, ?>> headers = dbSetup.exportHeadersForNetworkTask(id, encrypted);
-                JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap, resolves, headers);
+                List<Map<String, ?>> snmpItems = dbSetup.exportSNMPItemsForNetworkTask(id);
+                JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap, resolves, headers, snmpItems);
                 dbData.put(String.valueOf(id), task);
             }
         }
@@ -289,24 +292,28 @@ public class JSONSystemSetup {
         return -1;
     }
 
-    private JSONObject getJSONObjectForNetworkTask(Map<String, ?> taskMap, List<Map<String, ?>> logs, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolves, List<Map<String, ?>> headers) throws JSONException {
+    private JSONObject getJSONObjectForNetworkTask(Map<String, ?> taskMap, List<Map<String, ?>> logs, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolves, List<Map<String, ?>> headers, List<Map<String, ?>> snmpItems) throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "getJSONObjectForNetworkTask");
         JSONObject task = new JSONObject();
         String taskKey = getResources().getString(R.string.networktask_json_key);
         String logKey = getResources().getString(R.string.logentry_json_key);
-        String accessTypeDataKey = getResources().getString(R.string.accesstypedata_json_key);
-        String resolveKey = getResources().getString(R.string.resolve_json_key);
-        String headerKey = getResources().getString(R.string.header_json_key);
         task.put(taskKey, new JSONObject(taskMap));
         task.put(logKey, new JSONArray(logs));
         if (accessTypeDataMap != null) {
+            String accessTypeDataKey = getResources().getString(R.string.accesstypedata_json_key);
             task.put(accessTypeDataKey, new JSONObject(accessTypeDataMap));
         }
         if (resolves != null) {
+            String resolveKey = getResources().getString(R.string.resolve_json_key);
             task.put(resolveKey, new JSONArray(resolves));
         }
         if (headers != null) {
+            String headerKey = getResources().getString(R.string.header_json_key);
             task.put(headerKey, new JSONArray(headers));
+        }
+        if (snmpItems != null) {
+            String snmpItemKey = getResources().getString(R.string.snmpitem_json_key);
+            task.put(snmpItemKey, new JSONArray(snmpItems));
         }
         return task;
     }

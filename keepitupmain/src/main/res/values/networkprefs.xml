@@ -45,4 +45,6 @@
     <integer name="http_header_name_max_length">128</integer>
     <integer name="http_header_value_max_length">8192</integer>
     <integer name="snmp_community_max_length">255</integer>
+    <integer name="snmp_name_max_length">255</integer>
+    <integer name="snmp_oid_max_length">256</integer>
 </resources>

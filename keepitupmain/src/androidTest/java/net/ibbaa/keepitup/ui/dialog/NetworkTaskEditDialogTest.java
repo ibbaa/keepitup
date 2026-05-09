@@ -414,6 +414,21 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testGetNetworkTaskCommunityTrimmed() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("  public  "));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        AccessTypeData data = dialog.getAccessTypeData();
+        assertEquals("public", data.getSnmpCommunity());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("public  "));
+        dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        data = dialog.getAccessTypeData();
+        assertEquals("public", data.getSnmpCommunity());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+    }
+
+    @Test
     public void testGetNetworkTaskEnteredTextPing() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Ping")).perform(click());

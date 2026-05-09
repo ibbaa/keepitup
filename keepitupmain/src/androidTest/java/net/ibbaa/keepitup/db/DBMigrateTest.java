@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -407,6 +408,7 @@ public class DBMigrateTest {
         setup.dropAccessTypeDataTable();
         setup.dropResolveTable();
         setup.dropHeaderTable();
+        setup.dropSNMPItemTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAddedColumns());
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
@@ -426,6 +428,9 @@ public class DBMigrateTest {
         Header header = new Header();
         header.setNetworkTaskId(task1.getId());
         headerDAO.insertHeader(header);
+        SNMPItem snmpItem = new SNMPItem();
+        snmpItem.setNetworkTaskId(task1.getId());
+        snmpItemDAO.insertSNMPItem(snmpItem);
         intervalDAO.insertInterval(new Interval());
         List<Interval> intervals = intervalDAO.readAllIntervals();
         assertEquals(1, intervals.size());
@@ -436,6 +441,26 @@ public class DBMigrateTest {
         assertTrue(resolve.isTechnicallyEqual(resolve1));
         Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(header.isTechnicallyEqual(header1));
+        SNMPItem snmpItem1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(task1.getId()).get(0);
+        assertTrue(snmpItem.isTechnicallyEqual(snmpItem1));
+    }
+
+    @Test
+    public void testUpgradeFrom7To8SNMPItemTable() {
+        setup.createTables();
+        setup.dropSNMPItemTable();
+        migrate.doUpgrade(TestRegistry.getContext(), 7, 8);
+        SNMPItem item = new SNMPItem();
+        item.setNetworkTaskId(1);
+        snmpItemDAO.insertSNMPItem(item);
+        assertEquals(1, snmpItemDAO.readAllSNMPItems().size());
+    }
+
+    @Test(expected = SQLiteException.class)
+    public void testDowngradeFrom8To7SNMPItemTable() {
+        setup.createTables();
+        migrate.doDowngrade(TestRegistry.getContext(), 8, 7);
+        snmpItemDAO.readAllSNMPItems();
     }
 
     private NetworkTask getNetworkTask1() {

@@ -37,9 +37,10 @@ public class SNMPItemDBConstantsTest {
         assertEquals(getResourceString(R.string.snmpitem_table_name), dbConstants.getTableName());
         assertEquals(getResourceString(R.string.snmpitem_id_column_name), dbConstants.getIdColumnName());
         assertEquals(getResourceString(R.string.snmpitem_taskid_column_name), dbConstants.getNetworkTaskIdColumnName());
+        assertEquals(getResourceString(R.string.snmpitem_type_column_name), dbConstants.getSnmpItemTypeColumnName());
         assertEquals(getResourceString(R.string.snmpitem_name_column_name), dbConstants.getNameColumnName());
         assertEquals(getResourceString(R.string.snmpitem_oid_column_name), dbConstants.getOidColumnName());
-        assertEquals(getResourceString(R.string.snmpitem_oid_column_name), dbConstants.getMonitoredColumnName());
+        assertEquals(getResourceString(R.string.snmpitem_monitored_column_name), dbConstants.getMonitoredColumnName());
     }
 
     private String getResourceString(int id) {

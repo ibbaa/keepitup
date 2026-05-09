@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.db.NetworkTaskDAOTest;
 import net.ibbaa.keepitup.db.NetworkTaskDBConstantsTest;
 import net.ibbaa.keepitup.db.ResolveDAOTest;
 import net.ibbaa.keepitup.db.ResolveDBConstantsTest;
+import net.ibbaa.keepitup.db.SNMPItemDAOTest;
 import net.ibbaa.keepitup.db.SNMPItemDBConstantsTest;
 import net.ibbaa.keepitup.db.SchedulerIdGeneratorTest;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDBConstantsTest;
@@ -57,6 +58,7 @@ import net.ibbaa.keepitup.model.validator.HeaderValidatorTest;
 import net.ibbaa.keepitup.model.validator.IntervalValidatorTest;
 import net.ibbaa.keepitup.model.validator.NetworkTaskValidatorTest;
 import net.ibbaa.keepitup.model.validator.ResolveValidatorTest;
+import net.ibbaa.keepitup.model.validator.SNMPItemValidatorTest;
 import net.ibbaa.keepitup.notification.NotificationHandlerTest;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManagerTest;
 import net.ibbaa.keepitup.resources.JSONSystemMigrateTest;
@@ -188,6 +190,7 @@ import org.junit.runners.Suite;
         SchedulerIdHistoryDBConstantsTest.class,
         SchedulerStateDAOTest.class,
         SchedulerStateDBConstantsTest.class,
+        SNMPItemDAOTest.class,
         SNMPItemDBConstantsTest.class,
         //net.ibbaa.keepitup.logging
         DumpTest.class,
@@ -215,6 +218,7 @@ import org.junit.runners.Suite;
         IntervalValidatorTest.class,
         NetworkTaskValidatorTest.class,
         ResolveValidatorTest.class,
+        SNMPItemValidatorTest.class,
         //net.ibbaa.keepitup.notification
         NotificationHandlerTest.class,
         //net.ibbaa.keepitup.resources

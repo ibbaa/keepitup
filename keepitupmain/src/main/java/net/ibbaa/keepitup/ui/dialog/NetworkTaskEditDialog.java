@@ -308,7 +308,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private String getSNMPCommunity() {
-        return snmpCommunityToggleOpen ? StringUtil.notNull(snmpCommunityEditText.getText()) : StringUtil.notNull(initialSNMPCommunity);
+        return snmpCommunityToggleOpen ? StringUtil.notNull(snmpCommunityEditText.getText()).trim() : StringUtil.notNull(initialSNMPCommunity);
     }
 
     private boolean isPortVisible() {

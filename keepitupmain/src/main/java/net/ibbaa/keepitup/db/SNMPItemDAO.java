@@ -172,6 +172,7 @@ public class SNMPItemDAO extends BaseDAO {
         return new DBResult<>(count == snmpItems.size(), count);
     }
 
+    @SuppressWarnings("ExtractMethodRecommender")
     private SNMPItem updateSNMPItem(SNMPItem snmpItem, SQLiteDatabase db) {
         Log.d(SNMPItemDAO.class.getName(), "updateSNMPItem, snmpItem is " + snmpItem);
         SNMPItemDBConstants dbConstants = new SNMPItemDBConstants(getContext());

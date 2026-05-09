@@ -42,7 +42,7 @@ public class HeaderValidator {
     public boolean validateName(Header header) {
         Log.d(HeaderValidator.class.getName(), "validateName for header " + header);
         String name = header.getName();
-        if (StringUtil.isEmpty(name) || name.trim().isEmpty()) {
+        if (StringUtil.isTrimmedEmpty(name)) {
             return false;
         }
         name = name.trim();

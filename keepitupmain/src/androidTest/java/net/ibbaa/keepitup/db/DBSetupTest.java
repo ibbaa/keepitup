@@ -38,6 +38,8 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
@@ -123,6 +125,7 @@ public class DBSetupTest {
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0, 0));
         headerDAO.insertHeader(getHeader(0, 1));
+        snmpItemDAO.insertSNMPItem(getSNMPItem(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -131,6 +134,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.dropTables();
         setup.createTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
@@ -142,6 +146,7 @@ public class DBSetupTest {
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertEquals(1, headerDAO.readAllHeaders().size());
         assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         logDAO.insertAndDeleteLog(new LogEntry());
@@ -150,6 +155,7 @@ public class DBSetupTest {
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0, 0));
         headerDAO.insertHeader(getHeader(0, 1));
+        snmpItemDAO.insertSNMPItem(getSNMPItem(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -159,6 +165,7 @@ public class DBSetupTest {
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertEquals(2, headerDAO.readAllHeaders().size());
         assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.recreateTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -169,6 +176,7 @@ public class DBSetupTest {
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertEquals(1, headerDAO.readAllHeaders().size());
         assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
@@ -176,6 +184,7 @@ public class DBSetupTest {
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0, 0));
         headerDAO.insertHeader(getHeader(0, 1));
+        snmpItemDAO.insertSNMPItem(getSNMPItem(0));
         setup.tryDropTables();
         setup.createTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
@@ -187,6 +196,7 @@ public class DBSetupTest {
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertEquals(1, headerDAO.readAllHeaders().size());
         assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
     }
 
     @Test
@@ -363,6 +373,19 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testDropCreateSNMPItemTable() {
+        snmpItemDAO.insertSNMPItem(getSNMPItem(0));
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.dropSNMPItemTable();
+        setup.createSNMPItemTable();
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        snmpItemDAO.insertSNMPItem(getSNMPItem(0));
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.recreateSNMPItemTable();
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+    }
+
+    @Test
     public void testAddIndexColumnToResolveTable() {
         setup.dropResolveTable();
         ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
@@ -436,6 +459,7 @@ public class DBSetupTest {
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0, 0));
         headerDAO.insertHeader(getHeader(0, 1));
+        snmpItemDAO.insertSNMPItem(getSNMPItem(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -444,6 +468,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllNetworkTasks();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -453,6 +478,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllSchedulerIds();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -462,6 +488,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllLogs();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -471,6 +498,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllIntervals();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -480,6 +508,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteSchedulerState();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -489,6 +518,7 @@ public class DBSetupTest {
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllAccessTypeData();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -498,6 +528,7 @@ public class DBSetupTest {
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllResolve();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -507,6 +538,7 @@ public class DBSetupTest {
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         setup.deleteAllHeaders();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -516,6 +548,17 @@ public class DBSetupTest {
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.deleteAllSNMPItems();
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertNull(schedulerStateDAO.readSchedulerState());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
     }
 
     @Test
@@ -653,6 +696,22 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testExportSNMPItemsForNetworkTask() {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SNMPItem snmpItem1 = getSNMPItem(task.getId());
+        SNMPItem snmpItem2 = getSNMPItem(task.getId());
+        snmpItem2.setOid("1.3.6.1.2.1.2.2.1.10.1");
+        snmpItem2.setName("ifInOctets");
+        snmpItem2.setMonitored(false);
+        snmpItemDAO.insertSNMPItem(snmpItem1);
+        snmpItemDAO.insertSNMPItem(snmpItem2);
+        List<Map<String, ?>> dataList = setup.exportSNMPItemsForNetworkTask(task.getId());
+        assertEquals(2, dataList.size());
+        assertTrue(snmpItem2.isTechnicallyEqual(new SNMPItem(dataList.get(0))));
+        assertTrue(snmpItem1.isTechnicallyEqual(new SNMPItem(dataList.get(1))));
+    }
+
+    @Test
     public void testExportIntervals() {
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval2());
@@ -769,11 +828,13 @@ public class DBSetupTest {
         Map<String, ?> resolveMap2 = getResolve(0, 1).toMap();
         Map<String, ?> headerMap1 = getHeader(0, 1).toMap();
         Map<String, ?> headerMap2 = getHeader(0, 2).toMap();
+        Map<String, ?> snmpItemMap1 = getSNMPItem(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Arrays.asList(resolveMap1, resolveMap2), Arrays.asList(headerMap1, headerMap2));
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Arrays.asList(resolveMap1, resolveMap2), Arrays.asList(headerMap1, headerMap2), Collections.singletonList(snmpItemMap1));
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -794,6 +855,9 @@ public class DBSetupTest {
         assertEquals(2, headerList.size());
         assertTrue(headerList.get(0).isTechnicallyEqual(getHeader(task.getId(), 1)));
         assertTrue(headerList.get(1).isTechnicallyEqual(getHeader(task.getId(), 2)));
+        List<SNMPItem> snmpItemList = snmpItemDAO.readAllSNMPItemsForNetworkTask(task.getId());
+        assertEquals(1, snmpItemList.size());
+        assertTrue(snmpItemList.get(0).isTechnicallyEqual(getSNMPItem(task.getId())));
     }
 
     @Test
@@ -806,7 +870,7 @@ public class DBSetupTest {
         resolve.setTargetAddress("   127.0.0.1");
         resolve.setSourceAddress("  localhost");
         Map<String, ?> resolveMap = resolve.toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, List.of(resolveMap), Collections.emptyList());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, List.of(resolveMap), Collections.emptyList(), Collections.emptyList());
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         task = taskList.get(0);
@@ -827,7 +891,7 @@ public class DBSetupTest {
         resolve.setSourceAddress("  localhost   ");
         resolve.setTargetAddress("   192.168.178.1  ");
         resolveMap = resolve.toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.singletonList(resolveMap), Collections.emptyList());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.singletonList(resolveMap), Collections.emptyList(), Collections.emptyList());
         taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         task = taskList.get(0);
@@ -847,7 +911,7 @@ public class DBSetupTest {
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), null, null, null);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), null, null, null, null);
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -864,13 +928,14 @@ public class DBSetupTest {
         assertTrue(defaultData.isTechnicallyEqual(data));
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
     }
 
     @Test
     public void testImportNetworkTaskWithLogsAndAccessTypeDataNotResetRunning() {
         Map<String, ?> taskMap = getNetworkTask1().toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, null, null, null, null, false);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, null, null, null, null, null, false);
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -889,56 +954,63 @@ public class DBSetupTest {
         Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         Map<String, ?> resolveMap = getResolve(0, 0).toMap();
         Map<String, ?> headerMap = getHeader(0, 1).toMap();
+        Map<String, ?> snmpItemMap = getSNMPItem(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = getNetworkTask1();
         task.setPort(80000);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = getNetworkTask1();
         task.setAccessType(null);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = getNetworkTask1();
         task.setInterval(-1);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = getNetworkTask1();
         task.setName("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
     }
 
     @Test
@@ -949,15 +1021,18 @@ public class DBSetupTest {
         data.setPingCount(11);
         Map<String, ?> resolveMap = getResolve(0, 0).toMap();
         Map<String, ?> headerMap = getHeader(0, 1).toMap();
+        Map<String, ?> snmpItemMap = getSNMPItem(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         AccessTypeData defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -967,17 +1042,21 @@ public class DBSetupTest {
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         Header header = headerDAO.readAllHeaders().get(0);
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        SNMPItem snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         data = getAccessTypeData(0);
         data.setPingPackageSize(12345678);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -987,17 +1066,21 @@ public class DBSetupTest {
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         header = headerDAO.readAllHeaders().get(0);
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         data = getAccessTypeData(0);
         data.setConnectCount(11);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -1007,17 +1090,21 @@ public class DBSetupTest {
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         header = headerDAO.readAllHeaders().get(0);
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         data = getAccessTypeData(0);
         data.setSnmpVersion(null);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -1027,17 +1114,21 @@ public class DBSetupTest {
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         header = headerDAO.readAllHeaders().get(0);
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         data = getAccessTypeData(0);
         data.setSnmpCommunityValid(false);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -1047,16 +1138,20 @@ public class DBSetupTest {
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         header = headerDAO.readAllHeaders().get(0);
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         data = getAccessTypeData(0);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
@@ -1066,6 +1161,8 @@ public class DBSetupTest {
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         header = headerDAO.readAllHeaders().get(0);
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
     }
 
     @Test
@@ -1077,14 +1174,17 @@ public class DBSetupTest {
         Header header = getHeader(0, 1);
         Map<String, ?> headerMap = header.toMap();
         resolve.setTargetAddress("1.1.1.1.1");
+        Map<String, ?> snmpItemMap = getSNMPItem(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.singletonList(resolve.toMap()), Collections.singletonList(headerMap));
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.singletonList(resolve.toMap()), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
@@ -1092,13 +1192,15 @@ public class DBSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         resolve = getResolve(0, 0);
         resolve.setTargetPort(Integer.MAX_VALUE);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
@@ -1106,19 +1208,23 @@ public class DBSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         resolve = getResolve(0, 0);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Collections.singletonList(headerMap));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         resolve = resolveDAO.readAllResolvesForNetworkTask(task.getId()).get(0);
         header = headerDAO.readAllHeaders().get(0);
+        SNMPItem snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
         assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
         assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
+        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
     }
 
     @Test
@@ -1129,14 +1235,17 @@ public class DBSetupTest {
         Resolve resolve = getResolve(0, 0);
         Header header = getHeader(0, 1);
         header.setName(new String(new char[129]));
+        Map<String, ?> snmpItemMap = getSNMPItem(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolves().isEmpty());
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.singletonList(resolve.toMap()), Collections.singletonList(header.toMap()));
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.singletonList(resolve.toMap()), Collections.singletonList(header.toMap()), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = networkTaskDAO.readAllNetworkTasks().get(0);
         AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         assertTrue(getAccessTypeData(task.getId()).isTechnicallyEqual(data));
@@ -1144,22 +1253,59 @@ public class DBSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         header = getHeader(0, 1);
         header.setName("Name\nTest");
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Collections.singletonList(header.toMap()));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Collections.singletonList(header.toMap()), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         Header header1 = getHeader(0, 1);
         Header header2 = getHeader(0, 1);
         Header header3 = getHeader(0, 2);
         header3.setValueValid(false);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Arrays.asList(header1.toMap(), header2.toMap(), header3.toMap()));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolve.toMap()), Arrays.asList(header1.toMap(), header2.toMap(), header3.toMap()), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertEquals(1, headerDAO.readAllHeaders().size());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
+    }
+
+    @Test
+    public void testImportSNMPItemInvalid() {
+        NetworkTask task = getNetworkTask1();
+        Map<String, ?> taskMap = task.toMap();
+        Map<String, ?> dataMap = getAccessTypeData(0).toMap();
+        SNMPItem snmpItem = getSNMPItem(0);
+        snmpItem.setOid(null);
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.emptyList(), Collections.emptyList(), Collections.singletonList(snmpItem.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        snmpItem = getSNMPItem(0);
+        snmpItem.setOid("not-a-valid-oid");
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.emptyList(), Collections.emptyList(), Collections.singletonList(snmpItem.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        snmpItem = getSNMPItem(0);
+        snmpItem.setName(new String(new char[256]));
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.emptyList(), Collections.emptyList(), Collections.singletonList(snmpItem.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        snmpItem = getSNMPItem(0);
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.emptyList(), Collections.emptyList(), Collections.singletonList(snmpItem.toMap()));
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertEquals(1, snmpItemDAO.readAllSNMPItems().size());
     }
 
     @Test
@@ -1576,5 +1722,16 @@ public class DBSetupTest {
         header.setValue("value" + number);
         header.setValueValid(true);
         return header;
+    }
+
+    private SNMPItem getSNMPItem(long networkTaskId) {
+        SNMPItem snmpItem = new SNMPItem();
+        snmpItem.setId(0);
+        snmpItem.setNetworkTaskId(networkTaskId);
+        snmpItem.setSnmpItemType(SNMPItemType.NUMERIC);
+        snmpItem.setName("testItem");
+        snmpItem.setOid("1.3.6.1.2.1.1.1.0");
+        snmpItem.setMonitored(true);
+        return snmpItem;
     }
 }

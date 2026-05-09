@@ -728,6 +728,22 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportDatabaseCommunityTrimmed() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        SystemSetupResult exportResult = encryptedSetup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        setup.importData(exportResult.data().replace("\"snmpCommunity\":\"community1\"", "\"snmpCommunity\":\"   community1   \""));
+        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        assertTrue(task1.isTechnicallyEqual(readTask1));
+        AccessTypeData readAccessData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertEquals("community1", readAccessData1.getSnmpCommunity());
+    }
+
+    @Test
     public void testImportDatabaseWithIntervalsAndGlobalHeaders() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));

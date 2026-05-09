@@ -29,11 +29,13 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.model.validation.HeaderValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.model.validation.ResolveValidator;
+import net.ibbaa.keepitup.model.validation.SNMPItemValidator;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.util.ArrayList;
@@ -539,6 +541,12 @@ public class DBSetup {
         createHeaderTable(db);
     }
 
+    public void recreateSNMPItemTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateSNMPItemTable");
+        dropSNMPItemTable(db);
+        createSNMPItemTable(db);
+    }
+
     public void recreateSchedulerStateTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateSchedulerStateTable");
         dropSchedulerStateTable(db);
@@ -841,6 +849,10 @@ public class DBSetup {
         recreateHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void recreateSNMPItemTable() {
+        recreateSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void recreateTables() {
         recreateTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -891,6 +903,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "deleteAllHeaders");
         HeaderDAO dao = new HeaderDAO(getContext());
         dao.deleteAllHeaders();
+    }
+
+    public void deleteAllSNMPItems() {
+        Log.d(DBSetup.class.getName(), "deleteAllSNMPItems");
+        SNMPItemDAO dao = new SNMPItemDAO(getContext());
+        dao.deleteAllSNMPItems();
     }
 
     public void normalizeUIIndex() {
@@ -969,6 +987,17 @@ public class DBSetup {
         return exportedList;
     }
 
+    public List<Map<String, ?>> exportSNMPItemsForNetworkTask(long networkTaskId) {
+        Log.d(DBSetup.class.getName(), "exportSNMPItemsForNetworkTask, networkTaskId is " + networkTaskId);
+        SNMPItemDAO dao = new SNMPItemDAO(getContext());
+        List<SNMPItem> snmpItems = dao.readAllSNMPItemsForNetworkTask(networkTaskId);
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (SNMPItem snmpItem : snmpItems) {
+            exportedList.add(snmpItem.toMap());
+        }
+        return exportedList;
+    }
+
     public List<Map<String, ?>> exportIntervals() {
         Log.d(DBSetup.class.getName(), "exportIntervals");
         IntervalDAO dao = new IntervalDAO(getContext());
@@ -1004,11 +1033,11 @@ public class DBSetup {
         return encrypted;
     }
 
-    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList) {
-        importNetworkTaskWithAssociatedObjects(taskMap, logList, accessTypeDataMap, resolveList, headerList, true);
+    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList, List<Map<String, ?>> snmpItemList) {
+        importNetworkTaskWithAssociatedObjects(taskMap, logList, accessTypeDataMap, resolveList, headerList, snmpItemList, true);
     }
 
-    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList, boolean resetRunnning) {
+    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList, List<Map<String, ?>> snmpItemList, boolean resetRunnning) {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithAssociatedObjects, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
@@ -1031,6 +1060,7 @@ public class DBSetup {
             importAccessTypeData(accessTypeDataMap, task);
             importResolves(resolveList, task);
             importHeaders(headerList, task);
+            importSNMPItems(snmpItemList, task);
         }
     }
 
@@ -1075,6 +1105,9 @@ public class DBSetup {
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
         AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(accessTypeDataMap);
         accessTypeData.setNetworkTaskId(task.getId());
+        if (accessTypeData.getSnmpCommunity() != null) {
+            accessTypeData.setSnmpCommunity(accessTypeData.getSnmpCommunity().trim());
+        }
         Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
         if (accessTypeDataValidator.validate(accessTypeData) && accessTypeData.isSnmpCommunityValid()) {
             Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
@@ -1158,6 +1191,29 @@ public class DBSetup {
         }
         Log.d(DBSetup.class.getName(), "Inserting all headers...");
         dao.insertHeaders(headersToInsert);
+    }
+
+    private void importSNMPItems(List<Map<String, ?>> snmpItemList, NetworkTask task) {
+        Log.d(DBSetup.class.getName(), "importSNMPItems");
+        if (snmpItemList == null) {
+            return;
+        }
+        SNMPItemDAO dao = new SNMPItemDAO(getContext());
+        SNMPItemValidator validator = new SNMPItemValidator(getContext());
+        List<SNMPItem> snmpItemsToInsert = new ArrayList<>();
+        for (Map<String, ?> snmpItemMap : snmpItemList) {
+            SNMPItem snmpItem = new SNMPItem(snmpItemMap);
+            snmpItem.setNetworkTaskId(task.getId());
+            Log.d(DBSetup.class.getName(), "SNMPItem is " + snmpItem);
+            if (validator.validate(snmpItem)) {
+                Log.e(DBSetup.class.getName(), "Adding snmp item object to import list.");
+                snmpItemsToInsert.add(snmpItem);
+            } else {
+                Log.e(DBSetup.class.getName(), "SNMPItem is invalid and will not be imported: " + snmpItem);
+            }
+        }
+        Log.d(DBSetup.class.getName(), "Inserting all snmp item objects...");
+        dao.insertSNMPItems(snmpItemsToInsert);
     }
 
     private Context getContext() {

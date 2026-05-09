@@ -49,6 +49,42 @@ public class SNMPUtilTest {
     }
 
     @Test
+    public void testValidateName() {
+        assertTrue(SNMPUtil.validateName(""));
+        assertTrue(SNMPUtil.validateName("Alpha"));
+        assertTrue(SNMPUtil.validateName("name with spaces"));
+        assertTrue(SNMPUtil.validateName("name-with-dashes_and_underscores"));
+        assertTrue(SNMPUtil.validateName("name with special chars !@#$%^&*()"));
+        assertTrue(SNMPUtil.validateName("nameä"));
+        assertTrue(SNMPUtil.validateName("名前"));
+        assertFalse(SNMPUtil.validateName("name\twith\ttabs"));
+        assertFalse(SNMPUtil.validateName("name\nwith\nnewline"));
+        assertFalse(SNMPUtil.validateName("name\rwith\rcarriage"));
+        assertFalse(SNMPUtil.validateName("name" + (char) 0x00));
+        assertFalse(SNMPUtil.validateName("name" + (char) 0x1F));
+        assertFalse(SNMPUtil.validateName("name" + (char) 0x7F));
+    }
+
+    @Test
+    public void testValidateOID() {
+        assertTrue(SNMPUtil.validateOID("1.2"));
+        assertTrue(SNMPUtil.validateOID("0.0"));
+        assertTrue(SNMPUtil.validateOID("1.3.6.1.2.1"));
+        assertTrue(SNMPUtil.validateOID("1.3.6.1.2.1.1.1.0"));
+        assertTrue(SNMPUtil.validateOID("100.200.300"));
+        assertFalse(SNMPUtil.validateOID(""));
+        assertFalse(SNMPUtil.validateOID("1"));
+        assertFalse(SNMPUtil.validateOID("1."));
+        assertFalse(SNMPUtil.validateOID(".1.2"));
+        assertFalse(SNMPUtil.validateOID("1.2."));
+        assertFalse(SNMPUtil.validateOID("1.a.2"));
+        assertFalse(SNMPUtil.validateOID("abc"));
+        assertFalse(SNMPUtil.validateOID("1.2.3a"));
+        assertFalse(SNMPUtil.validateOID("1 2 3"));
+        assertFalse(SNMPUtil.validateOID("1.2 "));
+    }
+
+    @Test
     public void testIsSNMPTask() {
         assertFalse(SNMPUtil.isSNMPTask(null));
         NetworkTask task = new NetworkTask();
