@@ -36,6 +36,8 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
@@ -101,6 +103,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = getSnmpItemDAO().insertSNMPItem(getSNMPItem3(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -150,6 +155,7 @@ public class ImportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
+        getSnmpItemDAO().deleteAllSNMPItems();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -224,6 +230,12 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
+        List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -288,6 +300,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = getSnmpItemDAO().insertSNMPItem(getSNMPItem3(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -339,6 +354,7 @@ public class ImportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
+        getSnmpItemDAO().deleteAllSNMPItems();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -411,6 +427,12 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
+        List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -475,6 +497,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = getSnmpItemDAO().insertSNMPItem(getSNMPItem3(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -525,6 +550,7 @@ public class ImportTaskTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolves();
+        getSnmpItemDAO().deleteAllSNMPItems();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -603,6 +629,12 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
+        List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -653,6 +685,8 @@ public class ImportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getResolveDAO().insertResolve(getResolve1(task1.getId()));
         getHeaderDAO().insertHeader(getHeader1(task1.getId()));
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -708,6 +742,7 @@ public class ImportTaskTest extends BaseUITest {
         assertFalse(getResolveDAO().readAllResolves().isEmpty());
         assertFalse(getHeaderDAO().readAllHeaders().isEmpty());
         assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
+        assertFalse(getSnmpItemDAO().readAllSNMPItems().isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -989,6 +1024,39 @@ public class ImportTaskTest extends BaseUITest {
         header.setValue("value");
         header.setValueValid(true);
         return header;
+    }
+
+    private SNMPItem getSNMPItem1(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.NUMERIC);
+        item.setName("sysDescr");
+        item.setOid("1.3.6.1.2.1.1.1.0");
+        item.setMonitored(true);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem2(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACE);
+        item.setName("ifInOctets");
+        item.setOid("1.3.6.1.2.1.2.2.1.10.1");
+        item.setMonitored(false);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem3(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.NUMERIC);
+        item.setName("sysUpTime");
+        item.setOid("1.3.6.1.2.1.1.3.0");
+        item.setMonitored(true);
+        return item;
     }
 
     private UITaskResultDispatcher<SystemSetupResult> getImportResultDispatcher() {

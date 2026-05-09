@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.SystemActivity;
@@ -69,6 +70,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         getAccessTypeDataDAO().insertAccessTypeData(new AccessTypeData());
         getResolveDAO().insertResolve(new Resolve());
         getHeaderDAO().insertHeader(getHeader());
+        getSnmpItemDAO().insertSNMPItem(new SNMPItem());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -76,6 +78,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getResolveDAO().readAllResolves().isEmpty());
+        assertFalse(getSnmpItemDAO().readAllSNMPItems().isEmpty());
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
         Header header = getHeaderDAO().readAllHeaders().get(0);
         assertEquals("name", header.getName());
@@ -88,6 +91,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getResolveDAO().readAllResolves().isEmpty());
+        assertTrue(getSnmpItemDAO().readAllSNMPItems().isEmpty());
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
         header = getHeaderDAO().readAllHeaders().get(0);
         assertEquals("User-Agent", header.getName());
