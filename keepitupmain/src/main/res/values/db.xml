@@ -84,6 +84,7 @@
     <string name="snmpitem_table_name">SNMPITEM</string>
     <string name="snmpitem_id_column_name">_id</string>
     <string name="snmpitem_taskid_column_name">NETWORKTASKID</string>
+    <string name="snmpitem_type_column_name">TYPE</string>
     <string name="snmpitem_name_column_name">NAME</string>
     <string name="snmpitem_oid_column_name">OID</string>
     <string name="snmpitem_monitored_column_name">MONITORED</string>

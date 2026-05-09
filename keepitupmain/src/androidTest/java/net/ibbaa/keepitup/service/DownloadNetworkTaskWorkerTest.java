@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
@@ -88,6 +89,7 @@ public class DownloadNetworkTaskWorkerTest {
     private LogDAO logDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -109,6 +111,8 @@ public class DownloadNetworkTaskWorkerTest {
         resolveDAO.deleteAllResolves();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
+        snmpItemDAO.deleteAllSNMPItems();
         InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(Locale.US);
     }
 
@@ -120,6 +124,7 @@ public class DownloadNetworkTaskWorkerTest {
         logDAO.deleteAllLogs();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         accessTypeDataDAO.deleteAllAccessTypeData();
         networkTaskDAO.deleteAllNetworkTasks();
     }

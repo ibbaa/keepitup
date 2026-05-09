@@ -26,6 +26,7 @@ public class SNMPItemDBConstants {
     private final String tableName;
     private final String idColumnName;
     private final String networkTaskIdColumnName;
+    private final String snmpItemTypeColumnName;
     private final String nameColumnName;
     private final String oidColumnName;
     private final String monitoredColumnName;
@@ -35,9 +36,10 @@ public class SNMPItemDBConstants {
         tableName = context.getResources().getString(R.string.snmpitem_table_name);
         idColumnName = context.getResources().getString(R.string.snmpitem_id_column_name);
         networkTaskIdColumnName = context.getResources().getString(R.string.snmpitem_taskid_column_name);
+        snmpItemTypeColumnName = context.getResources().getString(R.string.snmpitem_type_column_name);
         nameColumnName = context.getResources().getString(R.string.snmpitem_name_column_name);
         oidColumnName = context.getResources().getString(R.string.snmpitem_oid_column_name);
-        monitoredColumnName = context.getResources().getString(R.string.snmpitem_oid_column_name);
+        monitoredColumnName = context.getResources().getString(R.string.snmpitem_monitored_column_name);
     }
 
     public String getTableName() {
@@ -52,6 +54,10 @@ public class SNMPItemDBConstants {
         return networkTaskIdColumnName;
     }
 
+    public String getSnmpItemTypeColumnName() {
+        return snmpItemTypeColumnName;
+    }
+
     public String getNameColumnName() {
         return nameColumnName;
     }
@@ -62,5 +68,48 @@ public class SNMPItemDBConstants {
 
     public String getMonitoredColumnName() {
         return monitoredColumnName;
+    }
+
+    public String getCreateTableStatement() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getSnmpItemTypeColumnName() + " INTEGER, " +
+                getNameColumnName() + " TEXT, " +
+                getOidColumnName() + " TEXT, " +
+                getMonitoredColumnName() + " INTEGER);";
+    }
+
+    public String getDropTableStatement() {
+        return "DROP TABLE IF EXISTS " + getTableName();
+    }
+
+    public String getReadSNMPItemForNetworkTaskStatement() {
+        return "SELECT " +
+                getIdColumnName() + ", " +
+                getNetworkTaskIdColumnName() + ", " +
+                getSnmpItemTypeColumnName() + ", " +
+                getNameColumnName() + ", " +
+                getOidColumnName() + ", " +
+                getMonitoredColumnName() +
+                " FROM " + getTableName() +
+                " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
+                " ORDER BY " + getNameColumnName() + " ASC";
+    }
+
+    public String getReadAllSNMPItemStatement() {
+        return "SELECT " +
+                getIdColumnName() + ", " +
+                getNetworkTaskIdColumnName() + ", " +
+                getSnmpItemTypeColumnName() + ", " +
+                getNameColumnName() + ", " +
+                getOidColumnName() + ", " +
+                getMonitoredColumnName() +
+                " FROM " + getTableName() +
+                " ORDER BY " + getNameColumnName() + " ASC";
+    }
+
+    public String getDeleteOrphanSNMPItemStatement() {
+        return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
     }
 }

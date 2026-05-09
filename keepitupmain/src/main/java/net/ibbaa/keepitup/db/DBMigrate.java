@@ -229,6 +229,8 @@ public class DBMigrate {
 
     private void version8UpgradeFrom7(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version8UpgradeFrom7");
+        setup.tryDropSNMPItemTable(db);
+        setup.createSNMPItemTable(db);
         try {
             setup.addIndexColumnToResolveTable(db);
         } catch (Exception exc) {
@@ -258,6 +260,7 @@ public class DBMigrate {
 
     private void version8DowngradeTo7(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version8DowngradeTo7");
+        setup.tryDropSNMPItemTable(db);
         try {
             setup.dropIndexColumnFromResolveTable(db);
         } catch (Exception exc) {

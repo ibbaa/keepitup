@@ -51,6 +51,7 @@ public class DBSetup {
     private final AccessTypeDataDBConstants accessTypeDataDBConstants;
     private final ResolveDBConstants resolveDBConstants;
     private final HeaderDBConstants headerDBConstants;
+    private final SNMPItemDBConstants snmpItemDBConstants;
 
     public DBSetup(Context context) {
         this.context = context;
@@ -62,6 +63,7 @@ public class DBSetup {
         this.accessTypeDataDBConstants = new AccessTypeDataDBConstants(context);
         this.resolveDBConstants = new ResolveDBConstants(context);
         this.headerDBConstants = new HeaderDBConstants(context);
+        this.snmpItemDBConstants = new SNMPItemDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {
@@ -74,6 +76,7 @@ public class DBSetup {
         createAccessTypeDataTable(db);
         createResolveTable(db);
         createHeaderTable(db);
+        createSNMPItemTable(db);
     }
 
     public void tryDropTables(SQLiteDatabase db) {
@@ -117,6 +120,11 @@ public class DBSetup {
             dropHeaderTable(db);
         } catch (Exception exc) {
             Log.d(DBSetup.class.getName(), "dropHeaderTable failed ", exc);
+        }
+        try {
+            dropSNMPItemTable(db);
+        } catch (Exception exc) {
+            Log.d(DBSetup.class.getName(), "dropSNMPItemTable failed ", exc);
         }
     }
 
@@ -246,6 +254,11 @@ public class DBSetup {
         initializeHeaderTable(db);
     }
 
+    public void createSNMPItemTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "createSNMPItemTable, table is " + snmpItemDBConstants.getTableName());
+        db.execSQL(snmpItemDBConstants.getCreateTableStatement());
+    }
+
     public void initializeHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeHeaderTable");
         ContentValues values = new ContentValues();
@@ -299,6 +312,7 @@ public class DBSetup {
         dropAccessTypeDataTable(db);
         dropResolveTable(db);
         dropHeaderTable(db);
+        dropSNMPItemTable(db);
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
@@ -460,6 +474,19 @@ public class DBSetup {
         }
     }
 
+    public void dropSNMPItemTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSNMPItemTable, table is " + snmpItemDBConstants.getTableName());
+        db.execSQL(snmpItemDBConstants.getDropTableStatement());
+    }
+
+    public void tryDropSNMPItemTable(SQLiteDatabase db) {
+        try {
+            dropSNMPItemTable(db);
+        } catch (Exception exc) {
+            Log.d(DBSetup.class.getName(), "dropSNMPItemTable failed ", exc);
+        }
+    }
+
     public void dropHeaderTypeColumnFromHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropHeaderTypeColumnFromHeaderTable, dropping column " + headerDBConstants.getHeaderTypeColumnName() + " from table " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getDropHeaderTypeColumnStatement());
@@ -616,6 +643,10 @@ public class DBSetup {
         createHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void createSNMPItemTable() {
+        createSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void initializeHeaderTable() {
         initializeHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -757,6 +788,15 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void tryDropHeaderTable() {
         tryDropHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void dropSNMPItemTable() {
+        dropSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void tryDropSNMPItemTable() {
+        tryDropSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})

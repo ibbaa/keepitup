@@ -70,6 +70,7 @@ public class DBSetupTest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private DBSetup setup;
 
     @Before
@@ -86,6 +87,7 @@ public class DBSetupTest {
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
         headerDAO = new HeaderDAO(TestRegistry.getContext());
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         logDAO.deleteAllLogs();
@@ -94,6 +96,7 @@ public class DBSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
     }
 
     @After
@@ -107,6 +110,7 @@ public class DBSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
     }
 
     @Test

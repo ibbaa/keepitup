@@ -46,6 +46,7 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
 import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Dump;
@@ -98,6 +99,7 @@ public abstract class BaseUITest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private TestNetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
     private TestTimeBasedSuspensionScheduler timeBasedSuspensionScheduler;
     private PreferenceManager preferenceManager;
@@ -138,6 +140,8 @@ public abstract class BaseUITest {
         resolveDAO.deleteAllResolves();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
+        snmpItemDAO.deleteAllSNMPItems();
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
@@ -173,6 +177,7 @@ public abstract class BaseUITest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
@@ -318,6 +323,10 @@ public abstract class BaseUITest {
 
     public HeaderDAO getHeaderDAO() {
         return headerDAO;
+    }
+
+    public SNMPItemDAO getSnmpItemDAO() {
+        return snmpItemDAO;
     }
 
     public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {

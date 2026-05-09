@@ -55,6 +55,7 @@ public class DBMigrateTest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private PreferenceManager preferenceManager;
     private NoBackupPreferenceManager noBackupPreferenceManager;
 
@@ -69,6 +70,7 @@ public class DBMigrateTest {
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
         headerDAO = new HeaderDAO(TestRegistry.getContext());
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());

@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
@@ -79,6 +80,7 @@ public class StartupService extends BroadcastReceiver {
         cleanupAccessTypeData(context);
         cleanupResolve(context);
         cleanupHeaders(context);
+        cleanupSNMPItems(context);
         cleanupLogs(context);
         Log.d(StartupService.class.getName(), "Initialize SAF flag.");
         initializeSAFFlag(context);
@@ -209,6 +211,17 @@ public class StartupService extends BroadcastReceiver {
             headerDAO.deleteAllOrphanHeaders();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on cleaning up header objects", exc);
+        }
+    }
+
+    private void cleanupSNMPItems(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupSNMPItems");
+        try {
+            Log.d(StartupService.class.getName(), "Deleting orphan snmp item objects.");
+            SNMPItemDAO snmpItemDAO = new SNMPItemDAO(context);
+            snmpItemDAO.deleteAllOrphanSNMPItems();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on cleaning up snmp item objects", exc);
         }
     }
 

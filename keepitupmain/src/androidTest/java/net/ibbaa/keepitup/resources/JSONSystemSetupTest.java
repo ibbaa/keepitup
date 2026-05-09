@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
@@ -71,6 +72,7 @@ public class JSONSystemSetupTest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private PreferenceManager preferenceManager;
     private NoBackupPreferenceManager noBackupPreferenceManager;
     private JSONSystemSetup setup;
@@ -85,12 +87,14 @@ public class JSONSystemSetupTest {
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
         headerDAO = new HeaderDAO(TestRegistry.getContext());
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
@@ -107,6 +111,7 @@ public class JSONSystemSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager.removeAllPreferences();
     }
