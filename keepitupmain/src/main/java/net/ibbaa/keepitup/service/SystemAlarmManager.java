@@ -51,7 +51,7 @@ public class SystemAlarmManager implements IAlarmManager {
             Log.e(SystemAlarmManager.class.getName(), "Cannot set alarm because of missing permission.");
             return;
         }
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
+        alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SystemAlarmManager implements IAlarmManager {
             Log.e(SystemAlarmManager.class.getName(), "Cannot set alarm because of missing permission.");
             return;
         }
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
     }
 
     @Override
