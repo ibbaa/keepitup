@@ -56,14 +56,22 @@ public class SNMPAccess {
     private final SNMPVersion snmpVersion;
     private final String community;
     private final boolean ip6;
+    private final int timeoutSec;
+    private final int retries;
 
     public SNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, String community, boolean ip6) {
+        this(context, address, port, snmpVersion, community, ip6, context.getResources().getInteger(R.integer.snmp_request_timeout), context.getResources().getInteger(R.integer.snmp_request_retries));
+    }
+
+    public SNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, String community, boolean ip6, int timeoutSec, int retries) {
         this.context = context;
         this.address = address;
         this.port = port;
         this.snmpVersion = snmpVersion;
         this.community = community;
         this.ip6 = ip6;
+        this.timeoutSec = timeoutSec;
+        this.retries = retries;
     }
 
     public WalkResult walk(String oid) {
@@ -122,7 +130,7 @@ public class SNMPAccess {
         for (Map.Entry<String, Variable> entry : results.entrySet()) {
             String oid = entry.getKey();
             Variable variable = entry.getValue();
-            if (snmpMapping.supportsOID(oid)) {
+            if (snmpMapping.supportsSystemOID(oid)) {
                 String value = snmpMapping.getValueForOID(oid, variable);
                 if (value != null) {
                     filteredResults.put(oid, value);
@@ -154,8 +162,8 @@ public class SNMPAccess {
         target.setCommunity(new OctetString(StringUtil.notNull(community)));
         target.setAddress((UdpAddress) GenericAddress.parse(formatAddress()));
         target.setVersion(version());
-        target.setTimeout(getResources().getInteger(R.integer.snmp_request_timeout) * 1000L);
-        target.setRetries(getResources().getInteger(R.integer.snmp_request_retries));
+        target.setTimeout(timeoutSec * 1000L);
+        target.setRetries(retries);
         return target;
     }
 

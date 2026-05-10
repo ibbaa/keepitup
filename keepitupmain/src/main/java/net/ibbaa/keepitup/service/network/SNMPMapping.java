@@ -36,10 +36,10 @@ public class SNMPMapping {
     public SNMPMapping(Context context) {
         this.oidLabels = new HashMap<>();
         this.context = context;
-        initOIDMap();
+        initSystemOIDMap();
     }
 
-    private void initOIDMap() {
+    private void initSystemOIDMap() {
         oidLabels.put(getResources().getString(R.string.sys_descr_oid), getResources().getString(R.string.sys_descr_label));
         oidLabels.put(getResources().getString(R.string.sys_uptime_oid), getResources().getString(R.string.sys_uptime_label));
         oidLabels.put(getResources().getString(R.string.sys_object_id_oid), getResources().getString(R.string.sys_object_id_label));
@@ -88,11 +88,11 @@ public class SNMPMapping {
         return -1;
     }
 
-    public boolean supportsOID(String oid) {
-        return getLabelForOID(oid) != null;
+    public boolean supportsSystemOID(String oid) {
+        return getLabelForSystemOID(oid) != null;
     }
 
-    public String getLabelForOID(String oid) {
+    public String getLabelForSystemOID(String oid) {
         if (oid == null) {
             return null;
         }

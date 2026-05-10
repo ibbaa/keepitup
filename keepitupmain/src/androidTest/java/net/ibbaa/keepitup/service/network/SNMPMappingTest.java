@@ -48,27 +48,27 @@ public class SNMPMappingTest {
     }
 
     @Test
-    public void testSupportsOID() {
-        assertFalse(snmpMapping.supportsOID(null));
-        assertFalse(snmpMapping.supportsOID("unknown"));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_contact_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_name_oid)));
-        assertTrue(snmpMapping.supportsOID(TestRegistry.getContext().getResources().getString(R.string.sys_location_oid)));
+    public void testSupportsSystemOID() {
+        assertFalse(snmpMapping.supportsSystemOID(null));
+        assertFalse(snmpMapping.supportsSystemOID("unknown"));
+        assertTrue(snmpMapping.supportsSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
+        assertTrue(snmpMapping.supportsSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
+        assertTrue(snmpMapping.supportsSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_oid)));
+        assertTrue(snmpMapping.supportsSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_contact_oid)));
+        assertTrue(snmpMapping.supportsSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_name_oid)));
+        assertTrue(snmpMapping.supportsSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_location_oid)));
     }
 
     @Test
-    public void testGetLabelForOID() {
-        assertNull(snmpMapping.getLabelForOID(null));
-        assertNull(snmpMapping.getLabelForOID("unknown"));
-        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_descr_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
-        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
-        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_oid)));
-        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_contact_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_contact_oid)));
-        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_name_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_name_oid)));
-        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_location_label), snmpMapping.getLabelForOID(TestRegistry.getContext().getResources().getString(R.string.sys_location_oid)));
+    public void testGetLabelForSystemOID() {
+        assertNull(snmpMapping.getLabelForSystemOID(null));
+        assertNull(snmpMapping.getLabelForSystemOID("unknown"));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_descr_label), snmpMapping.getLabelForSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_label), snmpMapping.getLabelForSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_label), snmpMapping.getLabelForSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_object_id_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_contact_label), snmpMapping.getLabelForSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_contact_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_name_label), snmpMapping.getLabelForSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_name_oid)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_location_label), snmpMapping.getLabelForSystemOID(TestRegistry.getContext().getResources().getString(R.string.sys_location_oid)));
     }
 
     @Test

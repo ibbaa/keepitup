@@ -205,7 +205,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             for (Map.Entry<String, String> entry : result.entrySet()) {
                 String oid = entry.getKey();
                 String value = entry.getValue();
-                String label = snmpMapping.getLabelForOID(oid);
+                String label = snmpMapping.getLabelForSystemOID(oid);
                 if (!snmpMapping.isSysUpTimeOID(oid) && !StringUtil.isEmpty(value) && !StringUtil.isEmpty(label)) {
                     if (!StringUtil.isEmpty(systemValues)) {
                         systemValues.append(", ");
@@ -244,7 +244,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         if (sysUpTime > 0) {
             String sysUpTimeFormatted = StringUtil.formatUpTime(sysUpTime);
             String oid = snmpMapping.getSysUpTimeOID();
-            String label = snmpMapping.getLabelForOID(oid);
+            String label = snmpMapping.getLabelForSystemOID(oid);
             if (!StringUtil.isEmpty(label)) {
                 return label + ": " + sysUpTimeFormatted;
             }
