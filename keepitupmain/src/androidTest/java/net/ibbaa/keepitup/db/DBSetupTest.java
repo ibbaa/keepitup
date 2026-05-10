@@ -1728,7 +1728,7 @@ public class DBSetupTest {
         SNMPItem snmpItem = new SNMPItem();
         snmpItem.setId(0);
         snmpItem.setNetworkTaskId(networkTaskId);
-        snmpItem.setSnmpItemType(SNMPItemType.NUMERIC);
+        snmpItem.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
         snmpItem.setName("testItem");
         snmpItem.setOid("1.3.6.1.2.1.1.1.0");
         snmpItem.setMonitored(true);

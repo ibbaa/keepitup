@@ -18,8 +18,9 @@ package net.ibbaa.keepitup.model;
 
 public enum SNMPItemType {
 
-    INTERFACE(1),
-    NUMERIC(2);
+    INTERFACEDESCR(1),
+    INTERFACETYPE(2),
+    INTERFACEALIAS(3);
 
     private final int code;
 
@@ -32,11 +33,11 @@ public enum SNMPItemType {
     }
 
     public boolean isInterface() {
-        return INTERFACE.equals(this);
+        return INTERFACEDESCR.equals(this);
     }
 
     public boolean isNumeric() {
-        return NUMERIC.equals(this);
+        return INTERFACETYPE.equals(this);
     }
 
     public static SNMPItemType forCode(int code) {

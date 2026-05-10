@@ -33,18 +33,22 @@ public class SNMPItemTypeTest {
 
     @Test
     public void testValueMethods() {
-        SNMPItemType version = SNMPItemType.INTERFACE;
+        SNMPItemType version = SNMPItemType.INTERFACEDESCR;
         assertTrue(version.isInterface());
         assertFalse(version.isNumeric());
-        version = SNMPItemType.NUMERIC;
+        version = SNMPItemType.INTERFACETYPE;
         assertFalse(version.isInterface());
         assertTrue(version.isNumeric());
+        version = SNMPItemType.INTERFACEALIAS;
+        assertFalse(version.isInterface());
+        assertFalse(version.isNumeric());
     }
 
     @Test
     public void testForCode() {
-        assertEquals(SNMPItemType.INTERFACE, SNMPItemType.forCode(SNMPItemType.INTERFACE.getCode()));
-        assertEquals(SNMPItemType.NUMERIC, SNMPItemType.forCode(SNMPItemType.NUMERIC.getCode()));
-        assertNull(SNMPItemType.forCode(SNMPItemType.NUMERIC.getCode() + 1));
+        assertEquals(SNMPItemType.INTERFACEDESCR, SNMPItemType.forCode(SNMPItemType.INTERFACEDESCR.getCode()));
+        assertEquals(SNMPItemType.INTERFACETYPE, SNMPItemType.forCode(SNMPItemType.INTERFACETYPE.getCode()));
+        assertEquals(SNMPItemType.INTERFACEALIAS, SNMPItemType.forCode(SNMPItemType.INTERFACEALIAS.getCode()));
+        assertNull(SNMPItemType.forCode(SNMPItemType.INTERFACEALIAS.getCode() + 1));
     }
 }

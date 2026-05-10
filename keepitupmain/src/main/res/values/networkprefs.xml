@@ -31,7 +31,7 @@
     <integer name="download_max_redirect">10</integer>
     <integer name="snmp_request_timeout">5</integer>
     <integer name="snmp_request_retries">1</integer>
-    <integer name="snmp_request_timeout_ui">2</integer>
+    <integer name="snmp_request_timeout_ui">3</integer>
     <integer name="snmp_request_retries_ui">0</integer>
     <integer name="dns_lookup_timeout">60</integer>
     <integer name="dns_max_parallel_lookups">10</integer>

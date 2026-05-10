@@ -141,11 +141,11 @@ public class SNMPItemDAOTest {
         readItem2.setMonitored(item2.isMonitored());
         assertTrue(item2.isEqual(readItem2));
         readItem1.setName("UpdatedName");
-        readItem1.setSnmpItemType(SNMPItemType.NUMERIC);
+        readItem1.setSnmpItemType(SNMPItemType.INTERFACETYPE);
         snmpItemDAO.updateSNMPItem(readItem1);
         readItem1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(0).get(0);
         assertEquals("UpdatedName", readItem1.getName());
-        assertEquals(SNMPItemType.NUMERIC, readItem1.getSnmpItemType());
+        assertEquals(SNMPItemType.INTERFACETYPE, readItem1.getSnmpItemType());
     }
 
     @Test
@@ -176,19 +176,19 @@ public class SNMPItemDAOTest {
         charlie.setNetworkTaskId(0);
         charlie.setName("Charlie");
         charlie.setOid("1.3.6.1.3");
-        charlie.setSnmpItemType(SNMPItemType.INTERFACE);
+        charlie.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
         charlie.setMonitored(true);
         SNMPItem alpha = new SNMPItem();
         alpha.setNetworkTaskId(0);
         alpha.setName("Alpha");
         alpha.setOid("1.3.6.1.1");
-        alpha.setSnmpItemType(SNMPItemType.NUMERIC);
+        alpha.setSnmpItemType(SNMPItemType.INTERFACETYPE);
         alpha.setMonitored(false);
         SNMPItem beta = new SNMPItem();
         beta.setNetworkTaskId(0);
         beta.setName("Beta");
         beta.setOid("1.3.6.1.2");
-        beta.setSnmpItemType(null);
+        beta.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
         beta.setMonitored(true);
         snmpItemDAO.insertSNMPItem(charlie);
         snmpItemDAO.insertSNMPItem(alpha);
@@ -296,7 +296,7 @@ public class SNMPItemDAOTest {
         SNMPItem item = new SNMPItem();
         item.setId(0);
         item.setNetworkTaskId(0);
-        item.setSnmpItemType(SNMPItemType.INTERFACE);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
         item.setName("Alpha");
         item.setOid("1.3.6.1.1");
         item.setMonitored(true);
@@ -307,7 +307,7 @@ public class SNMPItemDAOTest {
         SNMPItem item = new SNMPItem();
         item.setId(0);
         item.setNetworkTaskId(1);
-        item.setSnmpItemType(SNMPItemType.NUMERIC);
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
         item.setName("Beta");
         item.setOid("1.3.6.1.2");
         item.setMonitored(false);

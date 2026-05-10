@@ -922,7 +922,7 @@ public class ExportTaskTest extends BaseUITest {
         SNMPItem item = new SNMPItem();
         item.setId(0);
         item.setNetworkTaskId(networkTaskId);
-        item.setSnmpItemType(SNMPItemType.NUMERIC);
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
         item.setName("sysDescr");
         item.setOid("1.3.6.1.2.1.1.1.0");
         item.setMonitored(true);
@@ -933,7 +933,7 @@ public class ExportTaskTest extends BaseUITest {
         SNMPItem item = new SNMPItem();
         item.setId(0);
         item.setNetworkTaskId(networkTaskId);
-        item.setSnmpItemType(SNMPItemType.INTERFACE);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
         item.setName("ifInOctets");
         item.setOid("1.3.6.1.2.1.2.2.1.10.1");
         item.setMonitored(false);
@@ -944,7 +944,7 @@ public class ExportTaskTest extends BaseUITest {
         SNMPItem item = new SNMPItem();
         item.setId(0);
         item.setNetworkTaskId(networkTaskId);
-        item.setSnmpItemType(SNMPItemType.NUMERIC);
+        item.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
         item.setName("sysUpTime");
         item.setOid("1.3.6.1.2.1.1.3.0");
         item.setMonitored(true);

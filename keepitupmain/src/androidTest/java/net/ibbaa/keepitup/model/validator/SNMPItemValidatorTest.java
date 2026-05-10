@@ -144,7 +144,7 @@ public class SNMPItemValidatorTest {
         SNMPItem item = new SNMPItem();
         item.setId(0);
         item.setNetworkTaskId(0);
-        item.setSnmpItemType(SNMPItemType.INTERFACE);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
         item.setName(name);
         item.setOid(oid);
         return item;
