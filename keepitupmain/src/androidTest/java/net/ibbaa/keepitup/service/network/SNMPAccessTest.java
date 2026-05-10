@@ -38,9 +38,11 @@ import org.snmp4j.smi.TimeTicks;
 import org.snmp4j.smi.Variable;
 
 import java.net.InetAddress;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -55,9 +57,9 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkEmptySubtree() {
+    public void testWalkSystemEmptySubtree() {
         snmpAccess.setSubtreeEmpty(true);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
@@ -66,8 +68,8 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkNoResults() {
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+    public void testWalkSystemNoResults() {
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
@@ -76,11 +78,11 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkOnlyUnknownOIDs() {
+    public void testWalkSystemOnlyUnknownOIDs() {
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put("1.2.3.4.5.0", new OctetString("unknown value"));
         snmpAccess.setSubtreeResults(subtreeResults);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.2.3");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
@@ -89,12 +91,12 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkMissingSysUpTime() {
+    public void testWalkSystemMissingSysUpTime() {
         String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put(sysDescrOid, new OctetString("Test system"));
         snmpAccess.setSubtreeResults(subtreeResults);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertEquals(1, result.result().size());
         assertEquals("Test system", result.result().get(sysDescrOid));
@@ -104,12 +106,12 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkSuccessOnlySysUpTime() {
+    public void testWalkSystemSuccessOnlySysUpTime() {
         String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put(sysUpTimeOid, new TimeTicks(12345));
         snmpAccess.setSubtreeResults(subtreeResults);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertTrue(result.success());
         assertEquals(1, result.result().size());
         assertEquals(String.valueOf(12345L), result.result().get(sysUpTimeOid));
@@ -118,7 +120,7 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkSuccessWithMultipleOIDs() {
+    public void testWalkSystemSuccessWithMultipleOIDs() {
         String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
         String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
         String sysNameOid = TestRegistry.getContext().getString(R.string.sys_name_oid);
@@ -127,7 +129,7 @@ public class SNMPAccessTest {
         subtreeResults.put(sysDescrOid, new OctetString("Test system"));
         subtreeResults.put(sysNameOid, new OctetString("router01"));
         snmpAccess.setSubtreeResults(subtreeResults);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertTrue(result.success());
         assertEquals(3, result.result().size());
         assertEquals(String.valueOf(99999L), result.result().get(sysUpTimeOid));
@@ -138,13 +140,13 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkSuccessFiltersUnknownOIDs() {
+    public void testWalkSystemSuccessFiltersUnknownOIDs() {
         String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put(sysUpTimeOid, new TimeTicks(5000));
         subtreeResults.put("1.2.3.4.5.0", new OctetString("unknown"));
         snmpAccess.setSubtreeResults(subtreeResults);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertTrue(result.success());
         assertEquals(1, result.result().size());
         assertEquals(String.valueOf(5000L), result.result().get(sysUpTimeOid));
@@ -153,13 +155,13 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkWithSubtreeErrors() {
+    public void testWalkSystemWithSubtreeErrors() {
         String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put(sysDescrOid, new OctetString("Test system"));
         snmpAccess.setSubtreeResults(subtreeResults);
         snmpAccess.setSubtreeErrors(List.of("Error 1", "Error 2"));
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertEquals(1, result.result().size());
         assertEquals("Test system", result.result().get(sysDescrOid));
@@ -170,22 +172,22 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkWithSubtreeErrorsSkipsSysUpTimeCheck() {
+    public void testWalkSystemWithSubtreeErrorsSkipsSysUpTimeCheck() {
         String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put(sysDescrOid, new OctetString("Test system"));
         snmpAccess.setSubtreeResults(subtreeResults);
         snmpAccess.setSubtreeErrors(List.of("SNMP error"));
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertEquals(1, result.errorMessages().size());
         assertEquals("SNMP error", result.errorMessages().get(0));
     }
 
     @Test
-    public void testWalkWithSubtreeErrorsAndNoResults() {
+    public void testWalkSystemWithSubtreeErrorsAndNoResults() {
         snmpAccess.setSubtreeErrors(List.of("SNMP timeout"));
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
@@ -194,9 +196,9 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkException() {
+    public void testWalkSystemException() {
         snmpAccess.setSubtreeException(new RuntimeException("Test exception"));
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertTrue(result.result().isEmpty());
         assertNotNull(result.exception());
@@ -206,15 +208,48 @@ public class SNMPAccessTest {
     }
 
     @Test
-    public void testWalkExceptionWithNullMessage() {
+    public void testWalkSystemExceptionWithNullMessage() {
         snmpAccess.setSubtreeException(new RuntimeException((String) null));
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
         assertFalse(result.success());
         assertTrue(result.result().isEmpty());
         assertNotNull(result.exception());
         assertNull(result.exception().getMessage());
         assertEquals(1, result.errorMessages().size());
         assertEquals("", result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkWithDummyFilterAcceptsAll() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(5000));
+        subtreeResults.put("1.2.3.4.5.0", new OctetString("some value"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walk("1.2.3", results -> {
+            Map<String, String> filtered = new TreeMap<>();
+            for (Map.Entry<String, Variable> entry : results.entrySet()) {
+                filtered.put(entry.getKey(), entry.getValue().toString());
+            }
+            return filtered;
+        });
+        assertTrue(result.success());
+        assertEquals(2, result.result().size());
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testWalkWithDummyFilterRejectsAll() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(5000));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walk("1.2.3", results -> Collections.emptyMap());
+        assertTrue(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
     }
 
     private String buildSysUpTimeErrorMessage() {

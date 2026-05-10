@@ -36,7 +36,7 @@ public class MockSNMPAccess extends SNMPAccess {
     }
 
     @Override
-    public WalkResult walk(String oid) {
+    public WalkResult walkSystem() {
         return walkResult;
     }
 }

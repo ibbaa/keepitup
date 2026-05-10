@@ -59,7 +59,7 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
         long start = timeService.getCurrentTimestamp();
         SNMPAccess snmpAccess = getSNMPAccess();
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        SNMPAccess.WalkResult walkResult = snmpAccess.walk(snmpMapping.getSystemOID());
+        SNMPAccess.WalkResult walkResult = snmpAccess.walkSystem();
         Map<String, String> result = walkResult.result() != null ? walkResult.result() : Collections.emptyMap();
         long currentSysUpTime = snmpMapping.getSysUpTime(result);
         boolean rebooted = wasRebooted(currentSysUpTime);

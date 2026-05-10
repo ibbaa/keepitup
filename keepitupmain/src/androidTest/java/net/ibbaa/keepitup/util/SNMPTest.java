@@ -30,7 +30,7 @@ public class SNMPTest {
     @Test
     public void testAccess() throws Exception {
         SNMPAccess access = new SNMPAccess(TestRegistry.getContext(), InetAddress.getByName("arbz-switch.ibbaa.lan"), 161, SNMPVersion.V2C, "", false);
-        SNMPAccess.WalkResult walkResult = access.walk("1.3.6.1.2.1.1");
+        SNMPAccess.WalkResult walkResult = access.walkSystem();
         Map<String, String> result = walkResult.result();
     }
 }

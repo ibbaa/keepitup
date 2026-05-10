@@ -74,7 +74,7 @@ public class SNMPAccess {
         this.retries = retries;
     }
 
-    public WalkResult walk(String oid) {
+    public WalkResult walk(String oid, WalkFilter filter) {
         Log.d(SNMPAccess.class.getName(), "walk, oid is " + oid);
         TransportMapping<UdpAddress> transport;
         Snmp snmp = null;
@@ -88,16 +88,7 @@ public class SNMPAccess {
             if (!fetchAndProcessSubtree(snmp, target, oid, results, errors)) {
                 return new WalkResult(false, Collections.emptyMap(), null, List.of(getResources().getString(R.string.text_snmp_no_response)));
             }
-            Map<String, String> filteredResult = filterResult(results);
-            if (errors.isEmpty()) {
-                SNMPMapping snmpMapping = new SNMPMapping(getContext());
-                long currentSysUpTime = snmpMapping.getSysUpTime(filteredResult);
-                if (currentSysUpTime < 0) {
-                    String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
-                    String sysUpTimeError = getResources().getString(R.string.text_snmp_mandatory_oid_missing, sysUpTimeOIDValue);
-                    errors.add(sysUpTimeError);
-                }
-            }
+            Map<String, String> filteredResult = filter.filter(results);
             return new WalkResult(errors.isEmpty(), filteredResult, null, errors);
         } catch (Exception exc) {
             Log.e(SNMPAccess.class.getName(), "Error on SNMP request", exc);
@@ -113,18 +104,22 @@ public class SNMPAccess {
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors) {
-        TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
-        List<TreeEvent> events = treeUtils.getSubtree(target, new OID(oid));
-        if (events == null || events.isEmpty()) {
-            return false;
+    public WalkResult walkSystem() {
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        WalkResult walkResult = walk(snmpMapping.getSystemOID(), this::systemFilter);
+        if (!walkResult.success()) {
+            return walkResult;
         }
-        prepareResult(events, results, errors);
-        return true;
+        long currentSysUpTime = snmpMapping.getSysUpTime(walkResult.result());
+        if (currentSysUpTime >= 0) {
+            return walkResult;
+        }
+        String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
+        String sysUpTimeError = getResources().getString(R.string.text_snmp_mandatory_oid_missing, sysUpTimeOIDValue);
+        return new WalkResult(false, walkResult.result(), walkResult.exception(), List.of(sysUpTimeError));
     }
 
-    private Map<String, String> filterResult(Map<String, Variable> results) {
+    private Map<String, String> systemFilter(Map<String, Variable> results) {
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
         Map<String, String> filteredResults = new TreeMap<>();
         for (Map.Entry<String, Variable> entry : results.entrySet()) {
@@ -138,6 +133,17 @@ public class SNMPAccess {
             }
         }
         return filteredResults;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors) {
+        TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+        List<TreeEvent> events = treeUtils.getSubtree(target, new OID(oid));
+        if (events == null || events.isEmpty()) {
+            return false;
+        }
+        prepareResult(events, results, errors);
+        return true;
     }
 
     private void prepareResult(List<TreeEvent> events, Map<String, Variable> results, List<String> errors) {
@@ -189,6 +195,10 @@ public class SNMPAccess {
 
     private Resources getResources() {
         return getContext().getResources();
+    }
+
+    public interface WalkFilter {
+        Map<String, String> filter(Map<String, Variable> results);
     }
 
     public record WalkResult(boolean success, Map<String, String> result, Throwable exception, List<String> errorMessages) {
