@@ -56,6 +56,22 @@ public class SNMPMapping {
         return getResources().getString(R.string.sys_uptime_oid);
     }
 
+    public String getInterfaceDescrOID() {
+        return getResources().getString(R.string.interface_descr_oid);
+    }
+
+    public String getInterfaceTypeOID() {
+        return getResources().getString(R.string.interface_type_oid);
+    }
+
+    public String getInterfaceOperStatusOID() {
+        return getResources().getString(R.string.interface_operstatus_oid);
+    }
+
+    public String getInterfaceAliasOID() {
+        return getResources().getString(R.string.interface_alias_oid);
+    }
+
     public String getValueForOID(String oid, Variable variable) {
         if (StringUtil.isEmpty(oid) || variable == null) {
             return null;

@@ -140,6 +140,23 @@ public class SNMPItemValidatorTest {
         assertFalse(validator.validate(item));
     }
 
+    @Test
+    public void testValidateSNMPItemType() {
+        SNMPItem item = getSNMPItem("name", "1.3.6.1.2.1");
+        item.setSnmpItemType(null);
+        assertFalse(validator.validateSNMPItemType(item));
+        assertFalse(validator.validate(item));
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        assertTrue(validator.validateSNMPItemType(item));
+        assertTrue(validator.validate(item));
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        assertTrue(validator.validateSNMPItemType(item));
+        assertTrue(validator.validate(item));
+        item.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        assertTrue(validator.validateSNMPItemType(item));
+        assertTrue(validator.validate(item));
+    }
+
     private SNMPItem getSNMPItem(String name, String oid) {
         SNMPItem item = new SNMPItem();
         item.setId(0);

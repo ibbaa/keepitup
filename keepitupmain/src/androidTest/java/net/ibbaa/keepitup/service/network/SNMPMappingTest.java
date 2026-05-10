@@ -108,6 +108,26 @@ public class SNMPMappingTest {
     }
 
     @Test
+    public void testGetInterfaceDescrOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid), snmpMapping.getInterfaceDescrOID());
+    }
+
+    @Test
+    public void testGetInterfaceTypeOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_type_oid), snmpMapping.getInterfaceTypeOID());
+    }
+
+    @Test
+    public void testGetInterfaceOperStatusOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid), snmpMapping.getInterfaceOperStatusOID());
+    }
+
+    @Test
+    public void testGetInterfaceAliasOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid), snmpMapping.getInterfaceAliasOID());
+    }
+
+    @Test
     public void testGetSysUpTimeOID() {
         assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid), snmpMapping.getSysUpTimeOID());
     }

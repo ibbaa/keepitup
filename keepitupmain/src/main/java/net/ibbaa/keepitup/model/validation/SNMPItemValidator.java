@@ -34,7 +34,7 @@ public class SNMPItemValidator {
 
     public boolean validate(SNMPItem item) {
         Log.d(SNMPItemValidator.class.getName(), "validate item " + item);
-        return validateName(item) && validateOID(item);
+        return validateName(item) && validateOID(item) && validateSNMPItemType(item);
     }
 
     public boolean validateName(SNMPItem item) {
@@ -72,6 +72,16 @@ public class SNMPItemValidator {
             Log.d(SNMPItemValidator.class.getName(), "oid has invalid characters. Returning false.");
             return false;
         }
+        return true;
+    }
+
+    public boolean validateSNMPItemType(SNMPItem item) {
+        Log.d(SNMPItemValidator.class.getName(), "validateSNMPItemType for item " + item);
+        if (item.getSnmpItemType() == null) {
+            Log.d(SNMPItemValidator.class.getName(), "SNMPItemType is null. Returning false.");
+            return false;
+        }
+        Log.d(SNMPItemValidator.class.getName(), "SNMPItemType is valid. Returning true.");
         return true;
     }
 }
