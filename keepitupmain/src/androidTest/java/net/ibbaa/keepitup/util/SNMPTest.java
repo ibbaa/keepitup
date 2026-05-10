@@ -21,16 +21,39 @@ import net.ibbaa.keepitup.service.network.SNMPAccess;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Test;
+import org.snmp4j.smi.Variable;
 
 import java.net.InetAddress;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class SNMPTest {
 
     @Test
     public void testAccess() throws Exception {
         SNMPAccess access = new SNMPAccess(TestRegistry.getContext(), InetAddress.getByName("arbz-switch.ibbaa.lan"), 161, SNMPVersion.V2C, "", false);
-        SNMPAccess.WalkResult walkResult = access.walkSystem();
-        Map<String, String> result = walkResult.result();
+        SNMPAccess.WalkResult walkResultIF = access.walk("1.3.6.1.2.1.2.2.1.2", this::filter);
+        SNMPAccess.WalkResult walkResultIFType = access.walk("1.3.6.1.2.1.2.2.1.3", this::filter);
+        SNMPAccess.WalkResult walkResultConnector = access.walk("1.3.6.1.2.1.31.1.1.1.17", this::filter);
+        SNMPAccess.WalkResult walkResultStack= access.walk("1.3.6.1.2.1.31.1.2", this::filter);
+        SNMPAccess.WalkResult walkResultUp = access.walk("1.3.6.1.2.1.2.2.1.8", this::filter);
+        Map<String, String> resultIF = walkResultIF.result();
+        Map<String, String> resultIFType = walkResultIFType.result();
+        Map<String, String> resultConnector = walkResultConnector.result();
+        Map<String, String> resultStack = walkResultStack.result();
+        Map<String, String> resultUp = walkResultUp.result();
+        System.out.println(resultIF);
+        System.out.println(resultIFType);
+        System.out.println(resultConnector);
+        System.out.println(resultStack);
+        System.out.println(resultUp);
+    }
+
+    private Map<String, String> filter(Map<String, Variable> results) {
+        Map<String, String> filtered = new TreeMap<>();
+        for (Map.Entry<String, Variable> entry : results.entrySet()) {
+            filtered.put(entry.getKey(), entry.getValue().toString());
+        }
+        return filtered;
     }
 }
