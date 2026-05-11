@@ -22,6 +22,7 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
@@ -355,6 +356,32 @@ public class BundleUtil {
             }
         }
         return headerList;
+    }
+
+    public static Bundle snmpItemListToBundle(String baseKey, List<SNMPItem> snmpItemList) {
+        return snmpItemListToBundle(baseKey, snmpItemList, new Bundle());
+    }
+
+    public static Bundle snmpItemListToBundle(String baseKey, List<SNMPItem> snmpItemList, Bundle bundle) {
+        if (baseKey == null || snmpItemList == null) {
+            return bundle;
+        }
+        List<Bundle> bundleList = new ArrayList<>(snmpItemList.size());
+        for (SNMPItem snmpItem : snmpItemList) {
+            bundleList.add(snmpItem.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList, bundle);
+    }
+
+    public static List<SNMPItem> snmpItemListFromBundle(String baseKey, Bundle bundle) {
+        List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
+        List<SNMPItem> snmpItemList = new ArrayList<>(bundleList.size());
+        for (Bundle currentBundle : bundleList) {
+            if (currentBundle != null) {
+                snmpItemList.add(new SNMPItem(currentBundle));
+            }
+        }
+        return snmpItemList;
     }
 
     public static Bundle resolveListToBundle(String baseKey, List<Resolve> resolveList) {

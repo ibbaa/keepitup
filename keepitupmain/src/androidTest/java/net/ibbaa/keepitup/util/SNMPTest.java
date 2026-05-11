@@ -32,7 +32,12 @@ public class SNMPTest {
     @Test
     public void testAccess() throws Exception {
         SNMPAccess access = new SNMPAccess(TestRegistry.getContext(), InetAddress.getByName("gaia.ibbaa.lan"), 161, SNMPVersion.V2C, "", false);
-        SNMPAccess.WalkResult walkResultIF = access.walk("1.3.6.1.2.1.2.2.1.2", this::filter);
+        SNMPAccess.WalkResult walkResultSystem = access.walkSystem();
+        SNMPAccess.WalkResult walkResultInterfaces = access.walkInterfaces();
+        System.out.println(walkResultSystem.result());
+        System.out.println(walkResultInterfaces.result());
+
+        /*SNMPAccess.WalkResult walkResultIF = access.walk("1.3.6.1.2.1.2.2.1.2", this::filter);
         SNMPAccess.WalkResult walkResultIFType = access.walk("1.3.6.1.2.1.2.2.1.3", this::filter);
         SNMPAccess.WalkResult walkResultConnector = access.walk("1.3.6.1.2.1.31.1.1.1.17", this::filter);
         SNMPAccess.WalkResult walkResultAlias = access.walk("1.3.6.1.2.1.31.1.1.1.18", this::filter);
@@ -57,7 +62,7 @@ public class SNMPTest {
         System.out.println("1.3.6.1.2.1.2.2.1.8 -> " + resultUp);
 
         System.out.println("1.3.6.1.2.1.2.2.1 -> " + resultIFGesamt);
-        System.out.println("1.3.6.1.2.1.31.1.1.1 -> " + resultIFX);
+        System.out.println("1.3.6.1.2.1.31.1.1.1 -> " + resultIFX);*/
     }
 
     private Map<String, String> filter(Map<String, Variable> results) {

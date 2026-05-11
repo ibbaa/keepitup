@@ -252,6 +252,121 @@ public class SNMPAccessTest {
         assertTrue(result.errorMessages().isEmpty());
     }
 
+    @Test
+    public void testWalkInterfacesEmptySubtreeOnFirstWalk() {
+        snmpAccess.setSubtreeEmpty(true);
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkInterfacesEmptySubtreeOnSecondWalk() {
+        snmpAccess.setSubtreeEmptySequence(List.of(false, true));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkInterfacesEmptySubtreeOnThirdWalk() {
+        snmpAccess.setSubtreeEmptySequence(List.of(false, false, true));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkInterfacesSuccessNoResults() {
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertTrue(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testWalkInterfacesSuccessCombinesResults() {
+        String interfaceDescrOid = TestRegistry.getContext().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getString(R.string.interface_type_oid);
+        String interfaceAliasOid = TestRegistry.getContext().getString(R.string.interface_alias_oid);
+        Map<String, Variable> descrResults = new HashMap<>();
+        descrResults.put(interfaceDescrOid + ".1", new OctetString("eth0"));
+        descrResults.put(interfaceDescrOid + ".2", new OctetString("eth1"));
+        Map<String, Variable> typeResults = new HashMap<>();
+        typeResults.put(interfaceTypeOid + ".1", new OctetString("6"));
+        typeResults.put(interfaceTypeOid + ".2", new OctetString("53"));
+        Map<String, Variable> aliasResults = new HashMap<>();
+        aliasResults.put(interfaceAliasOid + ".1", new OctetString("LAN"));
+        aliasResults.put(interfaceAliasOid + ".2", new OctetString("WAN"));
+        snmpAccess.setSubtreeResultsSequence(List.of(descrResults, typeResults, aliasResults));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertTrue(result.success());
+        assertEquals(6, result.result().size());
+        assertEquals("eth0", result.result().get(interfaceDescrOid + ".1"));
+        assertEquals("eth1", result.result().get(interfaceDescrOid + ".2"));
+        assertEquals("6", result.result().get(interfaceTypeOid + ".1"));
+        assertEquals("53", result.result().get(interfaceTypeOid + ".2"));
+        assertEquals("LAN", result.result().get(interfaceAliasOid + ".1"));
+        assertEquals("WAN", result.result().get(interfaceAliasOid + ".2"));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testWalkInterfacesWithErrorsOnFirstWalk() {
+        snmpAccess.setSubtreeErrors(List.of("SNMP error"));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals("SNMP error", result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkInterfacesWithErrorsOnSecondWalk() {
+        snmpAccess.setSubtreeErrorsSequence(List.of(Collections.emptyList(), List.of("SNMP error")));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals("SNMP error", result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkInterfacesWithErrorsOnThirdWalk() {
+        snmpAccess.setSubtreeErrorsSequence(List.of(Collections.emptyList(), Collections.emptyList(), List.of("SNMP error")));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals("SNMP error", result.errorMessages().get(0));
+    }
+
+    @Test
+    public void testWalkInterfacesException() {
+        snmpAccess.setSubtreeException(new RuntimeException("Test exception"));
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfaces();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNotNull(result.exception());
+        assertEquals("Test exception", result.exception().getMessage());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals("Test exception", result.errorMessages().get(0));
+    }
+
     private String buildSysUpTimeErrorMessage() {
         String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
         String sysUpTimeLabelShort = TestRegistry.getContext().getString(R.string.sys_uptime_label_short);

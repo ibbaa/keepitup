@@ -104,7 +104,26 @@ public class SNMPAccess {
         }
     }
 
+    public WalkResult walkInterfaces() {
+        Log.d(SNMPAccess.class.getName(), "walkInterfaces");
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        WalkResult walkResultDescr = walk(snmpMapping.getInterfaceDescrOID(), this::allFilter);
+        if (!walkResultDescr.success()) {
+            return walkResultDescr;
+        }
+        WalkResult walkResultType = walk(snmpMapping.getInterfaceTypeOID(), this::allFilter);
+        if (!walkResultType.success()) {
+            return walkResultType;
+        }
+        WalkResult walkResultAlias = walk(snmpMapping.getInterfaceAliasOID(), this::allFilter);
+        if (!walkResultAlias.success()) {
+            return walkResultAlias;
+        }
+        return new WalkResult(true, combine(walkResultDescr, walkResultType, walkResultAlias), null, Collections.emptyList());
+    }
+
     public WalkResult walkSystem() {
+        Log.d(SNMPAccess.class.getName(), "walkSystem");
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
         WalkResult walkResult = walk(snmpMapping.getSystemOID(), this::systemFilter);
         if (!walkResult.success()) {
@@ -117,6 +136,20 @@ public class SNMPAccess {
         String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
         String sysUpTimeError = getResources().getString(R.string.text_snmp_mandatory_oid_missing, sysUpTimeOIDValue);
         return new WalkResult(false, walkResult.result(), walkResult.exception(), List.of(sysUpTimeError));
+    }
+
+    private Map<String, String> allFilter(Map<String, Variable> results) {
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        Map<String, String> filteredResults = new TreeMap<>();
+        for (Map.Entry<String, Variable> entry : results.entrySet()) {
+            String oid = entry.getKey();
+            Variable variable = entry.getValue();
+            String value = snmpMapping.getValueForOID(oid, variable);
+            if (value != null) {
+                filteredResults.put(oid, value);
+            }
+        }
+        return filteredResults;
     }
 
     private Map<String, String> systemFilter(Map<String, Variable> results) {
@@ -187,6 +220,14 @@ public class SNMPAccess {
             address += "/" + port;
         }
         return address;
+    }
+
+    private Map<String, String> combine(WalkResult result1, WalkResult result2, WalkResult result3) {
+        Map<String, String> result = new TreeMap<>();
+        result.putAll(result1.result());
+        result.putAll(result2.result());
+        result.putAll(result3.result());
+        return result;
     }
 
     private Context getContext() {

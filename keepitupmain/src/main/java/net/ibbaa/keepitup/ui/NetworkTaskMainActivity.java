@@ -44,6 +44,8 @@ import net.ibbaa.keepitup.model.Equality;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -60,6 +62,7 @@ import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
+import net.ibbaa.keepitup.ui.dialog.SNMPItemDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -577,6 +580,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onMainAddClicked(View view) {
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
+        //showSNMPItemDialogTest();
         openNetworkTaskEditDialog(task, data, null, null, -1);
     }
 
@@ -928,5 +932,33 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private IStoragePermissionManager createStoragePermissionManager() {
         return new StoragePermissionManager();
+    }
+
+    @SuppressWarnings("unused")
+    private void showSNMPItemDialogTest() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showSNMPItemDialogTest");
+        SNMPItemDialog dialog = new SNMPItemDialog();
+        List<SNMPItem> items = new ArrayList<>();
+        SNMPItem item1 = new SNMPItem();
+        item1.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item1.setName("eth0");
+        item1.setOid("1.3.6.1.2.1.2.2.1.2.1");
+        item1.setMonitored(false);
+        items.add(item1);
+        SNMPItem item2 = new SNMPItem();
+        item2.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item2.setName("wlan0");
+        item2.setOid("1.3.6.1.2.1.2.2.1.3.2");
+        item2.setMonitored(true);
+        items.add(item2);
+        SNMPItem item3 = new SNMPItem();
+        item3.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        item3.setName("lo");
+        item3.setOid("1.3.6.1.2.1.31.1.1.1.18.3");
+        item3.setMonitored(false);
+        items.add(item3);
+        Bundle bundle = BundleUtil.snmpItemListToBundle(dialog.getInitialSNMPItemsKey(), items);
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), SNMPItemDialog.class.getName());
     }
 }

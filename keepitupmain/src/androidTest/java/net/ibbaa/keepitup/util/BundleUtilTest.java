@@ -32,6 +32,8 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
@@ -772,6 +774,74 @@ public class BundleUtilTest {
         assertTrue(resolve2.isEqual(resolveList.get(1)));
     }
 
+    @Test
+    public void testEmptySNMPItemListToBundle() {
+        Bundle bundle = BundleUtil.snmpItemListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.snmpItemListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testSNMPItemListFromEmptyBundle() {
+        List<SNMPItem> snmpItemList = BundleUtil.snmpItemListFromBundle("key", null);
+        assertNotNull(snmpItemList);
+        assertTrue(snmpItemList.isEmpty());
+        Bundle bundle = new Bundle();
+        snmpItemList = BundleUtil.snmpItemListFromBundle("key", bundle);
+        assertNotNull(snmpItemList);
+        assertTrue(snmpItemList.isEmpty());
+    }
+
+    @Test
+    public void testSNMPItemListToBundle() {
+        SNMPItem item1 = getSNMPItem(1, 2, SNMPItemType.INTERFACEDESCR, "name1", "oid1", true);
+        SNMPItem item2 = getSNMPItem(2, 3, SNMPItemType.INTERFACETYPE, "name2", "oid2", false);
+        Bundle bundle = BundleUtil.snmpItemListToBundle("key", Arrays.asList(item1, item2));
+        SNMPItem otherItem1 = new SNMPItem(Objects.requireNonNull(bundle.getBundle("key0")));
+        SNMPItem otherItem2 = new SNMPItem(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(item1.isEqual(otherItem1));
+        assertTrue(item2.isEqual(otherItem2));
+    }
+
+    @Test
+    public void testSNMPItemListToProvidedBundle() {
+        SNMPItem item1 = getSNMPItem(1, 2, SNMPItemType.INTERFACEDESCR, "name1", "oid1", true);
+        SNMPItem item2 = getSNMPItem(2, 3, SNMPItemType.INTERFACETYPE, "name2", "oid2", false);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.snmpItemListToBundle("key", Arrays.asList(item1, item2), bundle);
+        SNMPItem otherItem1 = new SNMPItem(Objects.requireNonNull(bundle.getBundle("key0")));
+        SNMPItem otherItem2 = new SNMPItem(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(item1.isEqual(otherItem1));
+        assertTrue(item2.isEqual(otherItem2));
+        assertTrue(bundle.getBoolean("otherkey"));
+    }
+
+    @Test
+    public void testSNMPItemListFromBundle() {
+        Bundle bundle = new Bundle();
+        SNMPItem item1 = getSNMPItem(1, 2, SNMPItemType.INTERFACEDESCR, "name1", "oid1", true);
+        SNMPItem item2 = getSNMPItem(2, 3, SNMPItemType.INTERFACEALIAS, "name2", "oid2", false);
+        bundle.putBundle("key0", item1.toBundle());
+        bundle.putBundle("key1", item2.toBundle());
+        List<SNMPItem> snmpItemList = BundleUtil.snmpItemListFromBundle("key", bundle);
+        assertTrue(item1.isEqual(snmpItemList.get(0)));
+        assertTrue(item2.isEqual(snmpItemList.get(1)));
+    }
+
+    @Test
+    public void testSNMPItemListToAndFromBundle() {
+        SNMPItem item1 = getSNMPItem(1, 2, SNMPItemType.INTERFACEDESCR, "name1", "oid1", true);
+        SNMPItem item2 = getSNMPItem(2, 3, SNMPItemType.INTERFACEALIAS, "name2", "oid2", false);
+        Bundle bundle = BundleUtil.snmpItemListToBundle("key", Arrays.asList(item1, item2));
+        List<SNMPItem> snmpItemList = BundleUtil.snmpItemListFromBundle("key", bundle);
+        assertTrue(item1.isEqual(snmpItemList.get(0)));
+        assertTrue(item2.isEqual(snmpItemList.get(1)));
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
@@ -814,5 +884,16 @@ public class BundleUtilTest {
         resolve.setTargetAddress(targetAddress);
         resolve.setTargetPort(targetPort);
         return resolve;
+    }
+
+    private SNMPItem getSNMPItem(long id, long networkTaskId, SNMPItemType snmpItemType, String name, String oid, boolean monitored) {
+        SNMPItem snmpItem = new SNMPItem();
+        snmpItem.setId(id);
+        snmpItem.setNetworkTaskId(networkTaskId);
+        snmpItem.setSnmpItemType(snmpItemType);
+        snmpItem.setName(name);
+        snmpItem.setOid(oid);
+        snmpItem.setMonitored(monitored);
+        return snmpItem;
     }
 }

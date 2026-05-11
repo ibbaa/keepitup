@@ -37,6 +37,10 @@ public class TestSNMPAccess extends SNMPAccess {
     private List<String> subtreeErrors;
     private boolean subtreeEmpty;
     private RuntimeException subtreeException;
+    private List<Map<String, Variable>> subtreeResultsSequence;
+    private List<Boolean> subtreeEmptySequence;
+    private List<List<String>> subtreeErrorsSequence;
+    private int callCount;
 
     public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, String community, boolean ip6) {
         super(context, address, port, snmpVersion, community, ip6);
@@ -48,6 +52,10 @@ public class TestSNMPAccess extends SNMPAccess {
         subtreeErrors = new ArrayList<>();
         subtreeEmpty = false;
         subtreeException = null;
+        subtreeResultsSequence = null;
+        subtreeEmptySequence = null;
+        subtreeErrorsSequence = null;
+        callCount = 0;
     }
 
     public void setSubtreeResults(Map<String, Variable> subtreeResults) {
@@ -66,16 +74,42 @@ public class TestSNMPAccess extends SNMPAccess {
         this.subtreeException = subtreeException;
     }
 
+    public void setSubtreeResultsSequence(List<Map<String, Variable>> subtreeResultsSequence) {
+        this.subtreeResultsSequence = subtreeResultsSequence;
+    }
+
+    public void setSubtreeEmptySequence(List<Boolean> subtreeEmptySequence) {
+        this.subtreeEmptySequence = subtreeEmptySequence;
+    }
+
+    public void setSubtreeErrorsSequence(List<List<String>> subtreeErrorsSequence) {
+        this.subtreeErrorsSequence = subtreeErrorsSequence;
+    }
+
     @Override
     protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors) {
         if (subtreeException != null) {
             throw subtreeException;
         }
-        if (subtreeEmpty) {
+        boolean empty = subtreeEmpty;
+        if (subtreeEmptySequence != null && callCount < subtreeEmptySequence.size()) {
+            empty = subtreeEmptySequence.get(callCount);
+        }
+        if (empty) {
+            callCount++;
             return false;
         }
-        results.putAll(subtreeResults);
-        errors.addAll(subtreeErrors);
+        Map<String, Variable> callResults = subtreeResults;
+        if (subtreeResultsSequence != null && callCount < subtreeResultsSequence.size()) {
+            callResults = subtreeResultsSequence.get(callCount);
+        }
+        results.putAll(callResults);
+        List<String> callErrors = subtreeErrors;
+        if (subtreeErrorsSequence != null && callCount < subtreeErrorsSequence.size()) {
+            callErrors = subtreeErrorsSequence.get(callCount);
+        }
+        errors.addAll(callErrors);
+        callCount++;
         return true;
     }
 }

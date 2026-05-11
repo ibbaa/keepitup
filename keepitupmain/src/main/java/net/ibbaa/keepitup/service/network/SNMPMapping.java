@@ -20,12 +20,16 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import org.snmp4j.smi.Variable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SNMPMapping {
@@ -72,25 +76,60 @@ public class SNMPMapping {
         return getResources().getString(R.string.interface_alias_oid);
     }
 
+    public List<SNMPItem> toSNMPInterfaceItems(Map<String, String> values, long networktaskId) {
+        List<SNMPItem> snmpList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            String oid = entry.getKey();
+            String value = entry.getValue();
+            SNMPItemType itemType = getSNMPItemType(oid);
+            if (itemType != null) {
+                SNMPItem item = new SNMPItem();
+                item.setNetworkTaskId(networktaskId);
+                item.setSnmpItemType(itemType);
+                item.setOid(oid);
+                item.setName(value);
+                item.setMonitored(false);
+                snmpList.add(item);
+            }
+        }
+        return snmpList;
+    }
+
+    private SNMPItemType getSNMPItemType(String oid) {
+        if (StringUtil.isEmpty(oid)) {
+            return null;
+        }
+        if (oid.startsWith(getInterfaceDescrOID())) {
+            return SNMPItemType.INTERFACEDESCR;
+        }
+        if (oid.startsWith(getInterfaceTypeOID())) {
+            return SNMPItemType.INTERFACETYPE;
+        }
+        if (oid.startsWith(getInterfaceAliasOID())) {
+            return SNMPItemType.INTERFACEALIAS;
+        }
+        return null;
+    }
+
     public String getValueForOID(String oid, Variable variable) {
         if (StringUtil.isEmpty(oid) || variable == null) {
             return null;
         }
-        if (getResources().getString(R.string.sys_uptime_oid).equals(oid)) {
+        if (isSysUpTimeOID(oid)) {
             try {
                 return String.valueOf(variable.toLong());
             } catch (Exception exc) {
-                return variable.toString().trim();
+                return variable.toString();
             }
         }
-        return variable.toString().trim();
+        return variable.toString();
     }
 
     public boolean isSysUpTimeOID(String oid) {
         if (StringUtil.isEmpty(oid)) {
             return false;
         }
-        return getResources().getString(R.string.sys_uptime_oid).equals(oid.trim());
+        return getSysUpTimeOID().equals(oid);
     }
 
     public long getSysUpTime(Map<String, String> values) {
