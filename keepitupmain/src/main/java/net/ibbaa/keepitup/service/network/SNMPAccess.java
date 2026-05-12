@@ -92,7 +92,7 @@ public class SNMPAccess {
             return new WalkResult(errors.isEmpty(), filteredResult, null, errors);
         } catch (Exception exc) {
             Log.e(SNMPAccess.class.getName(), "Error on SNMP request", exc);
-            return new WalkResult(false, Collections.emptyMap(), exc, List.of(exc.getMessage() != null ? exc.getMessage() : ""));
+            return new WalkResult(false, Collections.emptyMap(), exc, Collections.emptyList());
         } finally {
             if (snmp != null) {
                 try {
@@ -104,22 +104,28 @@ public class SNMPAccess {
         }
     }
 
-    public WalkResult walkInterfaces() {
-        Log.d(SNMPAccess.class.getName(), "walkInterfaces");
+    public WalkResult walkInterfacesDescr() {
+        Log.d(SNMPAccess.class.getName(), "walkInterfacesDescr");
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        WalkResult walkResultDescr = walk(snmpMapping.getInterfaceDescrOID(), this::allFilter);
-        if (!walkResultDescr.success()) {
-            return walkResultDescr;
-        }
-        WalkResult walkResultType = walk(snmpMapping.getInterfaceTypeOID(), this::allFilter);
-        if (!walkResultType.success()) {
-            return walkResultType;
-        }
-        WalkResult walkResultAlias = walk(snmpMapping.getInterfaceAliasOID(), this::allFilter);
-        if (!walkResultAlias.success()) {
-            return walkResultAlias;
-        }
-        return new WalkResult(true, combine(walkResultDescr, walkResultType, walkResultAlias), null, Collections.emptyList());
+        return walk(snmpMapping.getInterfaceDescrOID(), this::allFilter);
+    }
+
+    public WalkResult walkInterfacesType() {
+        Log.d(SNMPAccess.class.getName(), "walkInterfacesType");
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        return walk(snmpMapping.getInterfaceTypeOID(), this::allFilter);
+    }
+
+    public WalkResult walkInterfacesAlias() {
+        Log.d(SNMPAccess.class.getName(), "walkInterfacesAlias");
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        return walk(snmpMapping.getInterfaceAliasOID(), this::allFilter);
+    }
+
+    public WalkResult walkInterfacesOperStatus() {
+        Log.d(SNMPAccess.class.getName(), "walkInterfacesOperStatus");
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        return walk(snmpMapping.getInterfaceOperStatusOID(), this::allFilter);
     }
 
     public WalkResult walkSystem() {
@@ -220,14 +226,6 @@ public class SNMPAccess {
             address += "/" + port;
         }
         return address;
-    }
-
-    private Map<String, String> combine(WalkResult result1, WalkResult result2, WalkResult result3) {
-        Map<String, String> result = new TreeMap<>();
-        result.putAll(result1.result());
-        result.putAll(result2.result());
-        result.putAll(result3.result());
-        return result;
     }
 
     private Context getContext() {

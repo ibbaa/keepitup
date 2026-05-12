@@ -48,8 +48,6 @@ import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.ExceptionUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -359,7 +357,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                             executionResults.add(new DNSExecutionResult(false, logEntry, null));
                         } else {
                             Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned the following addresses " + addresses);
-                            InetAddress address = findAddress(addresses, preferIp4);
+                            InetAddress address = URLUtil.findAddress(addresses, preferIp4);
                             Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
                             LogEntry logEntry = new LogEntry();
                             logEntry.setSuccess(true);
@@ -388,18 +386,6 @@ public abstract class NetworkTaskWorker implements Runnable {
             executorService.shutdownNow();
         }
         return executionResults;
-    }
-
-    private InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
-        Log.d(NetworkTaskWorker.class.getName(), "findAddress, preferIp4 is " + preferIp4);
-        for (InetAddress currentAddress : addresses) {
-            if (preferIp4 && currentAddress instanceof Inet4Address) {
-                return currentAddress;
-            } else if (!preferIp4 && currentAddress instanceof Inet6Address) {
-                return currentAddress;
-            }
-        }
-        return addresses.get(0);
     }
 
     public void updateNetworkTaskLastSysUpTime(long lastSysUpTime) {

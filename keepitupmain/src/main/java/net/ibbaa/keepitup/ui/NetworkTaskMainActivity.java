@@ -46,6 +46,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -938,6 +939,12 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private void showSNMPItemDialogTest() {
         Log.d(NetworkTaskMainActivity.class.getName(), "showSNMPItemDialogTest");
         SNMPItemDialog dialog = new SNMPItemDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(dialog.getAddressKey(), "192.168.1.1");
+        bundle.putInt(dialog.getPortKey(), 161);
+        bundle.putString(dialog.getSNMPVersionKey(), SNMPVersion.V2C.name());
+        bundle.putString(dialog.getCommunityKey(), "public");
+        dialog.setArguments(bundle);
         List<SNMPItem> items = new ArrayList<>();
         SNMPItem item1 = new SNMPItem();
         item1.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
@@ -957,8 +964,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         item3.setOid("1.3.6.1.2.1.31.1.1.1.18.3");
         item3.setMonitored(false);
         items.add(item3);
-        Bundle bundle = BundleUtil.snmpItemListToBundle(dialog.getInitialSNMPItemsKey(), items);
-        dialog.setArguments(bundle);
         dialog.show(getSupportFragmentManager(), SNMPItemDialog.class.getName());
     }
 }

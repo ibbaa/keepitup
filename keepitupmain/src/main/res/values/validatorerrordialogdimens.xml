@@ -17,5 +17,6 @@
 <resources>
     <dimen name="gridlayout_dialog_validator_error_padding">20dp</dimen>
     <dimen name="textview_dialog_validator_error_title_margin_bottom">5dp</dimen>
+    <dimen name="textview_dialog_validator_error_message_margin_bottom">8dp</dimen>
     <dimen name="imageview_dialog_validator_error_ok_padding_top">10dp</dimen>
 </resources>

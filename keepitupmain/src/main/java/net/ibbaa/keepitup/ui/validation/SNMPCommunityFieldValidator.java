@@ -22,22 +22,22 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.SNMPUtil;
 
-public class SNMPCommunityFieldNameValidator extends BaseStringValidator implements FieldValidator {
+public class SNMPCommunityFieldValidator extends BaseStringValidator implements FieldValidator {
 
-    public SNMPCommunityFieldNameValidator(String field, Context context) {
+    public SNMPCommunityFieldValidator(String field, Context context) {
         super(field, context);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(SNMPCommunityFieldNameValidator.class.getName(), "validate, value is " + value);
+        Log.d(SNMPCommunityFieldValidator.class.getName(), "validate, value is " + value);
         int maximum = getResources().getInteger(R.integer.snmp_community_max_length);
         ValidationResult result = validateString(value, -1, maximum, true, true);
         if (!result.isValidationSuccessful()) {
             return result;
         }
         if (value != null && !value.trim().isEmpty() && !SNMPUtil.validateCommunity(value.trim())) {
-            Log.d(SNMPCommunityFieldNameValidator.class.getName(), "Value has invalid characters. Validation failed.");
+            Log.d(SNMPCommunityFieldValidator.class.getName(), "Value has invalid characters. Validation failed.");
             return new ValidationResult(false, getField(), getResources().getString(R.string.invalid_characters));
         }
         return result;

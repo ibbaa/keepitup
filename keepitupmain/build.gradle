@@ -57,7 +57,7 @@ android {
     }
 }
 
-tasks.register('copyJavaSourceAssets', Copy) {
+tasks.register('copyJavaSourceAssets', Sync) {
     from('src/main/java')
     into(javaAssetsDir)
 }

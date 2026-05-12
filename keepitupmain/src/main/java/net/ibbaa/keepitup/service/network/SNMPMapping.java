@@ -35,10 +35,12 @@ import java.util.Map;
 public class SNMPMapping {
 
     private final Map<String, String> oidLabels;
+    private final Map<Integer, String> ifStatusLabels;
     private final Context context;
 
     public SNMPMapping(Context context) {
         this.oidLabels = new HashMap<>();
+        this.ifStatusLabels = new HashMap<>();
         this.context = context;
         initSystemOIDMap();
     }
@@ -50,6 +52,13 @@ public class SNMPMapping {
         oidLabels.put(getResources().getString(R.string.sys_contact_oid), getResources().getString(R.string.sys_contact_label));
         oidLabels.put(getResources().getString(R.string.sys_name_oid), getResources().getString(R.string.sys_name_label));
         oidLabels.put(getResources().getString(R.string.sys_location_oid), getResources().getString(R.string.sys_location_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_up), getResources().getString(R.string.interface_operstatus_up_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_down), getResources().getString(R.string.interface_operstatus_down_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_testing), getResources().getString(R.string.interface_operstatus_testing_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_unknown), getResources().getString(R.string.interface_operstatus_unknown_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_dormant), getResources().getString(R.string.interface_operstatus_dormant_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_notpresent), getResources().getString(R.string.interface_operstatus_notpresent_label));
+        ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_lowerlayerdown), getResources().getString(R.string.interface_operstatus_lowerlayerdown_label));
     }
 
     public String getSystemOID() {
@@ -152,6 +161,14 @@ public class SNMPMapping {
             return null;
         }
         return oidLabels.get(oid);
+    }
+
+    public String getLabelForInterfaceOperStatus(int status) {
+        String label = ifStatusLabels.get(status);
+        if (StringUtil.isEmpty(label)) {
+            return getResources().getString(R.string.interface_operstatus_unknown_label);
+        }
+        return label;
     }
 
     private Context getContext() {

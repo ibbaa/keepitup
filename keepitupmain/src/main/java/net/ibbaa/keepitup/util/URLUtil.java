@@ -27,10 +27,13 @@ import net.ibbaa.keepitup.model.Resolve;
 
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -186,6 +189,18 @@ public class URLUtil {
             return getPort(url);
         }
         return resolve.getTargetPort();
+    }
+
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    public static InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
+        for (InetAddress currentAddress : addresses) {
+            if (preferIp4 && currentAddress instanceof Inet4Address) {
+                return currentAddress;
+            } else if (!preferIp4 && currentAddress instanceof Inet6Address) {
+                return currentAddress;
+            }
+        }
+        return addresses.get(0);
     }
 
     public static String prefixHTTPProtocol(String inputUrl) {

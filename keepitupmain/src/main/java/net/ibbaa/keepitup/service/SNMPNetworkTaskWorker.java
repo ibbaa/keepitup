@@ -72,11 +72,11 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult connectExecutionResult = executeSNMPCommand(address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), networkTask.getLastSysUpTime(), ip6);
-            LogEntry logEntry = connectExecutionResult.getLogEntry();
+            ExecutionResult snmpExecutionResult = executeSNMPCommand(address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), networkTask.getLastSysUpTime(), ip6);
+            LogEntry logEntry = snmpExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
-            Log.d(SNMPNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
-            return connectExecutionResult;
+            Log.d(SNMPNetworkTaskWorker.class.getName(), "Returning " + snmpExecutionResult);
+            return snmpExecutionResult;
         }
         Log.e(SNMPNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         LogEntry logEntry = dnsExecutionResult.getLogEntry();

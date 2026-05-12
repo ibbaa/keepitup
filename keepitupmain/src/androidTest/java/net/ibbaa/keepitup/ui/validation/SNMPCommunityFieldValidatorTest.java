@@ -30,11 +30,11 @@ import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class SNMPCommunityFieldNameValidatorTest {
+public class SNMPCommunityFieldValidatorTest {
 
     @Test
     public void testValidate() {
-        SNMPCommunityFieldNameValidator validator = new SNMPCommunityFieldNameValidator("Community", TestRegistry.getContext());
+        SNMPCommunityFieldValidator validator = new SNMPCommunityFieldValidator("Community", TestRegistry.getContext());
         ValidationResult result = validator.validate(null);
         assertTrue(result.isValidationSuccessful());
         assertEquals("Community", result.getFieldName());

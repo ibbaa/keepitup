@@ -20,7 +20,7 @@
     <string name="label_dialog_snmp_item_show_all">Show all</string>
     <string name="label_dialog_snmp_item_ok">@android:string/ok</string>
     <string name="label_dialog_snmp_item_cancel">@android:string/cancel</string>
-    <string name="text_dialog_snmp_item_no_items">Use Scan to load the interface</string>
+    <string name="text_dialog_snmp_item_no_items">Use Scan to load the interfaces</string>
     <string name="text_dialog_snmp_item_no_items_after_scan">The device returned no interfaces</string>
     <dimen name="textview_dialog_snmp_item_scan_text_size">14sp</dimen>
 </resources>

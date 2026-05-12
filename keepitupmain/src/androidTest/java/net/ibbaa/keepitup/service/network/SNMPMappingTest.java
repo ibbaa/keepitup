@@ -150,6 +150,20 @@ public class SNMPMappingTest {
     }
 
     @Test
+    public void testGetLabelForInterfaceOperStatus() {
+        String unknownLabel = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_unknown_label);
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_up_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_up)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_down_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_down)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_testing_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_testing)));
+        assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_unknown)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_dormant_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_dormant)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_notpresent_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_notpresent)));
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_lowerlayerdown_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_lowerlayerdown)));
+        assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(99));
+        assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(0));
+    }
+
+    @Test
     public void testToSNMPInterfaceItemsEmptyMap() {
         List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(new HashMap<>(), 1L);
         assertNotNull(result);

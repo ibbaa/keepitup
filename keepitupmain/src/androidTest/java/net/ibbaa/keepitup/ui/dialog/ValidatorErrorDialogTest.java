@@ -24,6 +24,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 import android.os.Bundle;
 import android.widget.GridLayout;
@@ -60,8 +61,23 @@ public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessage() {
-        openValidatorErrorDialog();
+        openValidatorErrorDialog(null);
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(not(isDisplayed())));
+        onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).check(matches(withGridLayoutPositionAndSpan(3, 1, GridLayout.CENTER, 0, 2, GridLayout.CENTER)));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+    }
+
+    @Test
+    public void testErrorMessageWithMessage() {
+        openValidatorErrorDialog("Please check the following fields");
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Please check the following fields")));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -72,18 +88,21 @@ public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessageScreenRotation() {
-        openValidatorErrorDialog();
+        openValidatorErrorDialog(null);
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(not(isDisplayed())));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(not(isDisplayed())));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(not(isDisplayed())));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -91,11 +110,40 @@ public class ValidatorErrorDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
     }
 
-    private void openValidatorErrorDialog() {
+    @Test
+    public void testErrorMessageWithMessageScreenRotation() {
+        openValidatorErrorDialog("Please check the following fields");
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Please check the following fields")));
+        onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Please check the following fields")));
+        onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Please check the following fields")));
+        onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+    }
+
+    private void openValidatorErrorDialog(String message) {
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         ValidationResult result1 = new ValidationResult(false, "field1", "message1");
         ValidationResult result2 = new ValidationResult(false, "field2", "message2");
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), Arrays.asList(result1, result2));
+        if (message != null) {
+            BundleUtil.stringToBundle(errorDialog.getMessageKey(), message, bundle);
+        }
         errorDialog.setArguments(bundle);
         errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));

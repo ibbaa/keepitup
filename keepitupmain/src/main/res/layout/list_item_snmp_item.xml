@@ -25,7 +25,10 @@
         android:id="@+id/textview_list_item_snmp_item_no_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/textview_list_item_snmp_item_margin"
+        android:layout_marginTop="@dimen/textview_list_item_snmp_item_margin_top"
+        android:layout_marginBottom="@dimen/textview_list_item_snmp_item_margin"
+        android:layout_marginStart="@dimen/textview_list_item_snmp_item_margin"
+        android:layout_marginEnd="@dimen/textview_list_item_snmp_item_margin"
         android:layout_gravity="center_horizontal"
         android:textStyle="normal"
         android:text="" />
