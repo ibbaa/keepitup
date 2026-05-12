@@ -50,29 +50,42 @@ public class ValidatorErrorDialog extends GridBasedMessageDialogBase {
         Log.d(ValidatorErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_validator_error, container);
         initEdgeToEdgeInsets(view);
-        prepareMessage(view);
+        String title = BundleUtil.stringFromBundle(getTitleKey(), requireArguments());
+        String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
+        prepareTitle(view, title);
+        prepareMessage(view, message);
         List<ValidationResult> resultList = BundleUtil.validationResultListFromBundle(getValidationResultBaseKey(), requireArguments());
         prepareErrorMessages(view, toErrorMessageList(resultList));
         prepareOkButton(view, resultList.size() + 1);
         return view;
     }
 
-    private void prepareMessage(View view) {
+    private void prepareTitle(View view, String title) {
+        Log.d(ValidatorErrorDialog.class.getName(), "prepareTitle, title is " + title);
+        TextView titleView = view.findViewById(R.id.textview_dialog_validator_error_title);
+        if (title == null) {
+            title = getResources().getString(R.string.text_dialog_validator_error_title);
+        }
+        titleView.setText(title);
+    }
+
+    private void prepareMessage(View view, String message) {
+        Log.d(ValidatorErrorDialog.class.getName(), "prepareMessage, message is " + message);
         TextView messageText = view.findViewById(R.id.textview_dialog_validator_error_message);
-        Bundle arguments = requireArguments();
-        if (arguments.containsKey(getMessageKey())) {
-            String message = arguments.getString(getMessageKey());
-            if (!StringUtil.isEmpty(message)) {
-                messageText.setText(message);
-                messageText.setVisibility(View.VISIBLE);
-                return;
-            }
+        if (!StringUtil.isEmpty(message)) {
+            messageText.setText(message);
+            messageText.setVisibility(View.VISIBLE);
+            return;
         }
         messageText.setVisibility(View.GONE);
     }
 
     public String getValidationResultBaseKey() {
         return ValidatorErrorDialog.class.getSimpleName() + ".ValidationResult";
+    }
+
+    public String getTitleKey() {
+        return ValidatorErrorDialog.class.getSimpleName() + ".Title";
     }
 
     public String getMessageKey() {

@@ -61,7 +61,7 @@ public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessage() {
-        openValidatorErrorDialog(null);
+        openValidatorErrorDialog(null, null);
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(not(isDisplayed())));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -74,8 +74,8 @@ public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessageWithMessage() {
-        openValidatorErrorDialog("Please check the following fields");
-        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        openValidatorErrorDialog("Global error", "Please check the following fields");
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Global error")));
         onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Please check the following fields")));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -88,7 +88,7 @@ public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessageScreenRotation() {
-        openValidatorErrorDialog(null);
+        openValidatorErrorDialog(null, null);
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(not(isDisplayed())));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -112,7 +112,8 @@ public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessageWithMessageScreenRotation() {
-        openValidatorErrorDialog("Please check the following fields");
+        openValidatorErrorDialog("Global error", "Please check the following fields");
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Global error")));
         onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Please check the following fields")));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -136,11 +137,14 @@ public class ValidatorErrorDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
     }
 
-    private void openValidatorErrorDialog(String message) {
+    private void openValidatorErrorDialog(String title, String message) {
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         ValidationResult result1 = new ValidationResult(false, "field1", "message1");
         ValidationResult result2 = new ValidationResult(false, "field2", "message2");
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), Arrays.asList(result1, result2));
+        if (title != null) {
+            BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
+        }
         if (message != null) {
             BundleUtil.stringToBundle(errorDialog.getMessageKey(), message, bundle);
         }
