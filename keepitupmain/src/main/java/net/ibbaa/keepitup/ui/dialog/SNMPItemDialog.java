@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.ui.adapter.SNMPItemAdapter;
 import net.ibbaa.keepitup.ui.support.SNMPItemSupport;
@@ -210,6 +211,10 @@ public class SNMPItemDialog extends DialogFragmentBase {
         return (SNMPItemAdapter) getSNMPItemRecyclerView().getAdapter();
     }
 
+    public String getInitialSNMPItemsKey() {
+        return SNMPItemDialog.class.getSimpleName() + ".InitialSNMPItems";
+    }
+
     public String getNetworkTaskIdKey() {
         return SNMPItemDialog.class.getSimpleName() + ".NetworkTaskId";
     }
@@ -231,7 +236,12 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     private RecyclerView.Adapter<?> createAdapter() {
         Log.d(SNMPItemDialog.class.getName(), "createAdapter");
-        return new SNMPItemAdapter(Collections.emptyList(), this);
+        List<SNMPItem> initialItems = Collections.emptyList();
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            initialItems = BundleUtil.snmpItemListFromBundle(getInitialSNMPItemsKey(), arguments);
+        }
+        return new SNMPItemAdapter(initialItems, this);
     }
 
     private SNMPItemSupport getSNMPItemSupport() {
