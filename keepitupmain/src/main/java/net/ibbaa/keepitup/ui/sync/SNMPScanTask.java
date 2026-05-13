@@ -21,20 +21,31 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPVersion;
+import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
+import net.ibbaa.keepitup.service.network.SNMPAccess;
+import net.ibbaa.keepitup.service.network.SNMPMapping;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidator;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -42,19 +53,21 @@ import java.util.concurrent.TimeoutException;
 public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
 
     private final Context context;
+    private final long networktaskId;
     private final String address;
     private final int port;
     private final SNMPVersion snmpVersion;
     private final String community;
     private InetAddress inetAddress;
 
-    public SNMPScanTask(UITaskResultDispatcher<SNMPScanResult> dispatcher, Context context, String address, int port, SNMPVersion snmpVersion, String community) {
+    public SNMPScanTask(UITaskResultDispatcher<SNMPScanResult> dispatcher, Context context, long networktaskId, String address, int port, SNMPVersion snmpVersion, String community) {
         super(dispatcher);
         this.context = context;
+        this.networktaskId = networktaskId;
         this.address = address;
         this.port = port;
         this.snmpVersion = snmpVersion == null ? SNMPVersion.V2C : snmpVersion;
-        this.community = community;
+        this.community = StringUtil.notNull(community);
     }
 
     @Override
@@ -64,8 +77,8 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         if (!errors.isEmpty()) {
             return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), errors, null);
         }
-        Future<DNSLookupResult> futureDNS = ThreadUtil.execute(this::dnsLookup);
-        String errorMessage = getResources().getString(R.string.text_dns_lookup_error, address) + " " + getResources().getString(R.string.text_dns_lookup_no_address);
+        Callable<DNSLookupResult> dnsLookup = getDNSLookup(address);
+        Future<DNSLookupResult> futureDNS = ThreadUtil.execute(dnsLookup);
         try {
             Log.d(SNMPScanTask.class.getName(), "Performing DNS lookup");
             int timeout = getResources().getInteger(R.integer.dns_timeout);
@@ -73,6 +86,7 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
             List<InetAddress> addresses = dnsResult.getAddresses();
             if (addresses == null || addresses.isEmpty()) {
                 Log.d(SNMPScanTask.class.getName(), "DNS lookup returned no addresses");
+                String errorMessage = getResources().getString(R.string.text_dns_lookup_error, address) + " " + getResources().getString(R.string.text_dns_lookup_no_address);
                 return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), List.of(errorMessage), null);
             } else {
                 Log.d(SNMPScanTask.class.getName(), "DNS lookup returned the following addresses " + addresses);
@@ -80,6 +94,7 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
             }
         } catch (Exception exc) {
             futureDNS.cancel(true);
+            String errorMessage = getResources().getString(R.string.text_dns_lookup_error, address);
             return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), List.of(errorMessage), exc);
         }
         Future<SNMPScanResult> futureSNMP = ThreadUtil.execute(this::walk);
@@ -116,15 +131,39 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         return errors;
     }
 
-    private DNSLookupResult dnsLookup() {
-        Log.d(SNMPScanTask.class.getName(), "dnsLookup");
-        return new DNSLookupResult(Collections.emptyList(), "", null);
-    }
-
     private SNMPScanResult walk() {
         Log.d(SNMPScanTask.class.getName(), "walk");
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        SNMPAccess snmpAccess = getSNMPAccess();
+        SNMPAccess.WalkResult ifDescrResult = snmpAccess.walkInterfacesDescr();
+        if (!ifDescrResult.success()) {
+            return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), ifDescrResult.errorMessages(), ifDescrResult.exception());
+        }
+        List<SNMPItem> snmpItems = snmpMapping.toSNMPInterfaceItems(ifDescrResult.result(), networktaskId);
+        Collections.sort(snmpItems, new SNMPItemNameComparator());
+        SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
+        if (!ifTypeResult.success()) {
+            return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifTypeResult.errorMessages(), ifTypeResult.exception());
+        }
+        SNMPAccess.WalkResult ifOperStatusResult = snmpAccess.walkInterfacesOperStatus();
+        if (!ifOperStatusResult.success()) {
+            return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifOperStatusResult.errorMessages(), ifOperStatusResult.exception());
+        }
+        Map<String, String> combinedInfo = new HashMap<>(ifTypeResult.result().size() + ifOperStatusResult.result().size());
+        combinedInfo.putAll(ifTypeResult.result());
+        combinedInfo.putAll(ifOperStatusResult.result());
+        Map<String, SNMPInterfaceInfo> interfaceInfos = snmpMapping.toInterfaceInfo(snmpItems, combinedInfo);
+        return new SNMPScanResult(true, snmpItems, interfaceInfos, Collections.emptyList(), null);
+    }
 
-        return new SNMPScanResult(true, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), null);
+    protected Callable<DNSLookupResult> getDNSLookup(String host) {
+        return new DNSLookup(host);
+    }
+
+    protected SNMPAccess getSNMPAccess() {
+        int timeout = getResources().getInteger(R.integer.snmp_request_timeout_ui);
+        int retries = getResources().getInteger(R.integer.snmp_request_retries_ui);
+        return new SNMPAccess(getContext(), inetAddress, port, snmpVersion, community, inetAddress instanceof Inet6Address, timeout, retries);
     }
 
     protected Resources getResources() {
@@ -133,5 +172,14 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
 
     protected Context getContext() {
         return context;
+    }
+
+    private static class SNMPItemNameComparator implements Comparator<SNMPItem> {
+        @Override
+        public int compare(SNMPItem item1, SNMPItem item2) {
+            String name1 = item1.getName() != null ? item1.getName() : "";
+            String name2 = item2.getName() != null ? item2.getName() : "";
+            return name1.compareTo(name2);
+        }
     }
 }

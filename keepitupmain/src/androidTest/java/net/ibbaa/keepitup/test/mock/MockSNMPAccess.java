@@ -26,6 +26,9 @@ import java.net.InetAddress;
 public class MockSNMPAccess extends SNMPAccess {
 
     private WalkResult walkResult;
+    private WalkResult walkInterfacesDescrResult;
+    private WalkResult walkInterfacesTypeResult;
+    private WalkResult walkInterfacesOperStatusResult;
 
     public MockSNMPAccess(Context context) {
         super(context, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", false);
@@ -35,8 +38,35 @@ public class MockSNMPAccess extends SNMPAccess {
         this.walkResult = walkResult;
     }
 
+    public void setWalkInterfacesDescrResult(WalkResult walkInterfacesDescrResult) {
+        this.walkInterfacesDescrResult = walkInterfacesDescrResult;
+    }
+
+    public void setWalkInterfacesTypeResult(WalkResult walkInterfacesTypeResult) {
+        this.walkInterfacesTypeResult = walkInterfacesTypeResult;
+    }
+
+    public void setWalkInterfacesOperStatusResult(WalkResult walkInterfacesOperStatusResult) {
+        this.walkInterfacesOperStatusResult = walkInterfacesOperStatusResult;
+    }
+
     @Override
     public WalkResult walkSystem() {
         return walkResult;
+    }
+
+    @Override
+    public WalkResult walkInterfacesDescr() {
+        return walkInterfacesDescrResult;
+    }
+
+    @Override
+    public WalkResult walkInterfacesType() {
+        return walkInterfacesTypeResult;
+    }
+
+    @Override
+    public WalkResult walkInterfacesOperStatus() {
+        return walkInterfacesOperStatusResult;
     }
 }

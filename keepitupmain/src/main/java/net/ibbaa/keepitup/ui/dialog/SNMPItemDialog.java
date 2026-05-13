@@ -39,6 +39,7 @@ import net.ibbaa.keepitup.ui.support.SNMPItemSupport;
 import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
 import net.ibbaa.keepitup.ui.sync.SNMPScanTask;
 import net.ibbaa.keepitup.ui.sync.SNMPScanViewModel;
+import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.util.Collections;
@@ -170,6 +171,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
     private void onScanDone(SNMPScanResult result) {
         Log.d(SNMPItemDialog.class.getName(), "onScanDone, success is " + result.success());
         scanned = true;
+        getAdapter().replaceItems(result.descrResult());
         getAdapter().notifyDataSetChanged();
         closeProgressDialog();
     }
@@ -206,6 +208,10 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     public SNMPItemAdapter getAdapter() {
         return (SNMPItemAdapter) getSNMPItemRecyclerView().getAdapter();
+    }
+
+    public String getNetworkTaskIdKey() {
+        return SNMPItemDialog.class.getSimpleName() + ".NetworkTaskId";
     }
 
     private String getSNMPItemAdapterKey() {
@@ -256,12 +262,12 @@ public class SNMPItemDialog extends DialogFragmentBase {
         if (scanTask != null) {
             return scanTask;
         }
-        Bundle arguments = requireArguments();
-        String address = arguments.getString(getAddressKey());
-        int port = arguments.getInt(getPortKey());
-        SNMPVersion snmpVersion = SNMPVersion.valueOf(arguments.getString(getSNMPVersionKey()));
-        String community = arguments.getString(getCommunityKey());
-        return new SNMPScanTask(scanViewModel.getScanDispatcher(), requireContext(), address, port, snmpVersion, community);
+        String address = BundleUtil.stringFromBundle(getAddressKey(), requireArguments());
+        int port = BundleUtil.integerFromBundle(getPortKey(), requireArguments());
+        SNMPVersion snmpVersion = SNMPVersion.valueOf(BundleUtil.stringFromBundle(getSNMPVersionKey(), requireArguments()));
+        String community = BundleUtil.stringFromBundle(getCommunityKey(), requireArguments());
+        long networkTaskId = BundleUtil.longFromBundle(getNetworkTaskIdKey(), requireArguments());
+        return new SNMPScanTask(scanViewModel.getScanDispatcher(), requireContext(), networkTaskId, address, port, snmpVersion, community);
     }
 
     @SuppressWarnings({"UnusedReturnValue"})

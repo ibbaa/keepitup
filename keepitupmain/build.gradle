@@ -90,7 +90,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.18.0'
     implementation 'androidx.core:core:1.18.0'
     implementation 'androidx.documentfile:documentfile:1.1.0'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation 'com.google.guava:guava:33.6.0-android'
     implementation 'com.google.crypto.tink:tink-android:1.21.0'
     implementation 'net.ibbaa.phonelog:phonelog:2.1.2'

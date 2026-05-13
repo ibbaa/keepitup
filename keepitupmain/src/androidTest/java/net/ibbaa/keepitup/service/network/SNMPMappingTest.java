@@ -26,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -36,6 +37,8 @@ import org.junit.runner.RunWith;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TimeTicks;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -289,5 +292,264 @@ public class SNMPMappingTest {
             assertEquals(5L, item.getNetworkTaskId());
             assertFalse(item.isMonitored());
         }
+    }
+
+    @Test
+    public void testToInterfaceInfoNullList() {
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(null, new HashMap<>());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testToInterfaceInfoEmptyList() {
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(Collections.emptyList(), new HashMap<>());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testToInterfaceInfoNullValues() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> list = List.of(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, null);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(interfaceDescrOid + ".1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(-1, info.getType());
+        assertEquals(-1, info.getStatus());
+        assertNull(info.getAlias());
+    }
+
+    @Test
+    public void testToInterfaceInfoEmptyValues() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> list = List.of(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, new HashMap<>());
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(interfaceDescrOid + ".1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(-1, info.getType());
+        assertEquals(-1, info.getStatus());
+        assertNull(info.getAlias());
+    }
+
+    @Test
+    public void testToInterfaceInfoAllValuesPresent() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
+        String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> list = List.of(getSNMPItem(interfaceDescrOid + ".63", "eth0"));
+        Map<String, String> values = new HashMap<>();
+        values.put(interfaceTypeOid + ".63", "6");
+        values.put(interfaceOperStatusOid + ".63", "1");
+        values.put(interfaceAliasOid + ".63", "LAN");
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, values);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(interfaceDescrOid + ".63");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(6, info.getType());
+        assertEquals(1, info.getStatus());
+        assertEquals("LAN", info.getAlias());
+    }
+
+    @Test
+    public void testToInterfaceInfoPartialValues() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
+        List<SNMPItem> list = List.of(getSNMPItem(interfaceDescrOid + ".5", "lo"));
+        Map<String, String> values = new HashMap<>();
+        values.put(interfaceTypeOid + ".5", "24");
+        values.put(interfaceOperStatusOid + ".5", "2");
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, values);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(interfaceDescrOid + ".5");
+        assertNotNull(info);
+        assertEquals("lo", info.getDescr());
+        assertEquals(24, info.getType());
+        assertEquals(2, info.getStatus());
+        assertNull(info.getAlias());
+    }
+
+    @Test
+    public void testToInterfaceInfoMultipleInterfaces() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
+        String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> list = new ArrayList<>();
+        list.add(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        list.add(getSNMPItem(interfaceDescrOid + ".2", "eth1"));
+        Map<String, String> values = new HashMap<>();
+        values.put(interfaceTypeOid + ".1", "6");
+        values.put(interfaceOperStatusOid + ".1", "1");
+        values.put(interfaceAliasOid + ".1", "LAN");
+        values.put(interfaceTypeOid + ".2", "6");
+        values.put(interfaceOperStatusOid + ".2", "2");
+        values.put(interfaceAliasOid + ".2", "WAN");
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, values);
+        assertEquals(2, result.size());
+        SNMPInterfaceInfo info1 = result.get(interfaceDescrOid + ".1");
+        assertNotNull(info1);
+        assertEquals("eth0", info1.getDescr());
+        assertEquals(6, info1.getType());
+        assertEquals(1, info1.getStatus());
+        assertEquals("LAN", info1.getAlias());
+        SNMPInterfaceInfo info2 = result.get(interfaceDescrOid + ".2");
+        assertNotNull(info2);
+        assertEquals("eth1", info2.getDescr());
+        assertEquals(6, info2.getType());
+        assertEquals(2, info2.getStatus());
+        assertEquals("WAN", info2.getAlias());
+    }
+
+    @Test
+    public void testToInterfaceInfoNonDescrItemSkipped() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        SNMPItem typeItem = new SNMPItem();
+        typeItem.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        typeItem.setOid(interfaceTypeOid + ".1");
+        typeItem.setName("6");
+        SNMPItem aliasItem = new SNMPItem();
+        aliasItem.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        aliasItem.setOid(interfaceAliasOid + ".1");
+        aliasItem.setName("LAN");
+        List<SNMPItem> list = new ArrayList<>();
+        list.add(typeItem);
+        list.add(aliasItem);
+        list.add(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, new HashMap<>());
+        assertEquals(1, result.size());
+        assertNotNull(result.get(interfaceDescrOid + ".1"));
+    }
+
+    @Test
+    public void testToInterfaceInfoNullItemSkipped() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> list = new ArrayList<>();
+        list.add(null);
+        list.add(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, new HashMap<>());
+        assertEquals(1, result.size());
+        assertNotNull(result.get(interfaceDescrOid + ".1"));
+    }
+
+    @Test
+    public void testToInterfaceInfoEmptyOIDSkipped() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem emptyOidItem = new SNMPItem();
+        emptyOidItem.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        emptyOidItem.setOid("");
+        emptyOidItem.setName("eth0");
+        List<SNMPItem> list = new ArrayList<>();
+        list.add(emptyOidItem);
+        list.add(getSNMPItem(interfaceDescrOid + ".1", "eth1"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, new HashMap<>());
+        assertEquals(1, result.size());
+        assertNotNull(result.get(interfaceDescrOid + ".1"));
+    }
+
+    @Test
+    public void testToInterfaceInfoUnparseableOIDSkipped() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem badOidItem = new SNMPItem();
+        badOidItem.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        badOidItem.setOid("not.a.valid.oid");
+        badOidItem.setName("eth0");
+        List<SNMPItem> list = new ArrayList<>();
+        list.add(badOidItem);
+        list.add(getSNMPItem(interfaceDescrOid + ".1", "eth1"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, new HashMap<>());
+        assertEquals(1, result.size());
+        assertNotNull(result.get(interfaceDescrOid + ".1"));
+    }
+
+    @Test
+    public void testToInterfaceInfoValuesNoMatchingIndex() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
+        String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> list = List.of(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        Map<String, String> values = new HashMap<>();
+        values.put(interfaceTypeOid + ".99", "6");
+        values.put(interfaceOperStatusOid + ".99", "1");
+        values.put(interfaceAliasOid + ".99", "LAN");
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, values);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(interfaceDescrOid + ".1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(-1, info.getType());
+        assertEquals(-1, info.getStatus());
+        assertNull(info.getAlias());
+    }
+
+    @Test
+    public void testToInterfaceInfoInvalidTypeAndStatusValue() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
+        List<SNMPItem> list = List.of(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        Map<String, String> values = new HashMap<>();
+        values.put(interfaceTypeOid + ".1", "invalid");
+        values.put(interfaceOperStatusOid + ".1", "invalid");
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, values);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(interfaceDescrOid + ".1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(-1, info.getType());
+        assertEquals(-1, info.getStatus());
+    }
+
+    @Test
+    public void testToInterfaceInfoMixedValidAndInvalid() {
+        String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
+        String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        SNMPItem nullOidItem = new SNMPItem();
+        nullOidItem.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        nullOidItem.setName("broken");
+        List<SNMPItem> list = new ArrayList<>();
+        list.add(null);
+        list.add(nullOidItem);
+        list.add(getSNMPItem(interfaceDescrOid + ".1", "eth0"));
+        list.add(getSNMPItem(interfaceDescrOid + ".2", "eth1"));
+        Map<String, String> values = new HashMap<>();
+        values.put(interfaceTypeOid + ".1", "6");
+        values.put(interfaceOperStatusOid + ".1", "1");
+        values.put(interfaceAliasOid + ".1", "LAN");
+        values.put(interfaceTypeOid + ".2", "131");
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.toInterfaceInfo(list, values);
+        assertEquals(2, result.size());
+        SNMPInterfaceInfo info1 = result.get(interfaceDescrOid + ".1");
+        assertNotNull(info1);
+        assertEquals("eth0", info1.getDescr());
+        assertEquals(6, info1.getType());
+        assertEquals(1, info1.getStatus());
+        assertEquals("LAN", info1.getAlias());
+        SNMPInterfaceInfo info2 = result.get(interfaceDescrOid + ".2");
+        assertNotNull(info2);
+        assertEquals("eth1", info2.getDescr());
+        assertEquals(131, info2.getType());
+        assertEquals(-1, info2.getStatus());
+        assertNull(info2.getAlias());
+    }
+
+    private SNMPItem getSNMPItem(String oidString, String name) {
+        SNMPItem item = new SNMPItem();
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setOid(oidString);
+        item.setName(name);
+        return item;
     }
 }

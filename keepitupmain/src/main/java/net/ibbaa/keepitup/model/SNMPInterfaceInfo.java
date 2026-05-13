@@ -23,6 +23,13 @@ public class SNMPInterfaceInfo {
     private int status;
     private String alias;
 
+    public SNMPInterfaceInfo() {
+        this.descr = null;
+        this.type = -1;
+        this.status = -1;
+        this.alias = null;
+    }
+
     public String getDescr() {
         return descr;
     }

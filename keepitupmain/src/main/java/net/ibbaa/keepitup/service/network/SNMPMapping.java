@@ -20,11 +20,14 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import org.snmp4j.smi.OID;
 import org.snmp4j.smi.Variable;
 
 import java.util.ArrayList;
@@ -85,7 +88,64 @@ public class SNMPMapping {
         return getResources().getString(R.string.interface_alias_oid);
     }
 
+    public Map<String, SNMPInterfaceInfo> toInterfaceInfo(List<SNMPItem> ifDescrList, Map<String, String> values) {
+        Log.d(SNMPMapping.class.getName(), "toInterfaceInfo");
+        Map<String, SNMPInterfaceInfo> result = new HashMap<>();
+        if (ifDescrList == null) {
+            return result;
+        }
+        for (SNMPItem item : ifDescrList) {
+            OID oid = validateItemAndGetOID(item);
+            if (oid != null) {
+                int index = oid.get(oid.size() - 1);
+                SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+                info.setDescr(item.getName());
+                if (values != null) {
+                    String typeValue = values.get(getInterfaceTypeOID() + "." + index);
+                    if (typeValue != null) {
+                        info.setType(NumberUtil.getIntValue(typeValue, -1));
+                    }
+                    String statusValue = values.get(getInterfaceOperStatusOID() + "." + index);
+                    if (statusValue != null) {
+                        info.setStatus(NumberUtil.getIntValue(statusValue, -1));
+                    }
+                    String aliasValue = values.get(getInterfaceAliasOID() + "." + index);
+                    if (aliasValue != null) {
+                        info.setAlias(aliasValue);
+                    }
+                }
+                result.put(item.getOid(), info);
+            }
+        }
+        return result;
+    }
+
+    private OID validateItemAndGetOID(SNMPItem item) {
+        if (item == null) {
+            Log.d(SNMPMapping.class.getName(), "item is null");
+            return null;
+        }
+        if (!SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType())) {
+            Log.d(SNMPMapping.class.getName(), "item has unexpected type " + item.getSnmpItemType());
+            return null;
+        }
+        String oidString = item.getOid();
+        if (StringUtil.isEmpty(oidString)) {
+            Log.e(SNMPMapping.class.getName(), "OID is empty");
+            return null;
+        }
+        OID oid;
+        try {
+            oid = new OID(oidString);
+        } catch (Exception exc) {
+            Log.e(SNMPMapping.class.getName(), "OID not parseable: " + oidString, exc);
+            return null;
+        }
+        return oid;
+    }
+
     public List<SNMPItem> toSNMPInterfaceItems(Map<String, String> values, long networktaskId) {
+        Log.d(SNMPMapping.class.getName(), "toSNMPInterfaceItems");
         List<SNMPItem> snmpList = new ArrayList<>();
         for (Map.Entry<String, String> entry : values.entrySet()) {
             String oid = entry.getKey();
@@ -104,17 +164,24 @@ public class SNMPMapping {
         return snmpList;
     }
 
-    private SNMPItemType getSNMPItemType(String oid) {
-        if (StringUtil.isEmpty(oid)) {
+    private SNMPItemType getSNMPItemType(String oidString) {
+        if (StringUtil.isEmpty(oidString)) {
             return null;
         }
-        if (oid.startsWith(getInterfaceDescrOID())) {
+        OID oid;
+        try {
+            oid = new OID(oidString);
+        } catch (Exception exc) {
+            Log.e(SNMPMapping.class.getName(), "OID not parseable", exc);
+            return null;
+        }
+        if (oid.startsWith(new OID(getInterfaceDescrOID()))) {
             return SNMPItemType.INTERFACEDESCR;
         }
-        if (oid.startsWith(getInterfaceTypeOID())) {
+        if (oid.startsWith(new OID(getInterfaceTypeOID()))) {
             return SNMPItemType.INTERFACETYPE;
         }
-        if (oid.startsWith(getInterfaceAliasOID())) {
+        if (oid.startsWith(new OID(getInterfaceAliasOID()))) {
             return SNMPItemType.INTERFACEALIAS;
         }
         return null;
