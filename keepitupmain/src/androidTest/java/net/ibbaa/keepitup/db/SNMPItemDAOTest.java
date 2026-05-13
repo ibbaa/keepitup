@@ -206,6 +206,55 @@ public class SNMPItemDAOTest {
     }
 
     @Test
+    public void testSortByNameThenId() {
+        SNMPItem item1 = new SNMPItem();
+        item1.setNetworkTaskId(0);
+        item1.setName("Interface");
+        item1.setOid("1.3.6.1.1");
+        item1.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item1.setMonitored(true);
+        SNMPItem item2 = new SNMPItem();
+        item2.setNetworkTaskId(0);
+        item2.setName("Interface");
+        item2.setOid("1.3.6.1.2");
+        item2.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item2.setMonitored(false);
+        SNMPItem item3 = new SNMPItem();
+        item3.setNetworkTaskId(0);
+        item3.setName("Interface");
+        item3.setOid("1.3.6.1.3");
+        item3.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item3.setMonitored(true);
+        item1 = snmpItemDAO.insertSNMPItem(item1);
+        item2 = snmpItemDAO.insertSNMPItem(item2);
+        item3 = snmpItemDAO.insertSNMPItem(item3);
+        List<SNMPItem> readItemList = snmpItemDAO.readAllSNMPItemsForNetworkTask(0);
+        assertEquals(3, readItemList.size());
+        assertEquals(item1.getId(), readItemList.get(0).getId());
+        assertEquals(item2.getId(), readItemList.get(1).getId());
+        assertEquals(item3.getId(), readItemList.get(2).getId());
+        readItemList = snmpItemDAO.readAllSNMPItems();
+        assertEquals(3, readItemList.size());
+        assertEquals(item1.getId(), readItemList.get(0).getId());
+        assertEquals(item2.getId(), readItemList.get(1).getId());
+        assertEquals(item3.getId(), readItemList.get(2).getId());
+        SNMPItem item4 = new SNMPItem();
+        item4.setNetworkTaskId(0);
+        item4.setName("Alpha");
+        item4.setOid("1.3.6.1.4");
+        item4.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item4.setMonitored(false);
+        item4 = snmpItemDAO.insertSNMPItem(item4);
+        readItemList = snmpItemDAO.readAllSNMPItemsForNetworkTask(0);
+        assertEquals(4, readItemList.size());
+        assertEquals("Alpha", readItemList.get(0).getName());
+        assertEquals(item4.getId(), readItemList.get(0).getId());
+        assertEquals(item1.getId(), readItemList.get(1).getId());
+        assertEquals(item2.getId(), readItemList.get(2).getId());
+        assertEquals(item3.getId(), readItemList.get(3).getId());
+    }
+
+    @Test
     public void testNullSNMPItemType() {
         SNMPItem item3 = getSNMPItem3();
         item3 = snmpItemDAO.insertSNMPItem(item3);

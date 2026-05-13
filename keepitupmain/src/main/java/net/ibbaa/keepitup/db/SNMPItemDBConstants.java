@@ -94,7 +94,7 @@ public class SNMPItemDBConstants {
                 getMonitoredColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
-                " ORDER BY " + getNameColumnName() + " ASC";
+                " ORDER BY " + getNameColumnName() + " ASC, " + getIdColumnName() + " ASC";
     }
 
     public String getReadAllSNMPItemStatement() {
@@ -106,7 +106,7 @@ public class SNMPItemDBConstants {
                 getOidColumnName() + ", " +
                 getMonitoredColumnName() +
                 " FROM " + getTableName() +
-                " ORDER BY " + getNameColumnName() + " ASC";
+                " ORDER BY " + getNameColumnName() + " ASC, " + getIdColumnName() + " ASC";
     }
 
     public String getDeleteOrphanSNMPItemStatement() {
