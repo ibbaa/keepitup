@@ -22,6 +22,7 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
@@ -29,7 +30,9 @@ import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BundleUtil {
 
@@ -207,6 +210,37 @@ public class BundleUtil {
         return resultList;
     }
 
+    public static Bundle bundleMapToBundle(String baseKey, Map<String, Bundle> map) {
+        return bundleMapToBundle(baseKey, map, new Bundle());
+    }
+
+    public static Bundle bundleMapToBundle(String baseKey, Map<String, Bundle> map, Bundle bundle) {
+        if (baseKey == null || map == null) {
+            return bundle;
+        }
+        for (Map.Entry<String, Bundle> entry : map.entrySet()) {
+            bundle.putBundle(baseKey + "_" + entry.getKey(), entry.getValue());
+        }
+        return bundle;
+    }
+
+    public static Map<String, Bundle> bundleMapFromBundle(String baseKey, Bundle bundle) {
+        if (baseKey == null || bundle == null) {
+            return Collections.emptyMap();
+        }
+        String prefix = baseKey + "_";
+        Map<String, Bundle> resultMap = new HashMap<>();
+        for (String key : bundle.keySet()) {
+            if (key.startsWith(prefix)) {
+                Bundle value = bundle.getBundle(key);
+                if (value != null) {
+                    resultMap.put(key.substring(prefix.length()), value);
+                }
+            }
+        }
+        return resultMap;
+    }
+
     public static Bundle credentialInfoListToBundle(String baseKey, List<CredentialInfo> credentialInfoList) {
         if (baseKey == null || credentialInfoList == null) {
             return new Bundle();
@@ -382,6 +416,30 @@ public class BundleUtil {
             }
         }
         return snmpItemList;
+    }
+
+    public static Bundle snmpInterfaceInfoMapToBundle(String baseKey, Map<String, SNMPInterfaceInfo> map) {
+        return snmpInterfaceInfoMapToBundle(baseKey, map, new Bundle());
+    }
+
+    public static Bundle snmpInterfaceInfoMapToBundle(String baseKey, Map<String, SNMPInterfaceInfo> map, Bundle bundle) {
+        if (baseKey == null || map == null) {
+            return bundle;
+        }
+        Map<String, Bundle> bundleMap = new HashMap<>(map.size());
+        for (Map.Entry<String, SNMPInterfaceInfo> entry : map.entrySet()) {
+            bundleMap.put(entry.getKey(), entry.getValue().toBundle());
+        }
+        return bundleMapToBundle(baseKey, bundleMap, bundle);
+    }
+
+    public static Map<String, SNMPInterfaceInfo> snmpInterfaceInfoMapFromBundle(String baseKey, Bundle bundle) {
+        Map<String, Bundle> bundleMap = bundleMapFromBundle(baseKey, bundle);
+        Map<String, SNMPInterfaceInfo> result = new HashMap<>(bundleMap.size());
+        for (Map.Entry<String, Bundle> entry : bundleMap.entrySet()) {
+            result.put(entry.getKey(), new SNMPInterfaceInfo(entry.getValue()));
+        }
+        return result;
     }
 
     public static Bundle resolveListToBundle(String baseKey, List<Resolve> resolveList) {

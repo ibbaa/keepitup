@@ -172,7 +172,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
     private void onScanDone(SNMPScanResult result) {
         Log.d(SNMPItemDialog.class.getName(), "onScanDone, success is " + result.success());
         scanned = true;
-        getAdapter().replaceItems(result.descrResult());
+        getAdapter().replaceItems(result.descrResult(), result.interfaceInfos());
         getAdapter().notifyDataSetChanged();
         closeProgressDialog();
     }
@@ -229,7 +229,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
         Log.d(SNMPItemDialog.class.getName(), "restoreAdapter");
-        SNMPItemAdapter adapter = new SNMPItemAdapter(Collections.emptyList(), this);
+        SNMPItemAdapter adapter = new SNMPItemAdapter(Collections.emptyList(), Collections.emptyMap(), this);
         adapter.restoreStateFromBundle(adapterState);
         return adapter;
     }
@@ -241,7 +241,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
         if (arguments != null) {
             initialItems = BundleUtil.snmpItemListFromBundle(getInitialSNMPItemsKey(), arguments);
         }
-        return new SNMPItemAdapter(initialItems, this);
+        return new SNMPItemAdapter(initialItems, Collections.emptyMap(),this);
     }
 
     private SNMPItemSupport getSNMPItemSupport() {

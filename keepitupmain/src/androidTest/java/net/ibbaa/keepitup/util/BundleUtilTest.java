@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.Time;
@@ -44,7 +45,9 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @SmallTest
@@ -358,6 +361,100 @@ public class BundleUtilTest {
         assertEquals(2, list.size());
         assertEquals("message1", list.get(0).getString("key1"));
         assertEquals("message2", list.get(1).getString("key2"));
+    }
+
+    @Test
+    public void testEmptyBundleMapToBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Map<String, Bundle> map = new HashMap<>();
+        map.put("mapkey1", nestedBundle1);
+        map.put("mapkey2", nestedBundle2);
+        Bundle bundle = BundleUtil.bundleMapToBundle(null, map);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.bundleMapToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testBundleMapToBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Map<String, Bundle> map = new HashMap<>();
+        map.put("mapkey1", nestedBundle1);
+        map.put("mapkey2", nestedBundle2);
+        Bundle bundle = BundleUtil.bundleMapToBundle("key", map);
+        assertEquals("message1", Objects.requireNonNull(bundle.getBundle("key_mapkey1")).getString("key1"));
+        assertEquals("message2", Objects.requireNonNull(bundle.getBundle("key_mapkey2")).getString("key2"));
+        assertTrue(BundleUtil.bundleMapToBundle(null, map).isEmpty());
+        assertTrue(BundleUtil.bundleMapToBundle("key", null).isEmpty());
+    }
+
+    @Test
+    public void testBundleMapToProvidedBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Map<String, Bundle> map = new HashMap<>();
+        map.put("mapkey1", nestedBundle1);
+        map.put("mapkey2", nestedBundle2);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.bundleMapToBundle("key", map, bundle);
+        assertEquals("message1", Objects.requireNonNull(bundle.getBundle("key_mapkey1")).getString("key1"));
+        assertEquals("message2", Objects.requireNonNull(bundle.getBundle("key_mapkey2")).getString("key2"));
+        assertTrue(bundle.getBoolean("otherkey"));
+    }
+
+    @Test
+    public void testBundleMapFromEmptyBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putBundle("key_mapkey1", new Bundle());
+        bundle.putBundle("key_mapkey2", new Bundle());
+        Map<String, Bundle> map = BundleUtil.bundleMapFromBundle(null, bundle);
+        assertNotNull(map);
+        assertTrue(map.isEmpty());
+        map = BundleUtil.bundleMapFromBundle("key", null);
+        assertNotNull(map);
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void testBundleMapFromBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Bundle bundle = new Bundle();
+        bundle.putBundle("key_mapkey1", nestedBundle1);
+        bundle.putBundle("key_mapkey2", nestedBundle2);
+        Map<String, Bundle> map = BundleUtil.bundleMapFromBundle("key", bundle);
+        assertEquals(2, map.size());
+        assertEquals("message1", Objects.requireNonNull(map.get("mapkey1")).getString("key1"));
+        assertEquals("message2", Objects.requireNonNull(map.get("mapkey2")).getString("key2"));
+    }
+
+    @Test
+    public void testBundleMapToAndFromBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Map<String, Bundle> map = new HashMap<>();
+        map.put("mapkey1", nestedBundle1);
+        map.put("mapkey2", nestedBundle2);
+        Bundle bundle = BundleUtil.bundleMapToBundle("key", map);
+        map = BundleUtil.bundleMapFromBundle("key", bundle);
+        assertEquals(2, map.size());
+        assertEquals("message1", Objects.requireNonNull(map.get("mapkey1")).getString("key1"));
+        assertEquals("message2", Objects.requireNonNull(map.get("mapkey2")).getString("key2"));
     }
 
     @Test
@@ -842,6 +939,88 @@ public class BundleUtilTest {
         assertTrue(item2.isEqual(snmpItemList.get(1)));
     }
 
+    @Test
+    public void testEmptySNMPInterfaceInfoMapToBundle() {
+        Map<String, SNMPInterfaceInfo> map = new HashMap<>();
+        map.put("mapkey1", getSNMPInterfaceInfo("eth0", 6, 1, "LAN"));
+        map.put("mapkey2", getSNMPInterfaceInfo("lo", 24, 1, null));
+        Bundle bundle = BundleUtil.snmpInterfaceInfoMapToBundle(null, map);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.snmpInterfaceInfoMapToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testSNMPInterfaceInfoMapToBundle() {
+        SNMPInterfaceInfo info1 = getSNMPInterfaceInfo("eth0", 6, 1, "LAN");
+        SNMPInterfaceInfo info2 = getSNMPInterfaceInfo("lo", 24, 1, null);
+        Map<String, SNMPInterfaceInfo> map = new HashMap<>();
+        map.put("mapkey1", info1);
+        map.put("mapkey2", info2);
+        Bundle bundle = BundleUtil.snmpInterfaceInfoMapToBundle("key", map);
+        SNMPInterfaceInfo otherInfo1 = new SNMPInterfaceInfo(Objects.requireNonNull(bundle.getBundle("key_mapkey1")));
+        SNMPInterfaceInfo otherInfo2 = new SNMPInterfaceInfo(Objects.requireNonNull(bundle.getBundle("key_mapkey2")));
+        assertTrue(info1.isEqual(otherInfo1));
+        assertTrue(info2.isEqual(otherInfo2));
+    }
+
+    @Test
+    public void testSNMPInterfaceInfoMapToProvidedBundle() {
+        SNMPInterfaceInfo info1 = getSNMPInterfaceInfo("eth0", 6, 1, "LAN");
+        SNMPInterfaceInfo info2 = getSNMPInterfaceInfo("lo", 24, 1, null);
+        Map<String, SNMPInterfaceInfo> map = new HashMap<>();
+        map.put("mapkey1", info1);
+        map.put("mapkey2", info2);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.snmpInterfaceInfoMapToBundle("key", map, bundle);
+        SNMPInterfaceInfo otherInfo1 = new SNMPInterfaceInfo(Objects.requireNonNull(bundle.getBundle("key_mapkey1")));
+        SNMPInterfaceInfo otherInfo2 = new SNMPInterfaceInfo(Objects.requireNonNull(bundle.getBundle("key_mapkey2")));
+        assertTrue(info1.isEqual(otherInfo1));
+        assertTrue(info2.isEqual(otherInfo2));
+        assertTrue(bundle.getBoolean("otherkey"));
+    }
+
+    @Test
+    public void testSNMPInterfaceInfoMapFromEmptyBundle() {
+        Map<String, SNMPInterfaceInfo> map = BundleUtil.snmpInterfaceInfoMapFromBundle("key", null);
+        assertNotNull(map);
+        assertTrue(map.isEmpty());
+        Bundle bundle = new Bundle();
+        map = BundleUtil.snmpInterfaceInfoMapFromBundle("key", bundle);
+        assertNotNull(map);
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void testSNMPInterfaceInfoMapFromBundle() {
+        SNMPInterfaceInfo info1 = getSNMPInterfaceInfo("eth0", 6, 1, "LAN");
+        SNMPInterfaceInfo info2 = getSNMPInterfaceInfo("lo", 24, 1, null);
+        Bundle bundle = new Bundle();
+        bundle.putBundle("key_mapkey1", info1.toBundle());
+        bundle.putBundle("key_mapkey2", info2.toBundle());
+        Map<String, SNMPInterfaceInfo> map = BundleUtil.snmpInterfaceInfoMapFromBundle("key", bundle);
+        assertEquals(2, map.size());
+        assertTrue(info1.isEqual(Objects.requireNonNull(map.get("mapkey1"))));
+        assertTrue(info2.isEqual(Objects.requireNonNull(map.get("mapkey2"))));
+    }
+
+    @Test
+    public void testSNMPInterfaceInfoMapToAndFromBundle() {
+        SNMPInterfaceInfo info1 = getSNMPInterfaceInfo("eth0", 6, 1, "LAN");
+        SNMPInterfaceInfo info2 = getSNMPInterfaceInfo("lo", 24, 1, null);
+        Map<String, SNMPInterfaceInfo> map = new HashMap<>();
+        map.put("mapkey1", info1);
+        map.put("mapkey2", info2);
+        Bundle bundle = BundleUtil.snmpInterfaceInfoMapToBundle("key", map);
+        map = BundleUtil.snmpInterfaceInfoMapFromBundle("key", bundle);
+        assertEquals(2, map.size());
+        assertTrue(info1.isEqual(Objects.requireNonNull(map.get("mapkey1"))));
+        assertTrue(info2.isEqual(Objects.requireNonNull(map.get("mapkey2"))));
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
@@ -895,5 +1074,14 @@ public class BundleUtilTest {
         snmpItem.setOid(oid);
         snmpItem.setMonitored(monitored);
         return snmpItem;
+    }
+
+    private SNMPInterfaceInfo getSNMPInterfaceInfo(String descr, int type, int status, String alias) {
+        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        info.setDescr(descr);
+        info.setType(type);
+        info.setStatus(status);
+        info.setAlias(alias);
+        return info;
     }
 }

@@ -48,6 +48,7 @@ import net.ibbaa.keepitup.model.IntervalTest;
 import net.ibbaa.keepitup.model.LogEntryTest;
 import net.ibbaa.keepitup.model.NetworkTaskTest;
 import net.ibbaa.keepitup.model.ResolveTest;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfoTest;
 import net.ibbaa.keepitup.model.SNMPItemTest;
 import net.ibbaa.keepitup.model.SNMPItemTypeTest;
 import net.ibbaa.keepitup.model.SNMPVersionTest;
@@ -209,6 +210,7 @@ import org.junit.runners.Suite;
         NetworkTaskTest.class,
         ResolveTest.class,
         SchedulerIdTest.class,
+        SNMPInterfaceInfoTest.class,
         SNMPItemTest.class,
         SNMPItemTypeTest.class,
         SNMPVersionTest.class,

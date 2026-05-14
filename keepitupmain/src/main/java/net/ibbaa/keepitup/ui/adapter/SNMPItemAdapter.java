@@ -27,22 +27,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.ui.dialog.SNMPItemDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
 
     private final List<SNMPItem> snmpItems;
+    private final Map<String, SNMPInterfaceInfo> snmpInterfaceInfo;
     private final SNMPItemDialog snmpItemDialog;
 
-    public SNMPItemAdapter(List<SNMPItem> snmpItems, SNMPItemDialog snmpItemDialog) {
-        this.snmpItems = new ArrayList<>();
+    public SNMPItemAdapter(List<SNMPItem> snmpItems, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo, SNMPItemDialog snmpItemDialog) {
+        this.snmpItems = snmpItems;
+        this.snmpInterfaceInfo = snmpInterfaceInfo;
         this.snmpItemDialog = snmpItemDialog;
         replaceItems(snmpItems);
     }
@@ -81,16 +84,21 @@ public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
 
     public Bundle saveStateToBundle() {
         Log.d(SNMPItemAdapter.class.getName(), "saveStateToBundle");
-        return BundleUtil.snmpItemListToBundle(getSNMPItemsKey(), snmpItems);
+        Bundle bundle = BundleUtil.snmpItemListToBundle(getSNMPItemsKey(), snmpItems);
+        return BundleUtil.snmpInterfaceInfoMapToBundle(getSNMPInterfaceInfoKey(), snmpInterfaceInfo, bundle);
     }
 
     public void restoreStateFromBundle(Bundle bundle) {
         Log.d(SNMPItemAdapter.class.getName(), "restoreStateFromBundle");
-        replaceItems(BundleUtil.snmpItemListFromBundle(getSNMPItemsKey(), bundle));
+        replaceItems(BundleUtil.snmpItemListFromBundle(getSNMPItemsKey(), bundle), BundleUtil.snmpInterfaceInfoMapFromBundle(getSNMPInterfaceInfoKey(), bundle));
     }
 
     private String getSNMPItemsKey() {
         return SNMPItemAdapter.class.getSimpleName() + ".SNMPItems";
+    }
+
+    private String getSNMPInterfaceInfoKey() {
+        return SNMPItemAdapter.class.getSimpleName() + ".SNMPInterfaceInfo";
     }
 
     public SNMPItem getItem(int index) {
@@ -102,9 +110,11 @@ public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
         return snmpItems.get(index);
     }
 
-    public void replaceItems(List<SNMPItem> items) {
+    public void replaceItems(List<SNMPItem> items, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo) {
         this.snmpItems.clear();
         this.snmpItems.addAll(items);
+        this.snmpInterfaceInfo.clear();
+        this.snmpInterfaceInfo.putAll(snmpInterfaceInfo);
     }
 
     @Override

@@ -16,6 +16,11 @@
 
 package net.ibbaa.keepitup.model;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
+
+import java.util.Objects;
+
 public class SNMPInterfaceInfo {
 
     private String descr;
@@ -28,6 +33,21 @@ public class SNMPInterfaceInfo {
         this.type = -1;
         this.status = -1;
         this.alias = null;
+    }
+
+    public SNMPInterfaceInfo(SNMPInterfaceInfo other) {
+        this.descr = other.getDescr();
+        this.type = other.getType();
+        this.status = other.getStatus();
+        this.alias = other.getAlias();
+    }
+
+    public SNMPInterfaceInfo(Bundle bundle) {
+        this();
+        this.descr = bundle.getString("descr");
+        this.type = bundle.getInt("type");
+        this.status = bundle.getInt("status");
+        this.alias = bundle.getString("alias");
     }
 
     public String getDescr() {
@@ -60,5 +80,38 @@ public class SNMPInterfaceInfo {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public PersistableBundle toPersistableBundle() {
+        PersistableBundle bundle = new PersistableBundle();
+        if (descr != null) {
+            bundle.putString("descr", descr);
+        }
+        bundle.putInt("type", type);
+        bundle.putInt("status", status);
+        if (alias != null) {
+            bundle.putString("alias", alias);
+        }
+        return bundle;
+    }
+
+    public Bundle toBundle() {
+        return new Bundle(toPersistableBundle());
+    }
+
+    public boolean isEqual(SNMPInterfaceInfo other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!Objects.equals(descr, other.descr)) {
+            return false;
+        }
+        if (!Objects.equals(alias, other.alias)) {
+            return false;
+        }
+        if (status != other.status) {
+            return false;
+        }
+        return type == other.type;
     }
 }
