@@ -41,7 +41,6 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,8 +138,8 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         if (!ifDescrResult.success()) {
             return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), ifDescrResult.errorMessages(), ifDescrResult.exception());
         }
-        List<SNMPItem> snmpItems = snmpMapping.toSNMPInterfaceItems(ifDescrResult.result(), networktaskId);
-        Collections.sort(snmpItems, new SNMPItemNameComparator());
+        List<SNMPItem> snmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networktaskId);
+        Collections.sort(snmpItems, new SNMPMapping.SNMPItemNameComparator());
         SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
         if (!ifTypeResult.success()) {
             return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifTypeResult.errorMessages(), ifTypeResult.exception());
@@ -172,14 +171,5 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
 
     protected Context getContext() {
         return context;
-    }
-
-    private static class SNMPItemNameComparator implements Comparator<SNMPItem> {
-        @Override
-        public int compare(SNMPItem item1, SNMPItem item2) {
-            String name1 = item1.getName() != null ? item1.getName() : "";
-            String name2 = item2.getName() != null ? item2.getName() : "";
-            return name1.compareTo(name2);
-        }
     }
 }

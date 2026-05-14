@@ -49,7 +49,7 @@ public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
         this.snmpItems = new ArrayList<>();
         this.snmpInterfaceInfo = new HashMap<>();
         this.snmpItemDialog = snmpItemDialog;
-        replaceItems(snmpItems);
+        replaceItems(snmpItems, snmpInterfaceInfo);
     }
 
     @NonNull
@@ -131,6 +131,10 @@ public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
 
     public List<SNMPItem> getAllItems() {
         return Collections.unmodifiableList(snmpItems);
+    }
+
+    public Map<String, SNMPInterfaceInfo> getInterfaceInfos() {
+        return Collections.unmodifiableMap(snmpInterfaceInfo);
     }
 
     public Context getContext() {

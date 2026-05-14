@@ -28,6 +28,7 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -167,18 +168,18 @@ public class SNMPMappingTest {
     }
 
     @Test
-    public void testToSNMPInterfaceItemsEmptyMap() {
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(new HashMap<>(), 1L);
+    public void testToSNMPItemsEmptyMap() {
+        List<SNMPItem> result = snmpMapping.toSNMPItems(new HashMap<>(), 1L);
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
 
     @Test
-    public void testToSNMPInterfaceItemsDescrOID() {
+    public void testToSNMPItemsDescrOID() {
         String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
         Map<String, String> values = new HashMap<>();
         values.put(interfaceDescrOid + ".1", "eth0");
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(values, 42L);
+        List<SNMPItem> result = snmpMapping.toSNMPItems(values, 42L);
         assertEquals(1, result.size());
         SNMPItem item = result.get(0);
         assertEquals(SNMPItemType.INTERFACEDESCR, item.getSnmpItemType());
@@ -189,11 +190,11 @@ public class SNMPMappingTest {
     }
 
     @Test
-    public void testToSNMPInterfaceItemsTypeOID() {
+    public void testToSNMPItemsTypeOID() {
         String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
         Map<String, String> values = new HashMap<>();
         values.put(interfaceTypeOid + ".1", "6");
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(values, 42L);
+        List<SNMPItem> result = snmpMapping.toSNMPItems(values, 42L);
         assertEquals(1, result.size());
         SNMPItem item = result.get(0);
         assertEquals(SNMPItemType.INTERFACETYPE, item.getSnmpItemType());
@@ -204,11 +205,11 @@ public class SNMPMappingTest {
     }
 
     @Test
-    public void testToSNMPInterfaceItemsAliasOID() {
+    public void testToSNMPItemsAliasOID() {
         String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
         Map<String, String> values = new HashMap<>();
         values.put(interfaceAliasOid + ".1", "LAN");
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(values, 42L);
+        List<SNMPItem> result = snmpMapping.toSNMPItems(values, 42L);
         assertEquals(1, result.size());
         SNMPItem item = result.get(0);
         assertEquals(SNMPItemType.INTERFACEALIAS, item.getSnmpItemType());
@@ -219,19 +220,19 @@ public class SNMPMappingTest {
     }
 
     @Test
-    public void testToSNMPInterfaceItemsUnknownOIDsFiltered() {
+    public void testToSNMPItemsUnknownOIDsFiltered() {
         String sysDescrOid = TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid);
         String interfaceOperStatusOid = TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_oid);
         Map<String, String> values = new HashMap<>();
         values.put(sysDescrOid, "some system");
         values.put(interfaceOperStatusOid + ".1", "1");
         values.put("1.2.3.4.5", "unknown");
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(values, 1L);
+        List<SNMPItem> result = snmpMapping.toSNMPItems(values, 1L);
         assertTrue(result.isEmpty());
     }
 
     @Test
-    public void testToSNMPInterfaceItemsMixed() {
+    public void testToSNMPItemsMixed() {
         String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
         String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
         String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
@@ -241,7 +242,7 @@ public class SNMPMappingTest {
         values.put(interfaceTypeOid + ".1", "6");
         values.put(interfaceAliasOid + ".1", "LAN");
         values.put(sysDescrOid, "some system");
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(values, 10L);
+        List<SNMPItem> result = snmpMapping.toSNMPItems(values, 10L);
         assertEquals(3, result.size());
         assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
         assertEquals(interfaceDescrOid + ".1", result.get(0).getOid());
@@ -259,7 +260,7 @@ public class SNMPMappingTest {
     }
 
     @Test
-    public void testToSNMPInterfaceItemsMultipleInterfaces() {
+    public void testToSNMPItemsMultipleInterfaces() {
         String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
         String interfaceTypeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
         String interfaceAliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
@@ -270,7 +271,7 @@ public class SNMPMappingTest {
         values.put(interfaceTypeOid + ".2", "6");
         values.put(interfaceAliasOid + ".1", "LAN");
         values.put(interfaceAliasOid + ".2", "WAN");
-        List<SNMPItem> result = snmpMapping.toSNMPInterfaceItems(values, 5L);
+        List<SNMPItem> result = snmpMapping.toSNMPItems(values, 5L);
         assertEquals(6, result.size());
         assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
         assertEquals(interfaceDescrOid + ".1", result.get(0).getOid());
@@ -545,11 +546,435 @@ public class SNMPMappingTest {
         assertNull(info2.getAlias());
     }
 
+    @Test
+    public void testFilterDescrItemsNull() {
+        List<SNMPItem> result = snmpMapping.filterDescrItems(null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testFilterDescrItemsEmpty() {
+        List<SNMPItem> result = snmpMapping.filterDescrItems(Collections.emptyList());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testFilterDescrItemsMixed() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> allItems = new ArrayList<>();
+        allItems.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        allItems.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        allItems.add(createAliasItem(30, 1, aliasOid + ".1", "LAN"));
+        allItems.add(createDescrItem(11, 1, descrOid + ".2", "lo", false));
+        List<SNMPItem> result = snmpMapping.filterDescrItems(allItems);
+        assertEquals(2, result.size());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+        assertEquals("eth0", result.get(0).getName());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(1).getSnmpItemType());
+        assertEquals("lo", result.get(1).getName());
+    }
+
+    @Test
+    public void testExtractSNMPInterfaceInfosNull() {
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.extractSNMPInterfaceInfos(null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testExtractSNMPInterfaceInfosEmpty() {
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.extractSNMPInterfaceInfos(Collections.emptyList());
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testExtractSNMPInterfaceInfosOnlyDescr() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> allItems = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.extractSNMPInterfaceInfos(allItems);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(descrOid + ".1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(-1, info.getType());
+        assertEquals(-1, info.getStatus());
+        assertNull(info.getAlias());
+    }
+
+    @Test
+    public void testExtractSNMPInterfaceInfosWithTypeAndAlias() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> allItems = new ArrayList<>();
+        allItems.add(createDescrItem(10, 1, descrOid + ".3", "eth0", false));
+        allItems.add(createTypeItem(20, 1, typeOid + ".3", "6"));
+        allItems.add(createAliasItem(30, 1, aliasOid + ".3", "LAN"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.extractSNMPInterfaceInfos(allItems);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(descrOid + ".3");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(6, info.getType());
+        assertEquals("LAN", info.getAlias());
+    }
+
+    @Test
+    public void testExtractSNMPInterfaceInfosMultipleInterfaces() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> allItems = new ArrayList<>();
+        allItems.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        allItems.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        allItems.add(createAliasItem(30, 1, aliasOid + ".1", "LAN"));
+        allItems.add(createDescrItem(11, 1, descrOid + ".2", "lo", false));
+        allItems.add(createTypeItem(21, 1, typeOid + ".2", "24"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.extractSNMPInterfaceInfos(allItems);
+        assertEquals(2, result.size());
+        SNMPInterfaceInfo info1 = result.get(descrOid + ".1");
+        assertNotNull(info1);
+        assertEquals("eth0", info1.getDescr());
+        assertEquals(6, info1.getType());
+        assertEquals("LAN", info1.getAlias());
+        SNMPInterfaceInfo info2 = result.get(descrOid + ".2");
+        assertNotNull(info2);
+        assertEquals("lo", info2.getDescr());
+        assertEquals(24, info2.getType());
+        assertNull(info2.getAlias());
+    }
+
+    @Test
+    public void testExtractSNMPInterfaceInfosNullOrEmptyOIDSkipped() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> allItems = new ArrayList<>();
+        allItems.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        SNMPItem nullOid = createTypeItem(20, 1, null, "6");
+        SNMPItem emptyOid = createTypeItem(21, 1, "", "6");
+        SNMPItem nullName = createTypeItem(22, 1, typeOid + ".1", null);
+        allItems.add(nullOid);
+        allItems.add(emptyOid);
+        allItems.add(nullName);
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.extractSNMPInterfaceInfos(allItems);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get(descrOid + ".1");
+        assertNotNull(info);
+        assertEquals(-1, info.getType());
+    }
+
+    @Test
+    public void testMergeDescrItemsBothEmpty() {
+        SNMPItemMergeResult result = snmpMapping.mergeDescrItems(Collections.emptyList(), Collections.emptyList());
+        assertNotNull(result);
+        assertTrue(result.mergedItems().isEmpty());
+        assertTrue(result.removedMonitoredItems().isEmpty());
+    }
+
+    @Test
+    public void testMergeDescrItemsExistingEmpty() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> scanned = new ArrayList<>();
+        scanned.add(createDescrItem(-1, 5, descrOid + ".1", "eth0", false));
+        scanned.add(createDescrItem(-1, 5, descrOid + ".2", "lo", false));
+        SNMPItemMergeResult result = snmpMapping.mergeDescrItems(Collections.emptyList(), scanned);
+        assertEquals(2, result.mergedItems().size());
+        assertTrue(result.removedMonitoredItems().isEmpty());
+        assertEquals("eth0", result.mergedItems().get(0).getName());
+        assertEquals("lo", result.mergedItems().get(1).getName());
+    }
+
+    @Test
+    public void testMergeDescrItemsScannedEmptyMonitoredRemoved() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> existing = new ArrayList<>();
+        existing.add(createDescrItem(10, 1, descrOid + ".1", "eth0", true));
+        existing.add(createDescrItem(11, 1, descrOid + ".2", "lo", false));
+        SNMPItemMergeResult result = snmpMapping.mergeDescrItems(existing, Collections.emptyList());
+        assertTrue(result.mergedItems().isEmpty());
+        assertEquals(1, result.removedMonitoredItems().size());
+        assertEquals("eth0", result.removedMonitoredItems().get(0).getName());
+    }
+
+    @Test
+    public void testMergeDescrItemsSameNamesPreservesIdAndMonitored() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> existing = new ArrayList<>();
+        existing.add(createDescrItem(10, 1, descrOid + ".5", "eth0", true));
+        List<SNMPItem> scanned = new ArrayList<>();
+        scanned.add(createDescrItem(-1, 1, descrOid + ".3", "eth0", false));
+        SNMPItemMergeResult result = snmpMapping.mergeDescrItems(existing, scanned);
+        assertEquals(1, result.mergedItems().size());
+        assertTrue(result.removedMonitoredItems().isEmpty());
+        SNMPItem merged = result.mergedItems().get(0);
+        assertEquals(10, merged.getId());
+        assertEquals(descrOid + ".3", merged.getOid());
+        assertTrue(merged.isMonitored());
+    }
+
+    @Test
+    public void testMergeDescrItemsNewAndRemovedMixed() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> existing = new ArrayList<>();
+        existing.add(createDescrItem(10, 1, descrOid + ".1", "eth0", true));
+        existing.add(createDescrItem(11, 1, descrOid + ".2", "lo", false));
+        List<SNMPItem> scanned = new ArrayList<>();
+        scanned.add(createDescrItem(-1, 1, descrOid + ".1", "eth0", false));
+        scanned.add(createDescrItem(-1, 1, descrOid + ".3", "wlan0", false));
+        SNMPItemMergeResult result = snmpMapping.mergeDescrItems(existing, scanned);
+        assertEquals(2, result.mergedItems().size());
+        assertTrue(result.removedMonitoredItems().isEmpty());
+        assertEquals("eth0", result.mergedItems().get(0).getName());
+        assertEquals(10, result.mergedItems().get(0).getId());
+        assertEquals("wlan0", result.mergedItems().get(1).getName());
+        assertEquals(-1, result.mergedItems().get(1).getId());
+    }
+
+    @Test
+    public void testMergeDescrItemsSortedByName() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> scanned = new ArrayList<>();
+        scanned.add(createDescrItem(-1, 1, descrOid + ".3", "wlan0", false));
+        scanned.add(createDescrItem(-1, 1, descrOid + ".1", "eth0", false));
+        scanned.add(createDescrItem(-1, 1, descrOid + ".2", "lo", false));
+        SNMPItemMergeResult result = snmpMapping.mergeDescrItems(Collections.emptyList(), scanned);
+        assertEquals(3, result.mergedItems().size());
+        assertEquals("eth0", result.mergedItems().get(0).getName());
+        assertEquals("lo", result.mergedItems().get(1).getName());
+        assertEquals("wlan0", result.mergedItems().get(2).getName());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsEmptyOriginal() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> newDescr = List.of(createDescrItem(-1, 5, descrOid + ".1", "eth0", false));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".1", createInterfaceInfo(6, 1, null));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(Collections.emptyList(), newDescr, newInfos, 5);
+        assertEquals(2, result.size());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+        assertEquals(-1, result.get(0).getId());
+        assertEquals(SNMPItemType.INTERFACETYPE, result.get(1).getSnmpItemType());
+        assertEquals(typeOid + ".1", result.get(1).getOid());
+        assertEquals("6", result.get(1).getName());
+        assertEquals(-1, result.get(1).getId());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsDescrRemoved() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> originalAll = new ArrayList<>();
+        originalAll.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        originalAll.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        originalAll.add(createAliasItem(30, 1, aliasOid + ".1", "LAN"));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, Collections.emptyList(), Collections.emptyMap(), 1);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsOIDIndexChanged() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> originalAll = new ArrayList<>();
+        originalAll.add(createDescrItem(10, 1, descrOid + ".5", "eth0", false));
+        originalAll.add(createTypeItem(20, 1, typeOid + ".5", "6"));
+        originalAll.add(createAliasItem(30, 1, aliasOid + ".5", "LAN"));
+        List<SNMPItem> editedDescr = List.of(createDescrItem(10, 1, descrOid + ".3", "eth0", false));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".3", createInterfaceInfo(6, 1, "LAN"));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, newInfos, 1);
+        assertEquals(3, result.size());
+        assertEquals(10, result.get(0).getId());
+        assertEquals(descrOid + ".3", result.get(0).getOid());
+        assertEquals(20, result.get(1).getId());
+        assertEquals(typeOid + ".3", result.get(1).getOid());
+        assertEquals("6", result.get(1).getName());
+        assertEquals(30, result.get(2).getId());
+        assertEquals(aliasOid + ".3", result.get(2).getOid());
+        assertEquals("LAN", result.get(2).getName());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsMonitoredFlagUpdated() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        List<SNMPItem> originalAll = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        List<SNMPItem> editedDescr = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", true));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, Collections.emptyMap(), 1);
+        assertEquals(1, result.size());
+        assertEquals(10, result.get(0).getId());
+        assertTrue(result.get(0).isMonitored());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsTypeDisappearedFromScan() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> originalAll = new ArrayList<>();
+        originalAll.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        originalAll.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        List<SNMPItem> editedDescr = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".1", createInterfaceInfo(-1, -1, null));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, newInfos, 1);
+        assertEquals(1, result.size());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsNewTypeForExistingDescr() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> originalAll = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        List<SNMPItem> editedDescr = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".1", createInterfaceInfo(6, 1, null));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, newInfos, 1);
+        assertEquals(2, result.size());
+        assertEquals(10, result.get(0).getId());
+        assertEquals(SNMPItemType.INTERFACETYPE, result.get(1).getSnmpItemType());
+        assertEquals(typeOid + ".1", result.get(1).getOid());
+        assertEquals("6", result.get(1).getName());
+        assertEquals(-1, result.get(1).getId());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsNewDescrWithTypeAndAlias() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        List<SNMPItem> editedDescr = List.of(createDescrItem(-1, 5, descrOid + ".2", "eth0", false));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".2", createInterfaceInfo(6, 1, "LAN"));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(Collections.emptyList(), editedDescr, newInfos, 5);
+        assertEquals(3, result.size());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+        assertEquals(-1, result.get(0).getId());
+        assertEquals(SNMPItemType.INTERFACETYPE, result.get(1).getSnmpItemType());
+        assertEquals(typeOid + ".2", result.get(1).getOid());
+        assertEquals(SNMPItemType.INTERFACEALIAS, result.get(2).getSnmpItemType());
+        assertEquals(aliasOid + ".2", result.get(2).getOid());
+        assertEquals("LAN", result.get(2).getName());
+        assertEquals(5, result.get(1).getNetworkTaskId());
+        assertEquals(5, result.get(2).getNetworkTaskId());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsOriginalOrderPreserved() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> originalAll = new ArrayList<>();
+        originalAll.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        originalAll.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        originalAll.add(createDescrItem(11, 1, descrOid + ".2", "lo", false));
+        originalAll.add(createTypeItem(21, 1, typeOid + ".2", "24"));
+        List<SNMPItem> editedDescr = new ArrayList<>();
+        editedDescr.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        editedDescr.add(createDescrItem(11, 1, descrOid + ".2", "lo", false));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".1", createInterfaceInfo(6, 1, null));
+        newInfos.put(descrOid + ".2", createInterfaceInfo(24, 1, null));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, newInfos, 1);
+        assertEquals(4, result.size());
+        assertEquals(10, result.get(0).getId());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+        assertEquals(20, result.get(1).getId());
+        assertEquals(SNMPItemType.INTERFACETYPE, result.get(1).getSnmpItemType());
+        assertEquals(11, result.get(2).getId());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(2).getSnmpItemType());
+        assertEquals(21, result.get(3).getId());
+        assertEquals(SNMPItemType.INTERFACETYPE, result.get(3).getSnmpItemType());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsNoMutationOfOriginals() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        SNMPItem originalDescr = createDescrItem(10, 1, descrOid + ".5", "eth0", false);
+        SNMPItem originalType = createTypeItem(20, 1, typeOid + ".5", "6");
+        List<SNMPItem> originalAll = new ArrayList<>();
+        originalAll.add(originalDescr);
+        originalAll.add(originalType);
+        List<SNMPItem> editedDescr = List.of(createDescrItem(10, 1, descrOid + ".3", "eth0", true));
+        Map<String, SNMPInterfaceInfo> newInfos = new HashMap<>();
+        newInfos.put(descrOid + ".3", createInterfaceInfo(24, 1, null));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, newInfos, 1);
+        assertEquals(descrOid + ".5", originalDescr.getOid());
+        assertFalse(originalDescr.isMonitored());
+        assertEquals(typeOid + ".5", originalType.getOid());
+        assertEquals(descrOid + ".3", result.get(0).getOid());
+        assertTrue(result.get(0).isMonitored());
+        assertEquals(typeOid + ".3", result.get(1).getOid());
+        assertEquals("24", result.get(1).getName());
+    }
+
+    @Test
+    public void testMergeAllSNMPItemsNewInfosNull() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> originalAll = new ArrayList<>();
+        originalAll.add(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        originalAll.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        List<SNMPItem> editedDescr = List.of(createDescrItem(10, 1, descrOid + ".1", "eth0", false));
+        List<SNMPItem> result = snmpMapping.mergeAllSNMPItems(originalAll, editedDescr, null, 1);
+        assertEquals(1, result.size());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+    }
+
     private SNMPItem getSNMPItem(String oidString, String name) {
         SNMPItem item = new SNMPItem();
         item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
         item.setOid(oidString);
         item.setName(name);
         return item;
+    }
+
+    private SNMPItem createDescrItem(long id, long networkTaskId, String oid, String name, boolean monitored) {
+        SNMPItem item = new SNMPItem();
+        item.setId(id);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setOid(oid);
+        item.setName(name);
+        item.setMonitored(monitored);
+        return item;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private SNMPItem createTypeItem(long id, long networkTaskId, String oid, String name) {
+        SNMPItem item = new SNMPItem();
+        item.setId(id);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item.setOid(oid);
+        item.setName(name);
+        return item;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private SNMPItem createAliasItem(long id, long networkTaskId, String oid, String name) {
+        SNMPItem item = new SNMPItem();
+        item.setId(id);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        item.setOid(oid);
+        item.setName(name);
+        return item;
+    }
+
+    private SNMPInterfaceInfo createInterfaceInfo(int type, int status, String alias) {
+        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        info.setType(type);
+        info.setStatus(status);
+        info.setAlias(alias);
+        return info;
     }
 }

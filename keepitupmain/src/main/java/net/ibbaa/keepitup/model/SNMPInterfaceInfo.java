@@ -35,13 +35,6 @@ public class SNMPInterfaceInfo {
         this.alias = null;
     }
 
-    public SNMPInterfaceInfo(SNMPInterfaceInfo other) {
-        this.descr = other.getDescr();
-        this.type = other.getType();
-        this.status = other.getStatus();
-        this.alias = other.getAlias();
-    }
-
     public SNMPInterfaceInfo(Bundle bundle) {
         this();
         this.descr = bundle.getString("descr");

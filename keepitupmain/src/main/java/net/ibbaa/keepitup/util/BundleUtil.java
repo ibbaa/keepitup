@@ -210,6 +210,7 @@ public class BundleUtil {
         return resultList;
     }
 
+    @SuppressWarnings("unused")
     public static Bundle bundleMapToBundle(String baseKey, Map<String, Bundle> map) {
         return bundleMapToBundle(baseKey, map, new Bundle());
     }
@@ -418,6 +419,7 @@ public class BundleUtil {
         return snmpItemList;
     }
 
+    @SuppressWarnings("unused")
     public static Bundle snmpInterfaceInfoMapToBundle(String baseKey, Map<String, SNMPInterfaceInfo> map) {
         return snmpInterfaceInfoMapToBundle(baseKey, map, new Bundle());
     }

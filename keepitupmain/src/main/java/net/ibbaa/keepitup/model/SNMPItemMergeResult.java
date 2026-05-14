@@ -16,7 +16,7 @@
 
 package net.ibbaa.keepitup.model;
 
-public interface Equality<T> {
-    @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
-    boolean areEqual(T a, T b);
+import java.util.List;
+
+public record SNMPItemMergeResult(List<SNMPItem> mergedItems, List<SNMPItem> removedMonitoredItems) {
 }

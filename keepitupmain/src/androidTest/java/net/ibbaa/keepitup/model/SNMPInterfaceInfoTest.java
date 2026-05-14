@@ -54,20 +54,6 @@ public class SNMPInterfaceInfoTest {
     }
 
     @Test
-    public void testCopy() {
-        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
-        info.setDescr("eth0");
-        info.setType(6);
-        info.setStatus(1);
-        info.setAlias("LAN");
-        SNMPInterfaceInfo copyInfo = new SNMPInterfaceInfo(info);
-        assertEquals("eth0", copyInfo.getDescr());
-        assertEquals(6, copyInfo.getType());
-        assertEquals(1, copyInfo.getStatus());
-        assertEquals("LAN", copyInfo.getAlias());
-    }
-
-    @Test
     public void testToBundleValues() {
         SNMPInterfaceInfo info = new SNMPInterfaceInfo();
         info.setDescr("eth0");

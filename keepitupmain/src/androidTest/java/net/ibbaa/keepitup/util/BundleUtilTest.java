@@ -1076,6 +1076,7 @@ public class BundleUtilTest {
         return snmpItem;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private SNMPInterfaceInfo getSNMPInterfaceInfo(String descr, int type, int status, String alias) {
         SNMPInterfaceInfo info = new SNMPInterfaceInfo();
         info.setDescr(descr);

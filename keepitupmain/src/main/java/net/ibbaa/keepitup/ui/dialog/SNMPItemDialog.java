@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,7 +35,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPVersion;
+import net.ibbaa.keepitup.service.network.SNMPMapping;
 import net.ibbaa.keepitup.ui.adapter.SNMPItemAdapter;
 import net.ibbaa.keepitup.ui.support.SNMPItemSupport;
 import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
@@ -56,6 +59,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
     private SNMPScanViewModel scanViewModel;
     private SNMPScanTask scanTask;
     private boolean scanned;
+    private List<SNMPItem> initialSNMPItems;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,6 +125,8 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     private void prepareSNMPItemRecyclerView(Bundle adapterState) {
         Log.d(SNMPItemDialog.class.getName(), "prepareSNMPItemRecyclerView");
+        Bundle arguments = getArguments();
+        initialSNMPItems = arguments != null ? BundleUtil.snmpItemListFromBundle(getInitialSNMPItemsKey(), arguments) : Collections.emptyList();
         snmpItemRecyclerView = dialogView.findViewById(R.id.listview_dialog_snmp_item_items);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         snmpItemRecyclerView.setLayoutManager(layoutManager);
@@ -153,6 +159,26 @@ public class SNMPItemDialog extends DialogFragmentBase {
         return SNMPItemDialog.class.getSimpleName() + ".Community";
     }
 
+    public String getInitialSNMPItemsKey() {
+        return SNMPItemDialog.class.getSimpleName() + ".InitialSNMPItems";
+    }
+
+    public String getNetworkTaskIdKey() {
+        return SNMPItemDialog.class.getSimpleName() + ".NetworkTaskId";
+    }
+
+    private String getSNMPItemAdapterKey() {
+        return SNMPItemDialog.class.getSimpleName() + ".SNMPItemAdapter";
+    }
+
+    private String getScannedKey() {
+        return SNMPItemDialog.class.getSimpleName() + ".Scanned";
+    }
+
+    public List<SNMPItem> getInitialSNMPItems() {
+        return initialSNMPItems != null ? Collections.unmodifiableList(initialSNMPItems) : Collections.emptyList();
+    }
+
     public void onScanClicked(View view) {
         Log.d(SNMPItemDialog.class.getName(), "onScanClicked");
         showProgressDialog();
@@ -169,14 +195,18 @@ public class SNMPItemDialog extends DialogFragmentBase {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void onScanDone(SNMPScanResult result) {
         Log.d(SNMPItemDialog.class.getName(), "onScanDone, success is " + result.success());
         scanned = true;
         if (result.success()) {
+            SNMPMapping snmpMapping = new SNMPMapping(requireContext());
+            SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(getAdapter().getAllItems(), result.descrResult());
+            List<SNMPItem> removedMonitoredItems = mergeResult.removedMonitoredItems();
             if (result.interfaceInfos().isEmpty()) {
-                getAdapter().replaceItems(result.descrResult());
+                getAdapter().replaceItems(mergeResult.mergedItems());
             } else {
-                getAdapter().replaceItems(result.descrResult(), result.interfaceInfos());
+                getAdapter().replaceItems(mergeResult.mergedItems(), result.interfaceInfos());
             }
         }
         getAdapter().notifyDataSetChanged();
@@ -217,22 +247,6 @@ public class SNMPItemDialog extends DialogFragmentBase {
         return (SNMPItemAdapter) getSNMPItemRecyclerView().getAdapter();
     }
 
-    public String getInitialSNMPItemsKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".InitialSNMPItems";
-    }
-
-    public String getNetworkTaskIdKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".NetworkTaskId";
-    }
-
-    private String getSNMPItemAdapterKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".SNMPItemAdapter";
-    }
-
-    private String getScannedKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".Scanned";
-    }
-
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
         Log.d(SNMPItemDialog.class.getName(), "restoreAdapter");
         SNMPItemAdapter adapter = new SNMPItemAdapter(Collections.emptyList(), Collections.emptyMap(), this);
@@ -242,12 +256,9 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     private RecyclerView.Adapter<?> createAdapter() {
         Log.d(SNMPItemDialog.class.getName(), "createAdapter");
-        List<SNMPItem> initialItems = Collections.emptyList();
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            initialItems = BundleUtil.snmpItemListFromBundle(getInitialSNMPItemsKey(), arguments);
-        }
-        return new SNMPItemAdapter(initialItems, Collections.emptyMap(),this);
+        SNMPMapping snmpMapping = new SNMPMapping(requireContext());
+        List<SNMPItem> descrItems = snmpMapping.filterDescrItems(initialSNMPItems);
+        return new SNMPItemAdapter(descrItems, snmpMapping.extractSNMPInterfaceInfos(initialSNMPItems), this);
     }
 
     private SNMPItemSupport getSNMPItemSupport() {

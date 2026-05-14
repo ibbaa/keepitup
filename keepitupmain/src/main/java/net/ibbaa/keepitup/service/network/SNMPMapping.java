@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -31,9 +32,13 @@ import org.snmp4j.smi.OID;
 import org.snmp4j.smi.Variable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SNMPMapping {
 
@@ -144,8 +149,8 @@ public class SNMPMapping {
         return oid;
     }
 
-    public List<SNMPItem> toSNMPInterfaceItems(Map<String, String> values, long networktaskId) {
-        Log.d(SNMPMapping.class.getName(), "toSNMPInterfaceItems");
+    public List<SNMPItem> toSNMPItems(Map<String, String> values, long networktaskId) {
+        Log.d(SNMPMapping.class.getName(), "toSNMPItems");
         List<SNMPItem> snmpList = new ArrayList<>();
         for (Map.Entry<String, String> entry : values.entrySet()) {
             String oid = entry.getKey();
@@ -238,11 +243,209 @@ public class SNMPMapping {
         return label;
     }
 
+    public List<SNMPItem> filterDescrItems(List<SNMPItem> allItems) {
+        Log.d(SNMPMapping.class.getName(), "filterDescrItems");
+        List<SNMPItem> result = new ArrayList<>();
+        if (allItems == null) {
+            return result;
+        }
+        for (SNMPItem item : allItems) {
+            if (SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType())) {
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
+    public Map<String, SNMPInterfaceInfo> extractSNMPInterfaceInfos(List<SNMPItem> allItems) {
+        Log.d(SNMPMapping.class.getName(), "extractSNMPInterfaceInfos");
+        if (allItems == null) {
+            return new HashMap<>();
+        }
+        List<SNMPItem> descrItems = filterDescrItems(allItems);
+        Map<String, String> values = new HashMap<>();
+        for (SNMPItem item : allItems) {
+            if (item.getSnmpItemType() != null && !SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType()) && !StringUtil.isEmpty(item.getOid()) && item.getName() != null) {
+                values.put(item.getOid(), item.getName());
+            }
+        }
+        return toSNMPInterfaceInfo(descrItems, values);
+    }
+
+    public SNMPItemMergeResult mergeDescrItems(List<SNMPItem> existing, List<SNMPItem> scanned) {
+        Log.d(SNMPMapping.class.getName(), "mergeDescrItems");
+        List<SNMPItem> mergedItems = new ArrayList<>();
+        List<SNMPItem> removedMonitoredItems = new ArrayList<>();
+        Map<String, SNMPItem> existingByName = new HashMap<>();
+        Map<String, SNMPItem> scannedByName = new HashMap<>();
+        for (SNMPItem item : existing) {
+            existingByName.put(StringUtil.notNull(item.getName()), item);
+        }
+        for (SNMPItem item : scanned) {
+            scannedByName.put(StringUtil.notNull(item.getName()), item);
+        }
+        for (SNMPItem existingItem : existing) {
+            String name = StringUtil.notNull(existingItem.getName());
+            SNMPItem scannedItem = scannedByName.get(name);
+            if (scannedItem != null) {
+                SNMPItem mergedItem = new SNMPItem();
+                mergedItem.setId(existingItem.getId());
+                mergedItem.setNetworkTaskId(existingItem.getNetworkTaskId());
+                mergedItem.setSnmpItemType(existingItem.getSnmpItemType());
+                mergedItem.setName(existingItem.getName());
+                mergedItem.setOid(scannedItem.getOid());
+                mergedItem.setMonitored(existingItem.isMonitored());
+                mergedItems.add(mergedItem);
+            } else {
+                if (existingItem.isMonitored()) {
+                    removedMonitoredItems.add(existingItem);
+                }
+            }
+        }
+        for (SNMPItem scannedItem : scanned) {
+            if (!existingByName.containsKey(StringUtil.notNull(scannedItem.getName()))) {
+                mergedItems.add(scannedItem);
+            }
+        }
+        Collections.sort(mergedItems, new SNMPItemNameComparator());
+        return new SNMPItemMergeResult(mergedItems, removedMonitoredItems);
+    }
+
+    public List<SNMPItem> mergeAllSNMPItems(List<SNMPItem> originalAll, List<SNMPItem> editedDescrItems, Map<String, SNMPInterfaceInfo> newInfos, long networkTaskId) {
+        Log.d(SNMPMapping.class.getName(), "mergeAllSNMPItems");
+        Map<Integer, Long> oldIndexToDescrId = new HashMap<>();
+        for (SNMPItem item : originalAll) {
+            if (SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType()) && item.getId() >= 0) {
+                int index = getOidIndex(item.getOid());
+                if (index >= 0) {
+                    oldIndexToDescrId.put(index, item.getId());
+                }
+            }
+        }
+        Map<Long, SNMPItem> editedDescrById = new HashMap<>();
+        List<SNMPItem> newDescrItems = new ArrayList<>();
+        for (SNMPItem item : editedDescrItems) {
+            if (item.getId() >= 0) {
+                editedDescrById.put(item.getId(), item);
+            } else {
+                newDescrItems.add(item);
+            }
+        }
+        List<SNMPItem> result = new ArrayList<>();
+        Set<Integer> handledTypeIndices = new HashSet<>();
+        Set<Integer> handledAliasIndices = new HashSet<>();
+        for (SNMPItem originalItem : originalAll) {
+            SNMPItemType itemType = originalItem.getSnmpItemType();
+            if (SNMPItemType.INTERFACEDESCR.equals(itemType)) {
+                SNMPItem edited = editedDescrById.get(originalItem.getId());
+                if (edited != null) {
+                    result.add(copyItem(originalItem, edited.getOid(), null, edited.isMonitored()));
+                }
+            } else if (SNMPItemType.INTERFACETYPE.equals(itemType) || SNMPItemType.INTERFACEALIAS.equals(itemType)) {
+                int oldIndex = getOidIndex(originalItem.getOid());
+                Long descrId = oldIndexToDescrId.get(oldIndex);
+                if (descrId != null) {
+                    SNMPItem editedDescr = editedDescrById.get(descrId);
+                    if (editedDescr != null) {
+                        int newIndex = getOidIndex(editedDescr.getOid());
+                        SNMPInterfaceInfo info = newInfos != null ? newInfos.get(editedDescr.getOid()) : null;
+                        if (SNMPItemType.INTERFACETYPE.equals(itemType)) {
+                            if (info != null && info.getType() >= 0 && newIndex >= 0) {
+                                result.add(copyItem(originalItem, getInterfaceTypeOID() + "." + newIndex, String.valueOf(info.getType()), false));
+                                handledTypeIndices.add(newIndex);
+                            }
+                        } else {
+                            if (info != null && !StringUtil.isEmpty(info.getAlias()) && newIndex >= 0) {
+                                result.add(copyItem(originalItem, getInterfaceAliasOID() + "." + newIndex, info.getAlias(), false));
+                                handledAliasIndices.add(newIndex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (SNMPItem editedDescr : editedDescrItems) {
+            if (editedDescr.getId() >= 0) {
+                int newIndex = getOidIndex(editedDescr.getOid());
+                SNMPInterfaceInfo info = newIndex >= 0 && newInfos != null ? newInfos.get(editedDescr.getOid()) : null;
+                if (info != null) {
+                    if (info.getType() >= 0 && !handledTypeIndices.contains(newIndex)) {
+                        result.add(createItem(networkTaskId, SNMPItemType.INTERFACETYPE, String.valueOf(info.getType()), getInterfaceTypeOID() + "." + newIndex));
+                        handledTypeIndices.add(newIndex);
+                    }
+                    if (!StringUtil.isEmpty(info.getAlias()) && !handledAliasIndices.contains(newIndex)) {
+                        result.add(createItem(networkTaskId, SNMPItemType.INTERFACEALIAS, info.getAlias(), getInterfaceAliasOID() + "." + newIndex));
+                        handledAliasIndices.add(newIndex);
+                    }
+                }
+            }
+        }
+        for (SNMPItem newDescr : newDescrItems) {
+            result.add(newDescr);
+            int newIndex = getOidIndex(newDescr.getOid());
+            SNMPInterfaceInfo info = newInfos != null ? newInfos.get(newDescr.getOid()) : null;
+            if (info != null && newIndex >= 0) {
+                if (info.getType() >= 0) {
+                    result.add(createItem(networkTaskId, SNMPItemType.INTERFACETYPE, String.valueOf(info.getType()), getInterfaceTypeOID() + "." + newIndex));
+                }
+                if (!StringUtil.isEmpty(info.getAlias())) {
+                    result.add(createItem(networkTaskId, SNMPItemType.INTERFACEALIAS, info.getAlias(), getInterfaceAliasOID() + "." + newIndex));
+                }
+            }
+        }
+        return result;
+    }
+
+    private SNMPItem copyItem(SNMPItem original, String newOid, String newName, boolean newMonitored) {
+        SNMPItem copy = new SNMPItem();
+        copy.setId(original.getId());
+        copy.setNetworkTaskId(original.getNetworkTaskId());
+        copy.setSnmpItemType(original.getSnmpItemType());
+        copy.setName(newName != null ? newName : original.getName());
+        copy.setOid(newOid);
+        copy.setMonitored(newMonitored);
+        return copy;
+    }
+
+    private SNMPItem createItem(long networkTaskId, SNMPItemType type, String name, String oid) {
+        SNMPItem item = new SNMPItem();
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(type);
+        item.setName(name);
+        item.setOid(oid);
+        return item;
+    }
+
+    private int getOidIndex(String oidString) {
+        if (StringUtil.isEmpty(oidString)) {
+            return -1;
+        }
+        try {
+            OID oid = new OID(oidString);
+            if (oid.size() < 1) {
+                return -1;
+            }
+            return oid.get(oid.size() - 1);
+        } catch (Exception exc) {
+            Log.e(SNMPMapping.class.getName(), "OID not parseable: " + oidString, exc);
+            return -1;
+        }
+    }
+
     private Context getContext() {
         return context;
     }
 
     private Resources getResources() {
         return getContext().getResources();
+    }
+
+    public static class SNMPItemNameComparator implements Comparator<SNMPItem> {
+        @Override
+        public int compare(SNMPItem item1, SNMPItem item2) {
+            String name1 = item1.getName() != null ? item1.getName() : "";
+            String name2 = item2.getName() != null ? item2.getName() : "";
+            return name1.compareTo(name2);
+        }
     }
 }
