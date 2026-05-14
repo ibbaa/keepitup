@@ -172,7 +172,13 @@ public class SNMPItemDialog extends DialogFragmentBase {
     private void onScanDone(SNMPScanResult result) {
         Log.d(SNMPItemDialog.class.getName(), "onScanDone, success is " + result.success());
         scanned = true;
-        getAdapter().replaceItems(result.descrResult(), result.interfaceInfos());
+        if (result.success()) {
+            if (result.interfaceInfos().isEmpty()) {
+                getAdapter().replaceItems(result.descrResult());
+            } else {
+                getAdapter().replaceItems(result.descrResult(), result.interfaceInfos());
+            }
+        }
         getAdapter().notifyDataSetChanged();
         closeProgressDialog();
     }

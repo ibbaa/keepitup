@@ -88,8 +88,8 @@ public class SNMPMapping {
         return getResources().getString(R.string.interface_alias_oid);
     }
 
-    public Map<String, SNMPInterfaceInfo> toInterfaceInfo(List<SNMPItem> ifDescrList, Map<String, String> values) {
-        Log.d(SNMPMapping.class.getName(), "toInterfaceInfo");
+    public Map<String, SNMPInterfaceInfo> toSNMPInterfaceInfo(List<SNMPItem> ifDescrList, Map<String, String> values) {
+        Log.d(SNMPMapping.class.getName(), "toSNMPInterfaceInfo");
         Map<String, SNMPInterfaceInfo> result = new HashMap<>();
         if (ifDescrList == null) {
             return result;

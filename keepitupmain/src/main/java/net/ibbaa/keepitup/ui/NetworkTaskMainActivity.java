@@ -579,8 +579,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onMainAddClicked(View view) {
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        //showSNMPItemDialogTest();
-        openNetworkTaskEditDialog(task, data, null, null, -1);
+        showSNMPItemDialogTest();
+        //openNetworkTaskEditDialog(task, data, null, null, -1);
     }
 
     public void onMainStartStopClicked(int position) {
@@ -941,7 +941,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         bundle.putString(dialog.getAddressKey(), "gaia.ibbaa.lan");
         bundle.putInt(dialog.getPortKey(), 161);
         bundle.putString(dialog.getSNMPVersionKey(), SNMPVersion.V2C.name());
-        bundle.putString(dialog.getCommunityKey(), "");
+        bundle.putString(dialog.getCommunityKey(), "gaia");
         dialog.setArguments(bundle);
         dialog.show(getSupportFragmentManager(), SNMPItemDialog.class.getName());
     }

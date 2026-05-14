@@ -33,7 +33,9 @@ import net.ibbaa.keepitup.ui.dialog.SNMPItemDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +46,8 @@ public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
     private final SNMPItemDialog snmpItemDialog;
 
     public SNMPItemAdapter(List<SNMPItem> snmpItems, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo, SNMPItemDialog snmpItemDialog) {
-        this.snmpItems = snmpItems;
-        this.snmpInterfaceInfo = snmpInterfaceInfo;
+        this.snmpItems = new ArrayList<>();
+        this.snmpInterfaceInfo = new HashMap<>();
         this.snmpItemDialog = snmpItemDialog;
         replaceItems(snmpItems);
     }
@@ -108,6 +110,11 @@ public class SNMPItemAdapter extends RecyclerView.Adapter<SNMPItemViewHolder> {
             return null;
         }
         return snmpItems.get(index);
+    }
+
+    public void replaceItems(List<SNMPItem> items) {
+        this.snmpItems.clear();
+        this.snmpItems.addAll(items);
     }
 
     public void replaceItems(List<SNMPItem> items, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo) {

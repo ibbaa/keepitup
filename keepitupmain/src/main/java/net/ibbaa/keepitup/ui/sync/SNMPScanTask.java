@@ -152,7 +152,7 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         Map<String, String> combinedInfo = new HashMap<>(ifTypeResult.result().size() + ifOperStatusResult.result().size());
         combinedInfo.putAll(ifTypeResult.result());
         combinedInfo.putAll(ifOperStatusResult.result());
-        Map<String, SNMPInterfaceInfo> interfaceInfos = snmpMapping.toInterfaceInfo(snmpItems, combinedInfo);
+        Map<String, SNMPInterfaceInfo> interfaceInfos = snmpMapping.toSNMPInterfaceInfo(snmpItems, combinedInfo);
         return new SNMPScanResult(true, snmpItems, interfaceInfos, Collections.emptyList(), null);
     }
 
