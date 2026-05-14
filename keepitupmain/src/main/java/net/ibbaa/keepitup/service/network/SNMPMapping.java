@@ -355,7 +355,7 @@ public class SNMPMapping {
                                 handledTypeIndices.add(newIndex);
                             }
                         } else {
-                            if (info != null && !StringUtil.isEmpty(info.getAlias()) && newIndex >= 0) {
+                            if (info != null && info.getAlias() != null && newIndex >= 0) {
                                 result.add(copyItem(originalItem, getInterfaceAliasOID() + "." + newIndex, info.getAlias(), false));
                                 handledAliasIndices.add(newIndex);
                             }
@@ -373,7 +373,7 @@ public class SNMPMapping {
                         result.add(createItem(networkTaskId, SNMPItemType.INTERFACETYPE, String.valueOf(info.getType()), getInterfaceTypeOID() + "." + newIndex));
                         handledTypeIndices.add(newIndex);
                     }
-                    if (!StringUtil.isEmpty(info.getAlias()) && !handledAliasIndices.contains(newIndex)) {
+                    if (info.getAlias() != null && !handledAliasIndices.contains(newIndex)) {
                         result.add(createItem(networkTaskId, SNMPItemType.INTERFACEALIAS, info.getAlias(), getInterfaceAliasOID() + "." + newIndex));
                         handledAliasIndices.add(newIndex);
                     }
@@ -388,7 +388,7 @@ public class SNMPMapping {
                 if (info.getType() >= 0) {
                     result.add(createItem(networkTaskId, SNMPItemType.INTERFACETYPE, String.valueOf(info.getType()), getInterfaceTypeOID() + "." + newIndex));
                 }
-                if (!StringUtil.isEmpty(info.getAlias())) {
+                if (info.getAlias() != null) {
                     result.add(createItem(networkTaskId, SNMPItemType.INTERFACEALIAS, info.getAlias(), getInterfaceAliasOID() + "." + newIndex));
                 }
             }
