@@ -106,26 +106,26 @@ public class SNMPAccess {
 
     public WalkResult walkInterfacesDescr() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesDescr");
-        SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        return walk(snmpMapping.getInterfaceDescrOID(), this::allFilter);
+        String oid = new SNMPMapping(getContext()).getInterfaceDescrOID();
+        return walk(oid, results -> prefixFilter(oid, results));
     }
 
     public WalkResult walkInterfacesType() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesType");
-        SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        return walk(snmpMapping.getInterfaceTypeOID(), this::allFilter);
+        String oid = new SNMPMapping(getContext()).getInterfaceTypeOID();
+        return walk(oid, results -> prefixFilter(oid, results));
     }
 
     public WalkResult walkInterfacesAlias() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesAlias");
-        SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        return walk(snmpMapping.getInterfaceAliasOID(), this::allFilter);
+        String oid = new SNMPMapping(getContext()).getInterfaceAliasOID();
+        return walk(oid, results -> prefixFilter(oid, results));
     }
 
     public WalkResult walkInterfacesOperStatus() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesOperStatus");
-        SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        return walk(snmpMapping.getInterfaceOperStatusOID(), this::allFilter);
+        String oid = new SNMPMapping(getContext()).getInterfaceOperStatusOID();
+        return walk(oid, results -> prefixFilter(oid, results));
     }
 
     public WalkResult walkSystem() {
@@ -144,18 +144,32 @@ public class SNMPAccess {
         return new WalkResult(false, walkResult.result(), walkResult.exception(), List.of(sysUpTimeError));
     }
 
-    private Map<String, String> allFilter(Map<String, Variable> results) {
+    private Map<String, String> prefixFilter(String baseOID, Map<String, Variable> results) {
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        OID prefix = new OID(baseOID);
         Map<String, String> filteredResults = new TreeMap<>();
         for (Map.Entry<String, Variable> entry : results.entrySet()) {
             String oid = entry.getKey();
             Variable variable = entry.getValue();
-            String value = snmpMapping.getValueForOID(oid, variable);
-            if (value != null) {
-                filteredResults.put(oid, value);
+            OID entryOID = getOID(oid);
+            if (entryOID != null && entryOID.startsWith(prefix)) {
+                String value = snmpMapping.getValueForOID(oid, variable);
+                if (value != null) {
+                    filteredResults.put(oid, value);
+                }
             }
         }
         return filteredResults;
+    }
+
+    private OID getOID(String oid) {
+        Log.d(SNMPAccess.class.getName(), "getOID for oid "+ oid);
+        try {
+            return new OID(oid);
+        } catch (Exception exc) {
+            Log.e(SNMPAccess.class.getName(), "Unparseable OID: " + oid);
+        }
+        return null;
     }
 
     private Map<String, String> systemFilter(Map<String, Variable> results) {

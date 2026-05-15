@@ -278,6 +278,22 @@ public class SNMPAccessTest {
     }
 
     @Test
+    public void testWalkInterfacesDescrFiltersUnknownOIDs() {
+        String interfaceDescrOid = TestRegistry.getContext().getString(R.string.interface_descr_oid);
+        String interfaceTypeOid = TestRegistry.getContext().getString(R.string.interface_type_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(interfaceDescrOid + ".1", new OctetString("eth0"));
+        subtreeResults.put(interfaceTypeOid + ".1", new OctetString("6"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfacesDescr();
+        assertTrue(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals("eth0", result.result().get(interfaceDescrOid + ".1"));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
     public void testWalkInterfacesDescrWithErrors() {
         snmpAccess.setSubtreeErrors(List.of("SNMP error"));
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesDescr();
@@ -327,6 +343,22 @@ public class SNMPAccessTest {
     }
 
     @Test
+    public void testWalkInterfacesTypeFiltersUnknownOIDs() {
+        String interfaceTypeOid = TestRegistry.getContext().getString(R.string.interface_type_oid);
+        String interfaceDescrOid = TestRegistry.getContext().getString(R.string.interface_descr_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(interfaceTypeOid + ".1", new OctetString("6"));
+        subtreeResults.put(interfaceDescrOid + ".1", new OctetString("eth0"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfacesType();
+        assertTrue(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals("6", result.result().get(interfaceTypeOid + ".1"));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
     public void testWalkInterfacesTypeWithErrors() {
         snmpAccess.setSubtreeErrors(List.of("SNMP error"));
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesType();
@@ -365,6 +397,22 @@ public class SNMPAccessTest {
     }
 
     @Test
+    public void testWalkInterfacesAliasFiltersUnknownOIDs() {
+        String interfaceAliasOid = TestRegistry.getContext().getString(R.string.interface_alias_oid);
+        String interfaceDescrOid = TestRegistry.getContext().getString(R.string.interface_descr_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(interfaceAliasOid + ".1", new OctetString("LAN"));
+        subtreeResults.put(interfaceDescrOid + ".1", new OctetString("eth0"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfacesAlias();
+        assertTrue(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals("LAN", result.result().get(interfaceAliasOid + ".1"));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
     public void testWalkInterfacesAliasWithErrors() {
         snmpAccess.setSubtreeErrors(List.of("SNMP error"));
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesAlias();
@@ -398,6 +446,22 @@ public class SNMPAccessTest {
         assertEquals(2, result.result().size());
         assertEquals("1", result.result().get(interfaceOperStatusOid + ".1"));
         assertEquals("2", result.result().get(interfaceOperStatusOid + ".2"));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testWalkInterfacesOperStatusFiltersUnknownOIDs() {
+        String interfaceOperStatusOid = TestRegistry.getContext().getString(R.string.interface_operstatus_oid);
+        String interfaceDescrOid = TestRegistry.getContext().getString(R.string.interface_descr_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(interfaceOperStatusOid + ".1", new OctetString("1"));
+        subtreeResults.put(interfaceDescrOid + ".1", new OctetString("eth0"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walkInterfacesOperStatus();
+        assertTrue(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals("1", result.result().get(interfaceOperStatusOid + ".1"));
         assertNull(result.exception());
         assertTrue(result.errorMessages().isEmpty());
     }
