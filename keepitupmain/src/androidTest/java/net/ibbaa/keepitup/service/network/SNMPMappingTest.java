@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 @SmallTest
@@ -929,6 +930,199 @@ public class SNMPMappingTest {
         assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
     }
 
+    @Test
+    public void testMergeSNMPInterfaceInfosScannedNull() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, null);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosScannedEmpty() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, new HashMap<>());
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosExistingNull() {
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(null, scanned);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get("1.1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(6, info.getType());
+        assertEquals(1, info.getStatus());
+        assertEquals("alias0", info.getAlias());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosExistingEmpty() {
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(new HashMap<>(), scanned);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get("1.1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosInterfaceRemoved() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.2", createInterfaceInfoWithDescr("eth1", 6, 1, "alias1"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(1, result.size());
+        assertNull(result.get("1.1"));
+        assertNotNull(result.get("1.2"));
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosNewInterface() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(1, result.size());
+        SNMPInterfaceInfo info = result.get("1.1");
+        assertNotNull(info);
+        assertEquals("eth0", info.getDescr());
+        assertEquals(6, info.getType());
+        assertEquals(1, info.getStatus());
+        assertEquals("alias0", info.getAlias());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosOIDChanged() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.5", createInterfaceInfoWithDescr("eth0", 6, 2, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(1, result.size());
+        assertNull(result.get("1.1"));
+        assertNotNull(result.get("1.5"));
+        assertEquals("eth0", result.get("1.5").getDescr());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosStatusFromScannedUsed() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 2, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(2, Objects.requireNonNull(result.get("1.1")).getStatus());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosStatusClearedWhenNotInScanned() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, -1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(-1, Objects.requireNonNull(result.get("1.1")).getStatus());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosAliasPreservedWhenScannedNull() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "oldAlias"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, null));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals("oldAlias", Objects.requireNonNull(result.get("1.1")).getAlias());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosAliasOverwrittenByEmptyString() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "oldAlias"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, ""));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals("", Objects.requireNonNull(result.get("1.1")).getAlias());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosAliasOverwrittenByScanned() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "oldAlias"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "newAlias"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals("newAlias", Objects.requireNonNull(result.get("1.1")).getAlias());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosTypePreservedWhenScannedNegative() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", -1, 1, null));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(6, Objects.requireNonNull(result.get("1.1")).getType());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosTypeOverwrittenByScanned() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", 131, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(131, Objects.requireNonNull(result.get("1.1")).getType());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosDescrNullInScanned() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        SNMPInterfaceInfo noDescr = createInterfaceInfoWithDescr(null, 6, 1, "alias1");
+        scanned.put("1.2", noDescr);
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(1, result.size());
+        assertNotNull(result.get("1.2"));
+        assertNull(Objects.requireNonNull(result.get("1.2")).getDescr());
+    }
+
+    @Test
+    public void testMergeSNMPInterfaceInfosMultipleInterfaces() {
+        Map<String, SNMPInterfaceInfo> existing = new HashMap<>();
+        existing.put("1.1", createInterfaceInfoWithDescr("eth0", 6, 1, "alias0"));
+        existing.put("1.2", createInterfaceInfoWithDescr("eth1", 6, 1, "alias1"));
+        existing.put("1.3", createInterfaceInfoWithDescr("eth2", 6, 1, "alias2"));
+        Map<String, SNMPInterfaceInfo> scanned = new HashMap<>();
+        scanned.put("1.1", createInterfaceInfoWithDescr("eth0", -1, -1, null));
+        scanned.put("1.10", createInterfaceInfoWithDescr("eth2", 131, 2, "newAlias2"));
+        scanned.put("1.4", createInterfaceInfoWithDescr("eth3", 6, 1, "alias3"));
+        Map<String, SNMPInterfaceInfo> result = snmpMapping.mergeSNMPInterfaceInfos(existing, scanned);
+        assertEquals(3, result.size());
+        assertNull(result.get("1.2"));
+        SNMPInterfaceInfo eth0 = result.get("1.1");
+        assertNotNull(eth0);
+        assertEquals(6, eth0.getType());
+        assertEquals(-1, eth0.getStatus());
+        assertEquals("alias0", eth0.getAlias());
+        SNMPInterfaceInfo eth2 = result.get("1.10");
+        assertNotNull(eth2);
+        assertEquals(131, eth2.getType());
+        assertEquals(2, eth2.getStatus());
+        assertEquals("newAlias2", eth2.getAlias());
+        SNMPInterfaceInfo eth3 = result.get("1.4");
+        assertNotNull(eth3);
+        assertEquals("eth3", eth3.getDescr());
+        assertEquals(6, eth3.getType());
+    }
+
     private SNMPItem getSNMPItem(String oidString, String name) {
         SNMPItem item = new SNMPItem();
         item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
@@ -972,6 +1166,15 @@ public class SNMPMappingTest {
 
     private SNMPInterfaceInfo createInterfaceInfo(int type, int status, String alias) {
         SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        info.setType(type);
+        info.setStatus(status);
+        info.setAlias(alias);
+        return info;
+    }
+
+    private SNMPInterfaceInfo createInterfaceInfoWithDescr(String descr, int type, int status, String alias) {
+        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        info.setDescr(descr);
         info.setType(type);
         info.setStatus(status);
         info.setAlias(alias);

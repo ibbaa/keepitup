@@ -311,6 +311,38 @@ public class SNMPMapping {
         return new SNMPItemMergeResult(mergedItems, removedMonitoredItems);
     }
 
+    public Map<String, SNMPInterfaceInfo> mergeSNMPInterfaceInfos(Map<String, SNMPInterfaceInfo> existing, Map<String, SNMPInterfaceInfo> scanned) {
+        Log.d(SNMPMapping.class.getName(), "mergeSNMPInterfaceInfos");
+        Map<String, SNMPInterfaceInfo> result = new HashMap<>();
+        if (scanned == null || scanned.isEmpty()) {
+            return result;
+        }
+        Map<String, SNMPInterfaceInfo> existingByName = new HashMap<>();
+        if (existing != null) {
+            for (SNMPInterfaceInfo info : existing.values()) {
+                if (info.getDescr() != null) {
+                    existingByName.put(info.getDescr(), info);
+                }
+            }
+        }
+        for (Map.Entry<String, SNMPInterfaceInfo> entry : scanned.entrySet()) {
+            String oid = entry.getKey();
+            SNMPInterfaceInfo scannedInfo = entry.getValue();
+            SNMPInterfaceInfo existingInfo = scannedInfo.getDescr() != null ? existingByName.get(scannedInfo.getDescr()) : null;
+            if (existingInfo == null) {
+                result.put(oid, scannedInfo);
+            } else {
+                SNMPInterfaceInfo merged = new SNMPInterfaceInfo();
+                merged.setDescr(scannedInfo.getDescr());
+                merged.setStatus(scannedInfo.getStatus());
+                merged.setType(scannedInfo.getType() >= 0 ? scannedInfo.getType() : existingInfo.getType());
+                merged.setAlias(scannedInfo.getAlias() != null ? scannedInfo.getAlias() : existingInfo.getAlias());
+                result.put(oid, merged);
+            }
+        }
+        return result;
+    }
+
     public List<SNMPItem> mergeAllSNMPItems(List<SNMPItem> originalAll, List<SNMPItem> editedDescrItems, Map<String, SNMPInterfaceInfo> newInfos, long networkTaskId) {
         Log.d(SNMPMapping.class.getName(), "mergeAllSNMPItems");
         Map<Integer, Long> oldIndexToDescrId = new HashMap<>();

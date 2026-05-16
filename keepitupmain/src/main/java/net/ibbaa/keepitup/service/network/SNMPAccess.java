@@ -163,7 +163,7 @@ public class SNMPAccess {
     }
 
     private OID getOID(String oid) {
-        Log.d(SNMPAccess.class.getName(), "getOID for oid "+ oid);
+        Log.d(SNMPAccess.class.getName(), "getOID for oid " + oid);
         try {
             return new OID(oid);
         } catch (Exception exc) {

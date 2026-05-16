@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPVersion;
@@ -48,6 +49,7 @@ import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -206,7 +208,8 @@ public class SNMPItemDialog extends DialogFragmentBase {
             if (result.interfaceInfos().isEmpty()) {
                 getAdapter().replaceItems(mergeResult.mergedItems());
             } else {
-                getAdapter().replaceItems(mergeResult.mergedItems(), result.interfaceInfos());
+                Map<String, SNMPInterfaceInfo> mergedInfos = snmpMapping.mergeSNMPInterfaceInfos(getAdapter().getInterfaceInfos(), result.interfaceInfos());
+                getAdapter().replaceItems(mergeResult.mergedItems(), mergedInfos);
             }
         }
         getAdapter().notifyDataSetChanged();
