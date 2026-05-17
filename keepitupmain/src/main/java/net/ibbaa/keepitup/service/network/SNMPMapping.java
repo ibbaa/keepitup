@@ -260,6 +260,24 @@ public class SNMPMapping {
         return label;
     }
 
+    public boolean isFilteredInterface(SNMPInterfaceInfo info) {
+        Log.d(SNMPMapping.class.getName(), "isFilteredInterface");
+        if (info == null) {
+            return false;
+        }
+        if (!StringUtil.isEmpty(info.getDescr())) {
+            String veth = getResources().getString(R.string.interface_descr_linux_veth);
+            if (info.getDescr().startsWith(veth)) {
+                return true;
+            }
+        }
+        int type = info.getType();
+        int loopbackType = getResources().getInteger(R.integer.interface_type_loopback);
+        int tunnelType = getResources().getInteger(R.integer.interface_type_tunnel);
+        int propVirtualType = getResources().getInteger(R.integer.interface_type_prop_virtual);
+        return type == loopbackType || type == tunnelType || type == propVirtualType;
+    }
+
     public List<SNMPItem> filterDescrItems(List<SNMPItem> allItems) {
         Log.d(SNMPMapping.class.getName(), "filterDescrItems");
         List<SNMPItem> result = new ArrayList<>();

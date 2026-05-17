@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.DrawableRes;
@@ -33,12 +34,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class UIUtil {
 
     public static String getNetworkTaskTitleName(Context context, NetworkTask task, boolean lowerCase, boolean appendDefaultSuffix) {
@@ -92,6 +96,37 @@ public class UIUtil {
             credentialInfoList.add(credentialInfo);
         }
         return credentialInfoList;
+    }
+
+    public static List<ValidationResult> snmpWalkErrorsToValidationResultList(Context context, List<String> errors) {
+        if (errors == null) {
+            return Collections.emptyList();
+        }
+        List<ValidationResult> validationResultList = new ArrayList<>(errors.size());
+        String error = context.getResources().getString(R.string.text_dialog_validator_error_error);
+        if (errors.size() == 1) {
+            validationResultList.add(new ValidationResult(false, error, errors.get(0)));
+        } else {
+            for (int ii = 0; ii < errors.size(); ii++) {
+                validationResultList.add(new ValidationResult(false, error + " " + (ii + 1), errors.get(ii)));
+            }
+        }
+        return validationResultList;
+    }
+
+    public static List<ValidationResult> snmpRemovedMonitoredSNMPItemsValidationResultList(Context context, List<SNMPItem> items) {
+        if (items == null || items.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ValidationResult> validationResultList = new ArrayList<>(1);
+        String interfaces = context.getResources().getString(R.string.text_dialog_validator_error_interfaces);
+        List<String> names = new ArrayList<>();
+        for (SNMPItem item : items) {
+            names.add(item.getName());
+        }
+        String interfaceValues = TextUtils.join(", ", names);
+        validationResultList.add(new ValidationResult(false, interfaces, interfaceValues));
+        return validationResultList;
     }
 
     public static boolean isInputTypeNumber(int inputType) {

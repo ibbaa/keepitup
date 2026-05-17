@@ -617,6 +617,27 @@ public class SNMPMappingTest {
     }
 
     @Test
+    public void testIsFilteredInterface() {
+        assertFalse(snmpMapping.isFilteredInterface(null));
+        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        assertFalse(snmpMapping.isFilteredInterface(info));
+        info.setDescr("eth0");
+        info.setType(6);
+        assertFalse(snmpMapping.isFilteredInterface(info));
+        info.setDescr("aveth0");
+        assertFalse(snmpMapping.isFilteredInterface(info));
+        info.setDescr("veth0");
+        assertTrue(snmpMapping.isFilteredInterface(info));
+        info.setDescr("eth0");
+        info.setType(24);
+        assertTrue(snmpMapping.isFilteredInterface(info));
+        info.setType(131);
+        assertTrue(snmpMapping.isFilteredInterface(info));
+        info.setType(53);
+        assertTrue(snmpMapping.isFilteredInterface(info));
+    }
+
+    @Test
     public void testFilterDescrItemsNull() {
         List<SNMPItem> result = snmpMapping.filterDescrItems(null);
         assertNotNull(result);
@@ -1077,7 +1098,7 @@ public class SNMPMappingTest {
         assertEquals(1, result.size());
         assertNull(result.get("1.1"));
         assertNotNull(result.get("1.5"));
-        assertEquals("eth0", result.get("1.5").getDescr());
+        assertEquals("eth0", Objects.requireNonNull(result.get("1.5")).getDescr());
     }
 
     @Test

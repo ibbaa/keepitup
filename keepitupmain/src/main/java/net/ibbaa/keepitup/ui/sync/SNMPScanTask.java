@@ -119,10 +119,14 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         ValidationResult portResult = networkTaskValidator.validatePort(String.valueOf(port));
         ValidationResult communityResult = accessTypeDataValidator.validateSNMPCommunity(community);
         if (!addressResult.isValidationSuccessful()) {
-            errors.add(addressResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            if (!StringUtil.isEmpty(address)) {
+                errors.add(addressResult.getFieldName() + " " + address + " " + getResources().getString(R.string.string_invalid));
+            } else {
+                errors.add(addressResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            }
         }
         if (!portResult.isValidationSuccessful()) {
-            errors.add(portResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            errors.add(portResult.getFieldName() + " " + port + " " + getResources().getString(R.string.string_invalid));
         }
         if (!communityResult.isValidationSuccessful()) {
             errors.add(communityResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));

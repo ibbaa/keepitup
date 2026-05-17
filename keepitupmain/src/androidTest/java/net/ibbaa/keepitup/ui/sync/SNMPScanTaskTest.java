@@ -75,6 +75,72 @@ public class SNMPScanTaskTest {
     }
 
     @Test
+    public void testRunInBackgroundValidationFailureInvalidAddressNonEmpty() {
+        String address = "invalid!host";
+        String expectedError = TestRegistry.getContext().getResources().getString(R.string.task_host_field_name) + " " + address + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, 161, SNMPVersion.V2C, "public");
+        task.setMockDNSLookup(createSuccessfulDNSLookup(address));
+        task.setMockSNMPAccess(mockSNMPAccess);
+        SNMPScanResult result = task.runInBackground();
+        assertFalse(result.success());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(expectedError, result.errorMessages().get(0));
+        assertTrue(result.descrResult().isEmpty());
+        assertTrue(result.interfaceInfos().isEmpty());
+        assertNull(result.exception());
+    }
+
+    @Test
+    public void testRunInBackgroundValidationFailureInvalidPort() {
+        int port = -1;
+        String expectedError = TestRegistry.getContext().getResources().getString(R.string.task_port_field_name) + " " + port + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, "192.168.1.1", port, SNMPVersion.V2C, "public");
+        task.setMockDNSLookup(createSuccessfulDNSLookup("192.168.1.1"));
+        task.setMockSNMPAccess(mockSNMPAccess);
+        SNMPScanResult result = task.runInBackground();
+        assertFalse(result.success());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(expectedError, result.errorMessages().get(0));
+        assertTrue(result.descrResult().isEmpty());
+        assertTrue(result.interfaceInfos().isEmpty());
+        assertNull(result.exception());
+    }
+
+    @Test
+    public void testRunInBackgroundValidationFailureInvalidCommunity() {
+        String expectedError = TestRegistry.getContext().getResources().getString(R.string.accesstypedata_snmp_community_field_name) + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, "192.168.1.1", 161, SNMPVersion.V2C, "public community");
+        task.setMockDNSLookup(createSuccessfulDNSLookup("192.168.1.1"));
+        task.setMockSNMPAccess(mockSNMPAccess);
+        SNMPScanResult result = task.runInBackground();
+        assertFalse(result.success());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(expectedError, result.errorMessages().get(0));
+        assertTrue(result.descrResult().isEmpty());
+        assertTrue(result.interfaceInfos().isEmpty());
+        assertNull(result.exception());
+    }
+
+    @Test
+    public void testRunInBackgroundValidationFailureMultipleErrors() {
+        String address = "invalid!host";
+        int port = -1;
+        String expectedAddressError = TestRegistry.getContext().getResources().getString(R.string.task_host_field_name) + " " + address + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
+        String expectedPortError = TestRegistry.getContext().getResources().getString(R.string.task_port_field_name) + " " + port + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, port, SNMPVersion.V2C, "public");
+        task.setMockDNSLookup(createSuccessfulDNSLookup(address));
+        task.setMockSNMPAccess(mockSNMPAccess);
+        SNMPScanResult result = task.runInBackground();
+        assertFalse(result.success());
+        assertEquals(2, result.errorMessages().size());
+        assertEquals(expectedAddressError, result.errorMessages().get(0));
+        assertEquals(expectedPortError, result.errorMessages().get(1));
+        assertTrue(result.descrResult().isEmpty());
+        assertTrue(result.interfaceInfos().isEmpty());
+        assertNull(result.exception());
+    }
+
+    @Test
     public void testRunInBackgroundDNSNoAddresses() {
         String address = "192.168.1.1";
         String expectedError = TestRegistry.getContext().getResources().getString(R.string.text_dns_lookup_error, address) + " " + TestRegistry.getContext().getResources().getString(R.string.text_dns_lookup_no_address);

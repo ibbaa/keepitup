@@ -44,9 +44,13 @@ import net.ibbaa.keepitup.ui.support.SNMPItemSupport;
 import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
 import net.ibbaa.keepitup.ui.sync.SNMPScanTask;
 import net.ibbaa.keepitup.ui.sync.SNMPScanViewModel;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.ExceptionUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
+import net.ibbaa.keepitup.util.UIUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -211,6 +215,22 @@ public class SNMPItemDialog extends DialogFragmentBase {
                 Map<String, SNMPInterfaceInfo> mergedInfos = snmpMapping.mergeSNMPInterfaceInfos(getAdapter().getInterfaceInfos(), result.interfaceInfos());
                 getAdapter().replaceItems(mergeResult.mergedItems(), mergedInfos);
             }
+            if (!removedMonitoredItems.isEmpty()) {
+                List<ValidationResult> removedMonitoredResult = UIUtil.snmpRemovedMonitoredSNMPItemsValidationResultList(requireContext(), removedMonitoredItems);
+                if (!removedMonitoredResult.isEmpty()) {
+                    showValidatorErrorDialog(removedMonitoredResult, requireContext().getResources().getString(R.string.text_dialog_validator_error_title_snmp_removed));
+                }
+            }
+        } else {
+            List<String> errors = result.errorMessages();
+            if (result.exception() != null) {
+                errors = new ArrayList<>(errors);
+                errors.add(getMessageFromException(result.exception()));
+            }
+            List<ValidationResult> walkErrorResult = UIUtil.snmpWalkErrorsToValidationResultList(requireContext(), errors);
+            if (!walkErrorResult.isEmpty()) {
+                showValidatorErrorDialog(walkErrorResult, requireContext().getResources().getString(R.string.text_dialog_validator_error_title_snmp));
+            }
         }
         getAdapter().notifyDataSetChanged();
         closeProgressDialog();
@@ -300,12 +320,24 @@ public class SNMPItemDialog extends DialogFragmentBase {
         return new SNMPScanTask(scanViewModel.getScanDispatcher(), requireContext(), networkTaskId, address, port, snmpVersion, community);
     }
 
-    @SuppressWarnings({"UnusedReturnValue"})
-    protected ProgressDialog showProgressDialog() {
+    protected void showProgressDialog() {
         Log.d(SNMPItemDialog.class.getName(), "showProgressDialog");
         ProgressDialog progressDialog = new ProgressDialog();
         progressDialog.show(getParentFragmentManager(), ProgressDialog.class.getName());
-        return progressDialog;
+    }
+
+    private void showValidatorErrorDialog(List<ValidationResult> validationResult, String title) {
+        Log.d(SNMPItemDialog.class.getName(), "showValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult);
+        bundle = BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
+        bundle = BundleUtil.integerToBundle(errorDialog.getMessageWidthKey(), getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_message_width), bundle);
+        errorDialog.setArguments(bundle);
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
+    }
+
+    private String getMessageFromException(Throwable exc) {
+        return ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
     }
 
     protected void closeProgressDialog() {

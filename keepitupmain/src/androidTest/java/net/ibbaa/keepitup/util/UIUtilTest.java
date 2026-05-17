@@ -28,8 +28,10 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.validation.CredentialInfo;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SmallTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class UIUtilTest {
 
@@ -143,5 +146,44 @@ public class UIUtilTest {
         assertEquals("not set", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), -5));
         assertEquals("123", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), 123));
         assertEquals("0", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), 0));
+    }
+
+    @Test
+    public void testSNMPRemovedMonitoredSNMPItemsValidationResultList() {
+        assertTrue(UIUtil.snmpRemovedMonitoredSNMPItemsValidationResultList(TestRegistry.getContext(), null).isEmpty());
+        assertTrue(UIUtil.snmpRemovedMonitoredSNMPItemsValidationResultList(TestRegistry.getContext(), Collections.emptyList()).isEmpty());
+        SNMPItem item1 = new SNMPItem();
+        item1.setName("eth0");
+        List<ValidationResult> result = UIUtil.snmpRemovedMonitoredSNMPItemsValidationResultList(TestRegistry.getContext(), List.of(item1));
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isValidationSuccessful());
+        assertEquals("Interfaces", result.get(0).getFieldName());
+        assertEquals("eth0", result.get(0).getMessage());
+        SNMPItem item2 = new SNMPItem();
+        item2.setName("eth1");
+        result = UIUtil.snmpRemovedMonitoredSNMPItemsValidationResultList(TestRegistry.getContext(), List.of(item1, item2));
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isValidationSuccessful());
+        assertEquals("Interfaces", result.get(0).getFieldName());
+        assertEquals("eth0, eth1", result.get(0).getMessage());
+    }
+
+    @Test
+    public void testSNMPWalkErrorsToValidationResultList() {
+        assertTrue(UIUtil.snmpWalkErrorsToValidationResultList(TestRegistry.getContext(), null).isEmpty());
+        assertTrue(UIUtil.snmpWalkErrorsToValidationResultList(TestRegistry.getContext(), Collections.emptyList()).isEmpty());
+        List<ValidationResult> result = UIUtil.snmpWalkErrorsToValidationResultList(TestRegistry.getContext(), List.of("error message"));
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isValidationSuccessful());
+        assertEquals("Error", result.get(0).getFieldName());
+        assertEquals("error message", result.get(0).getMessage());
+        result = UIUtil.snmpWalkErrorsToValidationResultList(TestRegistry.getContext(), List.of("first error", "second error"));
+        assertEquals(2, result.size());
+        assertFalse(result.get(0).isValidationSuccessful());
+        assertEquals("Error 1", result.get(0).getFieldName());
+        assertEquals("first error", result.get(0).getMessage());
+        assertFalse(result.get(1).isValidationSuccessful());
+        assertEquals("Error 2", result.get(1).getFieldName());
+        assertEquals("second error", result.get(1).getMessage());
     }
 }

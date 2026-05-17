@@ -48,4 +48,8 @@
     <string name="sys_location_oid">1.3.6.1.2.1.1.6.0</string>
     <string name="sys_location_label">System Location (sysLocation)</string>
     <string name="sys_uptime_max_time_ticks">4294967295</string>
+    <string name="interface_descr_linux_veth">veth</string>
+    <integer name="interface_type_loopback">24</integer>
+    <integer name="interface_type_tunnel">131</integer>
+    <integer name="interface_type_prop_virtual">53</integer>
 </resources>
