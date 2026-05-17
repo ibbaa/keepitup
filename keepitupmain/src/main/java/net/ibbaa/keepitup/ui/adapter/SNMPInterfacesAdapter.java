@@ -126,7 +126,7 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
     public void replaceItems(List<SNMPItem> items) {
         this.snmpItems.clear();
         this.snmpItems.addAll(items);
-        buildFilteredList();
+        prepareFilteredList();
     }
 
     public void replaceItems(List<SNMPItem> items, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo) {
@@ -134,10 +134,10 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
         this.snmpItems.addAll(items);
         this.snmpInterfaceInfo.clear();
         this.snmpInterfaceInfo.putAll(snmpInterfaceInfo);
-        buildFilteredList();
+        prepareFilteredList();
     }
 
-    private void buildFilteredList() {
+    private void prepareFilteredList() {
         filteredSnmpItems.clear();
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
         for (SNMPItem item : snmpItems) {
