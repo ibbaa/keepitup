@@ -236,8 +236,8 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(readHeader.isTechnicallyEqual(header1));
         List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
         List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
-        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
-        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
         assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
         assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -436,8 +436,8 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(readHeader.isTechnicallyEqual(header1));
         List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
         List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
-        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
-        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
         assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
         assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -640,8 +640,8 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(readHeader.isTechnicallyEqual(header1));
         List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
         List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
-        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
-        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
         assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
         assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -923,7 +923,7 @@ public class ExportTaskTest extends BaseUITest {
         item.setId(0);
         item.setNetworkTaskId(networkTaskId);
         item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
-        item.setName("sysDescr");
+        item.setName("1");
         item.setOid("1.3.6.1.2.1.1.1.0");
         item.setMonitored(true);
         return item;

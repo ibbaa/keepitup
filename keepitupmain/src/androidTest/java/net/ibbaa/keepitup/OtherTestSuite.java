@@ -59,6 +59,7 @@ import net.ibbaa.keepitup.model.validator.HeaderValidatorTest;
 import net.ibbaa.keepitup.model.validator.IntervalValidatorTest;
 import net.ibbaa.keepitup.model.validator.NetworkTaskValidatorTest;
 import net.ibbaa.keepitup.model.validator.ResolveValidatorTest;
+import net.ibbaa.keepitup.model.validator.SNMPInterfaceInfoValidatorTest;
 import net.ibbaa.keepitup.model.validator.SNMPItemValidatorTest;
 import net.ibbaa.keepitup.notification.NotificationHandlerTest;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManagerTest;
@@ -221,6 +222,7 @@ import org.junit.runners.Suite;
         IntervalValidatorTest.class,
         NetworkTaskValidatorTest.class,
         ResolveValidatorTest.class,
+        SNMPInterfaceInfoValidatorTest.class,
         SNMPItemValidatorTest.class,
         //net.ibbaa.keepitup.notification
         NotificationHandlerTest.class,

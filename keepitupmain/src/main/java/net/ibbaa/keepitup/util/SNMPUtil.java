@@ -24,15 +24,15 @@ import java.util.regex.Pattern;
 public class SNMPUtil {
 
     private static final Pattern COMMUNITY_PATTERN = Pattern.compile("^[\\x21-\\x7E]*$");
-    private static final Pattern NAME_PATTERN = Pattern.compile("^[^\\x00-\\x1F\\x7F]*$");
+    private static final Pattern IFDESCR_PATTERN = Pattern.compile("^[^\\x00-\\x1F\\x7F]*$");
     private static final Pattern OID_PATTERN = Pattern.compile("^\\d+(\\.\\d+)+$");
 
     public static boolean validateCommunity(String community) {
         return COMMUNITY_PATTERN.matcher(community).matches();
     }
 
-    public static boolean validateName(String name) {
-        return NAME_PATTERN.matcher(name).matches();
+    public static boolean validateInterfaceDescr(String name) {
+        return IFDESCR_PATTERN.matcher(name).matches();
     }
 
     public static boolean validateOID(String oid) {

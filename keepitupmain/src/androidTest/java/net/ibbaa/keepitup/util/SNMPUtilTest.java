@@ -49,20 +49,20 @@ public class SNMPUtilTest {
     }
 
     @Test
-    public void testValidateName() {
-        assertTrue(SNMPUtil.validateName(""));
-        assertTrue(SNMPUtil.validateName("Alpha"));
-        assertTrue(SNMPUtil.validateName("name with spaces"));
-        assertTrue(SNMPUtil.validateName("name-with-dashes_and_underscores"));
-        assertTrue(SNMPUtil.validateName("name with special chars !@#$%^&*()"));
-        assertTrue(SNMPUtil.validateName("nameä"));
-        assertTrue(SNMPUtil.validateName("名前"));
-        assertFalse(SNMPUtil.validateName("name\twith\ttabs"));
-        assertFalse(SNMPUtil.validateName("name\nwith\nnewline"));
-        assertFalse(SNMPUtil.validateName("name\rwith\rcarriage"));
-        assertFalse(SNMPUtil.validateName("name" + (char) 0x00));
-        assertFalse(SNMPUtil.validateName("name" + (char) 0x1F));
-        assertFalse(SNMPUtil.validateName("name" + (char) 0x7F));
+    public void testValidateInterfaceDescr() {
+        assertTrue(SNMPUtil.validateInterfaceDescr(""));
+        assertTrue(SNMPUtil.validateInterfaceDescr("Alpha"));
+        assertTrue(SNMPUtil.validateInterfaceDescr("name with spaces"));
+        assertTrue(SNMPUtil.validateInterfaceDescr("name-with-dashes_and_underscores"));
+        assertTrue(SNMPUtil.validateInterfaceDescr("name with special chars !@#$%^&*()"));
+        assertTrue(SNMPUtil.validateInterfaceDescr("nameä"));
+        assertTrue(SNMPUtil.validateInterfaceDescr("名前"));
+        assertFalse(SNMPUtil.validateInterfaceDescr("name\twith\ttabs"));
+        assertFalse(SNMPUtil.validateInterfaceDescr("name\nwith\nnewline"));
+        assertFalse(SNMPUtil.validateInterfaceDescr("name\rwith\rcarriage"));
+        assertFalse(SNMPUtil.validateInterfaceDescr("name" + (char) 0x00));
+        assertFalse(SNMPUtil.validateInterfaceDescr("name" + (char) 0x1F));
+        assertFalse(SNMPUtil.validateInterfaceDescr("name" + (char) 0x7F));
     }
 
     @Test

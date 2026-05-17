@@ -21,6 +21,8 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.SNMPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
@@ -39,19 +41,42 @@ public class SNMPItemValidator {
 
     public boolean validateName(SNMPItem item) {
         Log.d(SNMPItemValidator.class.getName(), "validateName for item " + item);
+        SNMPItemType itemType = item.getSnmpItemType();
+        if (item.getSnmpItemType() == null) {
+            Log.d(SNMPItemValidator.class.getName(), "SNMPItemType is null. Returning false.");
+            return false;
+        }
+        Log.d(SNMPItemValidator.class.getName(), "SNMPItemType is " + itemType.name());
         String name = item.getName();
-        if (StringUtil.isEmpty(name)) {
-            Log.d(SNMPItemValidator.class.getName(), "name is empty. Returning true.");
-            return true;
-        }
-        int nameMaxLength = context.getResources().getInteger(R.integer.snmp_name_max_length);
-        if (name.length() > nameMaxLength) {
-            Log.d(SNMPItemValidator.class.getName(), "name is too long. Returning false.");
-            return false;
-        }
-        if (!SNMPUtil.validateName(name)) {
-            Log.d(SNMPItemValidator.class.getName(), "name has invalid characters. Returning false.");
-            return false;
+        if (SNMPItemType.INTERFACEDESCR.equals(itemType) || SNMPItemType.INTERFACEALIAS.equals(itemType)) {
+            if (StringUtil.isEmpty(name)) {
+                Log.d(SNMPItemValidator.class.getName(), "name is empty. Returning true.");
+                return true;
+            }
+            int descrMaxLength = context.getResources().getInteger(R.integer.snmp_ifdescr_max_length);
+            if (name.length() > descrMaxLength) {
+                Log.d(SNMPItemValidator.class.getName(), "name is too long. Returning false.");
+                return false;
+            }
+            if (!SNMPUtil.validateInterfaceDescr(name)) {
+                Log.d(SNMPItemValidator.class.getName(), "name has invalid characters. Returning false.");
+                return false;
+            }
+        } else if (SNMPItemType.INTERFACETYPE.equals(itemType)) {
+            if (StringUtil.isEmpty(name)) {
+                Log.d(SNMPItemValidator.class.getName(), "name is empty. Returning false.");
+                return false;
+            }
+            if (!NumberUtil.isValidIntValue(name)) {
+                Log.d(SNMPItemValidator.class.getName(), "name is not an integer value. Returning false.");
+                return false;
+            }
+            int type = NumberUtil.getIntValue(name, -1);
+            int typeMinValue = context.getResources().getInteger(R.integer.snmp_iftype_minimum);
+            if (type < typeMinValue) {
+                Log.d(SNMPItemValidator.class.getName(), "name is below " + typeMinValue + ". Returning false.");
+                return false;
+            }
         }
         return true;
     }

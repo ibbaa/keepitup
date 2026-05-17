@@ -218,8 +218,8 @@ public class JSONSystemSetupTest {
         SNMPItem task1SNMPItem1 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(0)));
         SNMPItem task1SNMPItem2 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(1)));
         SNMPItem task2SNMPItem1 = new SNMPItem(JSONUtil.toMap((JSONObject) task2SNMPItemJSON.get(0)));
-        assertTrue(task1SNMPItem1.isEqual(snmpItem2));
-        assertTrue(task1SNMPItem2.isEqual(snmpItem1));
+        assertTrue(task1SNMPItem1.isEqual(snmpItem1));
+        assertTrue(task1SNMPItem2.isEqual(snmpItem2));
         assertTrue(task2SNMPItem1.isEqual(snmpItem3));
     }
 
@@ -302,8 +302,8 @@ public class JSONSystemSetupTest {
         SNMPItem readSNMPItem1 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(0)));
         SNMPItem readSNMPItem2 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(1)));
         SNMPItem readSNMPItem3 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(2)));
-        assertTrue(readSNMPItem1.isEqual(snmpItem2));
-        assertTrue(readSNMPItem2.isEqual(snmpItem1));
+        assertTrue(readSNMPItem1.isEqual(snmpItem1));
+        assertTrue(readSNMPItem2.isEqual(snmpItem2));
         assertTrue(readSNMPItem3.isEqual(snmpItem3));
     }
 
@@ -700,8 +700,8 @@ public class JSONSystemSetupTest {
         assertTrue(header3.isTechnicallyEqual(readHeaderList2.get(1)));
         List<SNMPItem> readSNMPItemList1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask1.getId());
         List<SNMPItem> readSNMPItemList2 = snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask2.getId());
-        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
-        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
         assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
         assertTrue(snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
     }
@@ -842,8 +842,8 @@ public class JSONSystemSetupTest {
         assertTrue(header2.isTechnicallyEqual(readHeader1));
         assertEquals(3, headerDAO.readAllHeaders().size());
         List<SNMPItem> readSNMPItemList1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask1.getId());
-        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(0)));
-        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
     }
 
     @Test
@@ -1897,7 +1897,7 @@ public class JSONSystemSetupTest {
         item.setId(0);
         item.setNetworkTaskId(networkTaskId);
         item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
-        item.setName("sysDescr");
+        item.setName("5");
         item.setOid("1.3.6.1.2.1.1.1.0");
         item.setMonitored(true);
         return item;

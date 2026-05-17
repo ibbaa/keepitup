@@ -43,7 +43,7 @@ public class SNMPItemValidatorTest {
     }
 
     @Test
-    public void testValidateName() {
+    public void testValidateNameDescr() {
         SNMPItem item = getSNMPItem(null, "1.3.6.1.2.1");
         assertTrue(validator.validateName(item));
         assertTrue(validator.validate(item));
@@ -84,6 +84,31 @@ public class SNMPItemValidatorTest {
         assertTrue(validator.validateName(item));
         assertTrue(validator.validate(item));
         item = getSNMPItem(new String(new char[255]).replace('\0', 'A'), "1.3.6.1.2.1");
+        assertTrue(validator.validateName(item));
+        assertTrue(validator.validate(item));
+    }
+
+    @Test
+    public void testValidateNameType() {
+        SNMPItem item = getSNMPItemType(null);
+        assertFalse(validator.validateName(item));
+        assertFalse(validator.validate(item));
+        item = getSNMPItemType("");
+        assertFalse(validator.validateName(item));
+        assertFalse(validator.validate(item));
+        item = getSNMPItemType("abc");
+        assertFalse(validator.validateName(item));
+        assertFalse(validator.validate(item));
+        item = getSNMPItemType("0");
+        assertFalse(validator.validateName(item));
+        assertFalse(validator.validate(item));
+        item = getSNMPItemType("-1");
+        assertFalse(validator.validateName(item));
+        assertFalse(validator.validate(item));
+        item = getSNMPItemType("5");
+        assertTrue(validator.validateName(item));
+        assertTrue(validator.validate(item));
+        item = getSNMPItemType("100");
         assertTrue(validator.validateName(item));
         assertTrue(validator.validate(item));
     }
@@ -151,7 +176,7 @@ public class SNMPItemValidatorTest {
         assertTrue(validator.validate(item));
         item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
         assertTrue(validator.validateSNMPItemType(item));
-        assertTrue(validator.validate(item));
+        assertFalse(validator.validate(item));
         item.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
         assertTrue(validator.validateSNMPItemType(item));
         assertTrue(validator.validate(item));
@@ -164,6 +189,16 @@ public class SNMPItemValidatorTest {
         item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
         item.setName(name);
         item.setOid(oid);
+        return item;
+    }
+
+    private SNMPItem getSNMPItemType(String name) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(0);
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item.setName(name);
+        item.setOid("1.3.6.1.2.1");
         return item;
     }
 }

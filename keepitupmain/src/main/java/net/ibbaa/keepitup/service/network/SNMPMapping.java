@@ -25,6 +25,8 @@ import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.validation.SNMPInterfaceInfoValidator;
+import net.ibbaa.keepitup.model.validation.SNMPItemValidator;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
@@ -99,6 +101,7 @@ public class SNMPMapping {
         if (ifDescrList == null) {
             return result;
         }
+        SNMPInterfaceInfoValidator validator = new SNMPInterfaceInfoValidator(getContext());
         for (SNMPItem item : ifDescrList) {
             OID oid = validateItemAndGetOID(item);
             if (oid != null) {
@@ -119,7 +122,18 @@ public class SNMPMapping {
                         info.setAlias(aliasValue);
                     }
                 }
-                result.put(item.getOid(), info);
+                if (validator.validateDescr(info)) {
+                    if (!validator.validateAlias(info)) {
+                        info.setAlias(null);
+                    }
+                    if (!validator.validateType(info)) {
+                        info.setType(-1);
+                    }
+                    if (!validator.validateStatus(info)) {
+                        info.setStatus(-1);
+                    }
+                    result.put(item.getOid(), info);
+                }
             }
         }
         return result;
@@ -151,6 +165,7 @@ public class SNMPMapping {
 
     public List<SNMPItem> toSNMPItems(Map<String, String> values, long networktaskId) {
         Log.d(SNMPMapping.class.getName(), "toSNMPItems");
+        SNMPItemValidator validator = new SNMPItemValidator(getContext());
         List<SNMPItem> snmpList = new ArrayList<>();
         for (Map.Entry<String, String> entry : values.entrySet()) {
             String oid = entry.getKey();
@@ -163,7 +178,9 @@ public class SNMPMapping {
                 item.setOid(oid);
                 item.setName(value);
                 item.setMonitored(false);
-                snmpList.add(item);
+                if (validator.validate(item)) {
+                    snmpList.add(item);
+                }
             }
         }
         return snmpList;
