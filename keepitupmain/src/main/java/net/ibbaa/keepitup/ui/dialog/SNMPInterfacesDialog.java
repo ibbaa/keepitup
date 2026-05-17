@@ -39,8 +39,8 @@ import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPMapping;
-import net.ibbaa.keepitup.ui.adapter.SNMPItemAdapter;
-import net.ibbaa.keepitup.ui.support.SNMPItemSupport;
+import net.ibbaa.keepitup.ui.adapter.SNMPInterfacesAdapter;
+import net.ibbaa.keepitup.ui.support.SNMPInterfacesSupport;
 import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
 import net.ibbaa.keepitup.ui.sync.SNMPScanTask;
 import net.ibbaa.keepitup.ui.sync.SNMPScanViewModel;
@@ -58,10 +58,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused"})
-public class SNMPItemDialog extends DialogFragmentBase {
+public class SNMPInterfacesDialog extends DialogFragmentBase {
 
     private View dialogView;
-    private RecyclerView snmpItemRecyclerView;
+    private RecyclerView snmpInterfacesRecyclerView;
     private SNMPScanViewModel scanViewModel;
     private SNMPScanTask scanTask;
     private boolean scanned;
@@ -69,29 +69,29 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(SNMPItemDialog.class.getName(), "onCreate");
+        Log.d(SNMPInterfacesDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(SNMPItemDialog.class.getName(), "onCreateView");
-        dialogView = inflater.inflate(R.layout.dialog_snmp_item, container);
+        Log.d(SNMPInterfacesDialog.class.getName(), "onCreateView");
+        dialogView = inflater.inflate(R.layout.dialog_snmp_interfaces, container);
         initEdgeToEdgeInsets(dialogView);
         boolean containsSavedState = containsSavedState(savedInstanceState);
-        Log.d(SNMPItemDialog.class.getName(), "containsSavedState is " + containsSavedState);
-        Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getSNMPItemAdapterKey()) : null;
+        Log.d(SNMPInterfacesDialog.class.getName(), "containsSavedState is " + containsSavedState);
+        Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getSNMPInterfacesAdapterKey()) : null;
         prepareScanned(savedInstanceState);
         prepareScanFields();
-        prepareSNMPItemRecyclerView(adapterState);
+        prepareSNMPInterfacesRecyclerView(adapterState);
         prepareOkCancelImageButtons();
         return dialogView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        Log.d(SNMPItemDialog.class.getName(), "onViewCreated");
+        Log.d(SNMPInterfacesDialog.class.getName(), "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
         scanViewModel = new ViewModelProvider(this).get(SNMPScanViewModel.class);
         scanViewModel.getScanDispatcher().observe(getViewLifecycleOwner(), this::onScanDone);
@@ -99,20 +99,20 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        Log.d(SNMPItemDialog.class.getName(), "onSaveInstanceState");
+        Log.d(SNMPInterfacesDialog.class.getName(), "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         Bundle adapterBundle = getAdapter().saveStateToBundle();
-        outState.putBundle(getSNMPItemAdapterKey(), adapterBundle);
+        outState.putBundle(getSNMPInterfacesAdapterKey(), adapterBundle);
         outState.putBoolean(getScannedKey(), scanned);
     }
 
     private boolean containsSavedState(Bundle savedInstanceState) {
-        Log.d(SNMPItemDialog.class.getName(), "containsSavedState");
+        Log.d(SNMPInterfacesDialog.class.getName(), "containsSavedState");
         if (savedInstanceState == null) {
-            Log.d(SNMPItemDialog.class.getName(), "savedInstanceState bundle is null");
+            Log.d(SNMPInterfacesDialog.class.getName(), "savedInstanceState bundle is null");
             return false;
         }
-        return savedInstanceState.containsKey(getSNMPItemAdapterKey());
+        return savedInstanceState.containsKey(getSNMPInterfacesAdapterKey());
     }
 
     private void prepareScanned(Bundle savedInstanceState) {
@@ -124,61 +124,61 @@ public class SNMPItemDialog extends DialogFragmentBase {
     }
 
     private void prepareScanFields() {
-        Log.d(SNMPItemDialog.class.getName(), "prepareScanFields");
-        ImageView scanImageView = dialogView.findViewById(R.id.imageview_dialog_snmp_item_scan);
+        Log.d(SNMPInterfacesDialog.class.getName(), "prepareScanFields");
+        ImageView scanImageView = dialogView.findViewById(R.id.imageview_dialog_snmp_interfaces_scan);
         scanImageView.setOnClickListener(this::onScanClicked);
     }
 
-    private void prepareSNMPItemRecyclerView(Bundle adapterState) {
-        Log.d(SNMPItemDialog.class.getName(), "prepareSNMPItemRecyclerView");
+    private void prepareSNMPInterfacesRecyclerView(Bundle adapterState) {
+        Log.d(SNMPInterfacesDialog.class.getName(), "prepareSNMPInterfacesRecyclerView");
         Bundle arguments = getArguments();
         initialSNMPItems = arguments != null ? BundleUtil.snmpItemListFromBundle(getInitialSNMPItemsKey(), arguments) : Collections.emptyList();
-        snmpItemRecyclerView = dialogView.findViewById(R.id.listview_dialog_snmp_item_items);
+        snmpInterfacesRecyclerView = dialogView.findViewById(R.id.listview_dialog_snmp_interfaces_items);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        snmpItemRecyclerView.setLayoutManager(layoutManager);
-        snmpItemRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        snmpInterfacesRecyclerView.setLayoutManager(layoutManager);
+        snmpInterfacesRecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
-        snmpItemRecyclerView.setAdapter(adapter);
+        snmpInterfacesRecyclerView.setAdapter(adapter);
     }
 
     private void prepareOkCancelImageButtons() {
-        Log.d(SNMPItemDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_snmp_item_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_snmp_item_cancel);
+        Log.d(SNMPInterfacesDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_snmp_interfaces_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_snmp_interfaces_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
     public String getAddressKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".Address";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".Address";
     }
 
     public String getPortKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".Port";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".Port";
     }
 
     public String getSNMPVersionKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".SNMPVersion";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".SNMPVersion";
     }
 
     public String getCommunityKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".Community";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".Community";
     }
 
     public String getInitialSNMPItemsKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".InitialSNMPItems";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".InitialSNMPItems";
     }
 
     public String getNetworkTaskIdKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".NetworkTaskId";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".NetworkTaskId";
     }
 
-    private String getSNMPItemAdapterKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".SNMPItemAdapter";
+    private String getSNMPInterfacesAdapterKey() {
+        return SNMPInterfacesDialog.class.getSimpleName() + ".SNMPItemAdapter";
     }
 
     private String getScannedKey() {
-        return SNMPItemDialog.class.getSimpleName() + ".Scanned";
+        return SNMPInterfacesDialog.class.getSimpleName() + ".Scanned";
     }
 
     public List<SNMPItem> getInitialSNMPItems() {
@@ -186,7 +186,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
     }
 
     public void onScanClicked(View view) {
-        Log.d(SNMPItemDialog.class.getName(), "onScanClicked");
+        Log.d(SNMPInterfacesDialog.class.getName(), "onScanClicked");
         showProgressDialog();
         Future<SNMPScanResult> scanFuture = ThreadUtil.execute(getScanTask());
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
@@ -195,7 +195,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
                 int timeout = getResources().getInteger(R.integer.snmp_scan_timeout) + getResources().getInteger(R.integer.dns_timeout);
                 scanFuture.get(timeout, TimeUnit.MILLISECONDS);
             } catch (Exception exc) {
-                Log.e(SNMPItemDialog.class.getName(), "Error waiting for scan execution", exc);
+                Log.e(SNMPInterfacesDialog.class.getName(), "Error waiting for scan execution", exc);
                 closeProgressDialog();
             }
         }
@@ -203,7 +203,7 @@ public class SNMPItemDialog extends DialogFragmentBase {
 
     @SuppressLint("NotifyDataSetChanged")
     private void onScanDone(SNMPScanResult result) {
-        Log.d(SNMPItemDialog.class.getName(), "onScanDone, success is " + result.success());
+        Log.d(SNMPInterfacesDialog.class.getName(), "onScanDone, success is " + result.success());
         scanned = true;
         if (result.success()) {
             SNMPMapping snmpMapping = new SNMPMapping(requireContext());
@@ -237,23 +237,23 @@ public class SNMPItemDialog extends DialogFragmentBase {
     }
 
     private void onOkClicked(View view) {
-        Log.d(SNMPItemDialog.class.getName(), "onOkClicked");
-        SNMPItemSupport snmpItemSupport = getSNMPItemSupport();
-        if (snmpItemSupport != null) {
-            snmpItemSupport.onSNMPItemDialogOkClicked(this);
+        Log.d(SNMPInterfacesDialog.class.getName(), "onOkClicked");
+        SNMPInterfacesSupport snmpInterfacesSupport = getSNMPInterfacesSupport();
+        if (snmpInterfacesSupport != null) {
+            snmpInterfacesSupport.onSNMPInterfacesDialogOkClicked(this);
         } else {
-            Log.e(SNMPItemDialog.class.getName(), "snmpItemSupport is null");
+            Log.e(SNMPInterfacesDialog.class.getName(), "snmpInterfacesSupport is null");
             dismiss();
         }
     }
 
     private void onCancelClicked(View view) {
-        Log.d(SNMPItemDialog.class.getName(), "onCancelClicked");
-        SNMPItemSupport snmpItemSupport = getSNMPItemSupport();
-        if (snmpItemSupport != null) {
-            snmpItemSupport.onSNMPItemDialogCancelClicked(this);
+        Log.d(SNMPInterfacesDialog.class.getName(), "onCancelClicked");
+        SNMPInterfacesSupport snmpInterfacesSupport = getSNMPInterfacesSupport();
+        if (snmpInterfacesSupport != null) {
+            snmpInterfacesSupport.onSNMPInterfacesDialogCancelClicked(this);
         } else {
-            Log.e(SNMPItemDialog.class.getName(), "snmpItemSupport is null");
+            Log.e(SNMPInterfacesDialog.class.getName(), "snmpInterfacesSupport is null");
             dismiss();
         }
     }
@@ -262,46 +262,46 @@ public class SNMPItemDialog extends DialogFragmentBase {
         return scanned;
     }
 
-    public RecyclerView getSNMPItemRecyclerView() {
-        return snmpItemRecyclerView;
+    public RecyclerView getSNMPInterfacesRecyclerView() {
+        return snmpInterfacesRecyclerView;
     }
 
-    public SNMPItemAdapter getAdapter() {
-        return (SNMPItemAdapter) getSNMPItemRecyclerView().getAdapter();
+    public SNMPInterfacesAdapter getAdapter() {
+        return (SNMPInterfacesAdapter) getSNMPInterfacesRecyclerView().getAdapter();
     }
 
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
-        Log.d(SNMPItemDialog.class.getName(), "restoreAdapter");
-        SNMPItemAdapter adapter = new SNMPItemAdapter(Collections.emptyList(), Collections.emptyMap(), this);
+        Log.d(SNMPInterfacesDialog.class.getName(), "restoreAdapter");
+        SNMPInterfacesAdapter adapter = new SNMPInterfacesAdapter(Collections.emptyList(), Collections.emptyMap(), this);
         adapter.restoreStateFromBundle(adapterState);
         return adapter;
     }
 
     private RecyclerView.Adapter<?> createAdapter() {
-        Log.d(SNMPItemDialog.class.getName(), "createAdapter");
+        Log.d(SNMPInterfacesDialog.class.getName(), "createAdapter");
         SNMPMapping snmpMapping = new SNMPMapping(requireContext());
         List<SNMPItem> descrItems = snmpMapping.filterDescrItems(initialSNMPItems);
-        return new SNMPItemAdapter(descrItems, snmpMapping.extractSNMPInterfaceInfos(initialSNMPItems), this);
+        return new SNMPInterfacesAdapter(descrItems, snmpMapping.extractSNMPInterfaceInfos(initialSNMPItems), this);
     }
 
-    private SNMPItemSupport getSNMPItemSupport() {
-        Log.d(SNMPItemDialog.class.getName(), "getSNMPItemSupport");
+    private SNMPInterfacesSupport getSNMPInterfacesSupport() {
+        Log.d(SNMPInterfacesDialog.class.getName(), "getSNMPInterfacesSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment instanceof SNMPItemSupport) {
-                return (SNMPItemSupport) fragment;
+            if (fragment instanceof SNMPInterfacesSupport) {
+                return (SNMPInterfacesSupport) fragment;
             }
         }
         Activity activity = getActivity();
         if (activity == null) {
-            Log.e(SNMPItemDialog.class.getName(), "getSNMPItemSupport, activity is null");
+            Log.e(SNMPInterfacesDialog.class.getName(), "getSNMPInterfacesSupport, activity is null");
             return null;
         }
-        if (!(activity instanceof SNMPItemSupport)) {
-            Log.e(SNMPItemDialog.class.getName(), "getSNMPItemSupport, activity is not an instance of " + SNMPItemSupport.class.getSimpleName());
+        if (!(activity instanceof SNMPInterfacesSupport)) {
+            Log.e(SNMPInterfacesDialog.class.getName(), "getSNMPInterfacesSupport, activity is not an instance of " + SNMPInterfacesSupport.class.getSimpleName());
             return null;
         }
-        return (SNMPItemSupport) activity;
+        return (SNMPInterfacesSupport) activity;
     }
 
     public void injectScanTask(SNMPScanTask task) {
@@ -321,13 +321,13 @@ public class SNMPItemDialog extends DialogFragmentBase {
     }
 
     protected void showProgressDialog() {
-        Log.d(SNMPItemDialog.class.getName(), "showProgressDialog");
+        Log.d(SNMPInterfacesDialog.class.getName(), "showProgressDialog");
         ProgressDialog progressDialog = new ProgressDialog();
         progressDialog.show(getParentFragmentManager(), ProgressDialog.class.getName());
     }
 
     private void showValidatorErrorDialog(List<ValidationResult> validationResult, String title) {
-        Log.d(SNMPItemDialog.class.getName(), "showValidatorErrorDialog");
+        Log.d(SNMPInterfacesDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult);
         bundle = BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
@@ -341,14 +341,14 @@ public class SNMPItemDialog extends DialogFragmentBase {
     }
 
     protected void closeProgressDialog() {
-        Log.d(SNMPItemDialog.class.getName(), "closeProgressDialog");
+        Log.d(SNMPInterfacesDialog.class.getName(), "closeProgressDialog");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof ProgressDialog) {
                 try {
                     ((ProgressDialog) fragment).dismiss();
                 } catch (Exception exc) {
-                    Log.d(SNMPItemDialog.class.getName(), "Error closing ProgressDialog", exc);
+                    Log.d(SNMPInterfacesDialog.class.getName(), "Error closing ProgressDialog", exc);
                 }
             }
         }

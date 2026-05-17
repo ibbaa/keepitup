@@ -16,91 +16,91 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollview_dialog_snmp_item"
+    android:id="@+id/scrollview_dialog_snmp_interfaces"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/linearlayout_snmp_item"
+        android:id="@+id/linearlayout_snmp_interfaces"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/linearlayout_dialog_snmp_item_padding"
+        android:padding="@dimen/linearlayout_dialog_snmp_interfaces_padding"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_snmp_item_label"
+            android:id="@+id/textview_dialog_snmp_interfaces_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/textview_dialog_snmp_item_label_margin"
+            android:layout_marginBottom="@dimen/textview_dialog_snmp_interfaces_label_margin"
             android:gravity="center_horizontal"
             android:textStyle="bold"
-            android:text="@string/label_dialog_snmp_item_snmp_interfaces" />
+            android:text="@string/label_dialog_snmp_interfaces_snmp_interfaces" />
 
         <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/cardview_dialog_snmp_item_scan"
+            android:id="@+id/cardview_dialog_snmp_interfaces_scan"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/cardview_dialog_snmp_item_scan_margin"
-            card_view:cardCornerRadius="@dimen/cardview_dialog_snmp_item_scan_corner_radius"
-            app:cardElevation="@dimen/cardview_dialog_snmp_item_scan_card_elevation"
+            android:layout_margin="@dimen/cardview_dialog_snmp_interfaces_scan_margin"
+            card_view:cardCornerRadius="@dimen/cardview_dialog_snmp_interfaces_scan_corner_radius"
+            app:cardElevation="@dimen/cardview_dialog_snmp_interfaces_scan_card_elevation"
             app:cardBackgroundColor="@color/cardBackgroundColor">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/relativelayout_dialog_snmp_item_scan_padding">
+                android:padding="@dimen/relativelayout_dialog_snmp_interfaces_scan_padding">
 
                 <ImageView
-                    android:id="@+id/imageview_dialog_snmp_item_scan"
+                    android:id="@+id/imageview_dialog_snmp_interfaces_scan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:clickable="true"
                     android:focusable="true"
-                    android:contentDescription="@string/label_dialog_snmp_item_scan"
+                    android:contentDescription="@string/label_dialog_snmp_interfaces_scan"
                     app:srcCompat="@drawable/icon_scan_selector" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_snmp_item_scan"
+                    android:id="@+id/textview_dialog_snmp_interfaces_scan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@id/imageview_dialog_snmp_item_scan"
-                    android:layout_marginTop="@dimen/textview_dialog_snmp_item_scan_margin_top"
+                    android:layout_toStartOf="@id/imageview_dialog_snmp_interfaces_scan"
+                    android:layout_marginTop="@dimen/textview_dialog_snmp_interfaces_scan_margin_top"
                     android:textStyle="bold"
                     android:singleLine="false"
-                    android:textSize="@dimen/textview_dialog_snmp_item_scan_text_size"
-                    android:text="@string/label_dialog_snmp_item_scan" />
+                    android:textSize="@dimen/textview_dialog_snmp_interfaces_scan_text_size"
+                    android:text="@string/label_dialog_snmp_interfaces_scan" />
 
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/cardview_dialog_snmp_item_show_all"
+            android:id="@+id/cardview_dialog_snmp_interfaces_show_all"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/cardview_dialog_snmp_item_show_all_margin"
-            card_view:cardCornerRadius="@dimen/cardview_dialog_snmp_item_show_all_corner_radius"
-            app:cardElevation="@dimen/cardview_dialog_snmp_item_show_all_card_elevation"
+            android:layout_margin="@dimen/cardview_dialog_snmp_interfaces_show_all_margin"
+            card_view:cardCornerRadius="@dimen/cardview_dialog_snmp_interfaces_show_all_corner_radius"
+            app:cardElevation="@dimen/cardview_dialog_snmp_interfaces_show_all_card_elevation"
             app:cardBackgroundColor="@color/cardBackgroundColor">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/linearlayout_dialog_snmp_item_show_all_padding"
+                android:padding="@dimen/linearlayout_dialog_snmp_interfaces_show_all_padding"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/checkbox_dialog_snmp_item_show_all"
+                    android:id="@+id/checkbox_dialog_snmp_interfaces_show_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="0dp"
@@ -109,51 +109,51 @@
                     android:checked="false" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_snmp_item_show_all"
+                    android:id="@+id/textview_dialog_snmp_interfaces_show_all"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/textview_list_item_snmp_item_name_margin_start"
+                    android:layout_marginStart="@dimen/textview_list_item_snmp_interface_name_margin_start"
                     android:textColor="@color/textColor"
-                    android:text="@string/label_dialog_snmp_item_show_all" />
+                    android:text="@string/label_dialog_snmp_interfaces_show_all" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listview_dialog_snmp_item_items"
+            android:id="@+id/listview_dialog_snmp_interfaces_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/listview_dialog_snmp_item_margin"
-            android:padding="@dimen/listview_dialog_snmp_item_padding"
+            android:layout_margin="@dimen/listview_dialog_snmp_interfaces_margin"
+            android:padding="@dimen/listview_dialog_snmp_interfaces_padding"
             android:layout_gravity="fill_horizontal"
             android:scrollbars="none" />
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_snmp_item_ok_cancel"
+            android:id="@+id/linearlayout_dialog_snmp_interfaces_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/linearlayout_dialog_snmp_item_ok_cancel_padding_top"
+            android:paddingTop="@dimen/linearlayout_dialog_snmp_interfaces_ok_cancel_padding_top"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageview_dialog_snmp_item_ok"
+                android:id="@+id/imageview_dialog_snmp_interfaces_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_snmp_item_ok"
+                android:contentDescription="@string/label_dialog_snmp_interfaces_ok"
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
-                android:id="@+id/imageview_dialog_snmp_item_cancel"
+                android:id="@+id/imageview_dialog_snmp_interfaces_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_snmp_item_cancel"
+                android:contentDescription="@string/label_dialog_snmp_interfaces_cancel"
                 app:srcCompat="@drawable/icon_cancel_selector" />
 
         </LinearLayout>

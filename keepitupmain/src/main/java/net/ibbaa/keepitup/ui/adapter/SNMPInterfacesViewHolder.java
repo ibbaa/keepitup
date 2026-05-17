@@ -27,26 +27,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.ui.dialog.SNMPItemDialog;
+import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialog;
 
 @SuppressWarnings({"FieldCanBeLocal"})
-public class SNMPItemViewHolder extends RecyclerView.ViewHolder {
+public class SNMPInterfacesViewHolder extends RecyclerView.ViewHolder {
 
-    private final SNMPItemDialog snmpItemDialog;
+    private final SNMPInterfacesDialog snmpInterfacesDialog;
     private final TextView noItemsText;
     private final CardView cardView;
     private final MaterialCheckBox monitoredCheckbox;
     private final TextView nameText;
     private final TextView secondText;
 
-    public SNMPItemViewHolder(@NonNull View itemView, SNMPItemDialog snmpItemDialog) {
+    public SNMPInterfacesViewHolder(@NonNull View itemView, SNMPInterfacesDialog snmpInterfacesDialog) {
         super(itemView);
-        this.snmpItemDialog = snmpItemDialog;
-        noItemsText = itemView.findViewById(R.id.textview_list_item_snmp_item_no_item);
-        cardView = itemView.findViewById(R.id.cardview_list_item_snmp_item);
-        monitoredCheckbox = itemView.findViewById(R.id.checkbox_list_item_snmp_item_monitored);
-        nameText = itemView.findViewById(R.id.textview_list_item_snmp_item_name);
-        secondText = itemView.findViewById(R.id.textview_list_item_snmp_item_second);
+        this.snmpInterfacesDialog = snmpInterfacesDialog;
+        noItemsText = itemView.findViewById(R.id.textview_list_item_snmp_interface_no_item);
+        cardView = itemView.findViewById(R.id.cardview_list_item_snmp_interface);
+        monitoredCheckbox = itemView.findViewById(R.id.checkbox_list_item_snmp_interface_monitored);
+        nameText = itemView.findViewById(R.id.textview_list_item_snmp_interface_name);
+        secondText = itemView.findViewById(R.id.textview_list_item_snmp_interface_second);
     }
 
     public void setNameText(String text) {

@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.SNMPItemDialog;
+import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialog;
 
-public interface SNMPItemSupport {
+public interface SNMPInterfacesSupport {
 
-    void onSNMPItemDialogOkClicked(SNMPItemDialog snmpItemDialog);
+    void onSNMPInterfacesDialogOkClicked(SNMPInterfacesDialog snmpInterfacesDialog);
 
-    void onSNMPItemDialogCancelClicked(SNMPItemDialog snmpItemDialog);
+    void onSNMPInterfacesDialogCancelClicked(SNMPInterfacesDialog snmpInterfacesDialog);
 }

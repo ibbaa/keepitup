@@ -61,7 +61,7 @@ import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
-import net.ibbaa.keepitup.ui.dialog.SNMPItemDialog;
+import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -579,7 +579,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onMainAddClicked(View view) {
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        //showSNMPItemDialogTest();
+        //showSNMPInterfacesDialogTest();
         openNetworkTaskEditDialog(task, data, null, null, -1);
     }
 
@@ -934,15 +934,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     @SuppressWarnings("unused")
-    private void showSNMPItemDialogTest() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "showSNMPItemDialogTest");
-        SNMPItemDialog dialog = new SNMPItemDialog();
+    private void showSNMPInterfacesDialogTest() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showSNMPInterfacesDialogTest");
+        SNMPInterfacesDialog dialog = new SNMPInterfacesDialog();
         Bundle bundle = new Bundle();
         bundle.putString(dialog.getAddressKey(), "gaia.ibbaa.lan");
         bundle.putInt(dialog.getPortKey(), 161);
         bundle.putString(dialog.getSNMPVersionKey(), SNMPVersion.V2C.name());
         bundle.putString(dialog.getCommunityKey(), "");
         dialog.setArguments(bundle);
-        dialog.show(getSupportFragmentManager(), SNMPItemDialog.class.getName());
+        dialog.show(getSupportFragmentManager(), SNMPInterfacesDialog.class.getName());
     }
 }
