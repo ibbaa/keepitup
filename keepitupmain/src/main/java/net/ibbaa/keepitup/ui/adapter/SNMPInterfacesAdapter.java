@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.service.network.SNMPMapping;
 import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -42,13 +43,17 @@ import java.util.Map;
 public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesViewHolder> {
 
     private final List<SNMPItem> snmpItems;
+    private final List<SNMPItem> filteredSnmpItems;
     private final Map<String, SNMPInterfaceInfo> snmpInterfaceInfo;
     private final SNMPInterfacesDialog snmpInterfacesDialog;
+    private boolean showAll;
 
     public SNMPInterfacesAdapter(List<SNMPItem> snmpItems, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo, SNMPInterfacesDialog snmpInterfacesDialog) {
         this.snmpItems = new ArrayList<>();
+        this.filteredSnmpItems = new ArrayList<>();
         this.snmpInterfaceInfo = new HashMap<>();
         this.snmpInterfacesDialog = snmpInterfacesDialog;
+        this.showAll = false;
         replaceItems(snmpItems, snmpInterfaceInfo);
     }
 
@@ -63,9 +68,9 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
     @Override
     public void onBindViewHolder(@NonNull SNMPInterfacesViewHolder snmpInterfacesViewHolder, int position) {
         Log.d(SNMPInterfacesAdapter.class.getName(), "onBindViewHolder");
-        if (!snmpItems.isEmpty()) {
-            if (position < snmpItems.size()) {
-                SNMPItem item = snmpItems.get(position);
+        if (!getItems().isEmpty()) {
+            if (position < getItems().size()) {
+                SNMPItem item = getItems().get(position);
                 snmpInterfacesViewHolder.setNameText(StringUtil.notNull(item.getName()));
                 snmpInterfacesViewHolder.setOnMonitoredChangedListener(null);
                 snmpInterfacesViewHolder.setChecked(item.isMonitored());
@@ -87,11 +92,13 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
     public Bundle saveStateToBundle() {
         Log.d(SNMPInterfacesAdapter.class.getName(), "saveStateToBundle");
         Bundle bundle = BundleUtil.snmpItemListToBundle(getSNMPItemsKey(), snmpItems);
-        return BundleUtil.snmpInterfaceInfoMapToBundle(getSNMPInterfaceInfoKey(), snmpInterfaceInfo, bundle);
+        bundle = BundleUtil.snmpInterfaceInfoMapToBundle(getSNMPInterfaceInfoKey(), snmpInterfaceInfo, bundle);
+        return BundleUtil.booleanToBundle(getShowAllKey(), showAll, bundle);
     }
 
     public void restoreStateFromBundle(Bundle bundle) {
         Log.d(SNMPInterfacesAdapter.class.getName(), "restoreStateFromBundle");
+        showAll = bundle.getBoolean(getShowAllKey());
         replaceItems(BundleUtil.snmpItemListFromBundle(getSNMPItemsKey(), bundle), BundleUtil.snmpInterfaceInfoMapFromBundle(getSNMPInterfaceInfoKey(), bundle));
     }
 
@@ -103,18 +110,23 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
         return SNMPInterfacesAdapter.class.getSimpleName() + ".SNMPInterfaceInfo";
     }
 
+    private String getShowAllKey() {
+        return SNMPInterfacesAdapter.class.getSimpleName() + ".ShowAll";
+    }
+
     public SNMPItem getItem(int index) {
         Log.d(SNMPInterfacesAdapter.class.getName(), "getItem for index " + index);
-        if (index < 0 || index >= snmpItems.size()) {
+        if (index < 0 || index >= getItems().size()) {
             Log.e(SNMPInterfacesAdapter.class.getName(), "invalid index " + index);
             return null;
         }
-        return snmpItems.get(index);
+        return getItems().get(index);
     }
 
     public void replaceItems(List<SNMPItem> items) {
         this.snmpItems.clear();
         this.snmpItems.addAll(items);
+        buildFilteredList();
     }
 
     public void replaceItems(List<SNMPItem> items, Map<String, SNMPInterfaceInfo> snmpInterfaceInfo) {
@@ -122,11 +134,38 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
         this.snmpItems.addAll(items);
         this.snmpInterfaceInfo.clear();
         this.snmpInterfaceInfo.putAll(snmpInterfaceInfo);
+        buildFilteredList();
+    }
+
+    private void buildFilteredList() {
+        filteredSnmpItems.clear();
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        for (SNMPItem item : snmpItems) {
+            SNMPInterfaceInfo info = snmpInterfaceInfo.get(item.getOid());
+            if (!snmpMapping.isFilteredInterface(info) || item.isMonitored()) {
+                filteredSnmpItems.add(item);
+            }
+        }
+    }
+
+    private List<SNMPItem> getItems() {
+        if (showAll) {
+            return snmpItems;
+        }
+        return filteredSnmpItems;
     }
 
     @Override
     public int getItemCount() {
-        return snmpItems.isEmpty() ? 1 : snmpItems.size();
+        return getItems().isEmpty() ? 1 : getItems().size();
+    }
+
+    public boolean isShowAll() {
+        return showAll;
+    }
+
+    public void setShowAll(boolean showAll) {
+        this.showAll = showAll;
     }
 
     public List<SNMPItem> getAllItems() {

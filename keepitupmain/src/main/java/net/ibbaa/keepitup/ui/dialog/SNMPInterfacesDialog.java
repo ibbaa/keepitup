@@ -32,6 +32,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
+
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
@@ -85,6 +87,7 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         prepareScanned(savedInstanceState);
         prepareScanFields();
         prepareSNMPInterfacesRecyclerView(adapterState);
+        prepareShowAll();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -127,6 +130,17 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         Log.d(SNMPInterfacesDialog.class.getName(), "prepareScanFields");
         ImageView scanImageView = dialogView.findViewById(R.id.imageview_dialog_snmp_interfaces_scan);
         scanImageView.setOnClickListener(this::onScanClicked);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void prepareShowAll() {
+        Log.d(SNMPInterfacesDialog.class.getName(), "prepareShowAll");
+        MaterialCheckBox showAllCheckBox = dialogView.findViewById(R.id.checkbox_dialog_snmp_interfaces_show_all);
+        showAllCheckBox.setChecked(getAdapter().isShowAll());
+        showAllCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getAdapter().setShowAll(isChecked);
+            getAdapter().notifyDataSetChanged();
+        });
     }
 
     private void prepareSNMPInterfacesRecyclerView(Bundle adapterState) {
