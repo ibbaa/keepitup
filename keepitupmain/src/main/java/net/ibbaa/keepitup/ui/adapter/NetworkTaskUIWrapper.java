@@ -24,8 +24,10 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.util.CollectionUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
@@ -33,18 +35,25 @@ public class NetworkTaskUIWrapper {
 
     private static final Equality<Header> HEADER_EQUALITY = Header::isEqual;
     private static final Equality<Resolve> RESOLVE_EQUALITY = Resolve::isEqual;
+    private static final Equality<SNMPItem> SNMPITEM_EQUALITY = SNMPItem::isEqual;
 
     private final NetworkTask networkTask;
     private final AccessTypeData accessTypeData;
     private final List<Resolve> resolves;
     private final List<Header> headers;
+    private final List<SNMPItem> snmpItems;
     private final LogEntry logEntry;
 
     public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, LogEntry logEntry) {
+        this(networkTask, accessTypeData, resolves, headers, Collections.emptyList(), logEntry);
+    }
+
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, LogEntry logEntry) {
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
         this.resolves = resolves;
         this.headers = headers;
+        this.snmpItems = snmpItems;
         this.logEntry = logEntry;
     }
 
@@ -66,6 +75,10 @@ public class NetworkTaskUIWrapper {
 
     public List<Header> getHeaders() {
         return headers;
+    }
+
+    public List<SNMPItem> getSnmpItems() {
+        return snmpItems;
     }
 
     public LogEntry getLogEntry() {
@@ -94,6 +107,9 @@ public class NetworkTaskUIWrapper {
         if (!CollectionUtil.areListsEqual(headers, other.getHeaders(), HEADER_EQUALITY)) {
             return false;
         }
+        if (!CollectionUtil.areListsEqual(snmpItems, other.getSnmpItems(), SNMPITEM_EQUALITY)) {
+            return false;
+        }
         if (logEntry == null && other.getLogEntry() != null) {
             return false;
         }
@@ -108,6 +124,7 @@ public class NetworkTaskUIWrapper {
                 ", accessTypeData=" + accessTypeData +
                 ", resolves=" + resolves +
                 ", headers=" + headers +
+                ", snmpItems=" + snmpItems +
                 ", logEntry=" + logEntry +
                 '}';
     }

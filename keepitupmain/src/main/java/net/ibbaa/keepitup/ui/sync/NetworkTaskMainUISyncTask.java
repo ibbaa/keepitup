@@ -21,14 +21,17 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWrapper> {
 
@@ -62,10 +65,12 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
                     data.setNetworkTaskId(networkTask.getId());
                     accessTypeDataDAO.insertAccessTypeData(data);
                 }
-                return new NetworkTaskUIWrapper(networkTask, data, null, null, logEntry);
+                SNMPItemDAO snmpItemDAO = new SNMPItemDAO(context);
+                List<SNMPItem> snmpItems = snmpItemDAO.readAllSNMPItemsForNetworkTask(networkTask.getId());
+                return new NetworkTaskUIWrapper(networkTask, data, null, null, snmpItems, logEntry);
             }
         } catch (Exception exc) {
-            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);
+            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading data for network task " + networkTask, exc);
         }
         return null;
     }
@@ -80,7 +85,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
         if (adapter != null) {
             try {
                 Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper);
-                int replacePosition = adapter.replaceNetworkTask(networkTaskWrapper.getNetworkTask(), networkTaskWrapper.getAccessTypeData(), null, null, networkTaskWrapper.getLogEntry());
+                int replacePosition = adapter.replaceNetworkTask(networkTaskWrapper.getNetworkTask(), networkTaskWrapper.getAccessTypeData(), null, null, networkTaskWrapper.getSnmpItems(), networkTaskWrapper.getLogEntry());
                 if (replacePosition >= 0) {
                     adapter.notifyItemChanged(replacePosition);
                 }

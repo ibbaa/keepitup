@@ -34,6 +34,7 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
@@ -381,6 +382,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public int replaceNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, LogEntry logEntry) {
+        return replaceNetworkTask(task, data, resolves, headers, null, logEntry);
+    }
+
+    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, LogEntry logEntry) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
@@ -394,10 +399,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 if (headers == null) {
                     headers = currentTask.getHeaders();
                 }
+                if (snmpItems == null) {
+                    snmpItems = currentTask.getSnmpItems();
+                }
                 if (logEntry == null) {
                     logEntry = currentTask.getLogEntry();
                 }
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolves, headers, logEntry));
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolves, headers, snmpItems, logEntry));
                 return ii;
             }
         }

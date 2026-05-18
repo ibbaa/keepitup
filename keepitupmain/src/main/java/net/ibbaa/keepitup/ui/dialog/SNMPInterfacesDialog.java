@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -46,6 +47,7 @@ import net.ibbaa.keepitup.ui.support.SNMPInterfacesSupport;
 import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
 import net.ibbaa.keepitup.ui.sync.SNMPScanTask;
 import net.ibbaa.keepitup.ui.sync.SNMPScanViewModel;
+import net.ibbaa.keepitup.ui.sync.UITaskResultDispatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.ExceptionUtil;
@@ -88,6 +90,7 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         prepareScanFields();
         prepareSNMPInterfacesRecyclerView(adapterState);
         prepareShowAll();
+        updateShowAllVisibility();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -130,6 +133,12 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         Log.d(SNMPInterfacesDialog.class.getName(), "prepareScanFields");
         ImageView scanImageView = dialogView.findViewById(R.id.imageview_dialog_snmp_interfaces_scan);
         scanImageView.setOnClickListener(this::onScanClicked);
+    }
+
+    private void updateShowAllVisibility() {
+        Log.d(SNMPInterfacesDialog.class.getName(), "updateShowAllVisibility");
+        CardView showAllCardView = dialogView.findViewById(R.id.cardview_dialog_snmp_interfaces_show_all);
+        showAllCardView.setVisibility(getAdapter().hasFilterEffect() ? View.VISIBLE : View.GONE);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -247,6 +256,7 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
             }
         }
         getAdapter().notifyDataSetChanged();
+        updateShowAllVisibility();
         closeProgressDialog();
     }
 
@@ -320,6 +330,10 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
 
     public void injectScanTask(SNMPScanTask task) {
         this.scanTask = task;
+    }
+
+    protected UITaskResultDispatcher<SNMPScanResult> getScanDispatcher() {
+        return scanViewModel.getScanDispatcher();
     }
 
     protected SNMPScanTask getScanTask() {

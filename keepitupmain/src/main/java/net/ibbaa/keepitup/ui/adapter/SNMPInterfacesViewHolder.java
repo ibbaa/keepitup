@@ -37,7 +37,8 @@ public class SNMPInterfacesViewHolder extends RecyclerView.ViewHolder {
     private final CardView cardView;
     private final MaterialCheckBox monitoredCheckbox;
     private final TextView nameText;
-    private final TextView secondText;
+    private final TextView aliasText;
+    private final TextView statusText;
 
     public SNMPInterfacesViewHolder(@NonNull View itemView, SNMPInterfacesDialog snmpInterfacesDialog) {
         super(itemView);
@@ -46,15 +47,32 @@ public class SNMPInterfacesViewHolder extends RecyclerView.ViewHolder {
         cardView = itemView.findViewById(R.id.cardview_list_item_snmp_interface);
         monitoredCheckbox = itemView.findViewById(R.id.checkbox_list_item_snmp_interface_monitored);
         nameText = itemView.findViewById(R.id.textview_list_item_snmp_interface_name);
-        secondText = itemView.findViewById(R.id.textview_list_item_snmp_interface_second);
+        aliasText = itemView.findViewById(R.id.textview_list_item_snmp_interface_alias);
+        statusText = itemView.findViewById(R.id.textview_list_item_snmp_interface_status);
     }
 
     public void setNameText(String text) {
         nameText.setText(text);
     }
 
-    public void setSecondText(String text) {
-        secondText.setText(text);
+    public void setAliasText(String text) {
+        aliasText.setText(text);
+    }
+
+    public void showAliasText() {
+        aliasText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideAliasText() {
+        aliasText.setVisibility(View.GONE);
+    }
+
+    public void setStatusText(String text) {
+        statusText.setText(text);
+    }
+
+    public void setStatusTextColor(int color) {
+        statusText.setTextColor(color);
     }
 
     public void setChecked(boolean checked) {

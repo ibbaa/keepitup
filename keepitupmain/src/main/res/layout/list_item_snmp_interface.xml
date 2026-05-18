@@ -59,21 +59,39 @@
                 app:buttonTint="@drawable/checkbox_selector"
                 android:checked="false" />
 
-            <TextView
-                android:id="@+id/textview_list_item_snmp_interface_name"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/textview_list_item_snmp_interface_name_margin_start"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:text="" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_list_item_snmp_interface_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/textview_list_item_snmp_interface_alias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/textview_list_item_snmp_interface_alias_text_size"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:visibility="gone"
+                    android:text="" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/textview_list_item_snmp_interface_second"
+                android:id="@+id/textview_list_item_snmp_interface_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/textview_list_item_snmp_interface_second_margin_start"
+                android:layout_marginStart="@dimen/textview_list_item_snmp_interface_status_margin_start"
+                android:layout_marginEnd="@dimen/textview_list_item_snmp_interface_status_margin_end"
                 android:text="" />
 
         </LinearLayout>

@@ -30,6 +30,8 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
@@ -44,8 +46,10 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
 
@@ -74,6 +78,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         assertTrue(task.isEqual(wrapper.getNetworkTask()));
         assertTrue(data.isEqual(wrapper.getAccessTypeData()));
         assertTrue(logEntry2.isEqual(wrapper.getLogEntry()));
+        assertTrue(wrapper.getSnmpItems().isEmpty());
     }
 
     @Test
@@ -85,6 +90,21 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         assertTrue(task.isEqual(wrapper.getNetworkTask()));
         assertTrue(data.isEqual(wrapper.getAccessTypeData()));
         assertNull(wrapper.getLogEntry());
+        assertTrue(wrapper.getSnmpItems().isEmpty());
+    }
+
+    @Test
+    public void testSNMPItemsReturned() {
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task.getId()));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItemWithNetworkTaskId(task.getId(), "eth0", "1.3.6.1.2.1.2.2.1.2.1"));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItemWithNetworkTaskId(task.getId(), "wlan0", "1.3.6.1.2.1.2.2.1.2.2"));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), task, getAdapter(activityScenario));
+        NetworkTaskUIWrapper wrapper = syncTask.runInBackground();
+        assertTrue(task.isEqual(wrapper.getNetworkTask()));
+        assertEquals(2, wrapper.getSnmpItems().size());
+        assertTrue(snmpItem1.isEqual(wrapper.getSnmpItems().get(0)));
+        assertTrue(snmpItem2.isEqual(wrapper.getSnmpItems().get(1)));
     }
 
     @Test
@@ -96,20 +116,21 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
         LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null, null);
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null, null);
-        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null);
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null, null, null);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null, null, null);
+        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, getAdapter(activityScenario));
-        syncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, null, null, logEntry));
+        syncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, null, null, null, logEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
         assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
         assertTrue(data2.isEqual(wrapper2.getAccessTypeData()));
         assertTrue(logEntry.isEqual(wrapper2.getLogEntry()));
+        assertNull(wrapper2.getSnmpItems());
     }
 
     @Test
@@ -121,9 +142,9 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
         LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null, null);
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null, logEntry);
-        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null);
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null, null, null);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null, null, logEntry);
+        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
@@ -134,12 +155,13 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData updatedData2 = getAccessTypeDataDAO().updateAccessTypeData(data2);
         LogEntry otherLogEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 18).getTime().getTime()));
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, getAdapter(activityScenario));
-        syncTask.runOnUIThread(new NetworkTaskUIWrapper(updatedTask2, updatedData2, null, null, otherLogEntry));
+        syncTask.runOnUIThread(new NetworkTaskUIWrapper(updatedTask2, updatedData2, null, null, null, otherLogEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
         assertTrue(updatedTask2.isEqual(wrapper2.getNetworkTask()));
         assertTrue(updatedData2.isEqual(wrapper2.getAccessTypeData()));
         assertTrue(otherLogEntry.isEqual(wrapper2.getLogEntry()));
+        assertNull(wrapper2.getSnmpItems());
     }
 
     @Test
@@ -147,14 +169,14 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         AccessTypeData data = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task.getId()));
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
-        NetworkTaskUIWrapper wrapper = new NetworkTaskUIWrapper(task, data, null, null, null);
+        NetworkTaskUIWrapper wrapper = new NetworkTaskUIWrapper(task, data, null, null, null, null);
         adapter.addItem(wrapper);
         getNetworkTaskDAO().increaseNetworkTaskInstances(task.getId());
         NetworkTask updatedTask = getNetworkTaskDAO().readNetworkTask(task.getId());
         data.setPingCount(2);
         AccessTypeData updatedData = getAccessTypeDataDAO().updateAccessTypeData(data);
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), updatedTask, getAdapter(activityScenario));
-        final NetworkTaskUIWrapper newWrapper = syncTask.runInBackground();
+        NetworkTaskUIWrapper newWrapper = syncTask.runInBackground();
         assertNotNull(newWrapper);
         syncTask.runOnUIThread(newWrapper);
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -164,6 +186,28 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         assertTrue(updatedTask.isEqual(wrapper.getNetworkTask()));
         assertTrue(updatedData.isEqual(wrapper.getAccessTypeData()));
         assertNull(wrapper.getLogEntry());
+        assertTrue(wrapper.getSnmpItems().isEmpty());
+    }
+
+    @Test
+    public void testAdapterSNMPItemsUpdate() {
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task.getId()));
+        SNMPItem oldSnmpItem = getSnmpItemDAO().insertSNMPItem(getSNMPItemWithNetworkTaskId(task.getId(), "eth0", "1.3.6.1.2.1.2.2.1.2.1"));
+        NetworkTaskAdapter adapter = getAdapter(activityScenario);
+        adapter.addItem(new NetworkTaskUIWrapper(task, data, null, null, List.of(oldSnmpItem), null));
+        getSnmpItemDAO().deleteAllSNMPItemsForNetworkTask(task.getId());
+        SNMPItem newSnmpItem = getSnmpItemDAO().insertSNMPItem(getSNMPItemWithNetworkTaskId(task.getId(), "wlan0", "1.3.6.1.2.1.2.2.1.2.2"));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), task, getAdapter(activityScenario));
+        final NetworkTaskUIWrapper newWrapper = syncTask.runInBackground();
+        assertNotNull(newWrapper);
+        syncTask.runOnUIThread(newWrapper);
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        adapter = getAdapter(activityScenario);
+        assertEquals(1, adapter.getItemCount());
+        NetworkTaskUIWrapper wrapper = adapter.getItem(0);
+        assertEquals(1, wrapper.getSnmpItems().size());
+        assertTrue(newSnmpItem.isEqual(wrapper.getSnmpItems().get(0)));
     }
 
     @Test
@@ -175,15 +219,15 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
         LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null, null);
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null, null);
-        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null);
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, null, null, null, null);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, null, null, null, null);
+        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
         NetworkTaskMainUISyncTask nullSyncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, null);
-        nullSyncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, null, null, logEntry));
+        nullSyncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, null, null, null, logEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
         assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
@@ -202,6 +246,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData newData = new AccessTypeData(TestRegistry.getContext());
         newData.setNetworkTaskId(task.getId());
         assertTrue(data.isTechnicallyEqual(newData));
+        assertTrue(wrapper.getSnmpItems().isEmpty());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -322,6 +367,17 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         logEntry.setTimestamp(timestamp);
         logEntry.setMessage("TestMessage");
         return logEntry;
+    }
+
+    private SNMPItem getSNMPItemWithNetworkTaskId(long networkTaskId, String name, String oid) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setName(name);
+        item.setOid(oid);
+        item.setMonitored(false);
+        return item;
     }
 
     private NetworkTaskAdapter getAdapter(ActivityScenario<?> activityScenario) {

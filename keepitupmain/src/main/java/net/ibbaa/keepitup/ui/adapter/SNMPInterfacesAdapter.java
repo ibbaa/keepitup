@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
@@ -71,10 +73,7 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
         if (!getItems().isEmpty()) {
             if (position < getItems().size()) {
                 SNMPItem item = getItems().get(position);
-                snmpInterfacesViewHolder.setNameText(StringUtil.notNull(item.getName()));
-                snmpInterfacesViewHolder.setOnMonitoredChangedListener(null);
-                snmpInterfacesViewHolder.setChecked(item.isMonitored());
-                snmpInterfacesViewHolder.setOnMonitoredChangedListener((buttonView, isChecked) -> item.setMonitored(isChecked));
+                bindInterfaceItem(snmpInterfacesViewHolder, item);
                 snmpInterfacesViewHolder.showItemCardView();
                 snmpInterfacesViewHolder.hideNoItemsTextView();
             } else {
@@ -87,6 +86,48 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
             snmpInterfacesViewHolder.hideItemCardView();
             snmpInterfacesViewHolder.showNoItemsTextView();
         }
+    }
+
+    private void bindInterfaceItem(@NonNull SNMPInterfacesViewHolder snmpInterfacesViewHolder, SNMPItem item) {
+        Log.d(SNMPInterfacesAdapter.class.getName(), "bindInterfaceItem, item is " + item);
+        snmpInterfacesViewHolder.setNameText(StringUtil.notNull(item.getName()));
+        snmpInterfacesViewHolder.setOnMonitoredChangedListener(null);
+        snmpInterfacesViewHolder.setChecked(item.isMonitored());
+        snmpInterfacesViewHolder.setOnMonitoredChangedListener((buttonView, isChecked) -> onMonitorChanged(item, isChecked));
+        SNMPInterfaceInfo info = snmpInterfaceInfo.get(item.getOid());
+        bindAliasText(snmpInterfacesViewHolder, info);
+        bindStatusText(snmpInterfacesViewHolder, info);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void onMonitorChanged(SNMPItem item, boolean isChecked) {
+        Log.d(SNMPInterfacesAdapter.class.getName(), "onMonitorChanged, isChecked is " + isChecked);
+        item.setMonitored(isChecked);
+        prepareFilteredList();
+        notifyDataSetChanged();
+    }
+
+    private void bindAliasText(@NonNull SNMPInterfacesViewHolder snmpInterfacesViewHolder, SNMPInterfaceInfo info) {
+        Log.d(SNMPInterfacesAdapter.class.getName(), "bindAliasText, info is " + info);
+        if (info != null && !StringUtil.isEmpty(info.getAlias())) {
+            snmpInterfacesViewHolder.setAliasText(info.getAlias());
+            snmpInterfacesViewHolder.showAliasText();
+        } else {
+            snmpInterfacesViewHolder.hideAliasText();
+        }
+    }
+
+    private void bindStatusText(@NonNull SNMPInterfacesViewHolder snmpInterfacesViewHolder, SNMPInterfaceInfo info) {
+        Log.d(SNMPInterfacesAdapter.class.getName(), "bindStatusText, info is " + info);
+        if (info == null || info.getStatus() < 0) {
+            snmpInterfacesViewHolder.setStatusText("");
+            return;
+        }
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        snmpInterfacesViewHolder.setStatusText(snmpMapping.getLabelForInterfaceOperStatus(info.getStatus()));
+        int upStatus = getContext().getResources().getInteger(R.integer.interface_operstatus_up);
+        int color = (info.getStatus() == upStatus) ? ContextCompat.getColor(getContext(), R.color.textOkColor) : ContextCompat.getColor(getContext(), R.color.textErrorColor);
+        snmpInterfacesViewHolder.setStatusTextColor(color);
     }
 
     public Bundle saveStateToBundle() {
@@ -158,6 +199,10 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
     @Override
     public int getItemCount() {
         return getItems().isEmpty() ? 1 : getItems().size();
+    }
+
+    public boolean hasFilterEffect() {
+        return snmpItems.size() != filteredSnmpItems.size();
     }
 
     public boolean isShowAll() {
