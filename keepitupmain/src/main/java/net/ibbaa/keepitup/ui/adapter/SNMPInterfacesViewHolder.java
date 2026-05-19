@@ -27,12 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialog;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 public class SNMPInterfacesViewHolder extends RecyclerView.ViewHolder {
 
-    private final SNMPInterfacesDialog snmpInterfacesDialog;
     private final TextView noItemsText;
     private final CardView cardView;
     private final MaterialCheckBox monitoredCheckbox;
@@ -40,9 +38,8 @@ public class SNMPInterfacesViewHolder extends RecyclerView.ViewHolder {
     private final TextView aliasText;
     private final TextView statusText;
 
-    public SNMPInterfacesViewHolder(@NonNull View itemView, SNMPInterfacesDialog snmpInterfacesDialog) {
+    public SNMPInterfacesViewHolder(@NonNull View itemView) {
         super(itemView);
-        this.snmpInterfacesDialog = snmpInterfacesDialog;
         noItemsText = itemView.findViewById(R.id.textview_list_item_snmp_interface_no_item);
         cardView = itemView.findViewById(R.id.cardview_list_item_snmp_interface);
         monitoredCheckbox = itemView.findViewById(R.id.checkbox_list_item_snmp_interface_monitored);

@@ -254,6 +254,7 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
             if (!walkErrorResult.isEmpty()) {
                 showValidatorErrorDialog(walkErrorResult, requireContext().getResources().getString(R.string.text_dialog_validator_error_title_snmp));
             }
+            getAdapter().replaceItems(Collections.emptyList(), Collections.emptyMap());
         }
         getAdapter().notifyDataSetChanged();
         updateShowAllVisibility();

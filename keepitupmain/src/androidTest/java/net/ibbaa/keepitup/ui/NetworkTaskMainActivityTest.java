@@ -863,7 +863,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("public"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("public"), closeSoftKeyboard());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
@@ -2081,7 +2081,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("testcommunity"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("testcommunity"), closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(not(isDisplayed())));

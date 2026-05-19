@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
@@ -31,14 +32,17 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.sync.ResolveSyncHandler;
+import net.ibbaa.keepitup.ui.sync.SNMPItemSyncHandler;
 import net.ibbaa.keepitup.util.SNMPUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NetworkTaskHandler {
@@ -73,10 +77,11 @@ public class NetworkTaskHandler {
         }
     }
 
-    public void insertNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers) {
+    public void insertNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems) {
         Log.d(NetworkTaskHandler.class.getName(), "insertNetworkTask for task " + task + " and access type data " + data);
         Log.d(NetworkTaskHandler.class.getName(), "resolve objects are " + resolves);
         Log.d(NetworkTaskHandler.class.getName(), "headers are " + headers);
+        Log.d(NetworkTaskHandler.class.getName(), "SNMP items are " + snmpItems);
         int index = getAdapter().getNextIndex();
         task.setIndex(index);
         try {
@@ -92,7 +97,8 @@ public class NetworkTaskHandler {
                 logDAO.deleteAllLogsForNetworkTask(taskId);
                 insertResolves(resolves, taskId);
                 headers = insertHeaders(headers, taskId);
-                getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolves, headers, null));
+                insertSNMPItems(snmpItems, taskId);
+                getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolves, headers, snmpItems, null));
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
@@ -106,7 +112,7 @@ public class NetworkTaskHandler {
         data = accessTypeDataDAO.insertAccessTypeData(data);
         if (SNMPUtil.isSNMPTask(task) && !data.isSnmpCommunityValid()) {
             Log.e(NetworkTaskHandler.class.getName(), "Error encrypting snmp community. Showing error dialog.");
-            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_snmp_commuity_encryption));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_snmp_community_encryption));
         }
         return data;
     }
@@ -147,6 +153,20 @@ public class NetworkTaskHandler {
         return headers;
     }
 
+    private void insertSNMPItems(List<SNMPItem> snmpItems, long taskId) {
+        Log.d(NetworkTaskHandler.class.getName(), "insertSNMPItems");
+        if (snmpItems != null) {
+            for (SNMPItem snmpItem : snmpItems) {
+                snmpItem.setNetworkTaskId(taskId);
+            }
+            SNMPItemDAO snmpItemDAO = new SNMPItemDAO(mainActivity);
+            int count = snmpItemDAO.insertSNMPItems(snmpItems);
+            if (count < 0) {
+                mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_snmpitems));
+            }
+        }
+    }
+
     public void updateNetworkTaskName(NetworkTask task, String name) {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTaskName for task " + task + " and name " + name);
         try {
@@ -162,10 +182,11 @@ public class NetworkTaskHandler {
         }
     }
 
-    public void updateNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers) {
+    public void updateNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems) {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task + " and access type data " + data);
         Log.d(NetworkTaskHandler.class.getName(), "resolve objects are " + resolves);
         Log.d(NetworkTaskHandler.class.getName(), "headers are " + headers);
+        Log.d(NetworkTaskHandler.class.getName(), "SNMP items are " + snmpItems);
         try {
             boolean running = task.isRunning();
             if (running) {
@@ -185,7 +206,7 @@ public class NetworkTaskHandler {
                 data = accessTypeDataDAO.updateAccessTypeData(data);
                 if (SNMPUtil.isSNMPTask(task) && !data.isSnmpCommunityValid()) {
                     Log.e(NetworkTaskHandler.class.getName(), "Error encrypting snmp community. Showing error dialog.");
-                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_snmp_commuity_encryption));
+                    showMessageDialog(getResources().getString(R.string.text_dialog_general_message_snmp_community_encryption));
                 }
             }
             if (resolves != null) {
@@ -202,11 +223,17 @@ public class NetworkTaskHandler {
                     showMessageDialog(getResources().getString(R.string.text_dialog_general_message_header_encryption));
                 }
             }
+            NetworkTaskUIWrapper uiWrapper = getAdapter().getItemForNetworkTask(task.getId());
+            if (snmpItems != null && uiWrapper != null) {
+                SNMPItemSyncHandler snmpItemSyncHandler = new SNMPItemSyncHandler(mainActivity);
+                List<SNMPItem> dbItems = uiWrapper.getSnmpItems() != null ? uiWrapper.getSnmpItems() : Collections.emptyList();
+                snmpItemSyncHandler.synchronizeSNMPItems(snmpItems, dbItems);
+            }
             if (running) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
                 task = scheduler.start(task);
             }
-            getAdapter().replaceNetworkTask(task, data, resolves, headers, null);
+            getAdapter().replaceNetworkTask(task, data, resolves, headers, snmpItems, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
@@ -222,6 +249,7 @@ public class NetworkTaskHandler {
             AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
             ResolveDAO resolveDAO = new ResolveDAO(mainActivity);
             HeaderDAO headerDAO = new HeaderDAO(mainActivity);
+            SNMPItemDAO snmpItemDAO = new SNMPItemDAO(mainActivity);
             LogDAO logDAO = new LogDAO(mainActivity);
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Stopping.");
@@ -230,9 +258,10 @@ public class NetworkTaskHandler {
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             headerDAO.deleteHeadersForNetworkTask(task.getId());
             resolveDAO.deleteAllResolvesForNetworkTask(task.getId());
+            snmpItemDAO.deleteAllSNMPItemsForNetworkTask(task.getId());
             accessTypeDataDAO.deleteAccessTypeDataForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);
-            getAdapter().removeItem(new NetworkTaskUIWrapper(task, null, null, null, null));
+            getAdapter().removeItem(new NetworkTaskUIWrapper(task, null, null, null, null, null));
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_delete_network_task));

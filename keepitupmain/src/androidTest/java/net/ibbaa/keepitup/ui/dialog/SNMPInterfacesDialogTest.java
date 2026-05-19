@@ -377,6 +377,36 @@ public class SNMPInterfacesDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testDialogScanErrorClearsExistingItems() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem item1 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem item2 = getSNMPDescrItem("wlan0", "1.3.6.1.2.1.2.2.1.2.2");
+        showTestDialog(List.of(item1, item2), errorResult(List.of("Connection failed")));
+        assertEquals(2, getTestDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Scan failed")));
+        assertEquals(0, getTestDialog().getAdapter().getAllItems().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDialogScanErrorClearsExistingItemsScreenRotation() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem item1 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem item2 = getSNMPDescrItem("wlan0", "1.3.6.1.2.1.2.2.1.2.2");
+        showTestDialog(List.of(item1, item2), errorResult(List.of("Connection failed")));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Scan failed")));
+        assertEquals(0, getTestDialog().getAdapter().getAllItems().size());
+        rotateScreen(activityScenario);
+        assertEquals(0, getTestDialog().getAdapter().getAllItems().size());
+        rotateScreen(activityScenario);
+        activityScenario.close();
+    }
+
+    @Test
     public void testDialogScanRemovedMonitoredItems() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         SNMPItem monitoredItem = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");

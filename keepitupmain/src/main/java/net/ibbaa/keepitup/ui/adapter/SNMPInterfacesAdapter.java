@@ -64,7 +64,7 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
     public SNMPInterfacesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(SNMPInterfacesAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_snmp_interface, viewGroup, false);
-        return new SNMPInterfacesViewHolder(itemView, snmpInterfacesDialog);
+        return new SNMPInterfacesViewHolder(itemView);
     }
 
     @Override
@@ -155,6 +155,7 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
         return SNMPInterfacesAdapter.class.getSimpleName() + ".ShowAll";
     }
 
+    @SuppressWarnings("unused")
     public SNMPItem getItem(int index) {
         Log.d(SNMPInterfacesAdapter.class.getName(), "getItem for index " + index);
         if (index < 0 || index >= getItems().size()) {

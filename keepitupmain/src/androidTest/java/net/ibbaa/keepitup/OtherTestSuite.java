@@ -115,6 +115,7 @@ import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUISyncTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskUIBroadcastReceiverTest;
 import net.ibbaa.keepitup.ui.sync.ResolveSyncHandlerTest;
+import net.ibbaa.keepitup.ui.sync.SNMPItemSyncHandlerTest;
 import net.ibbaa.keepitup.ui.sync.SNMPScanTaskTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidatorTest;
@@ -288,6 +289,7 @@ import org.junit.runners.Suite;
         NetworkTaskMainUISyncTaskTest.class,
         NetworkTaskUIBroadcastReceiverTest.class,
         ResolveSyncHandlerTest.class,
+        SNMPItemSyncHandlerTest.class,
         SNMPScanTaskTest.class,
         //net.ibbaa.keepitup.ui.validation
         BasicAuthPasswordFieldValidatorTest.class,

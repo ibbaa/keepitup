@@ -44,8 +44,11 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.service.network.SNMPMapping;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
@@ -56,6 +59,7 @@ import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.ResolvesSupport;
+import net.ibbaa.keepitup.ui.support.SNMPInterfacesSupport;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
@@ -73,7 +77,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport, ResolvesSupport {
+public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport, ResolvesSupport, SNMPInterfacesSupport {
 
     private View dialogView;
     private NetworkTask task;
@@ -82,6 +86,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private List<Resolve> currentResolves;
     private List<Header> headers;
     private List<Header> currentHeaders;
+    private List<SNMPItem> snmpItems;
+    private List<SNMPItem> currentSnmpItems;
     private int currentPort;
     private int currentSNMPPort;
     private boolean snmpPortActive;
@@ -107,6 +113,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private SwitchMaterial useDefaultHeadersSwitch;
     private TextView useDefaultHeadersOnOffText;
     private TextView headersText;
+    private TextView snmpInterfacesText;
     private SwitchMaterial ignoreSSLErrorSwitch;
     private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial stopOnSuccessSwitch;
@@ -164,6 +171,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareCurrentResolves(savedInstanceState);
         prepareHeaders();
         prepareCurrentHeaders(savedInstanceState);
+        prepareSnmpItems();
+        prepareCurrentSnmpItems(savedInstanceState);
         prepareAccessTypeRadioButtons(savedInstanceState);
         preparePortValues(savedInstanceState);
         prepareAddressTextFields();
@@ -178,6 +187,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareAccessTypeDataFieldsVisibility();
         prepareResolvesField();
         prepareResolveFieldVisibility();
+        prepareSnmpInterfacesField();
+        prepareSnmpInterfacesFieldVisibility();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -199,6 +210,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         if (currentHeaders != null) {
             BundleUtil.headerListToBundle(getCurrentHeadersKey(), currentHeaders, outState);
+        }
+        if (currentSnmpItems != null) {
+            BundleUtil.snmpItemListToBundle(getCurrentSNMPItemsKey(), currentSnmpItems, outState);
         }
         if (snmpCommunityToggleTouchListener != null) {
             outState.putBoolean(getSNMPCommunityVisibleKey(), snmpCommunityToggleTouchListener.isVisible());
@@ -259,6 +273,18 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     public String getCurrentHeadersKey() {
         return NetworkTaskEditDialog.class.getName() + ".CurrentHeaders";
+    }
+
+    public String getSNMPItemsKey() {
+        return NetworkTaskEditDialog.class.getName() + ".SNMPItems";
+    }
+
+    public String getSNMPItemsBaseKey() {
+        return NetworkTaskEditDialog.class.getName() + ".SNMPItemsBase";
+    }
+
+    public String getCurrentSNMPItemsKey() {
+        return NetworkTaskEditDialog.class.getName() + ".CurrentSNMPItems";
     }
 
     private String getAccessTypeBundleKey() {
@@ -331,6 +357,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return resolveText.getVisibility() == View.VISIBLE;
     }
 
+    private boolean isSNMPInterfacesVisible() {
+        return snmpInterfacesText.getVisibility() == View.VISIBLE;
+    }
+
     private boolean isUseDefaultHeadersVisible() {
         return useDefaultHeadersSwitch.getVisibility() == View.VISIBLE;
     }
@@ -381,6 +411,31 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         } else {
             currentResolves = new ArrayList<>(resolves);
             Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentResolves, set currentResolves to " + currentResolves);
+        }
+    }
+
+    private void prepareSnmpItems() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSnmpItems");
+        Bundle snmpItemsBundle = BundleUtil.bundleFromBundle(getSNMPItemsKey(), requireArguments());
+        if (snmpItemsBundle != null) {
+            snmpItems = BundleUtil.snmpItemListFromBundle(getSNMPItemsBaseKey(), snmpItemsBundle);
+        } else {
+            snmpItems = Collections.emptyList();
+        }
+    }
+
+    private void prepareCurrentSnmpItems(Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentSnmpItems");
+        if (currentSnmpItems != null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentSnmpItems, currentSnmpItems are " + currentSnmpItems);
+            return;
+        }
+        if (savedInstanceState != null) {
+            currentSnmpItems = BundleUtil.snmpItemListFromBundle(getCurrentSNMPItemsKey(), savedInstanceState);
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentSnmpItems, restored currentSnmpItems to " + currentSnmpItems);
+        } else {
+            currentSnmpItems = new ArrayList<>(snmpItems);
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareCurrentSnmpItems, set currentSnmpItems to " + currentSnmpItems);
         }
     }
 
@@ -458,6 +513,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareAddressTextFieldsVisibility();
         prepareAccessTypeDataFieldsVisibility();
         prepareResolveFieldVisibility();
+        prepareSnmpInterfacesFieldVisibility();
         validateInput();
     }
 
@@ -551,6 +607,51 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         int size = CollectionUtil.getSize(currentResolves);
         String formattedHeaderText = getResources().getQuantityString(R.plurals.text_dialog_network_task_edit_resolve_rules_value, size, size);
         resolveText.setText(formattedHeaderText);
+    }
+
+    private void prepareSnmpInterfacesField() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSnmpInterfacesField");
+        prepareSnmpInterfacesText();
+        LinearLayout linearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces);
+        linearLayout.setOnClickListener(this::showSNMPInterfacesDialog);
+    }
+
+    private void prepareSnmpInterfacesText() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSnmpInterfacesText");
+        snmpInterfacesText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_interfaces_value);
+        int size = 0;
+        if (currentSnmpItems != null) {
+            for (SNMPItem item : currentSnmpItems) {
+                if (SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType())) {
+                    size++;
+                }
+            }
+        }
+        String formattedText = getResources().getQuantityString(R.plurals.text_dialog_network_task_edit_snmp_interfaces_value, size, size);
+        snmpInterfacesText.setText(formattedText);
+    }
+
+    private void prepareSnmpInterfacesFieldVisibility() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSnmpInterfacesFieldVisibility");
+        RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_accesstype);
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
+        if (selectedAccessTypeRadioButton == null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareSnmpInterfacesFieldVisibility, selectedAccessTypeRadioButton is null, no access type selected");
+            return;
+        }
+        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        LinearLayout snmpInterfacesLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces);
+        TextView snmpInterfacesLabel = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_interfaces_label);
+        if (accessType.isSNMP()) {
+            snmpInterfacesLinearLayout.setVisibility(View.VISIBLE);
+            snmpInterfacesText.setVisibility(View.VISIBLE);
+            snmpInterfacesLabel.setVisibility(View.VISIBLE);
+        } else {
+            snmpInterfacesLinearLayout.setVisibility(View.GONE);
+            snmpInterfacesText.setVisibility(View.GONE);
+            snmpInterfacesLabel.setVisibility(View.GONE);
+        }
     }
 
     private void prepareResolveFieldVisibility() {
@@ -1025,6 +1126,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return headers;
     }
 
+    public List<SNMPItem> getInitialSnmpItems() {
+        return snmpItems;
+    }
+
     public NetworkTask getNetworkTask() {
         Bundle taskBundle = BundleUtil.bundleFromBundle(getTaskKey(), requireArguments());
         NetworkTask task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
@@ -1100,6 +1205,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             return currentHeaders;
         }
         return headers;
+    }
+
+    public List<SNMPItem> getSnmpItems() {
+        if (isSNMPInterfacesVisible()) {
+            return currentSnmpItems;
+        }
+        return snmpItems;
     }
 
     private void onOkClicked(View view) {
@@ -1360,6 +1472,24 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         headersDialog.show(getParentFragmentManager(), HeadersDialog.class.getName());
     }
 
+    private void showSNMPInterfacesDialog(View view) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "showSNMPInterfacesDialog");
+        SNMPInterfacesDialog dialog = new SNMPInterfacesDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(dialog.getAddressKey(), getAddress());
+        int snmpPort = currentSNMPPort;
+        if (snmpPortActive && isPortVisible() && NumberUtil.isValidIntValue(getPort())) {
+            snmpPort = NumberUtil.getIntValue(getPort(), currentSNMPPort);
+        }
+        bundle.putInt(dialog.getPortKey(), snmpPort);
+        bundle.putString(dialog.getSNMPVersionKey(), getSNMPVersion().name());
+        bundle.putString(dialog.getCommunityKey(), getSNMPCommunity());
+        BundleUtil.snmpItemListToBundle(dialog.getInitialSNMPItemsKey(), currentSnmpItems != null ? currentSnmpItems : Collections.emptyList(), bundle);
+        BundleUtil.longToBundle(dialog.getNetworkTaskIdKey(), task.getId(), bundle);
+        dialog.setArguments(bundle);
+        dialog.show(getParentFragmentManager(), SNMPInterfacesDialog.class.getName());
+    }
+
     private void showContextOptionsDialog(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
         new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
@@ -1434,6 +1564,25 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     public void onHeadersDialogCancelClicked(HeadersDialog headersDialog) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onHeadersDialogCancelClicked");
         headersDialog.dismiss();
+    }
+
+    @Override
+    public void onSNMPInterfacesDialogOkClicked(SNMPInterfacesDialog snmpInterfacesDialog) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPInterfacesDialogOkClicked");
+        SNMPMapping snmpMapping = new SNMPMapping(requireContext());
+        currentSnmpItems = snmpMapping.mergeAllSNMPItems(
+                currentSnmpItems,
+                snmpInterfacesDialog.getAdapter().getAllItems(),
+                snmpInterfacesDialog.getAdapter().getInterfaceInfos(),
+                task.getId());
+        snmpInterfacesDialog.dismiss();
+        prepareSnmpInterfacesText();
+    }
+
+    @Override
+    public void onSNMPInterfacesDialogCancelClicked(SNMPInterfacesDialog snmpInterfacesDialog) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPInterfacesDialogCancelClicked");
+        snmpInterfacesDialog.dismiss();
     }
 
     private int getColor(int colorid) {

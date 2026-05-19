@@ -539,6 +539,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return secretHeaders;
     }
 
+    public NetworkTaskUIWrapper getItemForNetworkTask(long networkTaskId) {
+        Log.d(NetworkTaskAdapter.class.getName(), "getItemForNetworkTask for networkTaskId " + networkTaskId);
+        if (networkTaskId < 0) {
+            return null;
+        }
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            if (networkTaskId == currentWrapper.getId()) {
+                return currentWrapper;
+            }
+        }
+        return null;
+    }
+
     public NetworkTaskUIWrapper getItem(int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "getItem for position " + position);
         if (position < 0 || position >= networkTaskWrapperList.size()) {

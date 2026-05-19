@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class SNMPItem {
+public class SNMPItem implements Syncable<SNMPItem> {
 
     private long id;
     private long networktaskid;
