@@ -515,4 +515,17 @@ public class SNMPMapping {
             return name1.compareTo(name2);
         }
     }
+
+    public static class SNMPItemNameAndIdComparator implements Comparator<SNMPItem> {
+        @Override
+        public int compare(SNMPItem item1, SNMPItem item2) {
+            String name1 = item1.getName() != null ? item1.getName() : "";
+            String name2 = item2.getName() != null ? item2.getName() : "";
+            int nameCompare = name1.compareTo(name2);
+            if (nameCompare != 0) {
+                return nameCompare;
+            }
+            return Long.compare(item1.getId(), item2.getId());
+        }
+    }
 }

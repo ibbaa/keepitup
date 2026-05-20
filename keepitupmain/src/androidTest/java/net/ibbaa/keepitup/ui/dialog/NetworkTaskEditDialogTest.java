@@ -45,6 +45,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.os.Bundle;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -58,13 +60,18 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestSNMPInterfacesDialog;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
+import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import org.junit.After;
@@ -72,6 +79,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 
 @MediumTest
@@ -3181,6 +3189,154 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
     }
 
+    @Test
+    public void testSNMPInterfacesFieldVisibility() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_label)).check(matches(not(isDisplayed())));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_label)).check(matches(not(isDisplayed())));
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_label)).check(matches(not(isDisplayed())));
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_label)).check(matches(withText("Interfaces:")));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (0 interfaces)")));
+    }
+
+    @Test
+    public void testSNMPInterfacesInitialState() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (0 interfaces)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<SNMPItem> initialSnmpItems = dialog.getInitialSnmpItems();
+        List<SNMPItem> snmpItems = dialog.getSnmpItems();
+        assertNotNull(initialSnmpItems);
+        assertTrue(initialSnmpItems.isEmpty());
+        assertNotNull(snmpItems);
+        assertTrue(snmpItems.isEmpty());
+    }
+
+    @Test
+    public void testSNMPInterfacesInitialStateScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (0 interfaces)")));
+        rotateScreen(activityScenario);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertTrue(dialog.getInitialSnmpItems().isEmpty());
+        assertTrue(dialog.getSnmpItems().isEmpty());
+    }
+
+    @Test
+    public void testSNMPInterfacesInitialItems() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        SNMPItem snmpItem1 = getSNMPItem(task.getId(), "eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem snmpItem2 = getSNMPItem(task.getId(), "wlan0", "1.3.6.1.2.1.2.2.1.2.2");
+        getSnmpItemDAO().insertSNMPItem(snmpItem1);
+        getSnmpItemDAO().insertSNMPItem(snmpItem2);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (2 interfaces)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        List<SNMPItem> initialSnmpItems = dialog.getInitialSnmpItems();
+        List<SNMPItem> snmpItems = dialog.getSnmpItems();
+        assertEquals(2, initialSnmpItems.size());
+        assertEquals("eth0", initialSnmpItems.get(0).getName());
+        assertEquals("1.3.6.1.2.1.2.2.1.2.1", initialSnmpItems.get(0).getOid());
+        assertEquals("wlan0", initialSnmpItems.get(1).getName());
+        assertEquals("1.3.6.1.2.1.2.2.1.2.2", initialSnmpItems.get(1).getOid());
+        assertEquals(2, snmpItems.size());
+        assertEquals("eth0", snmpItems.get(0).getName());
+        assertEquals("wlan0", snmpItems.get(1).getName());
+    }
+
+    @Test
+    public void testSNMPInterfacesInitialItemsScreenRotation() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        SNMPItem snmpItem1 = getSNMPItem(task.getId(), "eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem snmpItem2 = getSNMPItem(task.getId(), "wlan0", "1.3.6.1.2.1.2.2.1.2.2");
+        getSnmpItemDAO().insertSNMPItem(snmpItem1);
+        getSnmpItemDAO().insertSNMPItem(snmpItem2);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (2 interfaces)")));
+        rotateScreen(activityScenario);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(2, dialog.getInitialSnmpItems().size());
+        assertEquals("eth0", dialog.getInitialSnmpItems().get(0).getName());
+        assertEquals("wlan0", dialog.getInitialSnmpItems().get(1).getName());
+        assertEquals(2, dialog.getSnmpItems().size());
+        assertEquals("eth0", dialog.getSnmpItems().get(0).getName());
+        assertEquals("wlan0", dialog.getSnmpItems().get(1).getName());
+    }
+
+    @Test
+    public void testSNMPInterfacesMerge() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem(task.getId(), "eth0", "1.3.6.1.2.1.2.2.1.2.1"));
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (1 interface)")));
+        SNMPScanResult mockResult = new SNMPScanResult(true, List.of(getSNMPItem(-1, "eth0", "1.3.6.1.2.1.2.2.1.2.1"), getSNMPDescrItem("wlan0", "1.3.6.1.2.1.2.2.1.2.2")), Collections.emptyMap(), Collections.emptyList(), null);
+        showTestSNMPInterfacesDialog(mockResult);
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (2 interfaces)")));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(1, dialog.getInitialSnmpItems().size());
+        assertEquals("eth0", dialog.getInitialSnmpItems().get(0).getName());
+        assertEquals(2, dialog.getSnmpItems().size());
+        assertEquals("eth0", dialog.getSnmpItems().get(0).getName());
+        assertEquals("wlan0", dialog.getSnmpItems().get(1).getName());
+    }
+
+    @Test
+    public void testSNMPInterfacesMergeScreenRotation() {
+        activityScenario.close();
+        NetworkTask task = getSNMPNetworkTask();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem(task.getId(), "eth0", "1.3.6.1.2.1.2.2.1.2.1"));
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        SNMPScanResult mockResult = new SNMPScanResult(true, List.of(getSNMPItem(-1, "eth0", "1.3.6.1.2.1.2.2.1.2.1"), getSNMPDescrItem("wlan0", "1.3.6.1.2.1.2.2.1.2.2")), Collections.emptyMap(), Collections.emptyList(), null);
+        showTestSNMPInterfacesDialog(mockResult);
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (2 interfaces)")));
+        rotateScreen(activityScenario);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        assertEquals(1, dialog.getInitialSnmpItems().size());
+        assertEquals("eth0", dialog.getInitialSnmpItems().get(0).getName());
+        assertEquals(2, dialog.getSnmpItems().size());
+        assertEquals("eth0", dialog.getSnmpItems().get(0).getName());
+        assertEquals("wlan0", dialog.getSnmpItems().get(1).getName());
+    }
+
     private MockClipboardManager prepareMockClipboardManager() {
         onView(isRoot()).perform(waitFor(500));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
@@ -3188,6 +3344,22 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.clearData();
         dialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
+    }
+
+    private void showTestSNMPInterfacesDialog(SNMPScanResult mockResult) {
+        TestSNMPInterfacesDialog dialog = new TestSNMPInterfacesDialog();
+        dialog.setMockResult(mockResult);
+        SNMPInterfacesDialog snmpInterfacesDialog = new SNMPInterfacesDialog();
+        Bundle bundle = BundleUtil.snmpItemListToBundle(snmpInterfacesDialog.getInitialSNMPItemsKey(), Collections.emptyList());
+        BundleUtil.stringToBundle(snmpInterfacesDialog.getAddressKey(), "192.168.1.1", bundle);
+        BundleUtil.integerToBundle(snmpInterfacesDialog.getPortKey(), 161, bundle);
+        BundleUtil.stringToBundle(snmpInterfacesDialog.getSNMPVersionKey(), SNMPVersion.V2C.name(), bundle);
+        BundleUtil.stringToBundle(snmpInterfacesDialog.getCommunityKey(), "public", bundle);
+        dialog.setArguments(bundle);
+        dialog.show(getActivity(activityScenario).getSupportFragmentManager(), SNMPInterfacesDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
     }
 
     private void injectPermissionManager() {
@@ -3249,5 +3421,27 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resolve.setTargetAddress(targetAddress);
         resolve.setTargetPort(targetPort);
         return resolve;
+    }
+
+    private SNMPItem getSNMPItem(long networkTaskId, String name, String oid) {
+        SNMPItem snmpItem = new SNMPItem();
+        snmpItem.setId(-1);
+        snmpItem.setNetworkTaskId(networkTaskId);
+        snmpItem.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        snmpItem.setName(name);
+        snmpItem.setOid(oid);
+        snmpItem.setMonitored(true);
+        return snmpItem;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private SNMPItem getSNMPDescrItem(String name, String oid) {
+        SNMPItem snmpItem = new SNMPItem();
+        snmpItem.setId(-1);
+        snmpItem.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        snmpItem.setName(name);
+        snmpItem.setOid(oid);
+        snmpItem.setMonitored(false);
+        return snmpItem;
     }
 }

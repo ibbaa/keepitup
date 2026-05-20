@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
@@ -80,6 +81,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
         List<Resolve> resolves = networkTaskWrapperList.get(position).getResolves();
         List<Header> headers = networkTaskWrapperList.get(position).getHeaders();
+        List<SNMPItem> snmpItems = networkTaskWrapperList.get(position).getSnmpItems();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
         bindTitle(networkTaskViewHolder, networkTask);
         bindStatus(networkTaskViewHolder, networkTask);
@@ -87,6 +89,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
         bindSNMPCommunity(networkTaskViewHolder, networkTask, accessTypeData);
+        bindSNMPInterfaces(networkTaskViewHolder, networkTask, snmpItems);
         bindResolves(networkTaskViewHolder, networkTask, resolves);
         bindHeaders(position, networkTaskViewHolder, networkTask, accessTypeData, headers);
         bindInterval(networkTaskViewHolder, networkTask);
@@ -213,6 +216,28 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
         networkTaskViewHolder.hideCommunityTextView();
         networkTaskViewHolder.setCommunityColor(getColor(R.color.textColor));
+    }
+
+    private void bindSNMPInterfaces(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<SNMPItem> snmpItems) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindSNMPInterfaces, networkTask is " + networkTask);
+        if (AccessType.SNMP.equals(networkTask.getAccessType())) {
+            int found = 0;
+            int monitored = 0;
+            if (snmpItems != null) {
+                for (SNMPItem item : snmpItems) {
+                    if (SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType())) {
+                        found++;
+                        if (item.isMonitored()) {
+                            monitored++;
+                        }
+                    }
+                }
+            }
+            networkTaskViewHolder.setSnmpInterfaces(getResources().getString(R.string.list_item_network_task_snmp_interfaces, found, monitored));
+            networkTaskViewHolder.showSnmpInterfacesTextView();
+        } else {
+            networkTaskViewHolder.hideSnmpInterfacesTextView();
+        }
     }
 
     private void bindResolves(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<Resolve> resolves) {
@@ -379,10 +404,6 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 return;
             }
         }
-    }
-
-    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, LogEntry logEntry) {
-        return replaceNetworkTask(task, data, resolves, headers, null, logEntry);
     }
 
     public int replaceNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, LogEntry logEntry) {

@@ -27,7 +27,6 @@ import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.util.CollectionUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
@@ -43,10 +42,6 @@ public class NetworkTaskUIWrapper {
     private final List<Header> headers;
     private final List<SNMPItem> snmpItems;
     private final LogEntry logEntry;
-
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, LogEntry logEntry) {
-        this(networkTask, accessTypeData, resolves, headers, Collections.emptyList(), logEntry);
-    }
 
     public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, LogEntry logEntry) {
         this.networkTask = networkTask;

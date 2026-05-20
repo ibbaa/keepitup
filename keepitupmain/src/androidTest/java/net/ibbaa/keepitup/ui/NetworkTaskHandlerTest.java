@@ -162,6 +162,19 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testInsertNetworkTaskSNMPItemsSortedByName() {
+        NetworkTask task1 = getNetworkTask1();
+        AccessTypeData data1 = getAccessTypeData1();
+        SNMPItem snmpItemZzz = getSNMPItemWithNetworkTaskId(task1.getId(), "zzz");
+        SNMPItem snmpItemAaa = getSNMPItemWithNetworkTaskId(task1.getId(), "aaa");
+        handler.insertNetworkTask(task1, data1, null, null, List.of(snmpItemZzz, snmpItemAaa));
+        NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
+        assertEquals(2, adapterWrapper1.getSnmpItems().size());
+        assertEquals("aaa", adapterWrapper1.getSnmpItems().get(0).getName());
+        assertEquals("zzz", adapterWrapper1.getSnmpItems().get(1).getName());
+    }
+
+    @Test
     public void testInsertEmptyResolvesHeadersAndSNMPitems() {
         NetworkTask task1 = getNetworkTask1();
         AccessTypeData data1 = getAccessTypeData1();
@@ -283,6 +296,21 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testUpdateNetworkTaskSNMPItemsSortedByName() {
+        NetworkTask task1 = getNetworkTask1();
+        AccessTypeData data1 = getAccessTypeData1();
+        SNMPItem snmpItemEth1 = getSNMPItemWithNetworkTaskId(task1.getId(), "eth1");
+        handler.insertNetworkTask(task1, data1, null, null, List.of(snmpItemEth1));
+        SNMPItem snmpItemAaa = getSNMPItemWithNetworkTaskId(task1.getId(), "aaa");
+        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, data1, Collections.emptyList(), Collections.emptyList(), List.of(snmpItemEth1), null));
+        handler.updateNetworkTask(task1, data1, null, null, List.of(snmpItemEth1, snmpItemAaa));
+        NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
+        assertEquals(2, adapterWrapper1.getSnmpItems().size());
+        assertEquals("aaa", adapterWrapper1.getSnmpItems().get(0).getName());
+        assertEquals("eth1", adapterWrapper1.getSnmpItems().get(1).getName());
+    }
+
+    @Test
     public void testUpdateNetworkTaskWithoutAccessTypeDataResolveHeadersAndSNMPItems() {
         NetworkTask task1 = getNetworkTask1();
         AccessTypeData data1 = getAccessTypeData1();
@@ -301,7 +329,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         header2.setName("name3");
         snmpItem1.setName("xyz");
         snmpItem2.setName("abc");
-        getAdapter().replaceNetworkTask(task1, null, null, null, null);
+        getAdapter().replaceNetworkTask(task1, null, null, null, null, null);
         handler.updateNetworkTask(task1, null, null, null, null);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task1 = tasks.get(0);

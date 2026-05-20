@@ -34,6 +34,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.service.network.SNMPMapping;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
@@ -59,7 +60,7 @@ public class NetworkTaskHandler {
         Log.d(NetworkTaskHandler.class.getName(), "startNetworkTask for task " + task);
         try {
             scheduler.start(task);
-            getAdapter().replaceNetworkTask(task, null, null, null, null);
+            getAdapter().replaceNetworkTask(task, null, null, null, null, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error starting network task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_start_network_task));
@@ -70,7 +71,7 @@ public class NetworkTaskHandler {
         Log.d(NetworkTaskHandler.class.getName(), "stopNetworkTask for task " + task);
         try {
             scheduler.cancel(task);
-            getAdapter().replaceNetworkTask(task, null, null, null, null);
+            getAdapter().replaceNetworkTask(task, null, null, null, null, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error stopping network task. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_stop_network_task));
@@ -98,6 +99,10 @@ public class NetworkTaskHandler {
                 insertResolves(resolves, taskId);
                 headers = insertHeaders(headers, taskId);
                 insertSNMPItems(snmpItems, taskId);
+                if (snmpItems != null) {
+                    snmpItems = new ArrayList<>(snmpItems);
+                    Collections.sort(snmpItems, new SNMPMapping.SNMPItemNameAndIdComparator());
+                }
                 getAdapter().addItem(new NetworkTaskUIWrapper(task, data, resolves, headers, snmpItems, null));
             }
         } catch (Exception exc) {
@@ -173,7 +178,7 @@ public class NetworkTaskHandler {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             networkTaskDAO.updateNetworkTaskName(task.getId(), name);
             task.setName(name);
-            getAdapter().replaceNetworkTask(task, null, null, null, null);
+            getAdapter().replaceNetworkTask(task, null, null, null, null, null);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task name. Showing error dialog.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
@@ -228,6 +233,8 @@ public class NetworkTaskHandler {
                 SNMPItemSyncHandler snmpItemSyncHandler = new SNMPItemSyncHandler(mainActivity);
                 List<SNMPItem> dbItems = uiWrapper.getSnmpItems() != null ? uiWrapper.getSnmpItems() : Collections.emptyList();
                 snmpItemSyncHandler.synchronizeSNMPItems(snmpItems, dbItems);
+                snmpItems = new ArrayList<>(snmpItems);
+                Collections.sort(snmpItems, new SNMPMapping.SNMPItemNameAndIdComparator());
             }
             if (running) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");

@@ -1570,11 +1570,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     public void onSNMPInterfacesDialogOkClicked(SNMPInterfacesDialog snmpInterfacesDialog) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPInterfacesDialogOkClicked");
         SNMPMapping snmpMapping = new SNMPMapping(requireContext());
-        currentSnmpItems = snmpMapping.mergeAllSNMPItems(
-                currentSnmpItems,
-                snmpInterfacesDialog.getAdapter().getAllItems(),
-                snmpInterfacesDialog.getAdapter().getInterfaceInfos(),
-                task.getId());
+        currentSnmpItems = snmpMapping.mergeAllSNMPItems(currentSnmpItems, snmpInterfacesDialog.getAdapter().getAllItems(), snmpInterfacesDialog.getAdapter().getInterfaceInfos(), task.getId());
         snmpInterfacesDialog.dismiss();
         prepareSnmpInterfacesText();
     }

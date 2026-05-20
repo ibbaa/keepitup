@@ -44,6 +44,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView addressText;
     private final TextView resolveText;
     private final TextView communityText;
+    private final TextView snmpInterfacesText;
     private final TextView headersText;
     private final TextView intervalText;
     private final TextView notificationText;
@@ -76,6 +77,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         communityText = itemView.findViewById(R.id.textview_list_item_network_task_snmp_community);
+        snmpInterfacesText = itemView.findViewById(R.id.textview_list_item_network_task_snmp_interfaces);
         resolveText = itemView.findViewById(R.id.textview_list_item_network_task_resolve_rules);
         headersText = itemView.findViewById(R.id.textview_list_item_network_task_headers);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
@@ -206,6 +208,18 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         communityText.setText(community);
     }
 
+    public void showSnmpInterfacesTextView() {
+        snmpInterfacesText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSnmpInterfacesTextView() {
+        snmpInterfacesText.setVisibility(View.GONE);
+    }
+
+    public void setSnmpInterfaces(String snmpInterfaces) {
+        snmpInterfacesText.setText(snmpInterfaces);
+    }
+
     public void showResolveTextView() {
         resolveText.setVisibility(View.VISIBLE);
     }
@@ -253,6 +267,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
                 accessTypeText,
                 addressText,
                 communityText,
+                snmpInterfacesText,
                 resolveText,
                 headersText,
                 intervalText,
