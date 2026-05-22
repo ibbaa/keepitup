@@ -27,12 +27,14 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
@@ -395,6 +397,17 @@ public abstract class NetworkTaskWorker implements Runnable {
             networkTaskDAO.updateNetworkTaskLastSysUpTime(networkTask.getId(), lastSysUpTime);
         } catch (Exception exc) {
             Log.e(NetworkTaskWorker.class.getName(), "Exception updating lastSysUpTime", exc);
+        }
+    }
+
+    public List<SNMPItem> readSNMPItems() {
+        Log.d(NetworkTaskWorker.class.getName(), "readSNMPItems");
+        try {
+            SNMPItemDAO snmpItemDAO = new SNMPItemDAO(getContext());
+            return snmpItemDAO.readAllSNMPItemsForNetworkTask(networkTask.getId());
+        } catch (Exception exc) {
+            Log.e(NetworkTaskWorker.class.getName(), "Exception reading snmp items", exc);
+            return Collections.emptyList();
         }
     }
 

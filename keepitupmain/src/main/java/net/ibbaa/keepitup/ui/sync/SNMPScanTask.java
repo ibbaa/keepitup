@@ -143,6 +143,9 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
             return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), ifDescrResult.errorMessages(), ifDescrResult.exception());
         }
         List<SNMPItem> snmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networktaskId);
+        if (snmpItems.isEmpty()) {
+            return new SNMPScanResult(true, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), null);
+        }
         Collections.sort(snmpItems, new SNMPMapping.SNMPItemNameComparator());
         SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
         if (!ifTypeResult.success()) {

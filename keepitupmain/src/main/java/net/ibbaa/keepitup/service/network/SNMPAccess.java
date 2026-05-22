@@ -74,7 +74,7 @@ public class SNMPAccess {
         this.retries = retries;
     }
 
-    public WalkResult walk(String oid, WalkFilter filter) {
+    public WalkResult walk(String oid, WalkFilter filter, boolean emptyIsValid) {
         Log.d(SNMPAccess.class.getName(), "walk, oid is " + oid);
         TransportMapping<UdpAddress> transport;
         Snmp snmp = null;
@@ -85,7 +85,7 @@ public class SNMPAccess {
             CommunityTarget<?> target = configureCommunityTarget();
             Map<String, Variable> results = new HashMap<>();
             List<String> errors = new ArrayList<>();
-            if (!fetchAndProcessSubtree(snmp, target, oid, results, errors)) {
+            if (!fetchAndProcessSubtree(snmp, target, oid, results, errors, emptyIsValid)) {
                 return new WalkResult(false, Collections.emptyMap(), null, List.of(getResources().getString(R.string.text_snmp_no_response)));
             }
             Map<String, String> filteredResult = filter.filter(results);
@@ -107,31 +107,31 @@ public class SNMPAccess {
     public WalkResult walkInterfacesDescr() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesDescr");
         String oid = new SNMPMapping(getContext()).getInterfaceDescrOID();
-        return walk(oid, results -> prefixFilter(oid, results));
+        return walk(oid, results -> prefixFilter(oid, results), true);
     }
 
     public WalkResult walkInterfacesType() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesType");
         String oid = new SNMPMapping(getContext()).getInterfaceTypeOID();
-        return walk(oid, results -> prefixFilter(oid, results));
+        return walk(oid, results -> prefixFilter(oid, results), true);
     }
 
     public WalkResult walkInterfacesAlias() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesAlias");
         String oid = new SNMPMapping(getContext()).getInterfaceAliasOID();
-        return walk(oid, results -> prefixFilter(oid, results));
+        return walk(oid, results -> prefixFilter(oid, results), true);
     }
 
     public WalkResult walkInterfacesOperStatus() {
         Log.d(SNMPAccess.class.getName(), "walkInterfacesOperStatus");
         String oid = new SNMPMapping(getContext()).getInterfaceOperStatusOID();
-        return walk(oid, results -> prefixFilter(oid, results));
+        return walk(oid, results -> prefixFilter(oid, results), true);
     }
 
     public WalkResult walkSystem() {
         Log.d(SNMPAccess.class.getName(), "walkSystem");
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        WalkResult walkResult = walk(snmpMapping.getSystemOID(), this::systemFilter);
+        WalkResult walkResult = walk(snmpMapping.getSystemOID(), this::systemFilter, false);
         if (!walkResult.success()) {
             return walkResult;
         }
@@ -189,11 +189,11 @@ public class SNMPAccess {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors) {
+    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors, boolean emptyIsValid) {
         TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
         List<TreeEvent> events = treeUtils.getSubtree(target, new OID(oid));
         if (events == null || events.isEmpty()) {
-            return false;
+            return emptyIsValid;
         }
         prepareResult(events, results, errors);
         return true;

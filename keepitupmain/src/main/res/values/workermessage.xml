@@ -119,4 +119,21 @@
         <item quantity="one">Currently is %d SNMP request active, which is the maximum. Skipped execution.</item>
         <item quantity="other">Currently are %d SNMP requests active, which is the maximum. Skipped execution.</item>
     </plurals>
+    <plurals name="text_snmp_interfaces_found">
+        <item quantity="one">1 interface found</item>
+        <item quantity="other">%d interfaces found</item>
+    </plurals>
+    <string name="text_snmp_all_monitored_up">All monitored interfaces are up</string>
+    <plurals name="text_snmp_monitored_down">
+        <item quantity="one">Monitored interface %s is down</item>
+        <item quantity="other">Monitored interfaces %s are down</item>
+    </plurals>
+    <plurals name="text_snmp_monitored_in_status">
+        <item quantity="one">Monitored interface %1$s is in status %2$s</item>
+        <item quantity="other">Monitored interfaces %1$s are in status %2$s</item>
+    </plurals>
+    <plurals name="text_snmp_monitored_not_found">
+        <item quantity="one">Monitored interface %s is not present on the device</item>
+        <item quantity="other">Monitored interfaces %s are not present on the device</item>
+    </plurals>
 </resources>

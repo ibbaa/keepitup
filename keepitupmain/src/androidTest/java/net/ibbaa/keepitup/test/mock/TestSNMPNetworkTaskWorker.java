@@ -20,26 +20,42 @@ import android.content.Context;
 import android.os.PowerManager;
 
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.SNMPNetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
 
 import java.net.InetAddress;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
 
     private MockDNSLookup mockDNSLookup;
     private final MockSNMPCommand mockSNMPCommand;
+    private List<SNMPItem> mockSNMPItems;
 
     public TestSNMPNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
-        mockSNMPCommand = new MockSNMPCommand(context, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "community", -1, false);
+        mockSNMPCommand = new MockSNMPCommand(context, 0L, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "community", Collections.emptyList(), -1, false);
     }
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {
         this.mockDNSLookup = mockDNSLookup;
+    }
+
+    public void setMockSNMPItems(List<SNMPItem> mockSNMPItems) {
+        this.mockSNMPItems = mockSNMPItems;
+    }
+
+    @Override
+    public List<SNMPItem> readSNMPItems() {
+        if (mockSNMPItems != null) {
+            return mockSNMPItems;
+        }
+        return super.readSNMPItems();
     }
 
     public MockSNMPCommand getMockSNMPCommand() {
@@ -52,7 +68,7 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<SNMPCommandResult> getSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
+    protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
         return mockSNMPCommand;
     }
 }

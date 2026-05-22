@@ -18,19 +18,21 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPCommand;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
 
 import java.net.InetAddress;
+import java.util.List;
 
 public class MockSNMPCommand extends SNMPCommand {
 
     private SNMPCommandResult snmpCommandResult;
     private RuntimeException exception;
 
-    public MockSNMPCommand(Context context, InetAddress address, int port, SNMPVersion snmpVersion, String community, long lastSysUpTime, boolean ip6) {
-        super(context, address, port, snmpVersion, community, lastSysUpTime, ip6);
+    public MockSNMPCommand(Context context, long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String community, List<SNMPItem> interfaces, long lastSysUpTime, boolean ip6) {
+        super(context, networkTaskId, address, port, snmpVersion, community, interfaces, lastSysUpTime, ip6);
     }
 
     public void setSnmpCommandResult(SNMPCommandResult snmpCommandResult) {

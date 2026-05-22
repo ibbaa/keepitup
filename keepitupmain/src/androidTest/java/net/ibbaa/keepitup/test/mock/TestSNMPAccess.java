@@ -67,12 +67,12 @@ public class TestSNMPAccess extends SNMPAccess {
     }
 
     @Override
-    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors) {
+    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors, boolean emptyIsValid) {
         if (subtreeException != null) {
             throw subtreeException;
         }
         if (subtreeEmpty) {
-            return false;
+            return emptyIsValid;
         }
         results.putAll(subtreeResults);
         errors.addAll(subtreeErrors);

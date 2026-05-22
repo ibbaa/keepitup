@@ -230,7 +230,7 @@ public class SNMPAccessTest {
                 filtered.put(entry.getKey(), entry.getValue().toString());
             }
             return filtered;
-        });
+        }, false);
         assertTrue(result.success());
         assertEquals(2, result.result().size());
         assertNull(result.exception());
@@ -243,7 +243,7 @@ public class SNMPAccessTest {
         Map<String, Variable> subtreeResults = new HashMap<>();
         subtreeResults.put(sysUpTimeOid, new TimeTicks(5000));
         snmpAccess.setSubtreeResults(subtreeResults);
-        SNMPAccess.WalkResult result = snmpAccess.walk("1.2.3", results -> Collections.emptyMap());
+        SNMPAccess.WalkResult result = snmpAccess.walk("1.2.3", results -> Collections.emptyMap(), false);
         assertTrue(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
@@ -254,11 +254,10 @@ public class SNMPAccessTest {
     public void testWalkInterfacesDescrEmptySubtree() {
         snmpAccess.setSubtreeEmpty(true);
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesDescr();
-        assertFalse(result.success());
+        assertTrue(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
-        assertEquals(1, result.errorMessages().size());
-        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+        assertTrue(result.errorMessages().isEmpty());
     }
 
     @Test
@@ -319,11 +318,10 @@ public class SNMPAccessTest {
     public void testWalkInterfacesTypeEmptySubtree() {
         snmpAccess.setSubtreeEmpty(true);
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesType();
-        assertFalse(result.success());
+        assertTrue(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
-        assertEquals(1, result.errorMessages().size());
-        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+        assertTrue(result.errorMessages().isEmpty());
     }
 
     @Test
@@ -373,11 +371,10 @@ public class SNMPAccessTest {
     public void testWalkInterfacesAliasEmptySubtree() {
         snmpAccess.setSubtreeEmpty(true);
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesAlias();
-        assertFalse(result.success());
+        assertTrue(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
-        assertEquals(1, result.errorMessages().size());
-        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+        assertTrue(result.errorMessages().isEmpty());
     }
 
     @Test
@@ -427,11 +424,10 @@ public class SNMPAccessTest {
     public void testWalkInterfacesOperStatusEmptySubtree() {
         snmpAccess.setSubtreeEmpty(true);
         SNMPAccess.WalkResult result = snmpAccess.walkInterfacesOperStatus();
-        assertFalse(result.success());
+        assertTrue(result.success());
         assertTrue(result.result().isEmpty());
         assertNull(result.exception());
-        assertEquals(1, result.errorMessages().size());
-        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_no_response), result.errorMessages().get(0));
+        assertTrue(result.errorMessages().isEmpty());
     }
 
     @Test

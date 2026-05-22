@@ -26,16 +26,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestSNMPCommand;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 @MediumTest
@@ -43,151 +48,443 @@ import java.util.TreeMap;
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class SNMPCommandTest {
 
-    private TestSNMPCommand createCommand(long lastSysUpTime) {
-        return new TestSNMPCommand(TestRegistry.getContext(), InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", lastSysUpTime, false);
+    private String sysUpTimeOid;
+    private String sysDescrOid;
+    private String descrOidBase;
+    private String typeOidBase;
+    private String statusOidBase;
+    private String aliasOidBase;
+
+    @Before
+    public void beforeEachTestMethod() {
+        sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
+        descrOidBase = TestRegistry.getContext().getString(R.string.interface_descr_oid);
+        typeOidBase = TestRegistry.getContext().getString(R.string.interface_type_oid);
+        statusOidBase = TestRegistry.getContext().getString(R.string.interface_operstatus_oid);
+        aliasOidBase = TestRegistry.getContext().getString(R.string.interface_alias_oid);
     }
 
     @Test
     public void testCallSuccess() {
         TestSNMPCommand command = createCommand(-1);
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
-        String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysUpTimeOid, "12345");
-        resultMap.put(sysDescrOid, "Test system");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertFalse(result.reboot());
-        assertEquals(2, result.result().size());
-        assertEquals("12345", result.result().get(sysUpTimeOid));
-        assertEquals("Test system", result.result().get(sysDescrOid));
-        assertNull(result.exception());
-        assertTrue(result.errorMessages().isEmpty());
-        assertTrue(result.duration() >= 0);
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "12345");
+        systemMap.put(sysDescrOid, "Test system");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.reboot());
+        assertEquals(2, commandResult.systemResult().size());
+        assertEquals("12345", commandResult.systemResult().get(sysUpTimeOid));
+        assertEquals("Test system", commandResult.systemResult().get(sysDescrOid));
+        assertNull(commandResult.exception());
+        assertTrue(commandResult.errorMessages().isEmpty());
+        assertTrue(commandResult.duration() >= 0);
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
     }
 
     @Test
-    public void testCallFailure() {
+    public void testCallSystemWalkFailure() {
         TestSNMPCommand command = createCommand(-1);
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(false, Collections.emptyMap(), null, List.of("No response from host.")));
-        SNMPCommandResult result = command.call();
-        assertFalse(result.success());
-        assertFalse(result.reboot());
-        assertTrue(result.result().isEmpty());
-        assertNull(result.exception());
-        assertEquals(1, result.errorMessages().size());
-        assertEquals("No response from host.", result.errorMessages().get(0));
-        assertTrue(result.duration() >= 0);
+        command.getMockSNMPAccess().setWalkResult(failureResult("No response from host."));
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertFalse(commandResult.reboot());
+        assertTrue(commandResult.systemResult().isEmpty());
+        assertNull(commandResult.exception());
+        assertEquals(1, commandResult.errorMessages().size());
+        assertEquals("No response from host.", commandResult.errorMessages().get(0));
+        assertTrue(commandResult.duration() >= 0);
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
     }
 
     @Test
-    public void testCallFailureWithErrors() {
+    public void testCallSystemWalkFailureWithErrors() {
         TestSNMPCommand command = createCommand(-1);
         command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(false, Collections.emptyMap(), null, List.of("Error 1", "Error 2")));
-        SNMPCommandResult result = command.call();
-        assertFalse(result.success());
-        assertFalse(result.reboot());
-        assertEquals(2, result.errorMessages().size());
-        assertEquals("Error 1", result.errorMessages().get(0));
-        assertEquals("Error 2", result.errorMessages().get(1));
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertEquals(2, commandResult.errorMessages().size());
+        assertEquals("Error 1", commandResult.errorMessages().get(0));
+        assertEquals("Error 2", commandResult.errorMessages().get(1));
     }
 
     @Test
-    public void testCallWithException() {
+    public void testCallSystemWalkWithException() {
         TestSNMPCommand command = createCommand(-1);
         RuntimeException exception = new RuntimeException("SNMP error");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(false, Collections.emptyMap(), exception, List.of("SNMP error")));
-        SNMPCommandResult result = command.call();
-        assertFalse(result.success());
-        assertFalse(result.reboot());
-        assertNotNull(result.exception());
-        assertEquals("SNMP error", result.exception().getMessage());
-        assertEquals(1, result.errorMessages().size());
-        assertEquals("SNMP error", result.errorMessages().get(0));
+        command.getMockSNMPAccess().setWalkResult(exceptionResult(exception));
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertNotNull(commandResult.exception());
+        assertEquals("SNMP error", commandResult.exception().getMessage());
+        assertEquals(1, commandResult.errorMessages().size());
+        assertEquals("SNMP error", commandResult.errorMessages().get(0));
     }
 
     @Test
     public void testCallNullResultMap() {
         TestSNMPCommand command = createCommand(-1);
         command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(false, null, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertFalse(result.success());
-        assertFalse(result.reboot());
-        assertTrue(result.result().isEmpty());
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.systemResult().isEmpty());
+        assertFalse(commandResult.interfaceResult().canSave());
     }
 
     @Test
     public void testCallRebootDetected() {
         TestSNMPCommand command = createCommand(5000);
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysUpTimeOid, "100");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertTrue(result.reboot());
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "100");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.reboot());
     }
 
     @Test
     public void testCallNoRebootSysUpTimeIncreased() {
         TestSNMPCommand command = createCommand(1000);
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysUpTimeOid, "5000");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertFalse(result.reboot());
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "5000");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.reboot());
     }
 
     @Test
     public void testCallNoRebootLastSysUpTimeNegative() {
         TestSNMPCommand command = createCommand(-1);
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysUpTimeOid, "100");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertFalse(result.reboot());
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "100");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.reboot());
     }
 
     @Test
     public void testCallNoRebootCurrentSysUpTimeMissing() {
         TestSNMPCommand command = createCommand(5000);
-        String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysDescrOid, "Test system");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertFalse(result.reboot());
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysDescrOid, "Test system");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.reboot());
     }
 
     @Test
     public void testCallNoRebootCounterOverflow() {
         long aboveThreshold = 4200000000L;
         TestSNMPCommand command = createCommand(aboveThreshold);
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysUpTimeOid, "1000");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertFalse(result.reboot());
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "1000");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.reboot());
     }
 
     @Test
     public void testCallRebootDetectedBelowOverflowThreshold() {
         long belowThreshold = 4000000000L;
         TestSNMPCommand command = createCommand(belowThreshold);
-        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
-        TreeMap<String, String> resultMap = new TreeMap<>();
-        resultMap.put(sysUpTimeOid, "1000");
-        command.getMockSNMPAccess().setWalkResult(new SNMPAccess.WalkResult(true, resultMap, null, Collections.emptyList()));
-        SNMPCommandResult result = command.call();
-        assertTrue(result.success());
-        assertTrue(result.reboot());
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "1000");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.reboot());
+    }
+
+    @Test
+    public void testCallInterfaceWalksSkippedWhenInterfacesEmpty() {
+        TestSNMPCommand command = createCommand(-1);
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceDescrWalkFailure() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(failureResult("No response from host."));
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertEquals(1, commandResult.errorMessages().size());
+        assertEquals("No response from host.", commandResult.errorMessages().get(0));
+    }
+
+    @Test
+    public void testCallInterfaceDescrWalkEmpty() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(emptySuccessResult());
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceDescrWalkEmptyWithMonitoredItems() {
+        String eth0Oid = descrOidBase + ".1";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0Oid, "eth0");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0));
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(emptySuccessResult());
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
+        assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceTypeWalkFailure() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0Oid, "eth0");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(successResult(descrMap));
+        command.getMockSNMPAccess().setWalkInterfacesTypeResult(failureResult("No response from host."));
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceOperStatusWalkFailure() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0Oid, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(successResult(descrMap));
+        command.getMockSNMPAccess().setWalkInterfacesTypeResult(successResult(typeMap));
+        command.getMockSNMPAccess().setWalkInterfacesOperStatusResult(failureResult("No response from host."));
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().result().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceAliasWalkFailureSilentlyIgnored() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0Oid, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(successResult(descrMap));
+        command.getMockSNMPAccess().setWalkInterfacesTypeResult(successResult(typeMap));
+        command.getMockSNMPAccess().setWalkInterfacesOperStatusResult(successResult(statusMap));
+        command.getMockSNMPAccess().setWalkInterfacesAliasResult(failureResult("Not implemented."));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceSuccessAllUp() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0Oid, "eth0");
+        descrMap.put(descrOidBase + ".2", "eth1");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        typeMap.put(typeOidBase + ".2", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        statusMap.put(statusOidBase + ".2", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceMonitoredInterfaceDown() {
+        String eth0Oid = descrOidBase + ".1";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0Oid, "eth0");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0Oid, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "2");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertEquals(1, commandResult.interfaceResult().monitoredDownStatus().size());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().containsKey("eth0"));
+    }
+
+    @Test
+    public void testCallInterfaceMonitoredInterfaceNotFound() {
+        String eth0Oid = descrOidBase + ".1";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0Oid, "eth0");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(descrOidBase + ".2", "eth1");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".2", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".2", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
+        assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+    }
+
+    @Test
+    public void testCallInterfaceAliasWalkSuccessAliasIncluded() {
+        String eth0Oid = descrOidBase + ".1";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0Oid, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        TreeMap<String, String> aliasMap = new TreeMap<>();
+        aliasMap.put(aliasOidBase + ".1", "uplink");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(successResult(descrMap));
+        command.getMockSNMPAccess().setWalkInterfacesTypeResult(successResult(typeMap));
+        command.getMockSNMPAccess().setWalkInterfacesOperStatusResult(successResult(statusMap));
+        command.getMockSNMPAccess().setWalkInterfacesAliasResult(successResult(aliasMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(hasAliasItem(commandResult.interfaceResult().result(), "uplink"));
+    }
+
+    @Test
+    public void testCallInterfaceMonitoredDownAndNotFound() {
+        String eth0Oid = descrOidBase + ".1";
+        String eth1Oid = descrOidBase + ".2";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0Oid, "eth0");
+        SNMPItem eth1 = getMonitoredDescrItem(eth1Oid, "eth1");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0, eth1));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth1Oid, "eth1");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".2", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".2", "2");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
+        assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
+        assertEquals(1, commandResult.interfaceResult().monitoredDownStatus().size());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().containsKey("eth1"));
+    }
+
+    private TestSNMPCommand createCommand(long lastSysUpTime) {
+        return createCommand(lastSysUpTime, Collections.emptyList());
+    }
+
+    private TestSNMPCommand createCommand(long lastSysUpTime, List<SNMPItem> interfaces) {
+        return new TestSNMPCommand(TestRegistry.getContext(), 0L, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", interfaces, lastSysUpTime, false);
+    }
+
+    private SNMPAccess.WalkResult successResult(Map<String, String> map) {
+        return new SNMPAccess.WalkResult(true, map, null, Collections.emptyList());
+    }
+
+    private SNMPAccess.WalkResult emptySuccessResult() {
+        return new SNMPAccess.WalkResult(true, Collections.emptyMap(), null, Collections.emptyList());
+    }
+
+    private SNMPAccess.WalkResult failureResult(String error) {
+        return new SNMPAccess.WalkResult(false, Collections.emptyMap(), null, List.of(error));
+    }
+
+    private SNMPAccess.WalkResult exceptionResult(RuntimeException exc) {
+        return new SNMPAccess.WalkResult(false, Collections.emptyMap(), exc, List.of(Objects.requireNonNull(exc.getMessage())));
+    }
+
+    private SNMPItem getSNMPItem(String oid, String name, boolean monitored) {
+        SNMPItem item = new SNMPItem();
+        item.setNetworkTaskId(0);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setOid(oid);
+        item.setName(name);
+        item.setMonitored(monitored);
+        return item;
+    }
+
+    private SNMPItem getMonitoredDescrItem(String oid, String name) {
+        return getSNMPItem(oid, name, true);
+    }
+
+    private void setupInterfaceWalks(TestSNMPCommand command, Map<String, String> descrMap, Map<String, String> typeMap, Map<String, String> statusMap) {
+        command.getMockSNMPAccess().setWalkInterfacesDescrResult(successResult(descrMap));
+        command.getMockSNMPAccess().setWalkInterfacesTypeResult(successResult(typeMap));
+        command.getMockSNMPAccess().setWalkInterfacesOperStatusResult(successResult(statusMap));
+        command.getMockSNMPAccess().setWalkInterfacesAliasResult(emptySuccessResult());
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private boolean hasAliasItem(List<SNMPItem> items, String aliasName) {
+        for (SNMPItem item : items) {
+            if (SNMPItemType.INTERFACEALIAS.equals(item.getSnmpItemType()) && aliasName.equals(item.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

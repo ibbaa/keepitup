@@ -174,6 +174,20 @@ public class SNMPScanTaskTest {
     }
 
     @Test
+    public void testRunInBackgroundDescrResultEmpty() {
+        mockSNMPAccess.setWalkInterfacesDescrResult(successWalkResult(new HashMap<>()));
+        TestSNMPScanTask task = createTask("192.168.1.1");
+        task.setMockDNSLookup(createSuccessfulDNSLookup("192.168.1.1"));
+        task.setMockSNMPAccess(mockSNMPAccess);
+        SNMPScanResult result = task.runInBackground();
+        assertTrue(result.success());
+        assertTrue(result.descrResult().isEmpty());
+        assertTrue(result.interfaceInfos().isEmpty());
+        assertTrue(result.errorMessages().isEmpty());
+        assertNull(result.exception());
+    }
+
+    @Test
     public void testRunInBackgroundWalkTypeFailure() {
         String interfaceDescrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
         Map<String, String> descrMap = new HashMap<>();

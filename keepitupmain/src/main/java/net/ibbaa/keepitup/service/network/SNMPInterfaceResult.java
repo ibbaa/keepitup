@@ -16,8 +16,10 @@
 
 package net.ibbaa.keepitup.service.network;
 
+import net.ibbaa.keepitup.model.SNMPItem;
+
 import java.util.List;
 import java.util.Map;
 
-public record SNMPCommandResult(boolean success, Map<String, String> systemResult, SNMPInterfaceResult interfaceResult, boolean reboot, Throwable exception, List<String> errorMessages, long duration) {
+public record SNMPInterfaceResult(boolean canSave, List<SNMPItem> result, List<String> monitoredNotFound, Map<String, String> monitoredDownStatus) {
 }

@@ -25,17 +25,23 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPCommand;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
+import net.ibbaa.keepitup.service.network.SNMPInterfaceResult;
 import net.ibbaa.keepitup.service.network.SNMPMapping;
+import net.ibbaa.keepitup.ui.sync.SNMPItemSyncHandler;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -72,7 +78,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult snmpExecutionResult = executeSNMPCommand(address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), networkTask.getLastSysUpTime(), ip6);
+            ExecutionResult snmpExecutionResult = executeSNMPCommand(networkTask.getId(), address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), networkTask.getLastSysUpTime(), ip6);
             LogEntry logEntry = snmpExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(SNMPNetworkTaskWorker.class.getName(), "Returning " + snmpExecutionResult);
@@ -91,9 +97,11 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @SuppressWarnings("resource")
-    private ExecutionResult executeSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
-        Log.d(SNMPNetworkTaskWorker.class.getName(), "executeSNMPCommand, address is " + address + ", port is " + port + ", snmpVersion is " + snmpVersion + ", lastSysUpTime is " + lastSysUpTime + ", ip6 is " + ip6);
-        Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(address, port, snmpVersion, snmpCommunity, lastSysUpTime, ip6);
+    private ExecutionResult executeSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "executeSNMPCommand, networktaskId is " + networkTaskId + ", address is " + address + ", port is " + port + ", snmpVersion is " + snmpVersion + ", lastSysUpTime is " + lastSysUpTime + ", ip6 is " + ip6);
+        List<SNMPItem> snmpItems = readSNMPItems();
+        boolean initiallyEmpty = snmpItems.isEmpty();
+        Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(networkTaskId, address, port, snmpVersion, snmpCommunity, snmpItems, lastSysUpTime, ip6);
         int snmpTimeout = getResources().getInteger(R.integer.snmp_request_timeout) * 8;
         Log.d(SNMPNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -105,20 +113,18 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             snmpResultFuture = executorService.submit(snmpCommand);
             SNMPCommandResult snmpResult = snmpResultFuture.get(snmpTimeout, TimeUnit.SECONDS);
             Log.d(SNMPNetworkTaskWorker.class.getName(), snmpCommand.getClass().getSimpleName() + " returned " + snmpResult);
+            if (snmpResult.interfaceResult().canSave()) {
+                new SNMPItemSyncHandler(getContext()).synchronizeSNMPItems(snmpResult.interfaceResult().result(), snmpItems);
+            }
             SNMPMapping snmpMapping = new SNMPMapping(getContext());
-            long currentSysUpTime = snmpMapping.getSysUpTime(snmpResult.result());
+            long currentSysUpTime = snmpMapping.getSysUpTime(snmpResult.systemResult());
             if (currentSysUpTime >= 0) {
                 updateNetworkTaskLastSysUpTime(currentSysUpTime);
             }
-            if (snmpResult.success()) {
-                Log.d(SNMPNetworkTaskWorker.class.getName(), "SNMP request was successful.");
-                logEntry.setSuccess(true);
-                logEntry.setMessage(getSNMPSuccessMessage(snmpResult, URLUtil.getHostAddress(address), port, ip6, snmpTimeout));
-            } else {
-                Log.d(SNMPNetworkTaskWorker.class.getName(), "Connect was not successful.");
-                logEntry.setSuccess(false);
-                logEntry.setMessage(getSNMPFailedMessage(snmpResult, URLUtil.getHostAddress(address), port, ip6, snmpTimeout));
-            }
+            boolean requestSuccessful = snmpResult.success() || snmpResult.interfaceResult().canSave();
+            Log.d(SNMPNetworkTaskWorker.class.getName(), "SNMP request success is " + snmpResult.success() + ", requestSuccessful is " + requestSuccessful);
+            logEntry.setSuccess(snmpResult.success());
+            logEntry.setMessage(getSNMPMessage(snmpResult, URLUtil.getHostAddress(address), port, ip6, snmpTimeout, initiallyEmpty, requestSuccessful));
         } catch (Throwable exc) {
             Log.d(SNMPNetworkTaskWorker.class.getName(), "Error executing " + snmpCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
@@ -135,66 +141,103 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         return new ExecutionResult(interrupted, logEntry);
     }
 
-    private String getSNMPSuccessMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout) {
-        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPSuccessMessage, snmpResult is " + snmpResult + ", address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout);
-        String successMessage = getResources().getString(R.string.text_snmp_success, getAddressWithPort(address, port, ip6));
+    private String getSNMPMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout, boolean initiallyEmpty, boolean requestSuccessful) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPMessage, address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout + ", requestSuccessful is " + requestSuccessful);
+        String message = requestSuccessful ? getResources().getString(R.string.text_snmp_success, getAddressWithPort(address, port, ip6)) : getResources().getString(R.string.text_snmp_failure, getAddressWithPort(address, port, ip6));
         if (snmpResult.reboot()) {
-            successMessage += ". " + getResources().getString(R.string.text_snmp_reboot);
+            message += ". " + getResources().getString(R.string.text_snmp_reboot);
         }
-        Map<String, String> result = snmpResult.result();
+        if (!requestSuccessful) {
+            String errorMessage = getErrorMessages(snmpResult.errorMessages());
+            if (!StringUtil.isEmpty(errorMessage)) {
+                message += ". " + errorMessage;
+            }
+        }
+        String interfaceMessages = getInterfaceMessages(snmpResult, initiallyEmpty);
+        if (!StringUtil.isEmpty(interfaceMessages)) {
+            message += ". " + interfaceMessages;
+        }
+        Map<String, String> result = snmpResult.systemResult();
         String systemValues = getSystemValues(result);
         String sysUpTimeMessage = getSysUpTime(result);
         if (!StringUtil.isEmpty(systemValues) && !StringUtil.isEmpty(sysUpTimeMessage)) {
-            successMessage += ". " + systemValues + ", " + sysUpTimeMessage;
+            message += ". " + systemValues + ", " + sysUpTimeMessage;
         } else if (!StringUtil.isEmpty(systemValues)) {
-            successMessage += ". " + systemValues;
+            message += ". " + systemValues;
         } else if (!StringUtil.isEmpty(sysUpTimeMessage)) {
-            successMessage += ". " + sysUpTimeMessage;
+            message += ". " + sysUpTimeMessage;
         }
-        String durationMessage = getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext()));
-        successMessage += ". " + durationMessage + ".";
+        message += ". " + getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext())) + ".";
         Throwable exc = snmpResult.exception();
         if (exc != null) {
-            successMessage = successMessage + " " + getResources().getString(R.string.text_connect_last_error);
-            return getMessageFromException(successMessage, exc, snmpTimeout);
+            return getMessageFromException(message, exc, snmpTimeout);
         }
-        return successMessage;
+        return message;
     }
 
-    @SuppressWarnings("SizeReplaceableByIsEmpty")
-    private String getSNMPFailedMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout) {
-        Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPFailedMessage, snmpResult is " + snmpResult + ", address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout);
-        String failedMessage = getResources().getString(R.string.text_snmp_failure, getAddressWithPort(address, port, ip6));
-        if (snmpResult.reboot()) {
-            failedMessage += ". " + getResources().getString(R.string.text_snmp_reboot);
+    private String getInterfaceMessages(SNMPCommandResult snmpResult, boolean initiallyEmpty) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "getInterfaceMessages, initiallyEmpty is " + initiallyEmpty);
+        if (initiallyEmpty) {
+            return "";
         }
-        List<String> errorMessages = snmpResult.errorMessages();
-        Map<String, String> result = snmpResult.result();
-        String errorMessage = getErrorMessages(errorMessages);
-        String systemValues = getSystemValues(result);
-        String sysUpTimeMessage = getSysUpTime(result);
-        StringBuilder builder = new StringBuilder();
-        if (!StringUtil.isEmpty(errorMessage)) {
-            builder.append(errorMessage);
+        SNMPInterfaceResult interfaceResult = snmpResult.interfaceResult();
+        List<String> messageParts = new ArrayList<>();
+        List<SNMPItem> descrItems = getIfDescrItems(interfaceResult.result());
+        int foundCount = descrItems.size();
+        messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_interfaces_found, foundCount, foundCount));
+        boolean hasAnyMonitored = hasMonitoredItem(descrItems) || !interfaceResult.monitoredNotFound().isEmpty();
+        if (hasAnyMonitored) {
+            if (interfaceResult.monitoredDownStatus().isEmpty() && interfaceResult.monitoredNotFound().isEmpty()) {
+                messageParts.add(getResources().getString(R.string.text_snmp_all_monitored_up));
+            } else {
+                Map<String, List<String>> interfaceByStatusMap = new LinkedHashMap<>();
+                String downLabel = getResources().getString(R.string.interface_operstatus_down_label).toLowerCase(Locale.ROOT);
+                for (Map.Entry<String, String> entry : interfaceResult.monitoredDownStatus().entrySet()) {
+                    String statusLabel = entry.getValue().toLowerCase(Locale.ROOT);
+                    String descr = entry.getKey();
+                    List<String> descrWithStatusList = interfaceByStatusMap.get(statusLabel);
+                    if (descrWithStatusList == null) {
+                        descrWithStatusList = new ArrayList<>();
+                        interfaceByStatusMap.put(statusLabel, descrWithStatusList);
+                    }
+                    descrWithStatusList.add(descr);
+                }
+                for (Map.Entry<String, List<String>> entry : interfaceByStatusMap.entrySet()) {
+                    String names = TextUtils.join(", ", entry.getValue());
+                    int count = entry.getValue().size();
+                    if (entry.getKey().equals(downLabel)) {
+                        messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_down, count, names));
+                    } else {
+                        messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_in_status, count, names, entry.getKey()));
+                    }
+                }
+                List<String> notFound = interfaceResult.monitoredNotFound();
+                if (!notFound.isEmpty()) {
+                    String names = TextUtils.join(", ", notFound);
+                    messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_not_found, notFound.size(), names));
+                }
+            }
         }
-        if (!StringUtil.isEmpty(systemValues)) {
-            if (builder.length() > 0) builder.append(", ");
-            builder.append(systemValues);
+        return TextUtils.join(". ", messageParts);
+    }
+
+    private List<SNMPItem> getIfDescrItems(List<SNMPItem> items) {
+        List<SNMPItem> descrItems = new ArrayList<>();
+        for (SNMPItem item : items) {
+            if (SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType())) {
+                descrItems.add(item);
+            }
         }
-        if (!StringUtil.isEmpty(sysUpTimeMessage)) {
-            if (builder.length() > 0) builder.append(", ");
-            builder.append(sysUpTimeMessage);
+        return descrItems;
+    }
+
+    private boolean hasMonitoredItem(List<SNMPItem> items) {
+        for (SNMPItem item : items) {
+            if (item.isMonitored()) {
+                return true;
+            }
         }
-        if (builder.length() > 0) {
-            failedMessage += ". " + builder;
-        }
-        String durationMessage = getResources().getString(R.string.text_snmp_time, StringUtil.formatTimeRange(snmpResult.duration(), getContext()));
-        failedMessage += ". " + durationMessage + ".";
-        Throwable exc = snmpResult.exception();
-        if (exc != null) {
-            return getMessageFromException(failedMessage, exc, snmpTimeout);
-        }
-        return failedMessage;
+        return false;
     }
 
     private String getSystemValues(Map<String, String> result) {
@@ -257,7 +300,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         return addressPort + ":" + port;
     }
 
-    protected Callable<SNMPCommandResult> getSNMPCommand(InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
-        return new SNMPCommand(getContext(), address, port, snmpVersion, snmpCommunity, lastSysUpTime, ip6);
+    protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
+        return new SNMPCommand(getContext(), networkTaskId, address, port, snmpVersion, snmpCommunity, snmpItems, lastSysUpTime, ip6);
     }
 }

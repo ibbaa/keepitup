@@ -28,7 +28,6 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import net.ibbaa.keepitup.R;
 
-@SuppressWarnings({"FieldCanBeLocal"})
 public class SNMPInterfacesViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView noItemsText;

@@ -29,6 +29,7 @@ public class MockSNMPAccess extends SNMPAccess {
     private WalkResult walkInterfacesDescrResult;
     private WalkResult walkInterfacesTypeResult;
     private WalkResult walkInterfacesOperStatusResult;
+    private WalkResult walkInterfacesAliasResult;
 
     public MockSNMPAccess(Context context) {
         super(context, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", false);
@@ -50,6 +51,10 @@ public class MockSNMPAccess extends SNMPAccess {
         this.walkInterfacesOperStatusResult = walkInterfacesOperStatusResult;
     }
 
+    public void setWalkInterfacesAliasResult(WalkResult walkInterfacesAliasResult) {
+        this.walkInterfacesAliasResult = walkInterfacesAliasResult;
+    }
+
     @Override
     public WalkResult walkSystem() {
         return walkResult;
@@ -68,5 +73,10 @@ public class MockSNMPAccess extends SNMPAccess {
     @Override
     public WalkResult walkInterfacesOperStatus() {
         return walkInterfacesOperStatusResult;
+    }
+
+    @Override
+    public WalkResult walkInterfacesAlias() {
+        return walkInterfacesAliasResult;
     }
 }
