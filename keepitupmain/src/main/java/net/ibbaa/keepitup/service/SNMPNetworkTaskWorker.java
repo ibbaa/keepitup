@@ -39,6 +39,7 @@ import net.ibbaa.keepitup.util.URLUtil;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -183,7 +184,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         SNMPInterfaceResult interfaceResult = snmpResult.interfaceResult();
         List<String> messageParts = new ArrayList<>();
         List<SNMPItem> descrItems = getIfDescrItems(interfaceResult.result());
-        int foundCount = descrItems.size();
+        int foundCount = interfaceResult.foundCount();
         messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_interfaces_found, foundCount, foundCount));
         boolean hasAnyMonitored = hasMonitoredItem(descrItems) || !interfaceResult.monitoredNotFound().isEmpty();
         if (hasAnyMonitored) {
@@ -203,15 +204,18 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
                     descrWithStatusList.add(descr);
                 }
                 for (Map.Entry<String, List<String>> entry : interfaceByStatusMap.entrySet()) {
-                    String names = TextUtils.join(", ", entry.getValue());
-                    int count = entry.getValue().size();
+                    List<String> sortedNames = new ArrayList<>(entry.getValue());
+                    Collections.sort(sortedNames);
+                    String names = TextUtils.join(", ", sortedNames);
+                    int count = sortedNames.size();
                     if (entry.getKey().equals(downLabel)) {
                         messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_down, count, names));
                     } else {
                         messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_in_status, count, names, entry.getKey()));
                     }
                 }
-                List<String> notFound = interfaceResult.monitoredNotFound();
+                List<String> notFound = new ArrayList<>(interfaceResult.monitoredNotFound());
+                Collections.sort(notFound);
                 if (!notFound.isEmpty()) {
                     String names = TextUtils.join(", ", notFound);
                     messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_not_found, notFound.size(), names));

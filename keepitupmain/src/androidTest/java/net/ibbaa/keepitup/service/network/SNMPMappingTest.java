@@ -1213,6 +1213,95 @@ public class SNMPMappingTest {
         assertEquals(6, eth3.getType());
     }
 
+    @Test
+    public void testPreserveRemovedMonitoredItemsEmptyRemoved() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        List<SNMPItem> allOriginal = new ArrayList<>();
+        allOriginal.add(createDescrItem(10, 1, descrOid + ".1", "eth0", true));
+        allOriginal.add(createTypeItem(20, 1, typeOid + ".1", "6"));
+        List<SNMPItem> result = snmpMapping.preserveRemovedMonitoredItems(Collections.emptyList(), allOriginal);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testPreserveRemovedMonitoredItemsNoCompanions() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem eth0 = createDescrItem(10, 1, descrOid + ".1", "eth0", true);
+        List<SNMPItem> result = snmpMapping.preserveRemovedMonitoredItems(List.of(eth0), List.of(eth0));
+        assertEquals(1, result.size());
+        assertEquals(SNMPItemType.INTERFACEDESCR, result.get(0).getSnmpItemType());
+        assertEquals("eth0", result.get(0).getName());
+    }
+
+    @Test
+    public void testPreserveRemovedMonitoredItemsWithTypeAndAliasCompanions() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        SNMPItem eth0 = createDescrItem(10, 1, descrOid + ".1", "eth0", true);
+        SNMPItem eth0Type = createTypeItem(20, 1, typeOid + ".1", "6");
+        SNMPItem eth0Alias = createAliasItem(30, 1, aliasOid + ".1", "uplink");
+        List<SNMPItem> allOriginal = new ArrayList<>();
+        allOriginal.add(eth0);
+        allOriginal.add(eth0Type);
+        allOriginal.add(eth0Alias);
+        List<SNMPItem> result = snmpMapping.preserveRemovedMonitoredItems(List.of(eth0), allOriginal);
+        assertEquals(3, result.size());
+        assertTrue(result.contains(eth0));
+        assertTrue(result.contains(eth0Type));
+        assertTrue(result.contains(eth0Alias));
+    }
+
+    @Test
+    public void testPreserveRemovedMonitoredItemsOnlyMatchingIndex() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        SNMPItem eth0 = createDescrItem(10, 1, descrOid + ".1", "eth0", true);
+        SNMPItem eth0Type = createTypeItem(20, 1, typeOid + ".1", "6");
+        SNMPItem eth0Alias = createAliasItem(30, 1, aliasOid + ".1", "uplink");
+        SNMPItem eth1 = createDescrItem(11, 1, descrOid + ".2", "eth1", false);
+        SNMPItem eth1Type = createTypeItem(21, 1, typeOid + ".2", "24");
+        List<SNMPItem> allOriginal = new ArrayList<>();
+        allOriginal.add(eth0);
+        allOriginal.add(eth0Type);
+        allOriginal.add(eth0Alias);
+        allOriginal.add(eth1);
+        allOriginal.add(eth1Type);
+        List<SNMPItem> result = snmpMapping.preserveRemovedMonitoredItems(List.of(eth0), allOriginal);
+        assertEquals(3, result.size());
+        assertTrue(result.contains(eth0));
+        assertTrue(result.contains(eth0Type));
+        assertTrue(result.contains(eth0Alias));
+        assertFalse(result.contains(eth1Type));
+    }
+
+    @Test
+    public void testPreserveRemovedMonitoredItemsMultipleRemoved() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        String typeOid = TestRegistry.getContext().getResources().getString(R.string.interface_type_oid);
+        String aliasOid = TestRegistry.getContext().getResources().getString(R.string.interface_alias_oid);
+        SNMPItem eth0 = createDescrItem(10, 1, descrOid + ".1", "eth0", true);
+        SNMPItem eth0Type = createTypeItem(20, 1, typeOid + ".1", "6");
+        SNMPItem eth1 = createDescrItem(11, 1, descrOid + ".2", "eth1", true);
+        SNMPItem eth1Alias = createAliasItem(31, 1, aliasOid + ".2", "mgmt");
+        List<SNMPItem> allOriginal = new ArrayList<>();
+        allOriginal.add(eth0);
+        allOriginal.add(eth0Type);
+        allOriginal.add(eth1);
+        allOriginal.add(eth1Alias);
+        List<SNMPItem> removed = new ArrayList<>();
+        removed.add(eth0);
+        removed.add(eth1);
+        List<SNMPItem> result = snmpMapping.preserveRemovedMonitoredItems(removed, allOriginal);
+        assertEquals(4, result.size());
+        assertTrue(result.contains(eth0));
+        assertTrue(result.contains(eth0Type));
+        assertTrue(result.contains(eth1));
+        assertTrue(result.contains(eth1Alias));
+    }
+
     private SNMPItem getSNMPItem(String oidString, String name) {
         SNMPItem item = new SNMPItem();
         item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);

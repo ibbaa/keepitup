@@ -259,7 +259,8 @@ public class SNMPCommandTest {
         SNMPCommandResult commandResult = command.call();
         assertFalse(commandResult.success());
         assertTrue(commandResult.interfaceResult().canSave());
-        assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertEquals(1, commandResult.interfaceResult().result().size());
+        assertEquals("eth0", commandResult.interfaceResult().result().get(0).getName());
         assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
         assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
@@ -387,6 +388,60 @@ public class SNMPCommandTest {
     }
 
     @Test
+    public void testCallMonitoredNotFoundItemPreservedInResult() {
+        String eth0Oid = descrOidBase + ".1";
+        String eth1Oid = descrOidBase + ".2";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0Oid, "eth0");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth1Oid, "eth1");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".2", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".2", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
+        assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
+        assertTrue(hasItemWithTypeAndName(commandResult.interfaceResult().result(), SNMPItemType.INTERFACEDESCR, "eth0"));
+    }
+
+    @Test
+    public void testCallMonitoredNotFoundCompanionItemsPreservedInResult() {
+        String eth0Oid = descrOidBase + ".1";
+        String eth1Oid = descrOidBase + ".2";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0Oid, "eth0");
+        SNMPItem eth0Type = new SNMPItem();
+        eth0Type.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        eth0Type.setOid(typeOidBase + ".1");
+        eth0Type.setName("6");
+        SNMPItem eth0Alias = new SNMPItem();
+        eth0Alias.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        eth0Alias.setOid(aliasOidBase + ".1");
+        eth0Alias.setName("uplink");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0, eth0Type, eth0Alias));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth1Oid, "eth1");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".2", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".2", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
+        List<SNMPItem> result = commandResult.interfaceResult().result();
+        assertTrue(hasItemWithTypeAndName(result, SNMPItemType.INTERFACEDESCR, "eth0"));
+        assertTrue(hasItemWithTypeAndName(result, SNMPItemType.INTERFACETYPE, "6"));
+        assertTrue(hasItemWithTypeAndName(result, SNMPItemType.INTERFACEALIAS, "uplink"));
+    }
+
+    @Test
     public void testCallInterfaceAliasWalkSuccessAliasIncluded() {
         String eth0Oid = descrOidBase + ".1";
         TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0Oid, "eth0", false)));
@@ -482,6 +537,15 @@ public class SNMPCommandTest {
     private boolean hasAliasItem(List<SNMPItem> items, String aliasName) {
         for (SNMPItem item : items) {
             if (SNMPItemType.INTERFACEALIAS.equals(item.getSnmpItemType()) && aliasName.equals(item.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasItemWithTypeAndName(List<SNMPItem> items, SNMPItemType type, String name) {
+        for (SNMPItem item : items) {
+            if (type.equals(item.getSnmpItemType()) && name.equals(item.getName())) {
                 return true;
             }
         }

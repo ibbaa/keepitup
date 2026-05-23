@@ -180,7 +180,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Notifications: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Last execution: not executed")));
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Interfaces: 0 found, 0 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Interfaces: 0 configured, 0 monitored")));
         activityScenario.close();
     }
 
@@ -500,7 +500,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Notifications: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Last execution: not executed")));
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Interfaces: 0 found, 0 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 3))).check(matches(withText("Interfaces: 0 configured, 0 monitored")));
         activityScenario.close();
     }
 
@@ -955,7 +955,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getSnmpItemDAO().insertSNMPItem(item2);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 2 found, 1 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 2 configured, 1 monitored")));
         activityScenario.close();
     }
 
@@ -993,7 +993,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 found, 0 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 configured, 0 monitored")));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
@@ -1007,7 +1007,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_snmp_interfaces_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 found, 2 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 configured, 2 monitored")));
         List<SNMPItem> dbItems = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(task.getId());
         assertEquals(3, dbItems.size());
         assertEquals("eth0", dbItems.get(0).getName());
@@ -2169,14 +2169,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_headers), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withTextColor(R.color.textColor)));
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Community: invalid")));
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interfaces: 0 found, 0 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interfaces: 0 configured, 0 monitored")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("testcommunity"), closeSoftKeyboard());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interfaces: 0 found, 0 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interfaces: 0 configured, 0 monitored")));
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textColor)));

@@ -21,5 +21,5 @@ import net.ibbaa.keepitup.model.SNMPItem;
 import java.util.List;
 import java.util.Map;
 
-public record SNMPInterfaceResult(boolean canSave, List<SNMPItem> result, List<String> monitoredNotFound, Map<String, String> monitoredDownStatus) {
+public record SNMPInterfaceResult(boolean canSave, List<SNMPItem> result, int foundCount, List<String> monitoredNotFound, Map<String, String> monitoredDownStatus) {
 }

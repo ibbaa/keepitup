@@ -378,6 +378,29 @@ public class SNMPMapping {
         return result;
     }
 
+    public List<SNMPItem> preserveRemovedMonitoredItems(List<SNMPItem> removedMonitored, List<SNMPItem> allOriginal) {
+        Log.d(SNMPMapping.class.getName(), "preserveRemovedMonitoredItems");
+        List<SNMPItem> preserved = new ArrayList<>(removedMonitored);
+        if (!removedMonitored.isEmpty()) {
+            Set<Integer> removedIndices = new HashSet<>();
+            for (SNMPItem item : removedMonitored) {
+                int index = getOidIndex(item.getOid());
+                if (index >= 0) {
+                    removedIndices.add(index);
+                }
+            }
+            for (SNMPItem original : allOriginal) {
+                SNMPItemType type = original.getSnmpItemType();
+                if (SNMPItemType.INTERFACETYPE.equals(type) || SNMPItemType.INTERFACEALIAS.equals(type)) {
+                    if (removedIndices.contains(getOidIndex(original.getOid()))) {
+                        preserved.add(original);
+                    }
+                }
+            }
+        }
+        return preserved;
+    }
+
     public List<SNMPItem> mergeAllSNMPItems(List<SNMPItem> originalAll, List<SNMPItem> editedDescrItems, Map<String, SNMPInterfaceInfo> newInfos, long networkTaskId) {
         Log.d(SNMPMapping.class.getName(), "mergeAllSNMPItems");
         Map<Integer, Long> oldIndexToDescrId = new HashMap<>();
