@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 import android.content.Intent;
@@ -431,7 +432,6 @@ public abstract class BaseUITest {
         return stringHolder[0];
     }
 
-
     public static ViewAction setNumber(int number) {
         return new ViewAction() {
             @Override
@@ -448,6 +448,25 @@ public abstract class BaseUITest {
             @Override
             public Matcher<View> getConstraints() {
                 return ViewMatchers.isAssignableFrom(NumberPicker.class);
+            }
+        };
+    }
+
+    public static ViewAction forceClick() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isDisplayed();
+            }
+
+            @Override
+            public String getDescription() {
+                return "force click";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
             }
         };
     }

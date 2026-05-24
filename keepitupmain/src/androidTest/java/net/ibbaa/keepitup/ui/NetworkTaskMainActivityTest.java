@@ -3214,6 +3214,89 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
+    @Test
+    public void testCopyNetworkTaskSNMPInterfaces() {
+        NetworkTask task = getNetworkTask1();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        SNMPItem item1 = new SNMPItem();
+        item1.setNetworkTaskId(task.getId());
+        item1.setName("eth0");
+        item1.setOid("1.3.6.1.2.1.2.2.1.2.1");
+        item1.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item1.setMonitored(false);
+        getSnmpItemDAO().insertSNMPItem(item1);
+        SNMPItem item2 = new SNMPItem();
+        item2.setNetworkTaskId(task.getId());
+        item2.setName("eth1");
+        item2.setOid("1.3.6.1.2.1.2.2.1.2.2");
+        item2.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item2.setMonitored(false);
+        getSnmpItemDAO().insertSNMPItem(item2);
+        SNMPItem item3 = new SNMPItem();
+        item3.setNetworkTaskId(task.getId());
+        item3.setName("wlan0");
+        item3.setOid("1.3.6.1.2.1.2.2.1.2.3");
+        item3.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item3.setMonitored(false);
+        getSnmpItemDAO().insertSNMPItem(item3);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).perform(forceClick());
+        onView(withId(R.id.listview_dialog_snmp_interfaces_items)).check(matches(withListSize(3)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.checkbox_list_item_snmp_interface_monitored), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.100"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("161"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("public"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 configured, 1 monitored")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("192.168.1.100")));
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).perform(forceClick());
+        onView(withId(R.id.listview_dialog_snmp_interfaces_items)).check(matches(withListSize(3)));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.checkbox_list_item_snmp_interface_monitored), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 1))).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 configured, 1 monitored")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interfaces: 3 configured, 2 monitored")));
+        AccessTypeData dbData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertEquals("public", dbData1.getSnmpCommunity());
+        List<SNMPItem> dbItems1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(task.getId());
+        assertEquals(3, dbItems1.size());
+        assertEquals("eth0", dbItems1.get(0).getName());
+        assertTrue(dbItems1.get(0).isMonitored());
+        assertEquals("eth1", dbItems1.get(1).getName());
+        assertFalse(dbItems1.get(1).isMonitored());
+        assertEquals("wlan0", dbItems1.get(2).getName());
+        assertFalse(dbItems1.get(2).isMonitored());
+        List<NetworkTask> allTasks = getNetworkTaskDAO().readAllNetworkTasks();
+        assertEquals(2, allTasks.size());
+        NetworkTask copyTask = allTasks.get(1);
+        AccessTypeData dbData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(copyTask.getId());
+        assertEquals("public", dbData2.getSnmpCommunity());
+        List<SNMPItem> dbItems2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(copyTask.getId());
+        assertEquals(3, dbItems2.size());
+        assertEquals("eth0", dbItems2.get(0).getName());
+        assertTrue(dbItems2.get(0).isMonitored());
+        assertEquals("eth1", dbItems2.get(1).getName());
+        assertTrue(dbItems2.get(1).isMonitored());
+        assertEquals("wlan0", dbItems2.get(2).getName());
+        assertFalse(dbItems2.get(2).isMonitored());
+        activityScenario.close();
+    }
+
     private void startAlarmService(NetworkTask task) {
         if (AlarmService.isRunning()) {
             return;
