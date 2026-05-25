@@ -130,8 +130,7 @@ Queries a network device via SNMP at each poll interval.
 - **Host** — hostname or IP address of the SNMP agent
 - **Port** — UDP port, default is 161
 - **Version** — SNMPv1 or SNMPv2c (SNMPv3 is planned)
-- **Community** — the SNMP community string, stored encrypted; default is
-  `public`
+- **Community** — the SNMP community string, stored encrypted
 - **Interfaces** — opens the interface configuration (see below)
 
 At each execution the system group is queried, providing device information
