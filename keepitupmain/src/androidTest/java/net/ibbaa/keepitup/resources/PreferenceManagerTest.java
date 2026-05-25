@@ -26,6 +26,7 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -251,6 +252,30 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceResolvePort(80);
         preferenceManager.removePreferenceResolvePort();
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPVersion() {
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.removeAllPreferences();
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.removePreferenceSNMPVersion();
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPPort() {
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        preferenceManager.setPreferenceSNMPPort(162);
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
+        preferenceManager.removeAllPreferences();
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.removePreferenceSNMPPort();
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test

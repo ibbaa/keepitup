@@ -301,7 +301,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError, ConnectToAddress connectToAddress) {
         Log.d(DownloadCommand.class.getName(), "overrideConnectHost");
-        String overrideHost = connectToAddress.resolvedAddress().getHostAddress();
+        String overrideHost = URLUtil.getHostAddress(connectToAddress.resolvedAddress());
         int overridePort = connectToAddress.resolve().getTargetPort();
         clientBuilder.socketFactory(new ConnectToSocketFactory(overrideHost, overridePort));
         if (!isIgnoreSSLError) {

@@ -1591,6 +1591,7 @@ public class DownloadCommandTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setNotification(true);
         task.setHighPrio(true);

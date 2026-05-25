@@ -65,6 +65,14 @@
     <string name="textview_activity_defaults_global_headers_name_weight">0.3</string>
     <dimen name="textview_activity_defaults_global_headers_value_margin_right">8dp</dimen>
     <dimen name="textview_activity_defaults_global_headers_value_margin_top">3dp</dimen>
+    <dimen name="cardview_activity_defaults_snmp_version_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_snmp_version_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_snmp_version_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_snmp_version_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_snmp_port_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_snmp_port_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_snmp_port_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_snmp_port_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_only_wifi_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_only_wifi_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_only_wifi_card_elevation">4dp</dimen>

@@ -141,6 +141,7 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
         return Collections.unmodifiableList(headers);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean containsSecretHeader() {
         List<Header> headers = getAllItems();
         for (Header currentHeader : headers) {

@@ -26,12 +26,7 @@ import java.text.NumberFormat;
 
 public class StringUtil {
 
-    public static String getStringValue(Object value, String defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-        return value.toString();
-    }
+    private static final String SECRET_PLACEHOLDER = "************";
 
     public static String trim(String value) {
         if (value == null) {
@@ -60,12 +55,34 @@ public class StringUtil {
         return value == null ? "" : value.toString();
     }
 
+    public static String getSecretPlaceholder() {
+        return SECRET_PLACEHOLDER;
+    }
+
     public static String maskSecret(String value, boolean confidential) {
-        return confidential ? "************" : value;
+        return confidential ? SECRET_PLACEHOLDER : value;
     }
 
     public static String normalizeString(String value) {
         return Normalizer.normalize(notNull(value), Normalizer.Form.NFKC);
+    }
+
+    public static String formatUpTime(long hundredths) {
+        long seconds = hundredths / 100;
+        long days = seconds / 86400;
+        long hours = (seconds % 86400) / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        if (days > 0) {
+            return days + "d " + hours + "h " + minutes + "m " + secs + "s";
+        }
+        if (hours > 0) {
+            return hours + "h " + minutes + "m " + secs + "s";
+        }
+        if (minutes > 0) {
+            return minutes + "m " + secs + "s";
+        }
+        return secs + "s";
     }
 
     public static String formatTimeRange(double timeRange, Context context) {

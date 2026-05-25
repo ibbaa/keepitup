@@ -627,6 +627,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -646,6 +647,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;

@@ -24,6 +24,7 @@
     <string name="accesstypedata_ping_count_field_name">Ping count</string>
     <string name="accesstypedata_ping_package_size_field_name">Package size</string>
     <string name="accesstypedata_connect_count_field_name">Connect count</string>
+    <string name="accesstypedata_snmp_community_field_name">Community</string>
     <string name="resolve_host_field_name">Connect-to host</string>
     <string name="resolve_port_field_name">Connect-to port</string>
     <string name="resolve_match_host_field_name">Match host</string>

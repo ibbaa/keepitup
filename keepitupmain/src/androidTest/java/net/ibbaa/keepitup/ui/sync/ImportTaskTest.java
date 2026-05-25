@@ -36,6 +36,9 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -100,6 +103,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = getSnmpItemDAO().insertSNMPItem(getSNMPItem3(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -122,6 +128,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -147,6 +155,7 @@ public class ImportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
+        getSnmpItemDAO().deleteAllSNMPItems();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -202,6 +211,8 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
+        accessData1.setSnmpCommunity(null);
+        accessData2.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
         resolve1.setIndex(0);
@@ -219,6 +230,12 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
+        List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -241,6 +258,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -281,6 +300,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = getSnmpItemDAO().insertSNMPItem(getSNMPItem3(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -303,6 +325,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -319,7 +343,7 @@ public class ImportTaskTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = setup.exportData();
         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(TestRegistry.getContext());
         EncryptionSetupResult encryptResult = encryptSetup.encrypt("password123", result.data());
@@ -330,6 +354,7 @@ public class ImportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolves();
         getHeaderDAO().deleteAllHeaders();
+        getSnmpItemDAO().deleteAllSNMPItems();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -402,6 +427,12 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
+        List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -424,6 +455,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -464,6 +497,9 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task2.getId()));
         Header header1 = getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
+        SNMPItem snmpItem1 = getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = getSnmpItemDAO().insertSNMPItem(getSNMPItem3(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -486,6 +522,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -502,7 +540,7 @@ public class ImportTaskTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext(), true);
         SystemSetupResult result = setup.exportData();
         JSONEncryptSetup encryptSetup = new JSONEncryptSetup(TestRegistry.getContext());
         EncryptionSetupResult encryptResult = encryptSetup.encrypt("password123", result.data());
@@ -512,6 +550,7 @@ public class ImportTaskTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolves();
+        getSnmpItemDAO().deleteAllSNMPItems();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -590,6 +629,12 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(readGlobalHeader.isTechnicallyEqual(header2));
         Header readHeader = getHeaderDAO().readHeadersForNetworkTask(task1.getId()).get(0);
         assertTrue(readHeader.isTechnicallyEqual(header1));
+        List<SNMPItem> readSNMPItemList1 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(getSnmpItemDAO().readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -612,6 +657,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -638,6 +685,8 @@ public class ImportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getResolveDAO().insertResolve(getResolve1(task1.getId()));
         getHeaderDAO().insertHeader(getHeader1(task1.getId()));
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -660,6 +709,8 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -691,6 +742,7 @@ public class ImportTaskTest extends BaseUITest {
         assertFalse(getResolveDAO().readAllResolves().isEmpty());
         assertFalse(getHeaderDAO().readAllHeaders().isEmpty());
         assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
+        assertFalse(getSnmpItemDAO().readAllSNMPItems().isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -713,6 +765,8 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -803,6 +857,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -823,6 +878,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -843,6 +899,7 @@ public class ImportTaskTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(3);
         task.setHighPrio(false);
         return task;
@@ -888,6 +945,9 @@ public class ImportTaskTest extends BaseUITest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(true);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community1");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -901,6 +961,9 @@ public class ImportTaskTest extends BaseUITest {
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity(null);
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -961,6 +1024,39 @@ public class ImportTaskTest extends BaseUITest {
         header.setValue("value");
         header.setValueValid(true);
         return header;
+    }
+
+    private SNMPItem getSNMPItem1(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item.setName("2");
+        item.setOid("1.3.6.1.2.1.1.1.0");
+        item.setMonitored(true);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem2(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setName("ifInOctets");
+        item.setOid("1.3.6.1.2.1.2.2.1.10.1");
+        item.setMonitored(false);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem3(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        item.setName("sysUpTime");
+        item.setOid("1.3.6.1.2.1.1.3.0");
+        item.setMonitored(true);
+        return item;
     }
 
     private UITaskResultDispatcher<SystemSetupResult> getImportResultDispatcher() {

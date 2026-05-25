@@ -25,6 +25,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -216,6 +217,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         Map<String, ?> defaults = new HashMap<>();
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -235,6 +238,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -257,6 +262,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceResolveMatchPort", 789);
         defaults.put("preferenceResolveAddress", "127.0.0.1");
         defaults.put("preferenceResolvePort", 456);
+        defaults.put("preferenceSNMPVersion", SNMPVersion.V1.getCode());
+        defaults.put("preferenceSNMPPort", 162);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -275,6 +282,8 @@ public class PreferenceSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -297,6 +306,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceResolveMatchPort", "789");
         defaults.put("preferenceResolveAddress", "127.0.0.1");
         defaults.put("preferenceResolvePort", "456");
+        defaults.put("preferenceSNMPVersion", String.valueOf(SNMPVersion.V1.getCode()));
+        defaults.put("preferenceSNMPPort", "162");
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -315,6 +326,8 @@ public class PreferenceSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -337,6 +350,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceResolveMatchPort", 12345678);
         defaults.put("preferenceResolveAddress", "1.1.1.1.1.1");
         defaults.put("preferenceResolvePort", 12345678);
+        defaults.put("preferenceSNMPVersion", 99);
+        defaults.put("preferenceSNMPPort", 12345678);
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -355,6 +370,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -562,6 +579,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
+        assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
+        assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -583,6 +602,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         Map<String, ?> defaults = setup.exportDefaults();
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -601,6 +622,8 @@ public class PreferenceSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -618,6 +641,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
+        assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
+        assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -739,6 +764,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         Map<String, ?> defaults = setup.exportDefaults();
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -758,6 +785,8 @@ public class PreferenceSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -775,6 +804,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
+        assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
+        assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -896,6 +927,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         setup.removeDefaults();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -914,6 +947,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -972,6 +1007,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -1015,6 +1052,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());

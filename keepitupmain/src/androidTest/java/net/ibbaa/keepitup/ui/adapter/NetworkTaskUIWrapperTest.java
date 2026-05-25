@@ -29,10 +29,14 @@ import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 
 @SmallTest
@@ -41,49 +45,57 @@ public class NetworkTaskUIWrapperTest {
 
     @Test
     public void testIsEqual() {
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), getLogEntry());
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null, null, Collections.emptyList(), null);
         assertFalse(wrapper1.isEqual(wrapper2));
-        wrapper2 = new NetworkTaskUIWrapper(null, null, null, getLogEntry());
-        assertFalse(wrapper1.isEqual(wrapper2));
-        assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(null, null, null, List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null, Collections.emptyList(), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(null, null, List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, List.of(getHeader1(), getHeader2()), Collections.emptyList(), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(null, getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), Collections.emptyList(), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), Collections.emptyList(), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), getLogEntry());
         assertTrue(wrapper1.isEqual(wrapper2));
         assertTrue(wrapper2.isEqual(wrapper1));
         NetworkTask task = getNetworkTask();
         task.setInstances(3);
-        wrapper2 = new NetworkTaskUIWrapper(task, getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(task, getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         LogEntry entry = getLogEntry();
         entry.setNetworkTaskId(2);
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), entry);
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), entry);
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         AccessTypeData data = getAccessTypeData();
         data.setConnectCount(25);
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), data, List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), data, List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         Resolve resolve = getResolve1();
         resolve.setTargetAddress("address");
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(resolve), List.of(getHeader1(), getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(resolve), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(resolve), List.of(getHeader2()), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(resolve), List.of(getHeader2()), List.of(getSNMPItem1(), getSNMPItem2()), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper1 = new NetworkTaskUIWrapper(null, null, null, null);
-        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
+        SNMPItem item = getSNMPItem1();
+        item.setName("changed");
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(item, getSNMPItem2()), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), List.of(getResolve1(), getResolve2()), List.of(getHeader1(), getHeader2()), List.of(getSNMPItem1()), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper1 = new NetworkTaskUIWrapper(null, null, null, null, null, null);
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null, null, null);
         assertTrue(wrapper1.isEqual(wrapper2));
     }
 
@@ -102,6 +114,7 @@ public class NetworkTaskUIWrapperTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(true);
         return task;
@@ -127,6 +140,9 @@ public class NetworkTaskUIWrapperTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -174,5 +190,27 @@ public class NetworkTaskUIWrapperTest {
         header.setValue("value2");
         header.setValueValid(true);
         return header;
+    }
+
+    private SNMPItem getSNMPItem1() {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(0);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setName("eth0");
+        item.setOid("1.3.6.1.2.1.2.2.1.2.1");
+        item.setMonitored(true);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem2() {
+        SNMPItem item = new SNMPItem();
+        item.setId(1);
+        item.setNetworkTaskId(0);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setName("wlan0");
+        item.setOid("1.3.6.1.2.1.2.2.1.2.2");
+        item.setMonitored(false);
+        return item;
     }
 }

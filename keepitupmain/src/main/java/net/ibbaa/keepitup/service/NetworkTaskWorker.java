@@ -27,12 +27,14 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
@@ -46,9 +48,8 @@ import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.ExceptionUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -358,11 +359,11 @@ public abstract class NetworkTaskWorker implements Runnable {
                             executionResults.add(new DNSExecutionResult(false, logEntry, null));
                         } else {
                             Log.d(NetworkTaskWorker.class.getName(), "DNS lookup returned the following addresses " + addresses);
-                            InetAddress address = findAddress(addresses, preferIp4);
+                            InetAddress address = URLUtil.findAddress(addresses, preferIp4);
                             Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
                             LogEntry logEntry = new LogEntry();
                             logEntry.setSuccess(true);
-                            logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), address.getHostAddress()));
+                            logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, dnsLookupResult.getHost(), URLUtil.getHostAddress(address)));
                             executionResults.add(new DNSExecutionResult(false, logEntry, address));
                         }
                     } else {
@@ -389,16 +390,25 @@ public abstract class NetworkTaskWorker implements Runnable {
         return executionResults;
     }
 
-    private InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
-        Log.d(NetworkTaskWorker.class.getName(), "findAddress, preferIp4 is " + preferIp4);
-        for (InetAddress currentAddress : addresses) {
-            if (preferIp4 && currentAddress instanceof Inet4Address) {
-                return currentAddress;
-            } else if (!preferIp4 && currentAddress instanceof Inet6Address) {
-                return currentAddress;
-            }
+    public void updateNetworkTaskLastSysUpTime(long lastSysUpTime) {
+        Log.d(NetworkTaskWorker.class.getName(), "updateNetworkTaskLastSysUpTime, lastSysUpTime is " + lastSysUpTime);
+        try {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            networkTaskDAO.updateNetworkTaskLastSysUpTime(networkTask.getId(), lastSysUpTime);
+        } catch (Exception exc) {
+            Log.e(NetworkTaskWorker.class.getName(), "Exception updating lastSysUpTime", exc);
         }
-        return addresses.get(0);
+    }
+
+    public List<SNMPItem> readSNMPItems() {
+        Log.d(NetworkTaskWorker.class.getName(), "readSNMPItems");
+        try {
+            SNMPItemDAO snmpItemDAO = new SNMPItemDAO(getContext());
+            return snmpItemDAO.readAllSNMPItemsForNetworkTask(networkTask.getId());
+        } catch (Exception exc) {
+            Log.e(NetworkTaskWorker.class.getName(), "Exception reading snmp items", exc);
+            return Collections.emptyList();
+        }
     }
 
     protected int getDNSLookupTimeout() {

@@ -29,6 +29,8 @@ import net.ibbaa.keepitup.db.NetworkTaskDAOTest;
 import net.ibbaa.keepitup.db.NetworkTaskDBConstantsTest;
 import net.ibbaa.keepitup.db.ResolveDAOTest;
 import net.ibbaa.keepitup.db.ResolveDBConstantsTest;
+import net.ibbaa.keepitup.db.SNMPItemDAOTest;
+import net.ibbaa.keepitup.db.SNMPItemDBConstantsTest;
 import net.ibbaa.keepitup.db.SchedulerIdGeneratorTest;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDBConstantsTest;
 import net.ibbaa.keepitup.db.SchedulerStateDAOTest;
@@ -46,6 +48,10 @@ import net.ibbaa.keepitup.model.IntervalTest;
 import net.ibbaa.keepitup.model.LogEntryTest;
 import net.ibbaa.keepitup.model.NetworkTaskTest;
 import net.ibbaa.keepitup.model.ResolveTest;
+import net.ibbaa.keepitup.model.SNMPInterfaceInfoTest;
+import net.ibbaa.keepitup.model.SNMPItemTest;
+import net.ibbaa.keepitup.model.SNMPItemTypeTest;
+import net.ibbaa.keepitup.model.SNMPVersionTest;
 import net.ibbaa.keepitup.model.SchedulerIdTest;
 import net.ibbaa.keepitup.model.TimeTest;
 import net.ibbaa.keepitup.model.validator.AccessTypeDataValidatorTest;
@@ -53,6 +59,8 @@ import net.ibbaa.keepitup.model.validator.HeaderValidatorTest;
 import net.ibbaa.keepitup.model.validator.IntervalValidatorTest;
 import net.ibbaa.keepitup.model.validator.NetworkTaskValidatorTest;
 import net.ibbaa.keepitup.model.validator.ResolveValidatorTest;
+import net.ibbaa.keepitup.model.validator.SNMPInterfaceInfoValidatorTest;
+import net.ibbaa.keepitup.model.validator.SNMPItemValidatorTest;
 import net.ibbaa.keepitup.notification.NotificationHandlerTest;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManagerTest;
 import net.ibbaa.keepitup.resources.JSONSystemMigrateTest;
@@ -74,6 +82,7 @@ import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationServiceTest;
 import net.ibbaa.keepitup.service.NetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.NullNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.PingNetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.SNMPNetworkTaskWorkerTest;
 import net.ibbaa.keepitup.service.SystemDocumentManagerTest;
 import net.ibbaa.keepitup.service.SystemFileManagerTest;
 import net.ibbaa.keepitup.service.SystemThemeManagerTest;
@@ -86,6 +95,9 @@ import net.ibbaa.keepitup.service.network.ConnectCommandTest;
 import net.ibbaa.keepitup.service.network.DownloadCommandTest;
 import net.ibbaa.keepitup.service.network.PingCommandTest;
 import net.ibbaa.keepitup.service.network.PingOutputParserTest;
+import net.ibbaa.keepitup.service.network.SNMPAccessTest;
+import net.ibbaa.keepitup.service.network.SNMPCommandTest;
+import net.ibbaa.keepitup.service.network.SNMPMappingTest;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapperTest;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManagerTest;
 import net.ibbaa.keepitup.ui.mapping.EnumMappingTest;
@@ -103,6 +115,8 @@ import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUISyncTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskUIBroadcastReceiverTest;
 import net.ibbaa.keepitup.ui.sync.ResolveSyncHandlerTest;
+import net.ibbaa.keepitup.ui.sync.SNMPItemSyncHandlerTest;
+import net.ibbaa.keepitup.ui.sync.SNMPScanTaskTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidatorTest;
@@ -129,6 +143,7 @@ import net.ibbaa.keepitup.ui.validation.ResolveHostMatchExistsFieldValidatorTest
 import net.ibbaa.keepitup.ui.validation.ResolveHostMatchFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortMatchFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPCommunityFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHeaderValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
@@ -148,6 +163,7 @@ import net.ibbaa.keepitup.util.HTTPUtilTest;
 import net.ibbaa.keepitup.util.JSONUtilTest;
 import net.ibbaa.keepitup.util.LogUtilTest;
 import net.ibbaa.keepitup.util.NumberUtilTest;
+import net.ibbaa.keepitup.util.SNMPUtilTest;
 import net.ibbaa.keepitup.util.StreamUtilTest;
 import net.ibbaa.keepitup.util.StringUtilTest;
 import net.ibbaa.keepitup.util.TimeUtilTest;
@@ -178,6 +194,8 @@ import org.junit.runners.Suite;
         SchedulerIdHistoryDBConstantsTest.class,
         SchedulerStateDAOTest.class,
         SchedulerStateDBConstantsTest.class,
+        SNMPItemDAOTest.class,
+        SNMPItemDBConstantsTest.class,
         //net.ibbaa.keepitup.logging
         DumpTest.class,
         LogTest.class,
@@ -194,6 +212,10 @@ import org.junit.runners.Suite;
         NetworkTaskTest.class,
         ResolveTest.class,
         SchedulerIdTest.class,
+        SNMPInterfaceInfoTest.class,
+        SNMPItemTest.class,
+        SNMPItemTypeTest.class,
+        SNMPVersionTest.class,
         TimeTest.class,
         //net.ibbaa.keepitup.model.validator
         AccessTypeDataValidatorTest.class,
@@ -201,6 +223,8 @@ import org.junit.runners.Suite;
         IntervalValidatorTest.class,
         NetworkTaskValidatorTest.class,
         ResolveValidatorTest.class,
+        SNMPInterfaceInfoValidatorTest.class,
+        SNMPItemValidatorTest.class,
         //net.ibbaa.keepitup.notification
         NotificationHandlerTest.class,
         //net.ibbaa.keepitup.resources
@@ -226,6 +250,7 @@ import org.junit.runners.Suite;
         NetworkTaskWorkerTest.class,
         NullNetworkTaskWorkerTest.class,
         PingNetworkTaskWorkerTest.class,
+        SNMPNetworkTaskWorkerTest.class,
         SystemDocumentManagerTest.class,
         SystemFileManagerTest.class,
         SystemThemeManagerTest.class,
@@ -240,6 +265,9 @@ import org.junit.runners.Suite;
         DownloadCommandTest.class,
         PingCommandTest.class,
         PingOutputParserTest.class,
+        SNMPAccessTest.class,
+        SNMPCommandTest.class,
+        SNMPMappingTest.class,
         //net.ibbaa.keepitup.ui.adaper
         NetworkTaskUIWrapperTest.class,
         //net.ibbaa.keepitup.ui.clipboard
@@ -261,6 +289,8 @@ import org.junit.runners.Suite;
         NetworkTaskMainUISyncTaskTest.class,
         NetworkTaskUIBroadcastReceiverTest.class,
         ResolveSyncHandlerTest.class,
+        SNMPItemSyncHandlerTest.class,
+        SNMPScanTaskTest.class,
         //net.ibbaa.keepitup.ui.validation
         BasicAuthPasswordFieldValidatorTest.class,
         BasicAuthUsernameFieldValidatorTest.class,
@@ -288,6 +318,7 @@ import org.junit.runners.Suite;
         ResolveHostMatchFieldValidatorTest.class,
         ResolvePortFieldValidatorTest.class,
         ResolvePortMatchFieldValidatorTest.class,
+        SNMPCommunityFieldValidatorTest.class,
         StandardAccessTypeDataValidatorTest.class,
         StandardHeaderValidatorTest.class,
         StandardHostPortValidatorTest.class,
@@ -308,6 +339,7 @@ import org.junit.runners.Suite;
         JSONUtilTest.class,
         LogUtilTest.class,
         NumberUtilTest.class,
+        SNMPUtilTest.class,
         StreamUtilTest.class,
         StringUtilTest.class,
         TimeUtilTest.class,

@@ -40,10 +40,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    android {
-        lintOptions {
-            disable 'ExpiredTargetSdkVersion'
-        }
+    lint {
+        lintConfig = file("lint.xml")
+        disable 'ExpiredTargetSdkVersion'
     }
     namespace 'net.ibbaa.keepitup'
 }
@@ -58,7 +57,7 @@ android {
     }
 }
 
-tasks.register('copyJavaSourceAssets', Copy) {
+tasks.register('copyJavaSourceAssets', Sync) {
     from('src/main/java')
     into(javaAssetsDir)
 }
@@ -91,12 +90,13 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.18.0'
     implementation 'androidx.core:core:1.18.0'
     implementation 'androidx.documentfile:documentfile:1.1.0'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation 'com.google.guava:guava:33.6.0-android'
     implementation 'com.google.crypto.tink:tink-android:1.21.0'
     implementation 'net.ibbaa.phonelog:phonelog:2.1.2'
     implementation 'com.squareup.okhttp3:okhttp:5.3.2'
-    implementation 'org.bouncycastle:bcprov-lts8on:2.73.10'
+    implementation 'org.bouncycastle:bcprov-lts8on:2.73.11'
+    implementation 'org.snmp4j:snmp4j:3.10.0'
     testImplementation 'androidx.annotation:annotation:1.10.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.23.0'

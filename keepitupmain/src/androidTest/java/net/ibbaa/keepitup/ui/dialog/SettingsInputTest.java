@@ -108,6 +108,15 @@ public class SettingsInputTest {
         assertEquals("testfield", settingsInput.getField());
         assertEquals(1, settingsInput.getPosition());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "1")));
+        settingsInput = new SettingsInput(SettingsInput.Type.SNMPPORT, "test", "testfield", Arrays.asList("1", "1"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.SNMPPORT, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertEquals(-1, settingsInput.getPosition());
+        assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "1")));
         settingsInput = new SettingsInput(SettingsInput.Type.NOTIFICATIONAFTER, "test", "testfield", Arrays.asList("1", "1"));
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);

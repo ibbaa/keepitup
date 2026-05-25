@@ -169,6 +169,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
             disableNameAndValueFields();
             nameEditText.setOnClickListener(this::onBasicAuthFieldsClicked);
             valueEditText.setOnClickListener(this::onBasicAuthFieldsClicked);
+            valueEditText.setText(lastBasicAuthCredentials != null ? StringUtil.getSecretPlaceholder() : "");
             valueEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
         } else {
             nameEditText.setOnClickListener(null);
@@ -258,6 +259,9 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
     }
 
     public String getValue() {
+        if (basicAuthCheckBox != null && basicAuthCheckBox.isChecked()) {
+            return StringUtil.notNull(lastBasicAuthCredentials);
+        }
         return StringUtil.notNull(valueEditText.getText());
     }
 
@@ -324,7 +328,6 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         basicAuthCheckBox.setChecked(true);
         nameEditText.setText(getResources().getString(R.string.http_header_authorization));
         lastBasicAuthCredentials = basicAuthDialog.getUsernameAndPassword();
-        valueEditText.setText(lastBasicAuthCredentials);
         basicAuthDialog.dismiss();
         prepareBasicAuthCheckBoxVisibility();
     }

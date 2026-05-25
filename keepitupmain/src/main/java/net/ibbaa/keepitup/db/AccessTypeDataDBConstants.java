@@ -32,18 +32,24 @@ public class AccessTypeDataDBConstants {
     private final String stopOnSuccessColumnName;
     private final String ignoreSSLErrorColumnName;
     private final String useDefaultHeadersColumnName;
+    private final String snmpVersionColumnName;
+    private final String snmpCommunityColumnName;
+    private final String snmpCommunityIVColumnName;
 
     public AccessTypeDataDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
         tableName = context.getResources().getString(R.string.accesstypedata_table_name);
         idColumnName = context.getResources().getString(R.string.accesstypedata_id_column_name);
         networkTaskIdColumnName = context.getResources().getString(R.string.accesstypedata_taskid_column_name);
-        pingCountColumnName = context.getResources().getString(R.string.accesstypedata_pingcount_column_name);
-        pingPackageSizeColumnName = context.getResources().getString(R.string.accesstypedata_pingpackagesize_column_name);
-        connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connectcount_column_name);
-        stopOnSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stoponsuccess_column_name);
-        ignoreSSLErrorColumnName = context.getResources().getString(R.string.accesstypedata_ignoresslerror_column_name);
-        useDefaultHeadersColumnName = context.getResources().getString(R.string.accesstypedata_usedefaultheaders_column_name);
+        pingCountColumnName = context.getResources().getString(R.string.accesstypedata_ping_count_column_name);
+        pingPackageSizeColumnName = context.getResources().getString(R.string.accesstypedata_ping_package_size_column_name);
+        connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connect_count_column_name);
+        stopOnSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stop_on_success_column_name);
+        ignoreSSLErrorColumnName = context.getResources().getString(R.string.accesstypedata_ignore_ssl_error_column_name);
+        useDefaultHeadersColumnName = context.getResources().getString(R.string.accesstypedata_use_default_headers_column_name);
+        snmpVersionColumnName = context.getResources().getString(R.string.accesstypedata_snmp_version_column_name);
+        snmpCommunityColumnName = context.getResources().getString(R.string.accesstypedata_snmp_community_column_name);
+        snmpCommunityIVColumnName = context.getResources().getString(R.string.accesstypedata_snmp_community_iv_column_name);
     }
 
     public String getTableName() {
@@ -82,6 +88,18 @@ public class AccessTypeDataDBConstants {
         return useDefaultHeadersColumnName;
     }
 
+    public String getSnmpVersionColumnName() {
+        return snmpVersionColumnName;
+    }
+
+    public String getSnmpCommunityColumnName() {
+        return snmpCommunityColumnName;
+    }
+
+    public String getSnmpCommunityIVColumnName() {
+        return snmpCommunityIVColumnName;
+    }
+
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
@@ -91,7 +109,10 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
                 getIgnoreSSLErrorColumnName() + " INTEGER, " +
-                getUseDefaultHeadersColumnName() + " INTEGER);";
+                getUseDefaultHeadersColumnName() + " INTEGER, " +
+                getSnmpVersionColumnName() + " INTEGER, " +
+                getSnmpCommunityColumnName() + " TEXT, " +
+                getSnmpCommunityIVColumnName() + " TEXT);";
     }
 
     public String getCreateTableStatementWithoutStopOnSuccess() {
@@ -102,7 +123,10 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
                 getIgnoreSSLErrorColumnName() + " INTEGER, " +
-                getUseDefaultHeadersColumnName() + " INTEGER);";
+                getUseDefaultHeadersColumnName() + " INTEGER, " +
+                getSnmpVersionColumnName() + " INTEGER, " +
+                getSnmpCommunityColumnName() + " TEXT, " +
+                getSnmpCommunityIVColumnName() + " TEXT);";
     }
 
     public String getCreateTableStatementWithoutIgnoreSSLError() {
@@ -113,7 +137,10 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
-                getUseDefaultHeadersColumnName() + " INTEGER);";
+                getUseDefaultHeadersColumnName() + " INTEGER, " +
+                getSnmpVersionColumnName() + " INTEGER, " +
+                getSnmpCommunityColumnName() + " TEXT, " +
+                getSnmpCommunityIVColumnName() + " TEXT);";
     }
 
     public String getCreateTableStatementWithoutUseDefaultHeaders() {
@@ -124,7 +151,22 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
-                getIgnoreSSLErrorColumnName() + " INTEGER);";
+                getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getSnmpVersionColumnName() + " INTEGER, " +
+                getSnmpCommunityColumnName() + " TEXT, " +
+                getSnmpCommunityIVColumnName() + " TEXT);";
+    }
+
+    public String getCreateTableStatementWithoutSNMPColumns() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getPingCountColumnName() + " INTEGER, " +
+                getPingPackageSizeColumnName() + " INTEGER, " +
+                getConnectCountColumnName() + " INTEGER, " +
+                getStopOnSuccessColumnName() + " INTEGER, " +
+                getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getUseDefaultHeadersColumnName() + " INTEGER);";
     }
 
     public String getCreateTableStatementWithoutAddedColumns() {
@@ -149,7 +191,10 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + ", " +
                 getStopOnSuccessColumnName() + ", " +
                 getIgnoreSSLErrorColumnName() + ", " +
-                getUseDefaultHeadersColumnName() +
+                getUseDefaultHeadersColumnName() + ", " +
+                getSnmpVersionColumnName() + ", " +
+                getSnmpCommunityColumnName() + ", " +
+                getSnmpCommunityIVColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
@@ -163,8 +208,19 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + ", " +
                 getStopOnSuccessColumnName() + ", " +
                 getIgnoreSSLErrorColumnName() + ", " +
-                getUseDefaultHeadersColumnName() +
+                getUseDefaultHeadersColumnName() + ", " +
+                getSnmpVersionColumnName() + ", " +
+                getSnmpCommunityColumnName() + ", " +
+                getSnmpCommunityIVColumnName() +
                 " FROM " + getTableName();
+    }
+
+    public String getReadEncryptedCommunityAndCommunityIV() {
+        return "SELECT " +
+                getSnmpCommunityColumnName() + ", " +
+                getSnmpCommunityIVColumnName() +
+                " FROM " + getTableName() +
+                " WHERE " + getIdColumnName() + " = ?";
     }
 
     public String getDeleteOrphanAccessTypeDataStatement() {
@@ -200,5 +256,29 @@ public class AccessTypeDataDBConstants {
 
     public String getDropUseDefaultHeadersColumnStatement() {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getUseDefaultHeadersColumnName() + " INTEGER;";
+    }
+
+    public String getAddSnmpVersionColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getSnmpVersionColumnName() + " INTEGER;";
+    }
+
+    public String getDropSnmpVersionColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getSnmpVersionColumnName() + ";";
+    }
+
+    public String getAddSnmpCommunityColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getSnmpCommunityColumnName() + " TEXT;";
+    }
+
+    public String getDropSnmpCommunityColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getSnmpCommunityColumnName() + ";";
+    }
+
+    public String getAddSnmpCommunityIVColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getSnmpCommunityIVColumnName() + " TEXT;";
+    }
+
+    public String getDropSnmpCommunityIVColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getSnmpCommunityIVColumnName() + ";";
     }
 }

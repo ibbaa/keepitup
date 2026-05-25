@@ -72,6 +72,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
         PersistableBundle persistableBundle = task.toPersistableBundle();
@@ -90,6 +91,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
         Bundle bundle = task.toBundle();
@@ -108,6 +110,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
         Map<String, ?> map = task.toMap();
@@ -126,6 +129,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
     }
@@ -147,6 +151,7 @@ public class NetworkTaskTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(timestamp);
+        task.setLastSysUpTime(99999L);
         task.setFailureCount(12);
         task.setHighPrio(true);
         NetworkTask copyTask = new NetworkTask(task);
@@ -163,6 +168,7 @@ public class NetworkTaskTest {
         assertTrue(copyTask.isNotification());
         assertFalse(copyTask.isRunning());
         assertEquals(-1, copyTask.getLastScheduled());
+        assertEquals(-1, copyTask.getLastSysUpTime());
         assertEquals(0, copyTask.getFailureCount());
         assertTrue(copyTask.isHighPrio());
     }
@@ -183,6 +189,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
     }
@@ -203,6 +210,7 @@ public class NetworkTaskTest {
         map.put("notification", "tru");
         map.put("running", "tru");
         map.put("lastScheduled", "xyz");
+        map.put("lastSysUpTime", "xyz");
         map.put("failureCount", "zyx");
         map.put("highPrio", "zyx");
         NetworkTask task = new NetworkTask(map);
@@ -219,6 +227,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
     }
@@ -239,6 +248,7 @@ public class NetworkTaskTest {
         map.put("notification", "true");
         map.put("running", "true");
         map.put("lastScheduled", "7");
+        map.put("lastSysUpTime", "8");
         map.put("failureCount", "3");
         map.put("highPrio", "true");
         NetworkTask task = new NetworkTask(map);
@@ -255,6 +265,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(7, task.getLastScheduled());
+        assertEquals(8, task.getLastSysUpTime());
         assertEquals(3, task.getFailureCount());
         assertTrue(task.isHighPrio());
     }
@@ -300,6 +311,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(-1, task.getLastSysUpTime());
         assertEquals(0, task.getFailureCount());
         assertFalse(task.isHighPrio());
     }
@@ -321,6 +333,7 @@ public class NetworkTaskTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(timestamp);
+        task.setLastSysUpTime(99999L);
         task.setFailureCount(12);
         task.setHighPrio(true);
         assertEquals(1, task.getId());
@@ -336,6 +349,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(99999L, task.getLastSysUpTime());
         assertEquals(12, task.getFailureCount());
         assertTrue(task.isHighPrio());
         PersistableBundle persistableBundle = task.toPersistableBundle();
@@ -354,6 +368,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(99999L, task.getLastSysUpTime());
         assertEquals(12, task.getFailureCount());
         assertTrue(task.isHighPrio());
         Bundle bundle = task.toBundle();
@@ -372,6 +387,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(99999L, task.getLastSysUpTime());
         assertEquals(12, task.getFailureCount());
         assertTrue(task.isHighPrio());
     }
@@ -393,6 +409,7 @@ public class NetworkTaskTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(timestamp);
+        task.setLastSysUpTime(99999L);
         task.setFailureCount(25);
         task.setHighPrio(true);
         Map<String, ?> map = task.toMap();
@@ -411,6 +428,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(99999L, task.getLastSysUpTime());
         assertEquals(25, task.getFailureCount());
         assertTrue(task.isHighPrio());
     }
@@ -471,6 +489,10 @@ public class NetworkTaskTest {
         assertFalse(networkTask1.isEqual(networkTask2));
         networkTask2.setLastScheduled(25);
         assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setLastSysUpTime(99999L);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setLastSysUpTime(99999L);
+        assertTrue(networkTask1.isEqual(networkTask2));
         networkTask1.setFailureCount(3);
         assertFalse(networkTask1.isEqual(networkTask2));
         networkTask2.setFailureCount(3);
@@ -493,6 +515,8 @@ public class NetworkTaskTest {
         networkTask1.setSchedulerId(1);
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
         networkTask1.setRunning(true);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setLastSysUpTime(99999L);
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
         networkTask1.setInstances(6);
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));

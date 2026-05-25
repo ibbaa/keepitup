@@ -526,7 +526,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             host = URLUtil.isValidIP6Address(connectResult.host()) ? "[" + connectResult.host() + "]" : connectResult.host();
             port = connectResult.port();
         } else {
-            String hostAddress = connectResult.connectAddress().getHostAddress();
+            String hostAddress = URLUtil.getHostAddress(connectResult.connectAddress());
             host = URLUtil.isValidIP6Address(hostAddress) ? "[" + hostAddress + "]" : hostAddress;
             port = connectResult.connectPort();
         }

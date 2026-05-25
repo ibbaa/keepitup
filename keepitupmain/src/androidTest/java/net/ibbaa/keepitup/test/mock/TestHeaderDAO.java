@@ -16,7 +16,6 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,28 +34,10 @@ public class TestHeaderDAO extends HeaderDAO {
         super(context);
     }
 
-    public Header insertHeaderUnencrypted(Header header) {
-        return executeDBOperationInTransaction(header, this::insertHeaderUnencrypted);
-    }
-
     public Map<String, String> readEncryptedValueAndValueIV(long id) {
         Header header = new Header();
         header.setId(id);
         return executeDBOperationInTransaction(header, this::readEncryptedValueAndValueIV);
-    }
-
-    private Header insertHeaderUnencrypted(Header header, SQLiteDatabase db) {
-        ContentValues values = new ContentValues();
-        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
-        values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
-        values.put(dbConstants.getHeaderTypeColumnName(), header.getHeaderType() == null ? null : header.getHeaderType().getCode());
-        values.put(dbConstants.getNameColumnName(), header.getName());
-        values.putNull(dbConstants.getValueIVColumnName());
-        values.put(dbConstants.getValueColumnName(), header.getValue());
-        header.setValueValid(true);
-        long rowid = db.insert(dbConstants.getTableName(), null, values);
-        header.setId(rowid);
-        return header;
     }
 
     @SuppressWarnings("TryFinallyCanBeTryWithResources")

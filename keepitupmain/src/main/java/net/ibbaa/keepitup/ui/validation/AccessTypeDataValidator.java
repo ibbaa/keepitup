@@ -23,4 +23,6 @@ public interface AccessTypeDataValidator {
     ValidationResult validatePingPackageSize(String pingPackageSize);
 
     ValidationResult validateConnectCount(String connectCount);
+
+    ValidationResult validateSNMPCommunity(String snmpCommunity);
 }

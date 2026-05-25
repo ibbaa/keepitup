@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -47,6 +46,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
@@ -78,7 +78,8 @@ import java.util.List;
 @SuppressWarnings({"unused"})
 public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport {
 
-    private RadioGroup accessTypeGroup;
+    private GridLayout accessTypeGroup;
+    private TextView snmpPortText;
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
@@ -118,6 +119,8 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         prepareStopOnSuccessSwitch();
         prepareIgnoreSSLErrorSwitch();
         prepareGlobalHeadersField();
+        prepareSNMPVersionRadioButtons();
+        prepareSNMPPortField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -174,7 +177,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         Log.d(DefaultsActivity.class.getName(), "prepareAccessTypeRadioButtons");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         accessTypeGroup = findViewById(R.id.radiogroup_activity_defaults_accesstype);
-        accessTypeGroup.setOnCheckedChangeListener(null);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
         AccessType type = preferenceManager.getPreferenceAccessType();
@@ -191,22 +193,22 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
                 newRadioButton.setChecked(accessType.equals(type));
             }
             newRadioButton.setTag(accessType);
-            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-            accessTypeGroup.addView(newRadioButton, ii, layoutParams);
+            newRadioButton.setOnClickListener(this::onAccessTypeChanged);
+            accessTypeGroup.addView(newRadioButton);
         }
-        accessTypeGroup.setOnCheckedChangeListener(this::onAccessTypeChanged);
     }
 
-    private void onAccessTypeChanged(RadioGroup group, int checkedId) {
+    private void onAccessTypeChanged(View view) {
         Log.d(DefaultsActivity.class.getName(), "onAccessTypeChanged");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(checkedId);
-        if (selectedAccessTypeRadioButton != null) {
-            AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-            Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
-            if (accessType != null) {
-                preferenceManager.setPreferenceAccessType(accessType);
-            }
+        for (int ii = 0; ii < accessTypeGroup.getChildCount(); ii++) {
+            ((RadioButton) accessTypeGroup.getChildAt(ii)).setChecked(false);
+        }
+        RadioButton selected = (RadioButton) view;
+        selected.setChecked(true);
+        AccessType accessType = (AccessType) selected.getTag();
+        Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
+        if (accessType != null) {
+            new PreferenceManager(this).setPreferenceAccessType(accessType);
         }
     }
 
@@ -475,6 +477,42 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         }
     }
 
+    private void prepareSNMPVersionRadioButtons() {
+        Log.d(DefaultsActivity.class.getName(), "prepareSNMPVersionRadioButtons");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        RadioGroup snmpVersionGroup = findViewById(R.id.radiogroup_activity_defaults_snmp_version);
+        snmpVersionGroup.setOnCheckedChangeListener(null);
+        SNMPVersion version = preferenceManager.getPreferenceSNMPVersion();
+        RadioButton v1RadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v1);
+        RadioButton v2cRadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v2c);
+        v1RadioButton.setTextColor(getColor(R.color.textColor));
+        v1RadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        v2cRadioButton.setTextColor(getColor(R.color.textColor));
+        v2cRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        v1RadioButton.setChecked(version == null || version.isV1());
+        v2cRadioButton.setChecked(version != null && version.isV2C());
+        snmpVersionGroup.setOnCheckedChangeListener(this::onSNMPVersionChanged);
+    }
+
+    private void onSNMPVersionChanged(RadioGroup group, int checkedId) {
+        Log.d(DefaultsActivity.class.getName(), "onSNMPVersionChanged");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v1) {
+            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        } else if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v2c) {
+            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V2C);
+        }
+    }
+
+    private void prepareSNMPPortField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareSNMPPortField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        snmpPortText = findViewById(R.id.textview_activity_defaults_snmp_port);
+        setSNMPPort(String.valueOf(preferenceManager.getPreferenceSNMPPort()));
+        CardView snmpPortCardView = findViewById(R.id.cardview_activity_defaults_snmp_port);
+        snmpPortCardView.setOnClickListener(this::showSNMPPortInputDialog);
+    }
+
     private void prepareOnlyWifiSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareOnlyWifiSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -593,6 +631,15 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
+    private String getSNMPPort() {
+        return StringUtil.notNull(snmpPortText.getText());
+    }
+
+    private void setSNMPPort(String port) {
+        snmpPortText.setText(StringUtil.notNull(port));
+    }
+
+
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
@@ -666,6 +713,13 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }
 
+    private void showSNMPPortInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showSNMPPortInputDialog");
+        List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.SNMPPORT, getSNMPPort(), getResources().getString(R.string.label_activity_defaults_snmp_port), validators);
+        showInputDialog(input.toBundle());
+    }
+
     @Override
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type) {
         Log.d(DefaultsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
@@ -689,6 +743,9 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
+        } else if (SettingsInput.Type.SNMPPORT.equals(type.getType())) {
+            setSNMPPort(inputDialog.getValue());
+            preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(getSNMPPort(), getResources().getInteger(R.integer.task_snmp_port_default)));
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }

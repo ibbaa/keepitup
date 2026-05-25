@@ -40,14 +40,6 @@ import java.util.Locale;
 public class StringUtilTest {
 
     @Test
-    public void testGetStringValue() {
-        assertEquals("123", StringUtil.getStringValue("123", ""));
-        assertEquals("123", StringUtil.getStringValue(new StringBuilder("123"), ""));
-        assertEquals("1", StringUtil.getStringValue(1, ""));
-        assertEquals("", StringUtil.getStringValue(null, ""));
-    }
-
-    @Test
     public void testTrim() {
         assertNull(StringUtil.trim(null));
         assertEquals("", StringUtil.trim(""));
@@ -158,6 +150,25 @@ public class StringUtilTest {
         assertEquals(2, StringUtil.splitAtFirstColon("key:value").length);
         assertEquals(2, StringUtil.splitAtFirstColon(null).length);
         assertArrayEquals(new String[]{"   ", "   "}, StringUtil.splitAtFirstColon("   :   "));
+    }
+
+    @Test
+    public void testFormatUpTime() {
+        assertEquals("0s", StringUtil.formatUpTime(0));
+        assertEquals("0s", StringUtil.formatUpTime(99));
+        assertEquals("1s", StringUtil.formatUpTime(100));
+        assertEquals("59s", StringUtil.formatUpTime(5900));
+        assertEquals("1m 0s", StringUtil.formatUpTime(6000));
+        assertEquals("1m 1s", StringUtil.formatUpTime(6100));
+        assertEquals("59m 59s", StringUtil.formatUpTime(359900));
+        assertEquals("1h 0m 0s", StringUtil.formatUpTime(360000));
+        assertEquals("1h 0m 1s", StringUtil.formatUpTime(360100));
+        assertEquals("1h 1m 1s", StringUtil.formatUpTime(366100));
+        assertEquals("23h 59m 59s", StringUtil.formatUpTime(8639900));
+        assertEquals("1d 0h 0m 0s", StringUtil.formatUpTime(8640000));
+        assertEquals("1d 0h 0m 1s", StringUtil.formatUpTime(8640100));
+        assertEquals("1d 1h 0m 37s", StringUtil.formatUpTime(9003700));
+        assertEquals("20d 2h 30m 45s", StringUtil.formatUpTime(173704500));
     }
 
     @Test

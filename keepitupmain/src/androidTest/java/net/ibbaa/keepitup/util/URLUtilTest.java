@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -102,31 +103,6 @@ public class URLUtilTest {
         assertEquals("https://www.host.com", URLUtil.prefixHTTPProtocol("ftp://www.host.com"));
         assertEquals("http://www.host.com", URLUtil.prefixHTTPProtocol("http://www.host.com"));
         assertEquals("https://www.host.com", URLUtil.prefixHTTPProtocol("https://www.host.com"));
-    }
-
-    @Test
-    public void testIsSameHostAndPort() throws Exception {
-        assertFalse(URLUtil.isSameHostAndPort(null, null));
-        assertFalse(URLUtil.isSameHostAndPort(null, new URL("https://example.com")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://www.EXAMPLE.com:443")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://api.example.com")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://127.0.0.1"), new URL("https://127.0.0.1:443")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://127.0.0.1:443"), new URL("https://127.0.0.1:8443")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[0:0:0:0:0:0:0:1]:443")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[::2]")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://localhost"), new URL("https://127.0.0.1")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("http://www.example.com"), new URL("https://www.example.com")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[::1]:443")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("http://127.0.0.1"), new URL("http://127.0.0.1:80")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://www.example.com:443")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("http://example.org"), new URL("http://example.org:80")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://EXAMPLE.com"), new URL("https://example.COM")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://api.example.com")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://example.com"), new URL("https://example.net")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://www.example.com:443"), new URL("https://www.example.com:8443")));
-        assertFalse(URLUtil.isSameHostAndPort(new URL("https://127.0.0.1"), new URL("https://127.0.0.2")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[::1]:443")));
-        assertTrue(URLUtil.isSameHostAndPort(new URL("http://example.com:80"), new URL("http://example.com")));
     }
 
     @Test
@@ -496,12 +472,12 @@ public class URLUtilTest {
     }
 
     @Test
-    public void testIsContentURL() {
-        assertFalse(URLUtil.isContentURL(null));
-        assertFalse(URLUtil.isContentURL(""));
-        assertFalse(URLUtil.isContentURL("    "));
-        assertFalse(URLUtil.isContentURL("https://www.example.com"));
-        assertTrue(URLUtil.isContentURL("content://www.example.com"));
-        assertTrue(URLUtil.isContentURL("content:"));
+    public void testGetHostAddress() throws Exception {
+        assertEquals("127.0.0.1", URLUtil.getHostAddress(InetAddress.getByName("127.0.0.1")));
+        assertEquals(InetAddress.getByName("::1").getHostAddress(), URLUtil.getHostAddress(InetAddress.getByName("::1")));
+        Inet6Address ipv6WithScope = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        String withScope = Objects.requireNonNull(ipv6WithScope.getHostAddress());
+        assertTrue(withScope.contains("%"));
+        assertEquals(withScope.substring(0, withScope.indexOf('%')), URLUtil.getHostAddress(ipv6WithScope));
     }
 }

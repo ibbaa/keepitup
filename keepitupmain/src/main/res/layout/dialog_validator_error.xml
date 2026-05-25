@@ -27,17 +27,39 @@
         android:padding="@dimen/gridlayout_dialog_validator_error_padding"
         android:columnCount="2">
 
-        <TextView
-            android:id="@+id/textview_dialog_validator_error_title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearlayout_dialog_validator_error"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/textview_dialog_validator_error_title_margin_bottom"
-            android:textStyle="bold"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="@dimen/textview_dialog_grid_based_message_margin_bottom"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_row="0"
             android:layout_column="0"
             android:layout_columnSpan="2"
-            android:text="@string/text_dialog_validator_error_title" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_dialog_validator_error_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/textview_dialog_validator_error_title_margin_bottom"
+                android:textStyle="bold"
+                android:text="@string/text_dialog_validator_error_title" />
+
+            <TextView
+                android:id="@+id/textview_dialog_validator_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/textview_dialog_validator_error_message_margin_bottom"
+                android:textStyle="normal"
+                android:visibility="gone"
+                android:text="" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageview_dialog_validator_error_ok"

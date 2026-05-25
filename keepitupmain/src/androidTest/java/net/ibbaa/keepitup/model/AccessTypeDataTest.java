@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import java.util.Map;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
+@SuppressWarnings({"ExtractMethodRecommender"})
 public class AccessTypeDataTest {
 
     @Before
@@ -65,6 +67,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertNull(data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
         PersistableBundle persistableBundle = data.toPersistableBundle();
         assertNotNull(persistableBundle);
         data = new AccessTypeData(persistableBundle);
@@ -76,6 +81,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertNull(data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
         Bundle bundle = data.toBundle();
         assertNotNull(bundle);
         data = new AccessTypeData(bundle);
@@ -87,6 +95,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertNull(data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
         data = new AccessTypeData(map);
@@ -98,6 +109,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertNull(data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -111,6 +125,9 @@ public class AccessTypeDataTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(false);
         AccessTypeData copyData = new AccessTypeData(data);
         assertEquals(-1, copyData.getId());
         assertEquals(-1, copyData.getNetworkTaskId());
@@ -120,6 +137,9 @@ public class AccessTypeDataTest {
         assertTrue(copyData.isStopOnSuccess());
         assertTrue(copyData.isIgnoreSSLError());
         assertFalse(copyData.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V2C, copyData.getSnmpVersion());
+        assertEquals("public", copyData.getSnmpCommunity());
+        assertTrue(copyData.isSnmpCommunityValid());
     }
 
     @Test
@@ -133,6 +153,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertNull(data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -146,6 +169,8 @@ public class AccessTypeDataTest {
         map.put("stopOnSuccess", "stopOnSuccess");
         map.put("ignoreSSLError", "isIgnoreSSLError");
         map.put("useDefaultHeaders", "zyx");
+        map.put("snmpVersion", "snmpVersion");
+        map.put("snmpCommunityValid", "zyx");
         AccessTypeData data = new AccessTypeData(map);
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
@@ -155,6 +180,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertNull(data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -168,6 +196,9 @@ public class AccessTypeDataTest {
         map.put("stopOnSuccess", "true");
         map.put("ignoreSSLError", "true");
         map.put("useDefaultHeaders", "false");
+        map.put("snmpVersion", "2");
+        map.put("snmpCommunity", "public");
+        map.put("snmpCommunityValid", "false");
         AccessTypeData data = new AccessTypeData(map);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
@@ -177,6 +208,9 @@ public class AccessTypeDataTest {
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertEquals("public", data.getSnmpCommunity());
+        assertFalse(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -188,6 +222,7 @@ public class AccessTypeDataTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
@@ -197,6 +232,9 @@ public class AccessTypeDataTest {
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V1, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
         preferenceManager.removeAllPreferences();
         data = new AccessTypeData(TestRegistry.getContext());
         assertEquals(-1, data.getId());
@@ -207,6 +245,9 @@ public class AccessTypeDataTest {
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
         assertTrue(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
+        assertNull(data.getSnmpCommunity());
+        assertTrue(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -220,6 +261,9 @@ public class AccessTypeDataTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(false);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());
@@ -228,6 +272,9 @@ public class AccessTypeDataTest {
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V1, data.getSnmpVersion());
+        assertEquals("public", data.getSnmpCommunity());
+        assertFalse(data.isSnmpCommunityValid());
         PersistableBundle persistableBundle = data.toPersistableBundle();
         assertNotNull(persistableBundle);
         data = new AccessTypeData(persistableBundle);
@@ -239,6 +286,9 @@ public class AccessTypeDataTest {
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V1, data.getSnmpVersion());
+        assertEquals("public", data.getSnmpCommunity());
+        assertFalse(data.isSnmpCommunityValid());
         Bundle bundle = data.toBundle();
         assertNotNull(bundle);
         data = new AccessTypeData(bundle);
@@ -250,6 +300,9 @@ public class AccessTypeDataTest {
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V1, data.getSnmpVersion());
+        assertEquals("public", data.getSnmpCommunity());
+        assertFalse(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -263,6 +316,9 @@ public class AccessTypeDataTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(false);
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
         data = new AccessTypeData(map);
@@ -274,6 +330,9 @@ public class AccessTypeDataTest {
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isUseDefaultHeaders());
+        assertEquals(SNMPVersion.V1, data.getSnmpVersion());
+        assertEquals("public", data.getSnmpCommunity());
+        assertFalse(data.isSnmpCommunityValid());
     }
 
     @Test
@@ -312,6 +371,18 @@ public class AccessTypeDataTest {
         data1.setUseDefaultHeaders(false);
         assertFalse(data1.isEqual(data2));
         data2.setUseDefaultHeaders(false);
+        assertTrue(data1.isEqual(data2));
+        data1.setSnmpVersion(SNMPVersion.V1);
+        assertFalse(data1.isEqual(data2));
+        data2.setSnmpVersion(SNMPVersion.V1);
+        assertTrue(data1.isEqual(data2));
+        data1.setSnmpCommunity("public");
+        assertFalse(data1.isEqual(data2));
+        data2.setSnmpCommunity("public");
+        assertTrue(data1.isEqual(data2));
+        data1.setSnmpCommunityValid(false);
+        assertFalse(data1.isEqual(data2));
+        data2.setSnmpCommunityValid(false);
         assertTrue(data1.isEqual(data2));
     }
 
@@ -352,5 +423,17 @@ public class AccessTypeDataTest {
         assertFalse(data1.isEqual(data2));
         data2.setUseDefaultHeaders(false);
         assertTrue(data1.isEqual(data2));
+        data1.setSnmpVersion(SNMPVersion.V1);
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setSnmpVersion(SNMPVersion.V1);
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setSnmpCommunity("public");
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setSnmpCommunity("public");
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setSnmpCommunityValid(false);
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setSnmpCommunityValid(false);
+        assertTrue(data1.isTechnicallyEqual(data2));
     }
 }

@@ -31,6 +31,6 @@ public class BasicAuthPasswordFieldValidator extends BaseStringValidator impleme
     public ValidationResult validate(String value) {
         Log.d(BasicAuthPasswordFieldValidator.class.getName(), "validate");
         int maximum = (getResources().getInteger(R.integer.http_header_value_max_length) / 2) - 1;
-        return validateString(value, -1, maximum, false, false);
+        return validateString(value, -1, maximum, true, false);
     }
 }

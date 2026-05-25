@@ -66,6 +66,7 @@ public class CollectionUtil {
         return builder.toString();
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static <T> boolean areListsEqual(List<T> list1, List<T> list2, Equality<T> equality) {
         if (list1 == list2) {
             return true;

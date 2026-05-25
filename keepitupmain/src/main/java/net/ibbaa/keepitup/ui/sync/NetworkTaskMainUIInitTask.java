@@ -25,12 +25,14 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -64,6 +66,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
                 HeaderDAO headerDAO = new HeaderDAO(context);
                 ResolveDAO resolveDAO = new ResolveDAO(context);
+                SNMPItemDAO snmpItemDAO = new SNMPItemDAO(context);
                 LogDAO logDAO = new LogDAO(context);
                 List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all access type data");
@@ -72,7 +75,8 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 Map<Long, List<Resolve>> allResolve = resolveDAO.readAllResolvesForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all headers");
                 Map<Long, List<Header>> allHeaders = headerDAO.readAllHeadersForNetworkTasks();
-                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading most recent log entries");
+                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading all snmp items");
+                Map<Long, List<SNMPItem>> allSnmpItems = snmpItemDAO.readAllSNMPItemsForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Reading most recent log entries");
                 Map<Long, LogEntry> allLogEntries = logDAO.readAllMostRecentLogsForNetworkTasks();
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
@@ -94,9 +98,11 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following resolve object: " + resolves);
                     List<Header> headers = allHeaders.get(currentTask.getId());
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following headers: " + headers);
+                    List<SNMPItem> snmpItems = allSnmpItems.get(currentTask.getId());
+                    Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following snmp items: " + snmpItems);
                     LogEntry logEntry = allLogEntries.get(currentTask.getId());
                     Log.d(NetworkTaskMainUIInitTask.class.getName(), "Database returned the following log entry: " + logEntry);
-                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolves, headers, logEntry);
+                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolves, headers, snmpItems, logEntry);
                     wrapperList.add(currentWrapper);
                 }
                 return wrapperList;

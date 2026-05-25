@@ -27,10 +27,13 @@ import net.ibbaa.keepitup.model.Resolve;
 
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -116,29 +119,6 @@ public class URLUtil {
         return true;
     }
 
-    public static boolean isSameHostAndPort(URL url1, URL url2) {
-        if (url1 == null || url2 == null) {
-            return false;
-        }
-        String host1 = removeIPv6Brackets(url1.getHost());
-        String host2 = removeIPv6Brackets(url2.getHost());
-        boolean sameHost;
-        if (isValidIPAddress(host1) && isValidIPAddress(host2)) {
-            try {
-                InetAddress address1 = InetAddress.getByName(host1);
-                InetAddress address2 = InetAddress.getByName(host2);
-                sameHost = address1.equals(address2);
-            } catch (Exception exc) {
-                sameHost = false;
-            }
-        } else {
-            sameHost = host1.equalsIgnoreCase(host2);
-        }
-        int port1 = getPort(url1);
-        int port2 = getPort(url2);
-        return sameHost && port1 == port2;
-    }
-
     public static int getPort(URL url) {
         return url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
     }
@@ -163,12 +143,24 @@ public class URLUtil {
         }
         if (isValidIPAddress(stripped)) {
             try {
-                return InetAddress.getByName(stripped).getHostAddress();
+                return getHostAddress(InetAddress.getByName(stripped));
             } catch (Exception exc) {
                 Log.d(URLUtil.class.getName(), "Exception normalizing IP address " + host, exc);
             }
         }
         return stripped.toLowerCase();
+    }
+
+    public static String getHostAddress(InetAddress address) {
+        String hostAddress = address.getHostAddress();
+        if (hostAddress == null) {
+            return "";
+        }
+        int scopeIndex = hostAddress.indexOf('%');
+        if (scopeIndex >= 0) {
+            hostAddress = hostAddress.substring(0, scopeIndex);
+        }
+        return hostAddress;
     }
 
     public static String getSourceAddress(Resolve resolve, URL url) {
@@ -199,6 +191,18 @@ public class URLUtil {
         return resolve.getTargetPort();
     }
 
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    public static InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
+        for (InetAddress currentAddress : addresses) {
+            if (preferIp4 && currentAddress instanceof Inet4Address) {
+                return currentAddress;
+            } else if (!preferIp4 && currentAddress instanceof Inet6Address) {
+                return currentAddress;
+            }
+        }
+        return addresses.get(0);
+    }
+
     public static String prefixHTTPProtocol(String inputUrl) {
         Log.d(URLUtil.class.getName(), "prefixHTTPProtocol, inputUrl is " + inputUrl);
         if (StringUtil.isTrimmedEmpty(inputUrl)) {
@@ -221,10 +225,6 @@ public class URLUtil {
         } else {
             return "https://" + url;
         }
-    }
-
-    public static boolean isContentURL(String url) {
-        return StringUtil.notNull(url).startsWith("content:");
     }
 
     public static boolean isValidURL(String inputUrl) {

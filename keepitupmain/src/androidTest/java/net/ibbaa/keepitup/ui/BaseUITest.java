@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 import android.content.Intent;
@@ -46,6 +47,7 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
 import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Dump;
@@ -98,6 +100,7 @@ public abstract class BaseUITest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private TestNetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
     private TestTimeBasedSuspensionScheduler timeBasedSuspensionScheduler;
     private PreferenceManager preferenceManager;
@@ -138,6 +141,8 @@ public abstract class BaseUITest {
         resolveDAO.deleteAllResolves();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
+        snmpItemDAO.deleteAllSNMPItems();
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
@@ -173,6 +178,7 @@ public abstract class BaseUITest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager.removeAllPreferences();
         noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
@@ -320,6 +326,10 @@ public abstract class BaseUITest {
         return headerDAO;
     }
 
+    public SNMPItemDAO getSnmpItemDAO() {
+        return snmpItemDAO;
+    }
+
     public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
         return networkTaskProcessServiceScheduler;
     }
@@ -422,7 +432,6 @@ public abstract class BaseUITest {
         return stringHolder[0];
     }
 
-
     public static ViewAction setNumber(int number) {
         return new ViewAction() {
             @Override
@@ -439,6 +448,25 @@ public abstract class BaseUITest {
             @Override
             public Matcher<View> getConstraints() {
                 return ViewMatchers.isAssignableFrom(NumberPicker.class);
+            }
+        };
+    }
+
+    public static ViewAction forceClick() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isDisplayed();
+            }
+
+            @Override
+            public String getDescription() {
+                return "force click";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
             }
         };
     }

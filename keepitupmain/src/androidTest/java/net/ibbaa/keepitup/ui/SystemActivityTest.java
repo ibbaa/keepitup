@@ -65,6 +65,7 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
@@ -188,6 +189,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -236,6 +243,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -290,6 +303,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -342,6 +361,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -396,6 +421,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
@@ -445,6 +476,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
@@ -508,6 +545,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -560,6 +603,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
@@ -624,6 +673,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -673,6 +728,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -728,6 +789,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -781,6 +848,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -835,6 +908,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -881,6 +960,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -935,6 +1020,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -984,6 +1075,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1038,6 +1135,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1089,6 +1192,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1143,6 +1252,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1201,6 +1316,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1269,6 +1390,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1319,6 +1446,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
@@ -1426,6 +1559,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1502,6 +1641,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1559,6 +1704,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
@@ -1666,6 +1817,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1735,6 +1892,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1793,6 +1956,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -1852,6 +2021,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -1899,6 +2069,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1976,6 +2152,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2041,6 +2223,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -2100,6 +2288,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2147,6 +2336,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2215,6 +2410,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2267,6 +2468,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
@@ -2376,6 +2583,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2453,6 +2666,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2512,9 +2731,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         getResolveDAO().deleteAllResolves();
@@ -2574,6 +2799,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2621,6 +2847,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2689,6 +2921,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2743,9 +2981,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         getResolveDAO().deleteAllResolves();
@@ -2852,6 +3096,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2929,6 +3179,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2990,9 +3246,15 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
         getResolveDAO().deleteAllResolves();
@@ -3052,6 +3314,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -3099,6 +3362,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3166,6 +3435,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3226,6 +3501,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3293,6 +3574,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3359,6 +3646,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3426,6 +3719,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3482,6 +3781,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3543,6 +3848,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -3587,6 +3893,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3654,6 +3966,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3720,6 +4038,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3825,6 +4149,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3880,6 +4210,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3931,6 +4267,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3986,6 +4328,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4041,6 +4389,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4203,6 +4557,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4270,6 +4630,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4324,6 +4690,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4391,6 +4763,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4445,6 +4823,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4514,6 +4898,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4568,6 +4958,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4639,6 +5035,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4707,6 +5109,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4829,6 +5237,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -4899,6 +5313,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5023,6 +5443,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5093,6 +5519,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5219,6 +5651,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5289,6 +5727,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5418,6 +5862,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5509,6 +5959,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5561,6 +6017,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -5616,6 +6078,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5668,6 +6136,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -5723,6 +6197,12 @@ public class SystemActivityTest extends BaseUITest {
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5776,6 +6256,12 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -6457,6 +6943,7 @@ public class SystemActivityTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -6477,6 +6964,7 @@ public class SystemActivityTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -6497,6 +6985,7 @@ public class SystemActivityTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setLastScheduled(1);
         task.setFailureCount(3);
         task.setHighPrio(false);
@@ -6543,6 +7032,9 @@ public class SystemActivityTest extends BaseUITest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community1");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
