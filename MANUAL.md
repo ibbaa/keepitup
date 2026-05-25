@@ -30,11 +30,11 @@ edit dialog. The default name is "Network task X".
 Swipe a task left or right to delete it. The following actions are also
 available via the task menu:
 
+- **Delete** — deletes the task and all its log entries
 - **Edit** — opens the edit dialog
 - **Copy** — opens the edit dialog pre-filled with the existing values;
   confirms as a new task
 - **Log** — opens the log for this task (last 100 entries)
-- **Delete** — deletes the task and all its log entries
 
 In the log view, the three-dot menu provides **Delete logs** to clear all
 log entries for this task, and **Hide successful** to show only failed
