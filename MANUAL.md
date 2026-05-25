@@ -7,7 +7,7 @@ monitors one network service at a configurable interval.
 
 ### Adding and editing tasks
 
-Tap the **+** button to add a new task. Tap a task to edit it. The same
+Tap the **+** button to add a new task. Tap the edit icon to edit it. The same
 dialog is used for both. Copying a task opens the same dialog pre-filled
 with the existing values and creates a new task on confirmation.
 
@@ -22,13 +22,12 @@ The following fields are always visible:
   high-priority notification and optionally plays an alarm sound
   (see [System](#alarm-on-high-priority-failures))
 
-The task name shown in the list can be changed by tapping the title in the
-edit dialog. The default name is "Network task X".
+The task name shown in the list can be changed by tapping the title after adding the task. The default name is "Network task X".
 
 ### Task actions
 
-Swipe a task left or right to delete it. The following actions are also
-available via the task menu:
+Swipe a task right to delete it. The following actions are also
+available via the task icons on the right:
 
 - **Delete** — deletes the task and all its log entries
 - **Edit** — opens the edit dialog
@@ -304,8 +303,7 @@ when this happens, prompting you to renew the permission.
 
 When enabled, a 60-second alarm sound plays when a task marked as **High
 priority** fails. The alarm can be dismissed from the notification or
-directly in the app. The system default alarm tone is used; custom tones
-cannot be configured.
+directly in the app. The system default alarm tone is used.
 
 ### Debug Settings
 
