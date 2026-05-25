@@ -29,11 +29,6 @@ It periodically checks the availability and reachability of network services via
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications
 
-## Documentation
-
-- [User Manual](MANUAL.md) — description of all features and settings
-- [Development](DEVELOPMENT.md) — build instructions, signing, security notes
-
 ## Installation
 
 Starting with version 1.11.0, the app requires Android 6.0 (API level 23).
