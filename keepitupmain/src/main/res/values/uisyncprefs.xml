@@ -26,7 +26,7 @@
     <integer name="export_timeout">2000</integer>
     <integer name="import_timeout">2000</integer>
     <integer name="dns_timeout">6000</integer>
-    <integer name="snmp_scan_timeout">12000</integer>
+    <integer name="snmp_scan_timeout">12500</integer>
     <integer name="snmp_request_timeout_ui">4</integer>
     <integer name="snmp_request_retries_ui">0</integer>
     <string name="sync_action_key">sync_action_key</string>
