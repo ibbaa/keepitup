@@ -50,9 +50,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 @MediumTest
@@ -345,7 +345,7 @@ public class SNMPNetworkTaskWorkerTest {
     @Test
     public void testSuccessWithInterfacesFoundNoMonitored() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(false), createSNMPItem(false), createSNMPItem(false)), 3, Collections.emptyList(), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(false), createSNMPItem(false), createSNMPItem(false)), 3, Collections.emptyList(), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -358,7 +358,7 @@ public class SNMPNetworkTaskWorkerTest {
     @Test
     public void testSuccessWithAllMonitoredUp() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(true), createSNMPItem(false)), 2, Collections.emptyList(), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(true), createSNMPItem(false)), 2, Collections.emptyList(), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -371,7 +371,7 @@ public class SNMPNetworkTaskWorkerTest {
     @Test
     public void testSuccessWithZeroInterfacesFound() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Collections.emptyList(), 0, Collections.emptyList(), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Collections.emptyList(), 0, Collections.emptyList(), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -392,7 +392,7 @@ public class SNMPNetworkTaskWorkerTest {
         SNMPItem aliasItem = new SNMPItem();
         aliasItem.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
         aliasItem.setName("eth0");
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(descrItem1, descrItem2, typeItem, aliasItem), 2, Collections.emptyList(), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(descrItem1, descrItem2, typeItem, aliasItem), 2, Collections.emptyList(), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -407,7 +407,7 @@ public class SNMPNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
         Map<String, String> downStatus = new TreeMap<>();
         downStatus.put("eth0", "Down");
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(true), createSNMPItem(false)), 2, Collections.emptyList(), downStatus);
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(true), createSNMPItem(false)), 2, Collections.emptyList(), downStatus);
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -423,7 +423,7 @@ public class SNMPNetworkTaskWorkerTest {
         Map<String, String> downStatus = new TreeMap<>();
         downStatus.put("eth0", "Down");
         downStatus.put("eth1", "Down");
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(true), createSNMPItem(true)), 2, Collections.emptyList(), downStatus);
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(true), createSNMPItem(true)), 2, Collections.emptyList(), downStatus);
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -439,7 +439,7 @@ public class SNMPNetworkTaskWorkerTest {
         Map<String, String> downStatus = new TreeMap<>();
         downStatus.put("eth0", "Down");
         downStatus.put("eth1", "Testing");
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(true), createSNMPItem(true)), 2, Collections.emptyList(), downStatus);
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(true), createSNMPItem(true)), 2, Collections.emptyList(), downStatus);
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -452,7 +452,7 @@ public class SNMPNetworkTaskWorkerTest {
     @Test
     public void testFailureWithMonitoredInterfaceNotFound() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Collections.emptyList(), 0, List.of("eth0"), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Collections.emptyList(), 0, List.of("eth0"), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -465,7 +465,7 @@ public class SNMPNetworkTaskWorkerTest {
     @Test
     public void testFailureWithMultipleMonitoredInterfacesNotFound() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Collections.emptyList(), 0, Arrays.asList("eth0", "eth1"), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Collections.emptyList(), 0, Arrays.asList("eth0", "eth1"), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -480,7 +480,7 @@ public class SNMPNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
         Map<String, String> downStatus = new TreeMap<>();
         downStatus.put("eth0", "Down");
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(true), createSNMPItem(false)), 2, List.of("eth1"), downStatus);
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(true), createSNMPItem(false)), 2, List.of("eth1"), downStatus);
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -497,7 +497,7 @@ public class SNMPNetworkTaskWorkerTest {
         downStatus.put("wlan0", "Down");
         downStatus.put("eth1", "Down");
         downStatus.put("eth0", "Down");
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Arrays.asList(createSNMPItem(true), createSNMPItem(true), createSNMPItem(true)), 3, Collections.emptyList(), downStatus);
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Arrays.asList(createSNMPItem(true), createSNMPItem(true), createSNMPItem(true)), 3, Collections.emptyList(), downStatus);
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -510,7 +510,7 @@ public class SNMPNetworkTaskWorkerTest {
     @Test
     public void testFailureWithMultipleMonitoredInterfacesNotFoundSortedByName() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(false, Collections.emptyList(), 0, Arrays.asList("wlan0", "eth1", "eth0"), Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, Collections.emptyList(), 0, Arrays.asList("wlan0", "eth1", "eth0"), Collections.emptyMap());
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), interfaceResult, false, null, Collections.emptyList(), 0);
         worker.setMockSNMPItems(List.of(createSNMPItem(false)));
         prepareWorker(dnsLookupResult, snmpCommandResult);
@@ -521,7 +521,7 @@ public class SNMPNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testSuccessMessageWhenCanSaveTrueAndSuccessFalse() throws Exception {
+    public void testFailureMessageWhenCanSaveTrueAndSuccessFalse() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         worker = new TestSNMPNetworkTaskWorker(TestRegistry.getContext(), task, null);
         snmpItemDAO.insertSNMPItem(createSNMPItemForTask(task.getId(), false));
@@ -534,7 +534,19 @@ public class SNMPNetworkTaskWorkerTest {
         NetworkTaskWorker.ExecutionResult executionResult = worker.execute(task, getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertFalse(logEntry.isSuccess());
-        assertEquals("SNMP request to 127.0.0.1:161 successful. 2 interfaces found. Monitored interface eth0 is down. Request time: 0 msec.", logEntry.getMessage());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. 2 interfaces found. Monitored interface eth0 is down. Request time: 0 msec.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testNoInterfaceMessagesWhenCanSaveFalse() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, List.of("No response from host."), 0);
+        worker.setMockSNMPItems(List.of(createSNMPItem(false)));
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertFalse(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. Error: No response from host. Request time: 0 msec.", logEntry.getMessage());
     }
 
     @Test

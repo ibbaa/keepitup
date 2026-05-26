@@ -73,12 +73,12 @@ named `signing` in the project root, the script `./signing.sh` will find the
 signing information automatically. Alternatively you can provide the
 information via environment variables:
 
-| Variable | Description | Default |
-|---|---|---|
+| Variable                 | Description               | Default                  |
+|--------------------------|---------------------------|--------------------------|
 | `KEEPITUP_KEYSTORE_FILE` | Path to the keystore file | `./signing/keepitup.jks` |
-| `KEEPITUP_KEY_ALIAS` | Key alias | `keepitupkey` |
-| `KEEPITUP_KEYSTORE_PASS` | Keystore password | `keepitup` |
-| `KEEPITUP_KEY_PASS` | Key password | `keepitup` |
+| `KEEPITUP_KEY_ALIAS`     | Key alias                 | `keepitupkey`            |
+| `KEEPITUP_KEYSTORE_PASS` | Keystore password         | `keepitup`               |
+| `KEEPITUP_KEY_PASS`      | Key password              | `keepitup`               |
 
 ## Verification
 

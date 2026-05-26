@@ -177,7 +177,7 @@ viewed by tapping the log icon on a task.
 ### Log to file
 
 Log entries can additionally be written to a file. This is disabled by
-default and can be enabled under [Settings](#log-to-file-1). Each task
+default and can be enabled under [Settings](#other-settings). Each task
 writes its own set of log files, rotated at 1 MB and archived every 20
 files. The oldest archive is deleted when 10 archives accumulate. Log
 files are not deleted when a task is deleted.

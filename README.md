@@ -42,7 +42,7 @@ height="80">](https://f-droid.org/packages/net.ibbaa.keepitup)
 
 From F-Droid the app will be updated automatically.
 
-The app can also be downloaded from the [releases page](../../releases) on
+The app can also be downloaded from the [releases page](https://github.com/ibbaa/keepitup/releases) on
 GitHub. Please note that the GitHub version is signed with a different key
 than the F-Droid version. You cannot install one version while the other is
 already installed — you have to uninstall the existing version first.
