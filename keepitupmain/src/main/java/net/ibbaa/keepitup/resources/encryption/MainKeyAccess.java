@@ -30,7 +30,6 @@ import com.google.crypto.tink.integration.android.AndroidKeysetManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.security.GeneralSecurityException;
@@ -39,7 +38,7 @@ import java.security.SecureRandom;
 
 public class MainKeyAccess {
 
-    private final static Object LOCK = TimeBasedSuspensionScheduler.class;
+    private final static Object LOCK = new Object();
 
     private final static SecureRandom randomGenerator = new SecureRandom();
 
