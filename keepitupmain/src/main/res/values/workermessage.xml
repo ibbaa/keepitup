@@ -136,4 +136,5 @@
         <item quantity="one">Monitored interface %s is not present on the device</item>
         <item quantity="other">Monitored interfaces %s are not present on the device</item>
     </plurals>
+    <string name="text_snmp_duplicate_interfaces">Several interfaces with duplicate names were found: %s. Monitoring by name may be unreliable</string>
 </resources>

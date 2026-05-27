@@ -170,6 +170,7 @@ public class ImportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
         boolean accessTypeDataTableSuccess = false;
         boolean resolveTableSuccess = false;
         boolean headerTableSuccess = false;
+        boolean snmpItemTableSuccess = false;
         try {
             setup.deleteAllLogs();
             logTableSuccess = true;
@@ -218,6 +219,12 @@ public class ImportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging header table", exc);
         }
+        try {
+            setup.deleteAllSNMPItems();
+            snmpItemTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error purging snmp item table", exc);
+        }
         Log.d(ImportTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(ImportTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
         Log.d(ImportTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
@@ -226,7 +233,8 @@ public class ImportTask extends UIDispatchBackgroundTask<SystemSetupResult> {
         Log.d(ImportTask.class.getName(), "accessTypeDataTableSuccess: " + accessTypeDataTableSuccess);
         Log.d(ImportTask.class.getName(), "resolveTableSuccess: " + resolveTableSuccess);
         Log.d(ImportTask.class.getName(), "headerTableSuccess: " + headerTableSuccess);
-        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess && headerTableSuccess;
+        Log.d(ImportTask.class.getName(), "snmpItemTableSuccess: " + snmpItemTableSuccess);
+        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess && headerTableSuccess && snmpItemTableSuccess;
     }
 
     private SystemSetupResult doImport(Context context, String data) {

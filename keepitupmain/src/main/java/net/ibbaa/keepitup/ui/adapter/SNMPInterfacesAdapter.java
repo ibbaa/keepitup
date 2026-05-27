@@ -81,7 +81,14 @@ public class SNMPInterfacesAdapter extends RecyclerView.Adapter<SNMPInterfacesVi
                 snmpInterfacesViewHolder.hideNoItemsTextView();
             }
         } else {
-            String noItemsText = snmpInterfacesDialog.isScanned() ? getContext().getString(R.string.text_dialog_snmp_interfaces_no_items_after_scan) : getContext().getString(R.string.text_dialog_snmp_interfaces_no_items);
+            String noItemsText;
+            if (snmpInterfacesDialog.isScanned() && !snmpItems.isEmpty()) {
+                noItemsText = getContext().getString(R.string.text_dialog_snmp_interfaces_no_items_all_filtered);
+            } else if (snmpInterfacesDialog.isScanned()) {
+                noItemsText = getContext().getString(R.string.text_dialog_snmp_interfaces_no_items_after_scan);
+            } else {
+                noItemsText = getContext().getString(R.string.text_dialog_snmp_interfaces_no_items);
+            }
             snmpInterfacesViewHolder.setNoItemsText(noItemsText);
             snmpInterfacesViewHolder.hideItemCardView();
             snmpInterfacesViewHolder.showNoItemsTextView();

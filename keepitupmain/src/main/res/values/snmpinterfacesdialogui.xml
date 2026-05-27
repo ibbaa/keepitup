@@ -22,5 +22,6 @@
     <string name="label_dialog_snmp_interfaces_cancel">@android:string/cancel</string>
     <string name="text_dialog_snmp_interfaces_no_items">Use Scan to load the interfaces</string>
     <string name="text_dialog_snmp_interfaces_no_items_after_scan">The device returned no interfaces</string>
+    <string name="text_dialog_snmp_interfaces_no_items_all_filtered">No interfaces to display. Enable Show all to show all interfaces.</string>
     <dimen name="textview_dialog_snmp_interfaces_scan_text_size">14sp</dimen>
 </resources>

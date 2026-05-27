@@ -678,6 +678,36 @@ public class ImportTaskTest extends BaseUITest {
     }
 
     @Test
+    public void testImportPurgesAllTables() throws Exception {
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
+        getIntervalDAO().insertInterval(getInterval());
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        getHeaderDAO().insertHeader(getHeader1(task1.getId()));
+        getHeaderDAO().insertHeader(getHeader2(-1));
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem1(task1.getId()));
+        getSnmpItemDAO().insertSNMPItem(getSNMPItem2(task1.getId()));
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.success());
+        File folder = getFileManager().getExternalRootDirectory(0);
+        FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
+        stream.close();
+        ImportTask task = new ImportTask(getImportResultDispatcher(), TestRegistry.getContext(), folder, "test.json", getEncryptionInfo(), false);
+        result = task.runInBackground();
+        assertTrue(result.success());
+        assertEquals(1, getNetworkTaskDAO().readAllNetworkTasks().size());
+        assertEquals(1, getLogDAO().readAllLogs().size());
+        assertEquals(1, getIntervalDAO().readAllIntervals().size());
+        assertEquals(1, getAccessTypeDataDAO().readAllAccessTypeData().size());
+        assertEquals(1, getResolveDAO().readAllResolves().size());
+        assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertEquals(2, getSnmpItemDAO().readAllSNMPItems().size());
+    }
+
+    @Test
     public void testImportFailureDataNotPurged() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
         getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));

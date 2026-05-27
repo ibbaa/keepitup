@@ -129,6 +129,17 @@ public class UIUtil {
         return validationResultList;
     }
 
+    public static List<ValidationResult> snmpDuplicateInterfacesValidationResultList(Context context, List<String> duplicateNames) {
+        if (duplicateNames == null || duplicateNames.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ValidationResult> validationResultList = new ArrayList<>(1);
+        String interfaces = context.getResources().getString(R.string.text_dialog_validator_error_interfaces);
+        String interfaceValues = TextUtils.join(", ", duplicateNames);
+        validationResultList.add(new ValidationResult(false, interfaces, interfaceValues));
+        return validationResultList;
+    }
+
     public static boolean isInputTypeNumber(int inputType) {
         return (inputType & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
     }

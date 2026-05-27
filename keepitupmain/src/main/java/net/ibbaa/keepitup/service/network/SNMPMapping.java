@@ -21,6 +21,7 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -305,6 +307,93 @@ public class SNMPMapping {
             }
         }
         return toSNMPInterfaceInfo(descrItems, values);
+    }
+
+    public void overrideTypesForDuplicates(Map<String, SNMPInterfaceInfo> interfaceInfos, SNMPDedupResult dedupResult) {
+        Log.d(SNMPMapping.class.getName(), "overrideTypesForDuplicates");
+        if (dedupResult.duplicateNames().isEmpty()) {
+            return;
+        }
+        int ethernetType = getResources().getInteger(R.integer.interface_type_ethernet);
+        int upStatus = getResources().getInteger(R.integer.interface_operstatus_up);
+        int downStatus = getResources().getInteger(R.integer.interface_operstatus_down);
+        Set<String> duplicateNameSet = new HashSet<>(dedupResult.duplicateNames());
+        for (SNMPItem item : dedupResult.uniqueItems()) {
+            String name = StringUtil.notNull(item.getName());
+            if (duplicateNameSet.contains(name)) {
+                SNMPInterfaceInfo info = interfaceInfos.get(item.getOid());
+                if (info != null) {
+                    info.setType(ethernetType);
+                    if (info.getStatus() == upStatus && isAnyDuplicateOidNotUp(item.getOid(), name, interfaceInfos, dedupResult, upStatus)) {
+                        info.setStatus(downStatus);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isAnyDuplicateOidNotUp(String keptOid, String name, Map<String, SNMPInterfaceInfo> interfaceInfos, SNMPDedupResult dedupResult, int upStatus) {
+        List<String> allOids = dedupResult.allOidsByName().get(name);
+        if (allOids == null) {
+            return false;
+        }
+        for (String oid : allOids) {
+            if (!oid.equals(keptOid)) {
+                SNMPInterfaceInfo dupInfo = interfaceInfos.get(oid);
+                if (dupInfo != null && dupInfo.getStatus() >= 0 && dupInfo.getStatus() != upStatus) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    public SNMPDedupResult deduplicateByName(List<SNMPItem> items) {
+        Log.d(SNMPMapping.class.getName(), "deduplicateByName");
+        if (items == null || items.isEmpty()) {
+            return new SNMPDedupResult(Collections.emptyList(), Collections.emptyList(), Collections.emptyMap());
+        }
+        Map<String, List<SNMPItem>> byName = new LinkedHashMap<>();
+        for (SNMPItem item : items) {
+            String name = StringUtil.notNull(item.getName());
+            List<SNMPItem> group = byName.get(name);
+            if (group == null) {
+                group = new ArrayList<>();
+                byName.put(name, group);
+            }
+            group.add(item);
+        }
+        List<SNMPItem> uniqueItems = new ArrayList<>();
+        List<String> duplicateNames = new ArrayList<>();
+        Map<String, List<String>> allOidsByName = new HashMap<>();
+        for (Map.Entry<String, List<SNMPItem>> entry : byName.entrySet()) {
+            String name = entry.getKey();
+            List<SNMPItem> group = entry.getValue();
+            List<String> allOids = new ArrayList<>();
+            for (SNMPItem item : group) {
+                allOids.add(item.getOid());
+            }
+            allOidsByName.put(name, allOids);
+            if (group.size() > 1) {
+                duplicateNames.add(name);
+                SNMPItem kept = group.get(0);
+                int keptIndex = getOidIndex(kept.getOid());
+                for (int i = 1; i < group.size(); i++) {
+                    SNMPItem candidate = group.get(i);
+                    int candidateIndex = getOidIndex(candidate.getOid());
+                    if (candidateIndex >= 0 && (keptIndex < 0 || candidateIndex < keptIndex)) {
+                        kept = candidate;
+                        keptIndex = candidateIndex;
+                    }
+                }
+                uniqueItems.add(kept);
+            } else {
+                uniqueItems.add(group.get(0));
+            }
+        }
+        Collections.sort(duplicateNames);
+        return new SNMPDedupResult(uniqueItems, duplicateNames, allOidsByName);
     }
 
     public SNMPItemMergeResult mergeDescrItems(List<SNMPItem> existing, List<SNMPItem> scanned) {

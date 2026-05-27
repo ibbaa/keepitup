@@ -169,6 +169,22 @@ public class UIUtilTest {
     }
 
     @Test
+    public void testSNMPDuplicateInterfacesValidationResultList() {
+        assertTrue(UIUtil.snmpDuplicateInterfacesValidationResultList(TestRegistry.getContext(), null).isEmpty());
+        assertTrue(UIUtil.snmpDuplicateInterfacesValidationResultList(TestRegistry.getContext(), Collections.emptyList()).isEmpty());
+        List<ValidationResult> result = UIUtil.snmpDuplicateInterfacesValidationResultList(TestRegistry.getContext(), List.of("eth0"));
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isValidationSuccessful());
+        assertEquals("Interfaces", result.get(0).getFieldName());
+        assertEquals("eth0", result.get(0).getMessage());
+        result = UIUtil.snmpDuplicateInterfacesValidationResultList(TestRegistry.getContext(), List.of("eth0", "wlan0"));
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isValidationSuccessful());
+        assertEquals("Interfaces", result.get(0).getFieldName());
+        assertEquals("eth0, wlan0", result.get(0).getMessage());
+    }
+
+    @Test
     public void testSNMPWalkErrorsToValidationResultList() {
         assertTrue(UIUtil.snmpWalkErrorsToValidationResultList(TestRegistry.getContext(), null).isEmpty());
         assertTrue(UIUtil.snmpWalkErrorsToValidationResultList(TestRegistry.getContext(), Collections.emptyList()).isEmpty());

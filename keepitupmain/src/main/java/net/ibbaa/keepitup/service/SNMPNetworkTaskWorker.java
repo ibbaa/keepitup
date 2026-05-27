@@ -143,7 +143,8 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
 
     private String getSNMPMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout, boolean initiallyEmpty) {
         Log.d(SNMPNetworkTaskWorker.class.getName(), "getSNMPMessage, address is " + address + ", port is " + port + ", ip6 is " + ip6 + ", snmpTimeout is " + snmpTimeout + ", initiallyEmpty is " + initiallyEmpty);
-        String message = snmpResult.success() ? getResources().getString(R.string.text_snmp_success, getAddressWithPort(address, port, ip6)) : getResources().getString(R.string.text_snmp_failure, getAddressWithPort(address, port, ip6));
+        boolean requestSuccessful = snmpResult.success() || snmpResult.interfaceResult().canSave();
+        String message = requestSuccessful ? getResources().getString(R.string.text_snmp_success, getAddressWithPort(address, port, ip6)) : getResources().getString(R.string.text_snmp_failure, getAddressWithPort(address, port, ip6));
         if (snmpResult.reboot()) {
             message += ". " + getResources().getString(R.string.text_snmp_reboot);
         }
@@ -218,6 +219,12 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
                     messageParts.add(getResources().getQuantityString(R.plurals.text_snmp_monitored_not_found, notFound.size(), names));
                 }
             }
+        }
+        List<String> duplicateNames = new ArrayList<>(interfaceResult.duplicateNames());
+        Collections.sort(duplicateNames);
+        if (!duplicateNames.isEmpty()) {
+            String names = TextUtils.join(", ", duplicateNames);
+            messageParts.add(getResources().getString(R.string.text_snmp_duplicate_interfaces, names));
         }
         return TextUtils.join(". ", messageParts);
     }

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.service.network;
-
-import net.ibbaa.keepitup.model.SNMPItem;
+package net.ibbaa.keepitup.model;
 
 import java.util.List;
 import java.util.Map;
 
-public record SNMPInterfaceResult(boolean canSave, List<SNMPItem> result, int foundCount, List<String> monitoredNotFound, Map<String, String> monitoredDownStatus, List<String> duplicateNames) {
+public record SNMPDedupResult(List<SNMPItem> uniqueItems, List<String> duplicateNames, Map<String, List<String>> allOidsByName) {
 }

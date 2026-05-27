@@ -85,6 +85,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().result().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -101,6 +102,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.duration() >= 0);
         assertFalse(commandResult.interfaceResult().canSave());
         assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -113,6 +115,7 @@ public class SNMPCommandTest {
         assertEquals(2, commandResult.errorMessages().size());
         assertEquals("Error 1", commandResult.errorMessages().get(0));
         assertEquals("Error 2", commandResult.errorMessages().get(1));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -127,6 +130,7 @@ public class SNMPCommandTest {
         assertEquals("SNMP error", commandResult.exception().getMessage());
         assertEquals(1, commandResult.errorMessages().size());
         assertEquals("SNMP error", commandResult.errorMessages().get(0));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -137,6 +141,7 @@ public class SNMPCommandTest {
         assertFalse(commandResult.success());
         assertTrue(commandResult.systemResult().isEmpty());
         assertFalse(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -217,6 +222,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().result().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -231,6 +237,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().result().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
         assertEquals(1, commandResult.errorMessages().size());
         assertEquals("No response from host.", commandResult.errorMessages().get(0));
     }
@@ -247,6 +254,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().result().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -264,6 +272,7 @@ public class SNMPCommandTest {
         assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
         assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -281,6 +290,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().result().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -299,6 +309,7 @@ public class SNMPCommandTest {
         assertFalse(commandResult.success());
         assertFalse(commandResult.interfaceResult().canSave());
         assertTrue(commandResult.interfaceResult().result().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -321,6 +332,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().canSave());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -343,6 +355,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().canSave());
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -364,6 +377,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
         assertEquals(1, commandResult.interfaceResult().monitoredDownStatus().size());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().containsKey("eth0"));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -385,6 +399,7 @@ public class SNMPCommandTest {
         assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
         assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -407,6 +422,7 @@ public class SNMPCommandTest {
         assertEquals(1, commandResult.interfaceResult().monitoredNotFound().size());
         assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
         assertTrue(hasItemWithTypeAndName(commandResult.interfaceResult().result(), SNMPItemType.INTERFACEDESCR, "eth0"));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -439,6 +455,7 @@ public class SNMPCommandTest {
         assertTrue(hasItemWithTypeAndName(result, SNMPItemType.INTERFACEDESCR, "eth0"));
         assertTrue(hasItemWithTypeAndName(result, SNMPItemType.INTERFACETYPE, "6"));
         assertTrue(hasItemWithTypeAndName(result, SNMPItemType.INTERFACEALIAS, "uplink"));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -462,6 +479,7 @@ public class SNMPCommandTest {
         assertTrue(commandResult.success());
         assertTrue(commandResult.interfaceResult().canSave());
         assertTrue(hasAliasItem(commandResult.interfaceResult().result(), "uplink"));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
     }
 
     @Test
@@ -486,6 +504,152 @@ public class SNMPCommandTest {
         assertEquals("eth0", commandResult.interfaceResult().monitoredNotFound().get(0));
         assertEquals(1, commandResult.interfaceResult().monitoredDownStatus().size());
         assertTrue(commandResult.interfaceResult().monitoredDownStatus().containsKey("eth1"));
+        assertTrue(commandResult.interfaceResult().duplicateNames().isEmpty());
+    }
+
+    @Test
+    public void testCallDuplicateDescrNamesReported() {
+        String eth0OidLow = descrOidBase + ".1";
+        String eth0OidHigh = descrOidBase + ".3";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0OidLow, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0OidLow, "eth0");
+        descrMap.put(eth0OidHigh, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        typeMap.put(typeOidBase + ".3", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        statusMap.put(statusOidBase + ".3", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(1, commandResult.interfaceResult().foundCount());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertEquals(1, commandResult.interfaceResult().duplicateNames().size());
+        assertEquals("eth0", commandResult.interfaceResult().duplicateNames().get(0));
+    }
+
+    @Test
+    public void testCallDuplicateDescrNamesMultiple() {
+        String eth0OidLow = descrOidBase + ".1";
+        String wlan0OidLow = descrOidBase + ".2";
+        String eth0OidHigh = descrOidBase + ".3";
+        String wlan0OidHigh = descrOidBase + ".4";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0OidLow, "eth0", false), getSNMPItem(wlan0OidLow, "wlan0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0OidLow, "eth0");
+        descrMap.put(wlan0OidLow, "wlan0");
+        descrMap.put(eth0OidHigh, "eth0");
+        descrMap.put(wlan0OidHigh, "wlan0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        typeMap.put(typeOidBase + ".2", "6");
+        typeMap.put(typeOidBase + ".3", "6");
+        typeMap.put(typeOidBase + ".4", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        statusMap.put(statusOidBase + ".2", "1");
+        statusMap.put(statusOidBase + ".3", "1");
+        statusMap.put(statusOidBase + ".4", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(2, commandResult.interfaceResult().foundCount());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertEquals(2, commandResult.interfaceResult().duplicateNames().size());
+        assertTrue(commandResult.interfaceResult().duplicateNames().contains("eth0"));
+        assertTrue(commandResult.interfaceResult().duplicateNames().contains("wlan0"));
+    }
+
+    @Test
+    public void testCallDuplicateDescrTypeOverriddenToEthernet() {
+        String eth0OidLow = descrOidBase + ".1";
+        String eth0OidHigh = descrOidBase + ".3";
+        TestSNMPCommand command = createCommand(-1, List.of(getSNMPItem(eth0OidLow, "eth0", false)));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0OidLow, "eth0");
+        descrMap.put(eth0OidHigh, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "24");
+        typeMap.put(typeOidBase + ".3", "24");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        statusMap.put(statusOidBase + ".3", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertEquals(1, commandResult.interfaceResult().duplicateNames().size());
+        SNMPItem typeItem = null;
+        for (SNMPItem item : commandResult.interfaceResult().result()) {
+            if (SNMPItemType.INTERFACETYPE.equals(item.getSnmpItemType())) {
+                typeItem = item;
+                break;
+            }
+        }
+        assertNotNull(typeItem);
+        assertEquals("6", typeItem.getName());
+    }
+
+    @Test
+    public void testCallMonitoredDuplicateDescrDownViaOtherOid() {
+        String eth0OidLow = descrOidBase + ".1";
+        String eth0OidHigh = descrOidBase + ".3";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0OidLow, "eth0");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0OidLow, "eth0");
+        descrMap.put(eth0OidHigh, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        typeMap.put(typeOidBase + ".3", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        statusMap.put(statusOidBase + ".3", "2");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertFalse(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertEquals(1, commandResult.interfaceResult().monitoredDownStatus().size());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().containsKey("eth0"));
+        assertEquals(1, commandResult.interfaceResult().duplicateNames().size());
+        assertEquals("eth0", commandResult.interfaceResult().duplicateNames().get(0));
+    }
+
+    @Test
+    public void testCallMonitoredDuplicateDescrAllUpNotDown() {
+        String eth0OidLow = descrOidBase + ".1";
+        String eth0OidHigh = descrOidBase + ".3";
+        SNMPItem eth0 = getMonitoredDescrItem(eth0OidLow, "eth0");
+        TestSNMPCommand command = createCommand(-1, List.of(eth0));
+        TreeMap<String, String> descrMap = new TreeMap<>();
+        descrMap.put(eth0OidLow, "eth0");
+        descrMap.put(eth0OidHigh, "eth0");
+        TreeMap<String, String> typeMap = new TreeMap<>();
+        typeMap.put(typeOidBase + ".1", "6");
+        typeMap.put(typeOidBase + ".3", "6");
+        TreeMap<String, String> statusMap = new TreeMap<>();
+        statusMap.put(statusOidBase + ".1", "1");
+        statusMap.put(statusOidBase + ".3", "1");
+        command.getMockSNMPAccess().setWalkResult(emptySuccessResult());
+        setupInterfaceWalks(command, descrMap, typeMap, statusMap);
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.interfaceResult().canSave());
+        assertTrue(commandResult.interfaceResult().monitoredNotFound().isEmpty());
+        assertTrue(commandResult.interfaceResult().monitoredDownStatus().isEmpty());
+        assertEquals(1, commandResult.interfaceResult().duplicateNames().size());
+        assertEquals("eth0", commandResult.interfaceResult().duplicateNames().get(0));
     }
 
     private TestSNMPCommand createCommand(long lastSysUpTime) {

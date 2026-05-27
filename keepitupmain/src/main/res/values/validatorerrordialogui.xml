@@ -18,6 +18,8 @@
     <string name="text_dialog_validator_error_title">Validation failed</string>
     <string name="text_dialog_validator_error_title_snmp">Scan failed</string>
     <string name="text_dialog_validator_error_title_snmp_removed">Interfaces not found</string>
+    <string name="text_dialog_validator_error_title_snmp_duplicate">Duplicate Interfaces</string>
+    <string name="text_dialog_validator_error_snmp_duplicate_description">Several interfaces with a duplicate name were found. Monitoring by name may be unreliable.</string>
     <string name="text_dialog_validator_error_error">Error</string>
     <string name="text_dialog_validator_error_interfaces">Interfaces</string>
     <string name="label_dialog_validator_error_ok">@android:string/ok</string>

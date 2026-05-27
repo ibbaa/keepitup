@@ -37,6 +37,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
@@ -230,18 +231,26 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         scanned = true;
         if (result.success()) {
             SNMPMapping snmpMapping = new SNMPMapping(requireContext());
-            SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(getAdapter().getAllItems(), result.descrResult());
+            SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(result.descrResult());
+            SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(getAdapter().getAllItems(), dedupResult.uniqueItems());
             List<SNMPItem> removedMonitoredItems = mergeResult.removedMonitoredItems();
             if (result.interfaceInfos().isEmpty()) {
                 getAdapter().replaceItems(mergeResult.mergedItems());
             } else {
                 Map<String, SNMPInterfaceInfo> mergedInfos = snmpMapping.mergeSNMPInterfaceInfos(getAdapter().getInterfaceInfos(), result.interfaceInfos());
+                snmpMapping.overrideTypesForDuplicates(mergedInfos, dedupResult);
                 getAdapter().replaceItems(mergeResult.mergedItems(), mergedInfos);
             }
             if (!removedMonitoredItems.isEmpty()) {
                 List<ValidationResult> removedMonitoredResult = UIUtil.snmpRemovedMonitoredSNMPItemsValidationResultList(requireContext(), removedMonitoredItems);
                 if (!removedMonitoredResult.isEmpty()) {
                     showValidatorErrorDialog(removedMonitoredResult, requireContext().getResources().getString(R.string.text_dialog_validator_error_title_snmp_removed));
+                }
+            }
+            if (!dedupResult.duplicateNames().isEmpty()) {
+                List<ValidationResult> duplicateResult = UIUtil.snmpDuplicateInterfacesValidationResultList(requireContext(), dedupResult.duplicateNames());
+                if (!duplicateResult.isEmpty()) {
+                    showValidatorErrorDialog(duplicateResult, requireContext().getResources().getString(R.string.text_dialog_validator_error_title_snmp_duplicate), requireContext().getResources().getString(R.string.text_dialog_validator_error_snmp_duplicate_description));
                 }
             }
         } else {
@@ -356,10 +365,17 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
     }
 
     private void showValidatorErrorDialog(List<ValidationResult> validationResult, String title) {
+        showValidatorErrorDialog(validationResult, title, null);
+    }
+
+    private void showValidatorErrorDialog(List<ValidationResult> validationResult, String title, String message) {
         Log.d(SNMPInterfacesDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult);
         bundle = BundleUtil.stringToBundle(errorDialog.getTitleKey(), title, bundle);
+        if (message != null) {
+            bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), message, bundle);
+        }
         bundle = BundleUtil.integerToBundle(errorDialog.getMessageWidthKey(), getResources().getDimensionPixelSize(R.dimen.textview_dialog_grid_based_message_width), bundle);
         errorDialog.setArguments(bundle);
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());

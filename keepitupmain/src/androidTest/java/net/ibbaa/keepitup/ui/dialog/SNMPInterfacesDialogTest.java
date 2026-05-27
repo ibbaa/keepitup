@@ -120,6 +120,38 @@ public class SNMPInterfacesDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testDialogAllFilteredAfterScan() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem lo = getSNMPDescrItem("lo", "1.3.6.1.2.1.2.2.1.2.1");
+        showTestDialog(Collections.emptyList(), successResult(List.of(lo), Map.of("1.3.6.1.2.1.2.2.1.2.1", getInterfaceInfo(24, 1, null))));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_snmp_interfaces_items)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_snmp_interface_no_item), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_snmp_interface_no_item), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).check(matches(withText("No interfaces to display. Enable Show all to show all interfaces.")));
+        onView(withId(R.id.cardview_dialog_snmp_interfaces_show_all)).check(matches(isDisplayed()));
+        assertEquals(1, getTestDialog().getAdapter().getAllItems().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDialogAllFilteredAfterScanScreenRotation() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem lo = getSNMPDescrItem("lo", "1.3.6.1.2.1.2.2.1.2.1");
+        showTestDialog(Collections.emptyList(), successResult(List.of(lo), Map.of("1.3.6.1.2.1.2.2.1.2.1", getInterfaceInfo(24, 1, null))));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.textview_list_item_snmp_interface_no_item), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).check(matches(withText("No interfaces to display. Enable Show all to show all interfaces.")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_dialog_snmp_interfaces_items)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_snmp_interface_no_item), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).check(matches(withText("No interfaces to display. Enable Show all to show all interfaces.")));
+        onView(withId(R.id.cardview_dialog_snmp_interfaces_show_all)).check(matches(isDisplayed()));
+        assertEquals(1, getTestDialog().getAdapter().getAllItems().size());
+        rotateScreen(activityScenario);
+        activityScenario.close();
+    }
+
+    @Test
     public void testDialogItemsNameOnlyNoInfos() {
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         showDialog(List.of(getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1"), getSNMPDescrItem("wlan0", "1.3.6.1.2.1.2.2.1.2.2")));
@@ -547,6 +579,66 @@ public class SNMPInterfacesDialogTest extends BaseUITest {
         assertTrue(getTestDialog().getAdapter().getAllItems().get(0).isMonitored());
         rotateScreen(activityScenario);
         assertTrue(getTestDialog().getAdapter().getAllItems().get(0).isMonitored());
+        rotateScreen(activityScenario);
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDialogScanDuplicateInterfaces() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem item1 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem item2 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.3");
+        showTestDialog(Collections.emptyList(), successResult(List.of(item1, item2), Collections.emptyMap()));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Duplicate Interfaces")));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Several interfaces with a duplicate name were found. Monitoring by name may be unreliable.")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDialogScanDuplicateInterfacesScreenRotation() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem item1 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem item2 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.3");
+        showTestDialog(Collections.emptyList(), successResult(List.of(item1, item2), Collections.emptyMap()));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Duplicate Interfaces")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Duplicate Interfaces")));
+        onView(withId(R.id.textview_dialog_validator_error_message)).check(matches(withText("Several interfaces with a duplicate name were found. Monitoring by name may be unreliable.")));
+        rotateScreen(activityScenario);
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDialogScanDuplicateTypeOverriddenShowAll() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem item1 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem item2 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.3");
+        showTestDialog(Collections.emptyList(), successResult(List.of(item1, item2), Map.of("1.3.6.1.2.1.2.2.1.2.1", getInterfaceInfo(24, 1, null), "1.3.6.1.2.1.2.2.1.2.3", getInterfaceInfo(24, 1, null))));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.cardview_dialog_snmp_interfaces_show_all)).check(matches(not(isDisplayed())));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDialogScanDuplicateTypeOverriddenShowAllScreenRotation() {
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        SNMPItem item1 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.1");
+        SNMPItem item2 = getSNMPDescrItem("eth0", "1.3.6.1.2.1.2.2.1.2.3");
+        showTestDialog(Collections.emptyList(), successResult(List.of(item1, item2), Map.of("1.3.6.1.2.1.2.2.1.2.1", getInterfaceInfo(24, 1, null), "1.3.6.1.2.1.2.2.1.2.3", getInterfaceInfo(24, 1, null))));
+        onView(withId(R.id.imageview_dialog_snmp_interfaces_scan)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.cardview_dialog_snmp_interfaces_show_all)).check(matches(not(isDisplayed())));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.cardview_dialog_snmp_interfaces_show_all)).check(matches(not(isDisplayed())));
         rotateScreen(activityScenario);
         activityScenario.close();
     }

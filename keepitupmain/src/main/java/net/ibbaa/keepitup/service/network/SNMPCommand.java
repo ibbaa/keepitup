@@ -21,6 +21,7 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
@@ -89,10 +90,12 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
             return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifDescrResult.exception(), ifDescrResult.errorMessages(), NumberUtil.ensurePositive(end - start));
         }
         List<SNMPItem> scannedSnmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networkTaskId);
-        if (scannedSnmpItems.isEmpty()) {
+        Collections.sort(scannedSnmpItems, new SNMPMapping.SNMPItemNameComparator());
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(scannedSnmpItems);
+        List<SNMPItem> uniqueScanned = dedupResult.uniqueItems();
+        if (uniqueScanned.isEmpty()) {
             return prepareEmptyDescrResult(existingDescrItems, systemResult, rebooted, systemWalkResult, start);
         }
-        Collections.sort(scannedSnmpItems, new SNMPMapping.SNMPItemNameComparator());
         SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
         if (!ifTypeResult.success()) {
             long end = timeService.getCurrentTimestamp();
@@ -111,13 +114,14 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
             combinedInfo.putAll(ifAliasResult.result());
         }
         Map<String, SNMPInterfaceInfo> scannedInterfaceInfos = snmpMapping.toSNMPInterfaceInfo(scannedSnmpItems, combinedInfo);
-        SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(existingDescrItems, scannedSnmpItems);
+        snmpMapping.overrideTypesForDuplicates(scannedInterfaceInfos, dedupResult);
+        SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(existingDescrItems, uniqueScanned);
         Map<String, SNMPInterfaceInfo> mergedInterfaceInfos = snmpMapping.mergeSNMPInterfaceInfos(existingInterfaceInfos, scannedInterfaceInfos);
         Map<String, String> downStatusForMonitored = getDownStatusForMonitored(mergeResult.mergedItems(), mergedInterfaceInfos);
         List<SNMPItem> finalMerged = snmpMapping.mergeAllSNMPItems(interfaces, mergeResult.mergedItems(), mergedInterfaceInfos, networkTaskId);
         finalMerged.addAll(snmpMapping.preserveRemovedMonitoredItems(mergeResult.removedMonitoredItems(), interfaces));
         List<String> monitoredNotFound = getMonitoredNotFound(mergeResult.removedMonitoredItems());
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, finalMerged, scannedSnmpItems.size(), monitoredNotFound, downStatusForMonitored);
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, finalMerged, uniqueScanned.size(), monitoredNotFound, downStatusForMonitored, dedupResult.duplicateNames());
         boolean finalSuccess = monitoredNotFound.isEmpty() && downStatusForMonitored.isEmpty();
         long end = timeService.getCurrentTimestamp();
         return new SNMPCommandResult(finalSuccess, systemResult, interfaceResult, rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
@@ -139,10 +143,8 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
         for (SNMPItem currentItem : snmpItems) {
             if (currentItem.isMonitored()) {
                 SNMPInterfaceInfo interfaceInfo = interfaceInfos.get(currentItem.getOid());
-                if (interfaceInfo != null) {
-                    if (interfaceInfo.getStatus() != upStatus) {
-                        result.put(interfaceInfo.getDescr(), snmpMapping.getLabelForInterfaceOperStatus(interfaceInfo.getStatus()));
-                    }
+                if (interfaceInfo != null && interfaceInfo.getStatus() != upStatus) {
+                    result.put(interfaceInfo.getDescr(), snmpMapping.getLabelForInterfaceOperStatus(interfaceInfo.getStatus()));
                 }
             }
         }
@@ -161,13 +163,13 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
         }
         List<SNMPItem> preserved = new SNMPMapping(getContext()).preserveRemovedMonitoredItems(monitoredDescrItems, interfaces);
         boolean success = monitoredNotFound.isEmpty();
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, preserved, 0, monitoredNotFound, Collections.emptyMap());
+        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, preserved, 0, monitoredNotFound, Collections.emptyMap(), Collections.emptyList());
         long end = timeService.getCurrentTimestamp();
         return new SNMPCommandResult(success, systemResult, interfaceResult, rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
     }
 
     private SNMPInterfaceResult prepareEmptyInterfaceResult() {
-        return new SNMPInterfaceResult(false, Collections.emptyList(), 0, Collections.emptyList(), Collections.emptyMap());
+        return new SNMPInterfaceResult(false, Collections.emptyList(), 0, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList());
     }
 
     private boolean wasRebooted(long currentSysUpTime) {

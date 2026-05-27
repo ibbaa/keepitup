@@ -26,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
@@ -1300,6 +1301,202 @@ public class SNMPMappingTest {
         assertTrue(result.contains(eth0Type));
         assertTrue(result.contains(eth1));
         assertTrue(result.contains(eth1Alias));
+    }
+
+    @Test
+    public void testDeduplicateByNameEmpty() {
+        SNMPDedupResult result = snmpMapping.deduplicateByName(Collections.emptyList());
+        assertTrue(result.uniqueItems().isEmpty());
+        assertTrue(result.duplicateNames().isEmpty());
+        assertTrue(result.allOidsByName().isEmpty());
+    }
+
+    @Test
+    public void testDeduplicateByNameNoDuplicates() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem eth0 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth1 = getSNMPItem(descrOid + ".2", "eth1");
+        SNMPItem wlan0 = getSNMPItem(descrOid + ".3", "wlan0");
+        SNMPDedupResult result = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0, eth1, wlan0)));
+        assertEquals(3, result.uniqueItems().size());
+        assertTrue(result.duplicateNames().isEmpty());
+        assertEquals(1, Objects.requireNonNull(result.allOidsByName().get("eth0")).size());
+        assertEquals(1, Objects.requireNonNull(result.allOidsByName().get("eth1")).size());
+        assertEquals(1, Objects.requireNonNull(result.allOidsByName().get("wlan0")).size());
+    }
+
+    @Test
+    public void testDeduplicateByNameSingleDuplicate() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth1 = getSNMPItem(descrOid + ".2", "eth1");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPDedupResult result = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth1, eth0AtIndex3)));
+        assertEquals(2, result.uniqueItems().size());
+        assertEquals(1, result.duplicateNames().size());
+        assertEquals("eth0", result.duplicateNames().get(0));
+        SNMPItem keptEth0 = result.uniqueItems().stream().filter(i -> "eth0".equals(i.getName())).findFirst().orElse(null);
+        assertNotNull(keptEth0);
+        assertEquals(descrOid + ".1", keptEth0.getOid());
+        List<String> allEth0Oids = result.allOidsByName().get("eth0");
+        assertNotNull(allEth0Oids);
+        assertEquals(2, allEth0Oids.size());
+        assertTrue(allEth0Oids.contains(descrOid + ".1"));
+        assertTrue(allEth0Oids.contains(descrOid + ".3"));
+    }
+
+    @Test
+    public void testDeduplicateByNameHigherIndexIsNotKept() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem eth0AtIndex5 = getSNMPItem(descrOid + ".5", "eth0");
+        SNMPItem eth0AtIndex2 = getSNMPItem(descrOid + ".2", "eth0");
+        SNMPDedupResult result = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex5, eth0AtIndex2)));
+        assertEquals(1, result.uniqueItems().size());
+        assertEquals(descrOid + ".2", result.uniqueItems().get(0).getOid());
+        assertEquals(1, result.duplicateNames().size());
+        assertEquals("eth0", result.duplicateNames().get(0));
+    }
+
+    @Test
+    public void testDeduplicateByNameMultipleDuplicatesSortedAlphabetically() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem wlan0At3 = getSNMPItem(descrOid + ".3", "wlan0");
+        SNMPItem eth0At1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem wlan0At7 = getSNMPItem(descrOid + ".7", "wlan0");
+        SNMPItem eth0At5 = getSNMPItem(descrOid + ".5", "eth0");
+        SNMPItem eth1At2 = getSNMPItem(descrOid + ".2", "eth1");
+        SNMPDedupResult result = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(wlan0At3, eth0At1, wlan0At7, eth0At5, eth1At2)));
+        assertEquals(3, result.uniqueItems().size());
+        assertEquals(2, result.duplicateNames().size());
+        assertEquals("eth0", result.duplicateNames().get(0));
+        assertEquals("wlan0", result.duplicateNames().get(1));
+        SNMPItem keptEth0 = result.uniqueItems().stream().filter(i -> "eth0".equals(i.getName())).findFirst().orElse(null);
+        assertNotNull(keptEth0);
+        assertEquals(descrOid + ".1", keptEth0.getOid());
+        SNMPItem keptWlan0 = result.uniqueItems().stream().filter(i -> "wlan0".equals(i.getName())).findFirst().orElse(null);
+        assertNotNull(keptWlan0);
+        assertEquals(descrOid + ".3", keptWlan0.getOid());
+        assertEquals(2, Objects.requireNonNull(result.allOidsByName().get("eth0")).size());
+        assertEquals(2, Objects.requireNonNull(result.allOidsByName().get("wlan0")).size());
+        assertEquals(1, Objects.requireNonNull(result.allOidsByName().get("eth1")).size());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicatesNoDuplicates() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem eth0 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem lo = getSNMPItem(descrOid + ".2", "lo");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0, lo)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".1", getInterfaceInfo(6));
+        infos.put(descrOid + ".2", getInterfaceInfo(24));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(6, Objects.requireNonNull(infos.get(descrOid + ".1")).getType());
+        assertEquals(24, Objects.requireNonNull(infos.get(descrOid + ".2")).getType());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicates() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        int ethernetType = TestRegistry.getContext().getResources().getInteger(R.integer.interface_type_ethernet);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPItem eth1 = getSNMPItem(descrOid + ".2", "eth1");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth0AtIndex3, eth1)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".1", getInterfaceInfo(24));
+        infos.put(descrOid + ".3", getInterfaceInfo(24));
+        infos.put(descrOid + ".2", getInterfaceInfo(24));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(ethernetType, Objects.requireNonNull(infos.get(descrOid + ".1")).getType());
+        assertEquals(24, Objects.requireNonNull(infos.get(descrOid + ".3")).getType());
+        assertEquals(24, Objects.requireNonNull(infos.get(descrOid + ".2")).getType());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicatesNoInfoEntry() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth0AtIndex3)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".3", getInterfaceInfo(24));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(24, Objects.requireNonNull(infos.get(descrOid + ".3")).getType());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicatesStatusOverriddenToDown() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        int upStatus = TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_up);
+        int downStatus = TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_down);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth0AtIndex3)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".1", getInterfaceInfo(6, upStatus));
+        infos.put(descrOid + ".3", getInterfaceInfo(6, downStatus));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(downStatus, Objects.requireNonNull(infos.get(descrOid + ".1")).getStatus());
+        assertEquals(downStatus, Objects.requireNonNull(infos.get(descrOid + ".3")).getStatus());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicatesStatusKeptWhenAlreadyDown() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        int downStatus = TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_down);
+        int testingStatus = TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_testing);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth0AtIndex3)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".1", getInterfaceInfo(6, testingStatus));
+        infos.put(descrOid + ".3", getInterfaceInfo(6, downStatus));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(testingStatus, Objects.requireNonNull(infos.get(descrOid + ".1")).getStatus());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicatesAllDuplicatesUp() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        int upStatus = TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_up);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth0AtIndex3)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".1", getInterfaceInfo(6, upStatus));
+        infos.put(descrOid + ".3", getInterfaceInfo(6, upStatus));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(upStatus, Objects.requireNonNull(infos.get(descrOid + ".1")).getStatus());
+    }
+
+    @Test
+    public void testOverrideTypesForDuplicatesStatusNotSetForNonDuplicate() {
+        String descrOid = TestRegistry.getContext().getResources().getString(R.string.interface_descr_oid);
+        int upStatus = TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_up);
+        SNMPItem eth0AtIndex1 = getSNMPItem(descrOid + ".1", "eth0");
+        SNMPItem eth0AtIndex3 = getSNMPItem(descrOid + ".3", "eth0");
+        SNMPItem eth1 = getSNMPItem(descrOid + ".2", "eth1");
+        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(new ArrayList<>(java.util.Arrays.asList(eth0AtIndex1, eth0AtIndex3, eth1)));
+        Map<String, SNMPInterfaceInfo> infos = new HashMap<>();
+        infos.put(descrOid + ".1", getInterfaceInfo(6, upStatus));
+        infos.put(descrOid + ".3", getInterfaceInfo(6, upStatus));
+        infos.put(descrOid + ".2", getInterfaceInfo(6, upStatus));
+        snmpMapping.overrideTypesForDuplicates(infos, dedupResult);
+        assertEquals(upStatus, Objects.requireNonNull(infos.get(descrOid + ".2")).getStatus());
+    }
+
+    private SNMPInterfaceInfo getInterfaceInfo(int type) {
+        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        info.setType(type);
+        return info;
+    }
+
+    private SNMPInterfaceInfo getInterfaceInfo(int type, int status) {
+        SNMPInterfaceInfo info = new SNMPInterfaceInfo();
+        info.setType(type);
+        info.setStatus(status);
+        return info;
     }
 
     private SNMPItem getSNMPItem(String oidString, String name) {
