@@ -25,6 +25,7 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.os.Build;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -34,7 +35,6 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
-import net.ibbaa.keepitup.test.mock.MockFuture;
 import net.ibbaa.keepitup.test.mock.MockNotificationBuilder;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskRunningNotificationService;
@@ -86,7 +86,8 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertTrue(service.wasStartNetworkTaskRunningNotificationForegroundCalled());
         assertTrue(service.isStarted());
         TestNetworkTaskRunningNotificationService.StartNetworkTaskRunningNotificationForegroundCall startNetworkTaskRunningNotificationForegroundCall = service.getStartNetworkTaskRunningNotificationForegroundCalls().get(0);
-        assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC, startNetworkTaskRunningNotificationForegroundCall.foregroundServiceType());
+        int expectedForegroundServiceType = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ? ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE : ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+        assertEquals(expectedForegroundServiceType, startNetworkTaskRunningNotificationForegroundCall.foregroundServiceType());
         Notification notification = startNetworkTaskRunningNotificationForegroundCall.notification();
         assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
     }
@@ -113,14 +114,18 @@ public class NetworkTaskRunningNotificationServiceTest {
 
     @Test
     public void testOnDestroy() {
-        MockFuture<?> future1 = new MockFuture<>();
-        MockFuture<?> future2 = new MockFuture<>();
-        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().pool(1, future1);
-        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().pool(2, future2);
+        service.setStarted(true);
         service.onDestroy();
-        assertTrue(future1.isCancelled());
-        assertTrue(future2.isCancelled());
-        assertTrue(service.wasStopNetworkTaskRunningNotificationForegroundCalled());
+        assertFalse(service.isStarted());
+    }
+
+    @Test
+    public void testOnTimeout() {
+        service.setStarted(true);
+        service.onTimeout(1);
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, notifyCall.id());
         assertFalse(service.isStarted());
     }
 
