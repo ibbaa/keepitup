@@ -1,1 +1,1 @@
-Simple network monitoring
+Network monitoring

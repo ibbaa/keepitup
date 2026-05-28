@@ -12,7 +12,6 @@ It periodically checks the availability and reachability of network services via
 - SNMP queries the system group at each interval and supports per-interface monitoring with alerting on status changes
 - Downloaded files can automatically be deleted after a successful download or be kept
 - Notifications on failure, or when a service goes down or comes back up
-- Downloaded files can be kept or automatically deleted after a successful download
 - Tasks can be restricted to WiFi connections to avoid unnecessary mobile data usage
 - Configurable suspension intervals for battery saving
 - Configuration can be exported and imported as JSON
@@ -24,7 +23,8 @@ It periodically checks the availability and reachability of network services via
 - <i>INTERNET</i> for accessing the internet
 - <i>WAKE_LOCK</i> to keep the device awake while executing a task
 - <i>FOREGROUND_SERVICE</i> to start the foreground service for running tasks
-- <i>FOREGROUND_SERVICE_DATA_SYNC</i> to use the foreground service with data transmission
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i> to use the foreground for task scheduling
+- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> to use the foreground for task scheduling (Android 15+)
 - <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications
