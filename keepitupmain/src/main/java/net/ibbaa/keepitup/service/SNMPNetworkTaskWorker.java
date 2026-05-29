@@ -103,7 +103,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         List<SNMPItem> snmpItems = readSNMPItems();
         boolean initiallyEmpty = snmpItems.isEmpty();
         Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(networkTaskId, address, port, snmpVersion, snmpCommunity, snmpItems, lastSysUpTime, ip6);
-        int snmpTimeout = getResources().getInteger(R.integer.snmp_request_timeout) * 8;
+        int snmpTimeout = getResources().getInteger(R.integer.snmp_request_timeout) * 9;
         Log.d(SNMPNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<SNMPCommandResult> snmpResultFuture = null;
