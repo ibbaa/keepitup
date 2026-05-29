@@ -457,6 +457,7 @@
                     android:id="@+id/textview_dialog_network_task_edit_snmp_interfaces_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="@dimen/textview_dialog_network_task_edit_value_max_width"
                     android:text="" />
 
             </LinearLayout>
