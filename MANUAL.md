@@ -147,8 +147,7 @@ queries the device for its interface list. By default, loopback, tunnel and
 virtual interfaces are hidden. Enable **Show all interfaces** to display
 the full list.
 
-Each interface is shown with its system name and, if configured on the
-device, an alias in parentheses — for example `Gi1/0/2 : copper (Printer)`.
+Each interface is shown with its system name and the operational status — for example `Gi1/0/2 : copper Up`.
 Use the checkbox next to each interface to enable monitoring for that
 interface.
 
