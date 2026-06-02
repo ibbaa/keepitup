@@ -997,13 +997,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
-        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).perform(forceClick());
         onView(withId(R.id.listview_dialog_snmp_interfaces_items)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_snmp_interface_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).check(matches(withText("eth0")));
         onView(allOf(withId(R.id.textview_list_item_snmp_interface_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 1))).check(matches(withText("eth1")));
         onView(allOf(withId(R.id.textview_list_item_snmp_interface_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 2))).check(matches(withText("wlan0")));
-        onView(allOf(withId(R.id.checkbox_list_item_snmp_interface_monitored), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).perform(click());
-        onView(allOf(withId(R.id.checkbox_list_item_snmp_interface_monitored), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 1))).perform(click());
+        onView(allOf(withId(R.id.checkbox_list_item_snmp_interface_monitored), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 0))).perform(forceClick());
+        onView(allOf(withId(R.id.checkbox_list_item_snmp_interface_monitored), withChildDescendantAtPosition(withId(R.id.listview_dialog_snmp_interfaces_items), 1))).perform(forceClick());
         onView(withId(R.id.imageview_dialog_snmp_interfaces_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());

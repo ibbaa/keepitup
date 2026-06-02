@@ -1492,6 +1492,7 @@ public class SNMPMappingTest {
         return info;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private SNMPInterfaceInfo getInterfaceInfo(int type, int status) {
         SNMPInterfaceInfo info = new SNMPInterfaceInfo();
         info.setType(type);

@@ -1406,7 +1406,7 @@ public class JSONSystemSetupTest {
         headerDAO.insertHeaders(List.of(header1, header2));
         SystemSetupResult exportResult = setup.exportData();
         headerDAO.deleteAllHeaders();
-        SystemSetupResult importResult = setup.importData(exportResult.data().replaceAll("\"valueValid\":true", "\"valueValid\":false"));
+        SystemSetupResult importResult = setup.importData(exportResult.data().replace("\"valueValid\":true", "\"valueValid\":false"));
         assertTrue(importResult.success());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
