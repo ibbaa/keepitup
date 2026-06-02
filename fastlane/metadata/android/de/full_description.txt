@@ -4,7 +4,7 @@ Keep it up überprüft regelmäßig die Verfügbarkeit und Erreichbarkeit von Ne
 
 - Erstellung mehrerer unabhängige Network Tasks, die jeweils einen Netzwerkdienst in einem konfigurierbaren Intervall überwachen
 - Unterstützte Dienste: Ping, TCP Connect, HTTP/HTTPS-Download, SNMP (v1/v2c)
-- Jede Task kann pro Ausführung mehrere Versuche unternehmen. Alle Ergebnisse werden protokolliert, einschließlich der Dauer
+- Mehrere Versuche pro Ausführung sind möglich. Alle Ergebnisse werden protokolliert, einschließlich der Dauer
 - SNMP fragt in jedem Intervall die Systemgruppe ab und unterstützt die Überwachung auf Interfacebasis mit Alarmierung bei Statusänderungen
 - Heruntergeladene Dateien können nach einem erfolgreichen Download automatisch gelöscht oder beibehalten werden.
 - Bei nicht erfolgreichen Versuchen oder wenn ein Dienst offline oder online geht kann eine Benachrichtigung versendet werden

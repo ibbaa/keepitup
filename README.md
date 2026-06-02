@@ -8,7 +8,7 @@ It periodically checks the availability and reachability of network services via
 
 - Create multiple independent network tasks, each monitoring one network service at a configurable interval
 - Supported types: Ping, TCP Connect, HTTP/HTTPS Download, SNMP (v1/v2c)
-- Each task can perform multiple attempts per execution. All results are logged including duration
+- A task can perform multiple attempts per execution. All results are logged including duration
 - SNMP queries the system group at each interval and supports per-interface monitoring with alerting on status changes
 - Downloaded files can automatically be deleted after a successful download or be kept
 - Notifications on failure, or when a service goes down or comes back up
