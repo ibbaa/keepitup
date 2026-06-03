@@ -36,6 +36,7 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
     private MockDNSLookup mockDNSLookup;
     private final MockSNMPCommand mockSNMPCommand;
     private List<SNMPItem> mockSNMPItems;
+    private long capturedLastSysUpTime = Long.MIN_VALUE;
 
     public TestSNMPNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
@@ -62,6 +63,10 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
         return mockSNMPCommand;
     }
 
+    public long getCapturedLastSysUpTime() {
+        return capturedLastSysUpTime;
+    }
+
     @Override
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
         return mockDNSLookup;
@@ -69,6 +74,7 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
 
     @Override
     protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
+        capturedLastSysUpTime = lastSysUpTime;
         return mockSNMPCommand;
     }
 }

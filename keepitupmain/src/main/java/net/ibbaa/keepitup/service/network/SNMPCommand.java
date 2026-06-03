@@ -173,7 +173,7 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
     }
 
     private boolean wasRebooted(long currentSysUpTime) {
-        Log.d(SNMPCommand.class.getName(), "wasRebooted, currentSysUpTime is " + currentSysUpTime + ", lastSysUpTime is " + currentSysUpTime);
+        Log.d(SNMPCommand.class.getName(), "wasRebooted, currentSysUpTime is " + currentSysUpTime);
         if (currentSysUpTime < 0 || lastSysUpTime < 0) {
             return false;
         }

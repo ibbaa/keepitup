@@ -739,6 +739,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             fileLoggerEnabledSwitch.setOnCheckedChangeListener(null);
             fileLoggerEnabledSwitch.setChecked(preferenceManager.getPreferenceFileLoggerEnabled());
             fileLoggerEnabledSwitch.setOnCheckedChangeListener(this::onFileLoggerEnabledCheckedChanged);
+            initializeFileLogger(preferenceManager.getPreferenceFileLoggerEnabled());
             prepareFileLoggerEnabledOnOffText();
         } else {
             Log.d(SystemActivity.class.getName(), "Release version. Enabling debug settings.");
@@ -755,6 +756,11 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceFileLoggerEnabled(isChecked);
         prepareFileLoggerEnabledOnOffText();
+        initializeFileLogger(isChecked);
+    }
+
+    private void initializeFileLogger(boolean isChecked) {
+        Log.d(SystemActivity.class.getName(), "initializeFileLogger, isChecked is " + isChecked);
         if (isChecked && BuildConfig.DEBUG) {
             Log.initialize(DebugUtil.getFileLogger(this, getFileManager()));
         } else {
@@ -774,6 +780,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             fileDumpEnabledSwitch.setOnCheckedChangeListener(null);
             fileDumpEnabledSwitch.setChecked(preferenceManager.getPreferenceFileDumpEnabled());
             fileDumpEnabledSwitch.setOnCheckedChangeListener(this::onFileDumpEnabledCheckedChanged);
+            initializeFileDump(preferenceManager.getPreferenceFileDumpEnabled());
             prepareFileDumpEnabledOnOffText();
         } else {
             Log.d(SystemActivity.class.getName(), "Release version. Disabling debug settings.");
@@ -790,6 +797,11 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceFileDumpEnabled(isChecked);
         prepareFileDumpEnabledOnOffText();
+        initializeFileDump(isChecked);
+    }
+
+    private void initializeFileDump(boolean isChecked) {
+        Log.d(SystemActivity.class.getName(), "initializeFileDump, isChecked is " + isChecked);
         if (isChecked && BuildConfig.DEBUG) {
             Dump.initialize(DebugUtil.getFileDump(this, getFileManager()));
         } else {

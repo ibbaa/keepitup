@@ -102,14 +102,14 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "NetworkTask is invalid. Skipping.");
                 return;
             }
-            AccessTypeData databaseAccessTypeData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(networkTask.getId());
+            AccessTypeData databaseAccessTypeData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(databaseTask.getId());
             if (databaseAccessTypeData == null) {
                 Log.d(NetworkTaskWorker.class.getName(), "AccessTypeData for network task " + databaseTask + " not found in database.");
                 databaseAccessTypeData = new AccessTypeData(getContext());
             }
             Log.d(NetworkTaskWorker.class.getName(), "Updating last scheduled time.");
             long timestamp = timeService.getCurrentTimestamp();
-            networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), timestamp);
+            networkTaskDAO.updateNetworkTaskLastScheduled(databaseTask.getId(), timestamp);
             SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
             Log.d(NetworkTaskWorker.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
             LogEntry logEntry = checkInstances();
@@ -120,7 +120,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 return;
             }
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
-            networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
+            networkTaskDAO.increaseNetworkTaskInstances(databaseTask.getId());
             sendNetworkTaskUINotificationBroadcast(databaseTask);
             try {
                 boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
@@ -130,21 +130,21 @@ public abstract class NetworkTaskWorker implements Runnable {
                 logEntry = checkNetwork(isConnectedWithWifi, isConnected);
                 if (logEntry != null) {
                     Log.d(NetworkTaskWorker.class.getName(), "Skipping execution because of the network state.");
-                    int oldFailureCount = networkTaskDAO.readNetworkTaskFailureCount(networkTask.getId());
-                    int newFailureCount = adaptFailureCount(networkTask, oldFailureCount, logEntry, false, networkTaskDAO, isConnectedWithWifi, isConnected);
-                    writeLogEntry(databaseTask, logEntry, shouldSendNotification(oldFailureCount, newFailureCount));
+                    int oldFailureCount = networkTaskDAO.readNetworkTaskFailureCount(databaseTask.getId());
+                    int newFailureCount = adaptFailureCount(databaseTask, oldFailureCount, logEntry, false, networkTaskDAO, isConnectedWithWifi, isConnected);
+                    writeLogEntry(databaseTask, logEntry, shouldSendNotification(databaseTask, oldFailureCount, newFailureCount));
                     return;
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
-                ExecutionResult executionResult = execute(networkTask, databaseAccessTypeData);
+                ExecutionResult executionResult = execute(databaseTask, databaseAccessTypeData);
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
                 logEntry = executionResult.getLogEntry();
-                int oldFailureCount = networkTaskDAO.readNetworkTaskFailureCount(networkTask.getId());
-                int newFailureCount = adaptFailureCount(networkTask, oldFailureCount, logEntry, executionResult.isInterrupted(), networkTaskDAO, true, true);
-                writeLogEntry(databaseTask, logEntry, shouldSendNotification(oldFailureCount, newFailureCount));
+                int oldFailureCount = networkTaskDAO.readNetworkTaskFailureCount(databaseTask.getId());
+                int newFailureCount = adaptFailureCount(databaseTask, oldFailureCount, logEntry, executionResult.isInterrupted(), networkTaskDAO, true, true);
+                writeLogEntry(databaseTask, logEntry, shouldSendNotification(databaseTask, oldFailureCount, newFailureCount));
             } finally {
                 Log.d(NetworkTaskWorker.class.getName(), "Decreasing instances count.");
-                networkTaskDAO.decreaseNetworkTaskInstances(networkTask.getId());
+                networkTaskDAO.decreaseNetworkTaskInstances(databaseTask.getId());
                 sendNetworkTaskUINotificationBroadcast(databaseTask);
             }
         } catch (Exception exc) {
@@ -238,9 +238,9 @@ public abstract class NetworkTaskWorker implements Runnable {
         return oldFailureCount + 1;
     }
 
-    private boolean shouldSendNotification(int oldFailureCount, int newFailureCount) {
+    private boolean shouldSendNotification(NetworkTask databaseTask, int oldFailureCount, int newFailureCount) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendNotification, oldFailureCount is " + oldFailureCount + ", newFailureCount is " + newFailureCount);
-        if (!networkTask.isNotification()) {
+        if (!databaseTask.isNotification()) {
             Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Not sending notifications. Returning false.");
             return false;
         }

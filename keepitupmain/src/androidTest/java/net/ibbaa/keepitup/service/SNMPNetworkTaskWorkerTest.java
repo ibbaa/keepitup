@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
 import net.ibbaa.keepitup.service.network.SNMPInterfaceResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
+import net.ibbaa.keepitup.test.mock.MockNetworkManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestSNMPNetworkTaskWorker;
@@ -340,6 +341,22 @@ public class SNMPNetworkTaskWorkerTest {
         worker.execute(task, getAccessTypeData());
         NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
         assertEquals(-1, readTask.getLastSysUpTime());
+    }
+
+    @Test
+    public void testRebootDetectionUsesLastSysUpTimeFromDatabase() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        networkTaskDAO.updateNetworkTaskLastSysUpTime(task.getId(), 5000);
+        task.setLastSysUpTime(9999);
+        worker = new TestSNMPNetworkTaskWorker(TestRegistry.getContext(), task, null);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        MockNetworkManager networkManager = (MockNetworkManager) worker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        worker.run();
+        assertEquals(5000, worker.getCapturedLastSysUpTime());
     }
 
     @Test

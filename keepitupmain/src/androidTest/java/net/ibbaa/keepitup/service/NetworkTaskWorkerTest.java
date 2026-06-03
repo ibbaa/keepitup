@@ -885,9 +885,9 @@ public class NetworkTaskWorkerTest {
     @Test
     public void testNoWifiConnectionWithoutNotification() {
         NetworkTask task = getNetworkTask();
-        networkTaskDAO.insertNetworkTask(task);
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         task.setOnlyWifi(true);
+        task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -1004,9 +1004,9 @@ public class NetworkTaskWorkerTest {
     @Test
     public void testNoWifiConnectionNumberInstancesAfterExecution() {
         NetworkTask task = getNetworkTask();
+        task.setOnlyWifi(true);
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
-        task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();

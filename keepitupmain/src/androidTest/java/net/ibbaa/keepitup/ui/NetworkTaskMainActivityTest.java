@@ -2600,6 +2600,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withText("Network task 1"), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Authorization (header)"), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -2608,6 +2609,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
+        onView(isRoot()).perform(waitFor(500));
         File folder = getFileManager().getExternalDirectory("config", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         getNetworkTaskDAO().deleteAllNetworkTasks();
