@@ -364,7 +364,7 @@ public class ResolveEditDialog extends DialogFragmentBase implements ContextOpti
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(ResolveEditDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getChildFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override

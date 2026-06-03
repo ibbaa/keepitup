@@ -475,7 +475,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(HeaderEditDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getChildFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override

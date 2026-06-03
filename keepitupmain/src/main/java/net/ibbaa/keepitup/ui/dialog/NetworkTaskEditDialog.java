@@ -1492,7 +1492,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getChildFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     private boolean onEditTextLongClicked(View view) {

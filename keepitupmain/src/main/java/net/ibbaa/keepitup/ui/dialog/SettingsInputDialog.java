@@ -263,7 +263,7 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(SettingsInputDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getChildFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override
