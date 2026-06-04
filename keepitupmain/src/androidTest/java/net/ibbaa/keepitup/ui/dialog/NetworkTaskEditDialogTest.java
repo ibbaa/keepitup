@@ -1142,7 +1142,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertNull(dialog.getInitialHeaders());
@@ -1179,7 +1179,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).perform(replaceText("11"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("65528"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
         onView(withText("Interval")).check(matches(isDisplayed()));
@@ -1193,7 +1193,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("0"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
         onView(withText("Port")).check(doesNotExist());
@@ -1217,7 +1217,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
         onView(withText("Port")).check(matches(isDisplayed()));
@@ -1231,7 +1231,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("25"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
         onView(withText("Port")).check(doesNotExist());
@@ -1255,7 +1255,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("my host"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("12345678"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("URL")).check(matches(isDisplayed()));
         onView(withText("No valid URL")).check(matches(isDisplayed()));
         onView(withText("Interval")).check(matches(isDisplayed()));
@@ -1282,7 +1282,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withText("Port")).check(matches(isDisplayed()));
