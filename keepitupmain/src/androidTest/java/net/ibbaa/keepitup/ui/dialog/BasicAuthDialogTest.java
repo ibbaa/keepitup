@@ -346,7 +346,7 @@ public class BasicAuthDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("333"));
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -358,7 +358,7 @@ public class BasicAuthDialogTest extends BaseUITest {
         assertEquals("333", clipboardManager.getData());
         clipboardManager.putData("aaa");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -382,7 +382,7 @@ public class BasicAuthDialogTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -394,7 +394,7 @@ public class BasicAuthDialogTest extends BaseUITest {
         assertEquals("333", clipboardManager.getData());
         clipboardManager.putData("aaa");
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));

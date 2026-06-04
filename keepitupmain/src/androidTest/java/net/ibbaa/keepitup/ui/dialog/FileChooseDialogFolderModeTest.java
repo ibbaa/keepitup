@@ -2290,7 +2290,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2348,7 +2348,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         deleteLogFolder();
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("test2/test2");
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2598,7 +2598,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2644,7 +2644,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("test2/test2");
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));

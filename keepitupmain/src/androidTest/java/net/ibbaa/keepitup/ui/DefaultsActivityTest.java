@@ -2216,7 +2216,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2241,7 +2241,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2300,7 +2300,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2324,7 +2324,7 @@ public class DefaultsActivityTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2383,7 +2383,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("111");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2410,7 +2410,7 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("111");
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2473,7 +2473,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("5");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2498,7 +2498,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2563,7 +2563,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("5");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2588,7 +2588,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("66"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2653,7 +2653,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("10");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2677,7 +2677,7 @@ public class DefaultsActivityTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("10");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2752,7 +2752,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2777,7 +2777,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2832,7 +2832,7 @@ public class DefaultsActivityTest extends BaseUITest {
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -2856,7 +2856,7 @@ public class DefaultsActivityTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));

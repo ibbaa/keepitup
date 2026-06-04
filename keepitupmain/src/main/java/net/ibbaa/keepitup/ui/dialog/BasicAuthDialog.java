@@ -305,7 +305,7 @@ public class BasicAuthDialog extends DialogFragmentBase implements ContextOption
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(BasicAuthDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getChildFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override

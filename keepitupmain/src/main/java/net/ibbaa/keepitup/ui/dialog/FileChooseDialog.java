@@ -711,7 +711,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(FileChooseDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getChildFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override

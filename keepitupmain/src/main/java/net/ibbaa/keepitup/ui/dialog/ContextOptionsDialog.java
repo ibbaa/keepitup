@@ -163,6 +163,11 @@ public class ContextOptionsDialog extends DialogFragmentBase {
 
     protected ContextOptionsSupport getContextOptionsSupport() {
         Log.d(ContextOptionsDialog.class.getName(), "getContextOptionsSupport");
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof ContextOptionsSupport) {
+            return (ContextOptionsSupport) parentFragment;
+        }
+        Log.d(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, parent fragment is not an instance of " + ContextOptionsSupport.class.getSimpleName());
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof ContextOptionsSupport) {
