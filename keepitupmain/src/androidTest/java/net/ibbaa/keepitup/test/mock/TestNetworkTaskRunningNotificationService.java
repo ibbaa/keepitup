@@ -30,34 +30,22 @@ import java.util.List;
 public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunningNotificationService {
 
     private final List<StartNetworkTaskRunningNotificationForegroundCall> startNetworkTaskRunningNotificationForegroundCalls;
-    private final List<StopNetworkTaskRunningNotificationForegroundCall> stopNetworkTaskRunningNotificationForegroundCalls;
 
     public TestNetworkTaskRunningNotificationService() {
         this.startNetworkTaskRunningNotificationForegroundCalls = new ArrayList<>();
-        this.stopNetworkTaskRunningNotificationForegroundCalls = new ArrayList<>();
         attachBaseContext(TestRegistry.getContext());
     }
 
     public void reset() {
         startNetworkTaskRunningNotificationForegroundCalls.clear();
-        stopNetworkTaskRunningNotificationForegroundCalls.clear();
     }
 
     public List<StartNetworkTaskRunningNotificationForegroundCall> getStartNetworkTaskRunningNotificationForegroundCalls() {
         return Collections.unmodifiableList(startNetworkTaskRunningNotificationForegroundCalls);
     }
 
-    @SuppressWarnings("unused")
-    public List<StopNetworkTaskRunningNotificationForegroundCall> getStopNetworkTaskRunningNotificationForegroundCalls() {
-        return Collections.unmodifiableList(stopNetworkTaskRunningNotificationForegroundCalls);
-    }
-
     public boolean wasStartNetworkTaskRunningNotificationForegroundCalled() {
         return !startNetworkTaskRunningNotificationForegroundCalls.isEmpty();
-    }
-
-    public boolean wasStopNetworkTaskRunningNotificationForegroundCalled() {
-        return !stopNetworkTaskRunningNotificationForegroundCalls.isEmpty();
     }
 
     @Override
@@ -67,21 +55,11 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
     }
 
     @Override
-    protected void stopNetworkTaskRunningNotificationForeground() {
-        stopNetworkTaskRunningNotificationForegroundCalls.add(new StopNetworkTaskRunningNotificationForegroundCall());
-        setStarted(false);
-    }
-
-    @Override
     public IPermissionManager getPermissionManager() {
         return new MockPermissionManager();
     }
 
     public record StartNetworkTaskRunningNotificationForegroundCall(Notification notification, int foregroundServiceType) {
-
-    }
-
-    public record StopNetworkTaskRunningNotificationForegroundCall() {
 
     }
 }

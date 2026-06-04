@@ -51,7 +51,9 @@ public class NetworkTaskRunningNotificationService extends Service {
         notificationHandler = new NotificationHandler(this, getPermissionManager());
         Notification notification = notificationHandler.buildForegroundNotification();
         int foregroundServiceType = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
         }
         startNetworkTaskRunningNotificationForeground(notification, foregroundServiceType);
@@ -144,15 +146,20 @@ public class NetworkTaskRunningNotificationService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        Log.d(NetworkTaskRunningNotificationService.class.getName(), "onDestroy");
-        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().cancelAll();
-        stopNetworkTaskRunningNotificationForeground();
+    public void onTimeout(int startId) {
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "onTimeout, startId is " + startId);
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "Sending notification to open app");
+        if (notificationHandler != null) {
+            notificationHandler.sendMessageNotificationForegroundStart();
+        }
+        stopSelf();
         setStarted(false);
     }
 
-    protected void stopNetworkTaskRunningNotificationForeground() {
-        stopForeground(true);
+    @Override
+    public void onDestroy() {
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "onDestroy");
+        setStarted(false);
     }
 
     protected boolean isStarted() {
