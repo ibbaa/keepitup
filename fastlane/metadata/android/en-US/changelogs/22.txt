@@ -4,4 +4,4 @@
 * Network interfaces can be discovered via a manual scan and individually configured for monitoring
 * Extended the connect-to feature to support multiple resolve rules with configurable match conditions
 * This is relevant when redirects are involved and brings the feature closer to what curl's connect-to option offers
-* Some bug fixes, including a bug that may cause the app to freeze under rare conditions
+* Some bug fixes
