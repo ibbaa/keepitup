@@ -2334,6 +2334,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
+        onView(isRoot()).perform(waitFor(500));
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();

@@ -1,0 +1,6 @@
+  * Fixed a potential app freeze that could occur during network task execution under rare conditions
+  * Fixed the foreground service being stopped by the system after 6 hours on Android 15 and newer
+  * Fixed copy and paste not working in some text input dialogs
+  * Fixed configured HTTP headers being lost when changing the access type in the edit dialog
+  * Fixed Authorization headers being incorrectly deleted for non-download tasks after app restart
+  * Fixed show/hide password button not responding on some devices
