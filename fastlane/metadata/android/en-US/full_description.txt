@@ -20,7 +20,7 @@ Keep it up checks the availability and reachability of network services via Ping
 - <i>WAKE_LOCK</i> to keep the device awake while executing a task
 - <i>FOREGROUND_SERVICE</i> to start the foreground service for running tasks
 - <i>FOREGROUND_SERVICE_DATA_SYNC</i> to use the foreground for task scheduling
-- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> to use the foreground for task scheduling (Android 15+)
+- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> to use the foreground for task scheduling (Android 14+)
 - <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications

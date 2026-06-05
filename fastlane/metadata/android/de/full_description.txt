@@ -20,7 +20,7 @@ Keep it up überprüft regelmäßig die Verfügbarkeit und Erreichbarkeit von Ne
 - <i>WAKE_LOCK</i> um das Gerät während der Ausführung eines Tasks aktiv zu halten
 - <i>FOREGROUND_SERVICE</i> um den Dienst zur Ausführung von Tasks zu starten
 - <i>FOREGROUND_SERVICE_DATA_SYNC</i> um dem Dienst zur Ausführung von Tasks zu erlauben
-- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> um dem Dienst zur Ausführung von Tasks zu erlauben (ab Android 15)
+- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> um dem Dienst zur Ausführung von Tasks zu erlauben (ab Android 14)
 - <i>USE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (ab Android 13)
 - <i>SCHEDULE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (Android 11 und 12)
 - <i>POST_NOTIFICATIONS</i> um Benachrichtigungen zu senden
