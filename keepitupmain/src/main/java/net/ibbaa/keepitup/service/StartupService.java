@@ -49,7 +49,6 @@ public class StartupService extends BroadcastReceiver {
             Log.d(StartupService.class.getName(), "Received system boot event.");
         } else if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
             Log.d(StartupService.class.getName(), "Received app replaced event.");
-            startup(context);
         } else {
             Log.e(StartupService.class.getName(), "Received unknown intent action: " + intent.getAction());
         }
