@@ -22,6 +22,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
@@ -51,6 +52,7 @@ import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -95,15 +97,15 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        assertEquals("", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
-        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(4)));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
@@ -118,16 +120,17 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_snmp_version_label)).check(matches(withText("SNMP Version")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port_label)).check(matches(withText("SNMP Port")));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("161")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("no")));
@@ -141,6 +144,24 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testDisplayDefaultValuesResolveRules() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("not set")));
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testDisplayDefaultValuesChanged() {
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
@@ -150,16 +171,16 @@ public class DefaultsActivityTest extends BaseUITest {
         preferenceManager.setPreferencePingCount(8);
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceConnectCount(9);
-        preferenceManager.setPreferenceResolveAddress("address");
-        preferenceManager.setPreferenceResolvePort(443);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceOnlyWifi(false);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
-        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(4)));
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("127.0.0.1")));
@@ -174,16 +195,15 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("1234")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("9")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("443")));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("no")));
@@ -195,6 +215,24 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High priority")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_high_prio_on_off)).check(matches(withText("yes")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDisplayDefaultValuesChangedResolveRules() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceResolveMatchAddress("match.address");
+        preferenceManager.setPreferenceResolveMatchPort(12);
+        preferenceManager.setPreferenceResolveAddress("resolve.address");
+        preferenceManager.setPreferenceResolvePort(25);
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("match.address")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("12")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("resolve.address")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("25")));
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
         activityScenario.close();
     }
 
@@ -220,16 +258,16 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("443"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -250,16 +288,15 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("64")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("10")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("443")));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
@@ -365,16 +402,16 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("9"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("22"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -389,13 +426,51 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(123, preferenceManager.getPreferencePingPackageSize());
         assertEquals(9, preferenceManager.getPreferenceConnectCount());
-        assertEquals("address", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(22, preferenceManager.getPreferenceResolvePort());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesResolveRulesOk() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("12"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("match.host", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(12, preferenceManager.getPreferenceResolveMatchPort());
+        assertEquals("resolve.host", preferenceManager.getPreferenceResolveAddress());
+        assertEquals(25, preferenceManager.getPreferenceResolvePort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesResolveRulesOkScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("12"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("match.host", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(12, preferenceManager.getPreferenceResolveMatchPort());
+        assertEquals("resolve.host", preferenceManager.getPreferenceResolveAddress());
+        assertEquals(25, preferenceManager.getPreferenceResolvePort());
         activityScenario.close();
     }
 
@@ -420,11 +495,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("22"));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -433,6 +506,43 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesResolveRulesCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("12"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesResolveRulesCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("12"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         activityScenario.close();
@@ -486,6 +596,24 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.2.100")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testResolveAddressTrimmed() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("   match.host   "));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("   resolve.host   "));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("match.host")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("resolve.host")));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("match.host", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals("resolve.host", preferenceManager.getPreferenceResolveAddress());
         activityScenario.close();
     }
 
@@ -2109,7 +2237,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("xyz"));
-        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
@@ -2162,24 +2290,22 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        onView(allOf(withText("Basic auth password"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_header_edit_cancel)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("************")));
-        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textColor)));
+        onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
-        onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(allOf(withText("Authorization: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(withTextColor(R.color.textColor)));
+        onView(allOf(withText("************"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(withTextColor(R.color.textColor)));
         HeaderSyncHandler handler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, handler.getGlobalHeaders().size());
         assertEquals("Authorization", handler.getGlobalHeaders().get(0).getName());
-        assertEquals("", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals(":", handler.getGlobalHeaders().get(0).getValue());
         assertEquals(HeaderType.BASICAUTH, handler.getGlobalHeaders().get(0).getHeaderType());
         activityScenario.close();
     }
@@ -2339,6 +2465,108 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("456", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("456")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesSNMPVersion() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isChecked()));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).perform(click());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).check(matches(isNotChecked()));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPPortInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("70000"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 65535"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("161")));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("162")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPPortCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("162");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("163"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("163")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("163", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("163")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPPortCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("163"));
+        rotateScreen(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("162");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("162");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("163")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("163", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("163")));
         activityScenario.close();
     }
 
@@ -2696,204 +2924,6 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testConnectToHostInput() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect-to host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("not set"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host.com"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("host.com")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("192.168.2.100")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToHostTrimmed() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("  host.com  "));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("host.com")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100  "));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("192.168.2.100")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToHostCopyPasteOption() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        SettingsInputDialog inputDialog = getDialog(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("data");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("data", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("data")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToHostCopyPasteOptionScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        SettingsInputDialog inputDialog = getDialog(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("data");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        rotateScreen(activityScenario);
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("data");
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("data", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("data")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToPortInput() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect-to port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("70000"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect-to port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Maximum: 65535"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("80")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToPortCopyPasteOption() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        SettingsInputDialog inputDialog = getDialog(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("1234");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("456", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("456")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToPortCopyPasteOptionScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
-        rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("1234");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("1234");
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("456", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("456")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectToHostAndPortPreferenceRemoved() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        PreferenceManager preferenceManager = getPreferenceManager();
-        preferenceManager.setPreferenceResolveAddress("address");
-        preferenceManager.setPreferenceResolvePort(443);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("not set")));
-        assertEquals("", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
-        activityScenario.close();
-    }
-
-    @Test
     public void testResetValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withText("Download")).perform(click());
@@ -2915,22 +2945,29 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(click());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("12"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
+        onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
@@ -2947,16 +2984,15 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host_label)).check(matches(withText("Connect-to host")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port_label)).check(matches(withText("Connect-to port")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("161")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("no")));
@@ -2967,6 +3003,13 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_high_prio_label)).check(matches(withText("High priority")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_high_prio_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_resolve_rules)).perform(click());
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("not set")));
+        onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -2975,10 +3018,14 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -3007,16 +3054,16 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("address"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo());
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
@@ -3032,15 +3079,16 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("4")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
+        onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
@@ -3054,15 +3102,16 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("address")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("4")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v1)).perform(scrollTo()).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_defaults_snmp_version_v2c)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("162")));
+        onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_high_prio)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_high_prio)).check(matches(isChecked()));
@@ -3150,40 +3199,6 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("5")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConfirmDialogOnScreenRotationConnectToHost() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("localhost")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConfirmDialogOnScreenRotationConnectToPort() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("55"));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("not set")));
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("55"));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("55")));
         activityScenario.close();
     }
 
@@ -3404,55 +3419,37 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testValidationErrorScreenRotationConnectToHost() {
+    public void testConfirmDialogOnScreenRotationSNMPPort() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1. 34.2"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo()).check(matches(withText("161")));
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("162"));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect-to host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activityScenario);
-        onView(allOf(withText("Connect-to host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activityScenario);
-        onView(allOf(withText("Connect-to host"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).check(matches(withText("162")));
         activityScenario.close();
     }
 
     @Test
-    public void testValidationErrorColorScreenRotationConnectToHost() {
+    public void testValidationErrorScreenRotationSNMPPort() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1. 34.2"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("1. 34.2")));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("1. 34.2")));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        activityScenario.close();
-    }
-
-    @Test
-    public void testValidationErrorScreenRotationConnectToPort() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect-to port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
-        onView(allOf(withText("Connect-to port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
-        onView(allOf(withText("Connect-to port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -3460,9 +3457,10 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testValidationErrorColorScreenRotationConnectToPort() {
+    public void testValidationErrorColorScreenRotationSNMPPort() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withId(R.id.textview_activity_defaults_connect_to_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_snmp_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         rotateScreen(activityScenario);

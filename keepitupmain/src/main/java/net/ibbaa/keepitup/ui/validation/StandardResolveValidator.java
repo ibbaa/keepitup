@@ -21,6 +21,10 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Resolve;
+
+import java.net.URL;
+import java.util.List;
 
 public class StandardResolveValidator implements ResolveValidator {
 
@@ -28,6 +32,49 @@ public class StandardResolveValidator implements ResolveValidator {
 
     public StandardResolveValidator(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public ValidationResult validateSourceExists(List<Resolve> resolves, URL url, String value) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourceExists, url is " + url + ", value is " + value);
+        String fieldName = getResources().getString(R.string.resolve_match_host_port_field_name);
+        ValidationResult result = new ResolveHostMatchExistsFieldValidator(fieldName, resolves, url, getContext()).validate(value);
+        Log.d(StandardHeaderValidator.class.getName(), ResolveHostMatchExistsFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateValueSet(Resolve resolve) {
+        Log.d(StandardResolveValidator.class.getName(), "validateValueSet, resolve object is " + resolve);
+        String fieldName = getResources().getString(R.string.resolve_all_fields);
+        ValidationResult result;
+        if (resolve.isEmpty()) {
+            String failedMessage = getResources().getString(R.string.invalid_must_exist);
+            result = new ValidationResult(false, fieldName, failedMessage);
+        } else {
+            String successMessage = getResources().getString(R.string.validation_successful);
+            result = new ValidationResult(true, fieldName, successMessage);
+        }
+        Log.d(StandardResolveValidator.class.getName(), "validateValueSet returned " + result);
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateSourceAddress(String address) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourceAddress, address is " + address);
+        String fieldName = getResources().getString(R.string.resolve_match_host_field_name);
+        ValidationResult result = new ResolveHostMatchFieldValidator(fieldName, getContext()).validate(address);
+        Log.d(StandardResolveValidator.class.getName(), ResolveHostMatchFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateSourcePort(String port) {
+        Log.d(StandardResolveValidator.class.getName(), "validateSourcePort, port is " + port);
+        String fieldName = getResources().getString(R.string.resolve_match_port_field_name);
+        ValidationResult result = new ResolvePortMatchFieldValidator(fieldName, getContext()).validate(port);
+        Log.d(StandardResolveValidator.class.getName(), ResolvePortMatchFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
     }
 
     @Override

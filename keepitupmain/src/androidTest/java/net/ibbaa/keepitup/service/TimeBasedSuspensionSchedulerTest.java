@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
@@ -57,6 +58,7 @@ public class TimeBasedSuspensionSchedulerTest {
     private TestTimeBasedSuspensionScheduler scheduler;
     private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private NetworkTaskDAO networkTaskDAO;
     private IntervalDAO intervalDAO;
     private SchedulerStateDAO schedulerStateDAO;
@@ -76,6 +78,8 @@ public class TimeBasedSuspensionSchedulerTest {
         scheduler.stop();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
@@ -92,6 +96,7 @@ public class TimeBasedSuspensionSchedulerTest {
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         networkTaskDAO.deleteAllNetworkTasks();
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
@@ -1046,6 +1051,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -1066,6 +1072,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;

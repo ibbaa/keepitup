@@ -96,7 +96,7 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
     }
 
     private String getHeadersKey() {
-        return HeadersAdapter.class.getSimpleName() + "Headers";
+        return HeadersAdapter.class.getSimpleName() + ".Headers";
     }
 
     public void addItem(Header header) {
@@ -141,6 +141,7 @@ public class HeadersAdapter extends RecyclerView.Adapter<HeaderViewHolder> {
         return Collections.unmodifiableList(headers);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean containsSecretHeader() {
         List<Header> headers = getAllItems();
         for (Header currentHeader : headers) {

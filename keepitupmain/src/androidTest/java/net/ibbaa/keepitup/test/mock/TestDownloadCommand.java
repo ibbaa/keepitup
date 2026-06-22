@@ -45,8 +45,8 @@ public class TestDownloadCommand extends DownloadCommand {
     private IFileManager fileManager;
     private IDocumentManager documentManager;
 
-    public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, List<Header> headers) {
-        super(context, networkTask, data, url, folder, delete, connectToAddress, headers);
+    public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, List<ConnectToAddress> connectToAddresses, List<Header> headers) {
+        super(context, networkTask, data, url, folder, delete, connectToAddresses, headers);
         responses = new HashMap<>();
         requests = new HashMap<>();
         reset();
@@ -79,7 +79,7 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected Response openResponse(URL url, boolean overrideConnectHost) {
+    protected Response openResponse(URL url, ConnectToAddress connectToAddress) {
         if (url == null) {
             return null;
         }

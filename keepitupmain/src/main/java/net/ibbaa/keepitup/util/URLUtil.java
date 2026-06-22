@@ -16,18 +16,24 @@
 
 package net.ibbaa.keepitup.util;
 
+import android.content.Context;
+
 import com.google.common.net.InetAddresses;
 import com.google.common.net.InternetDomainName;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
 
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -83,34 +89,41 @@ public class URLUtil {
         return true;
     }
 
-    public static boolean isSameHostAndPort(URL url1, URL url2) {
-        if (url1 == null || url2 == null) {
-            return false;
-        }
-        String host1 = normalizeHost(url1.getHost());
-        String host2 = normalizeHost(url2.getHost());
-        boolean sameHost;
-        if (isValidIPAddress(host1) && isValidIPAddress(host2)) {
-            try {
-                InetAddress address1 = InetAddress.getByName(host1);
-                InetAddress address2 = InetAddress.getByName(host2);
-                sameHost = address1.equals(address2);
-            } catch (Exception exc) {
-                sameHost = false;
+    public static boolean isSameHostAndPort(String host1, int port1, String host2, int port2) {
+        boolean bothHostsEmpty = StringUtil.isEmpty(host1) && StringUtil.isEmpty(host2);
+        boolean bothPortsNegative = port1 < 0 && port2 < 0;
+        if (!bothHostsEmpty) {
+            String normalizedHost1 = removeIPv6Brackets(host1);
+            String normalizedHost2 = removeIPv6Brackets(host2);
+            boolean sameHost;
+            if (normalizedHost1 == null || normalizedHost2 == null) {
+                sameHost = normalizedHost1 == null && normalizedHost2 == null;
+            } else if (isValidIPAddress(normalizedHost1) && isValidIPAddress(normalizedHost2)) {
+                try {
+                    InetAddress address1 = InetAddress.getByName(normalizedHost1);
+                    InetAddress address2 = InetAddress.getByName(normalizedHost2);
+                    sameHost = address1.equals(address2);
+                } catch (Exception exc) {
+                    sameHost = false;
+                }
+            } else {
+                sameHost = normalizedHost1.equalsIgnoreCase(normalizedHost2);
             }
-        } else {
-            sameHost = host1.equalsIgnoreCase(host2);
+            if (!sameHost) {
+                return false;
+            }
         }
-        int port1 = getPort(url1);
-        int port2 = getPort(url2);
-        return sameHost && port1 == port2;
+        if (!bothPortsNegative) {
+            return port1 == port2;
+        }
+        return true;
     }
 
     public static int getPort(URL url) {
         return url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
     }
 
-    public static String normalizeHost(String host) {
+    public static String removeIPv6Brackets(String host) {
         if (host == null || host.length() < 2) {
             return host;
         }
@@ -118,6 +131,50 @@ public class URLUtil {
             return host.substring(1, host.length() - 1);
         }
         return host;
+    }
+
+    public static String normalizeHost(String host) {
+        if (host == null) {
+            return null;
+        }
+        String stripped = removeIPv6Brackets(host);
+        if (StringUtil.isEmpty(stripped)) {
+            return stripped;
+        }
+        if (isValidIPAddress(stripped)) {
+            try {
+                return getHostAddress(InetAddress.getByName(stripped));
+            } catch (Exception exc) {
+                Log.d(URLUtil.class.getName(), "Exception normalizing IP address " + host, exc);
+            }
+        }
+        return stripped.toLowerCase();
+    }
+
+    public static String getHostAddress(InetAddress address) {
+        String hostAddress = address.getHostAddress();
+        if (hostAddress == null) {
+            return "";
+        }
+        int scopeIndex = hostAddress.indexOf('%');
+        if (scopeIndex >= 0) {
+            hostAddress = hostAddress.substring(0, scopeIndex);
+        }
+        return hostAddress;
+    }
+
+    public static String getSourceAddress(Resolve resolve, URL url) {
+        if (StringUtil.isEmpty(resolve.getSourceAddress())) {
+            return url.getHost();
+        }
+        return resolve.getSourceAddress();
+    }
+
+    public static int getSourcePort(Resolve resolve, URL url) {
+        if (resolve.getSourcePort() < 0) {
+            return getPort(url);
+        }
+        return resolve.getSourcePort();
     }
 
     public static String getTargetAddress(Resolve resolve, URL url) {
@@ -132,6 +189,18 @@ public class URLUtil {
             return getPort(url);
         }
         return resolve.getTargetPort();
+    }
+
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    public static InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
+        for (InetAddress currentAddress : addresses) {
+            if (preferIp4 && currentAddress instanceof Inet4Address) {
+                return currentAddress;
+            } else if (!preferIp4 && currentAddress instanceof Inet6Address) {
+                return currentAddress;
+            }
+        }
+        return addresses.get(0);
     }
 
     public static String prefixHTTPProtocol(String inputUrl) {
@@ -209,12 +278,21 @@ public class URLUtil {
         return false;
     }
 
-    public static String getHostAndPort(URL url) {
-        int port = url.getPort();
-        if (port < 0) {
-            return url.getHost();
+    public static String getHostAndPort(Context context, String address, int port, URL url) {
+        String urlHost = url != null ? url.getHost() : null;
+        int urlPort = url != null ? URLUtil.getPort(url) : -1;
+        String actualAddress = StringUtil.isTrimmedEmpty(address) ? urlHost : address.trim();
+        if (URLUtil.isValidIP6Address(actualAddress)) {
+            actualAddress = "[" + actualAddress + "]";
         }
-        return url.getHost() + ":" + port;
+        int actualPort = port < 0 ? urlPort : port;
+        String undefined = context.getResources().getString(R.string.string_undefined);
+        if (StringUtil.isTrimmedEmpty(actualAddress) && actualPort < 0) {
+            return undefined;
+        }
+        String displayAddress = StringUtil.isTrimmedEmpty(actualAddress) ? undefined : actualAddress;
+        String displayPort = actualPort < 0 ? undefined : String.valueOf(actualPort);
+        return displayAddress + ":" + displayPort;
     }
 
     public static boolean isHTTP(URL url) {

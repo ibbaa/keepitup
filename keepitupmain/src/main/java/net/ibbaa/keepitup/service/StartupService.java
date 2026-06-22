@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
@@ -46,8 +47,10 @@ public class StartupService extends BroadcastReceiver {
         Log.d(StartupService.class.getName(), "onReceive");
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Log.d(StartupService.class.getName(), "Received system boot event.");
+        } else if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) {
+            Log.d(StartupService.class.getName(), "Received app replaced event.");
         } else {
-            Log.e(StartupService.class.getName(), "The received intent is not Intent.ACTION_BOOT_COMPLETED.");
+            Log.e(StartupService.class.getName(), "Received unknown intent action: " + intent.getAction());
         }
     }
 
@@ -79,6 +82,7 @@ public class StartupService extends BroadcastReceiver {
         cleanupAccessTypeData(context);
         cleanupResolve(context);
         cleanupHeaders(context);
+        cleanupSNMPItems(context);
         cleanupLogs(context);
         Log.d(StartupService.class.getName(), "Initialize SAF flag.");
         initializeSAFFlag(context);
@@ -195,7 +199,7 @@ public class StartupService extends BroadcastReceiver {
         try {
             Log.d(StartupService.class.getName(), "Deleting orphan resolve objects.");
             ResolveDAO resolveDAO = new ResolveDAO(context);
-            resolveDAO.deleteAllOrphanResolve();
+            resolveDAO.deleteAllOrphanResolves();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on cleaning up resolve objects", exc);
         }
@@ -209,6 +213,17 @@ public class StartupService extends BroadcastReceiver {
             headerDAO.deleteAllOrphanHeaders();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on cleaning up header objects", exc);
+        }
+    }
+
+    private void cleanupSNMPItems(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupSNMPItems");
+        try {
+            Log.d(StartupService.class.getName(), "Deleting orphan snmp item objects.");
+            SNMPItemDAO snmpItemDAO = new SNMPItemDAO(context);
+            snmpItemDAO.deleteAllOrphanSNMPItems();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on cleaning up snmp item objects", exc);
         }
     }
 

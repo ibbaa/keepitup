@@ -46,6 +46,7 @@ public class NetworkTask {
     private boolean notification;
     private boolean running;
     private long lastScheduled;
+    private long lastSysUpTime;
     private int failureCount;
     private boolean highPrio;
 
@@ -63,6 +64,7 @@ public class NetworkTask {
         this.notification = false;
         this.running = false;
         this.lastScheduled = -1;
+        this.lastSysUpTime = -1;
         this.failureCount = 0;
         this.highPrio = false;
     }
@@ -115,6 +117,7 @@ public class NetworkTask {
         this.notification = bundle.getInt("notification") >= 1;
         this.running = bundle.getInt("running") >= 1;
         this.lastScheduled = bundle.getLong("lastScheduled");
+        this.lastSysUpTime = bundle.getLong("lastSysUpTime");
         this.failureCount = bundle.getInt("failureCount");
         this.highPrio = bundle.getInt("highPrio") >= 1;
     }
@@ -159,6 +162,9 @@ public class NetworkTask {
         }
         if (NumberUtil.isValidLongValue(map.get("lastScheduled"))) {
             this.lastScheduled = NumberUtil.getLongValue(map.get("lastScheduled"), -1);
+        }
+        if (NumberUtil.isValidLongValue(map.get("lastSysUpTime"))) {
+            this.lastSysUpTime = NumberUtil.getLongValue(map.get("lastSysUpTime"), -1);
         }
         if (NumberUtil.isValidIntValue(map.get("failureCount"))) {
             this.failureCount = NumberUtil.getIntValue(map.get("failureCount"), 0);
@@ -272,6 +278,14 @@ public class NetworkTask {
         this.lastScheduled = lastScheduled;
     }
 
+    public long getLastSysUpTime() {
+        return lastSysUpTime;
+    }
+
+    public void setLastSysUpTime(long lastSysUpTime) {
+        this.lastSysUpTime = lastSysUpTime;
+    }
+
     public int getFailureCount() {
         return failureCount;
     }
@@ -307,6 +321,7 @@ public class NetworkTask {
         bundle.putInt("notification", notification ? 1 : 0);
         bundle.putInt("running", running ? 1 : 0);
         bundle.putLong("lastScheduled", lastScheduled);
+        bundle.putLong("lastSysUpTime", lastSysUpTime);
         bundle.putInt("failureCount", failureCount);
         bundle.putInt("highPrio", highPrio ? 1 : 0);
         return bundle;
@@ -335,6 +350,7 @@ public class NetworkTask {
         map.put("notification", notification);
         map.put("running", running);
         map.put("lastScheduled", lastScheduled);
+        map.put("lastSysUpTime", lastSysUpTime);
         map.put("failureCount", failureCount);
         map.put("highPrio", highPrio);
         return map;
@@ -360,6 +376,9 @@ public class NetworkTask {
             return false;
         }
         if (lastScheduled != other.lastScheduled) {
+            return false;
+        }
+        if (lastSysUpTime != other.lastSysUpTime) {
             return false;
         }
         if (failureCount != other.failureCount) {
@@ -431,6 +450,7 @@ public class NetworkTask {
                 ", notification=" + notification +
                 ", running=" + running +
                 ", lastScheduled=" + lastScheduled +
+                ", lastSysUpTime=" + lastSysUpTime +
                 ", failureCount=" + failureCount +
                 ", highPrio=" + highPrio +
                 '}';

@@ -169,6 +169,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
             disableNameAndValueFields();
             nameEditText.setOnClickListener(this::onBasicAuthFieldsClicked);
             valueEditText.setOnClickListener(this::onBasicAuthFieldsClicked);
+            valueEditText.setText(lastBasicAuthCredentials != null ? StringUtil.getSecretPlaceholder() : "");
             valueEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
         } else {
             nameEditText.setOnClickListener(null);
@@ -258,6 +259,9 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
     }
 
     public String getValue() {
+        if (basicAuthCheckBox != null && basicAuthCheckBox.isChecked()) {
+            return StringUtil.notNull(lastBasicAuthCredentials);
+        }
         return StringUtil.notNull(valueEditText.getText());
     }
 
@@ -272,7 +276,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
                 showConfirmDialog(position);
                 return;
             }
-            HeaderEditSupport headerEditSupport = getGlobalHeaderEditSupport();
+            HeaderEditSupport headerEditSupport = getHeaderEditSupport();
             if (headerEditSupport != null) {
                 headerEditSupport.onHeaderEditDialogOkClicked(this, position);
             } else {
@@ -287,7 +291,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
 
     private void onCancelClicked(View view) {
         Log.d(HeaderEditDialog.class.getName(), "onCancelClicked");
-        HeaderEditSupport headerEditSupport = getGlobalHeaderEditSupport();
+        HeaderEditSupport headerEditSupport = getHeaderEditSupport();
         if (headerEditSupport != null) {
             headerEditSupport.onHeaderEditDialogCancelClicked(this);
         } else {
@@ -301,7 +305,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         Log.d(HeaderEditDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.CONFIRMAUTHORIZATIONHEADER.equals(type)) {
             int position = confirmDialog.getPosition();
-            HeaderEditSupport headerEditSupport = getGlobalHeaderEditSupport();
+            HeaderEditSupport headerEditSupport = getHeaderEditSupport();
             if (headerEditSupport != null) {
                 headerEditSupport.onHeaderEditDialogOkClicked(this, position);
             } else {
@@ -324,7 +328,6 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         basicAuthCheckBox.setChecked(true);
         nameEditText.setText(getResources().getString(R.string.http_header_authorization));
         lastBasicAuthCredentials = basicAuthDialog.getUsernameAndPassword();
-        valueEditText.setText(lastBasicAuthCredentials);
         basicAuthDialog.dismiss();
         prepareBasicAuthCheckBoxVisibility();
     }
@@ -401,7 +404,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
                 validationResults.add(passwordResult);
             }
         }
-        HeaderEditSupport headerEditSupport = getGlobalHeaderEditSupport();
+        HeaderEditSupport headerEditSupport = getHeaderEditSupport();
         if (headerEditSupport != null) {
             List<String> currentHeaderNames = headerEditSupport.getExistingHeaderNames();
             if (position >= 0 && position < currentHeaderNames.size()) {
@@ -497,8 +500,8 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         return ContextCompat.getColor(requireContext(), colorid);
     }
 
-    private HeaderEditSupport getGlobalHeaderEditSupport() {
-        Log.d(HeaderEditDialog.class.getName(), "getGlobalHeaderEditSupport");
+    private HeaderEditSupport getHeaderEditSupport() {
+        Log.d(HeaderEditDialog.class.getName(), "getHeaderEditSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof HeaderEditSupport) {

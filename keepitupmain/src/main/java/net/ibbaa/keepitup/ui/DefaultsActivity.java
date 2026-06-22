@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -46,13 +45,17 @@ import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
+import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
+import net.ibbaa.keepitup.ui.support.ResolveEditSupport;
 import net.ibbaa.keepitup.ui.sync.DBSyncResult;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
@@ -61,13 +64,10 @@ import net.ibbaa.keepitup.ui.validation.IntervalFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidator;
-import net.ibbaa.keepitup.ui.validation.ResolveHostFieldValidator;
-import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidator;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
-import net.ibbaa.keepitup.util.UIUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -76,9 +76,10 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport {
+public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport {
 
-    private RadioGroup accessTypeGroup;
+    private GridLayout accessTypeGroup;
+    private TextView snmpPortText;
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
@@ -86,8 +87,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     private TextView pingCountText;
     private TextView pingPackageSizeText;
     private TextView connectCountText;
-    private TextView connectToHostText;
-    private TextView connectToPortText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
     private SwitchMaterial ignoreSSLErrorSwitch;
@@ -116,11 +115,12 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         preparePingCountField();
         preparePingPackageSizeField();
         prepareConnectCountField();
-        prepareConnectToHostField();
-        prepareConnectToPortField();
+        prepareResolveRulesField();
         prepareStopOnSuccessSwitch();
         prepareIgnoreSSLErrorSwitch();
         prepareGlobalHeadersField();
+        prepareSNMPVersionRadioButtons();
+        prepareSNMPPortField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -177,7 +177,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         Log.d(DefaultsActivity.class.getName(), "prepareAccessTypeRadioButtons");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         accessTypeGroup = findViewById(R.id.radiogroup_activity_defaults_accesstype);
-        accessTypeGroup.setOnCheckedChangeListener(null);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
         AccessType type = preferenceManager.getPreferenceAccessType();
@@ -194,22 +193,22 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
                 newRadioButton.setChecked(accessType.equals(type));
             }
             newRadioButton.setTag(accessType);
-            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-            accessTypeGroup.addView(newRadioButton, ii, layoutParams);
+            newRadioButton.setOnClickListener(this::onAccessTypeChanged);
+            accessTypeGroup.addView(newRadioButton);
         }
-        accessTypeGroup.setOnCheckedChangeListener(this::onAccessTypeChanged);
     }
 
-    private void onAccessTypeChanged(RadioGroup group, int checkedId) {
+    private void onAccessTypeChanged(View view) {
         Log.d(DefaultsActivity.class.getName(), "onAccessTypeChanged");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(checkedId);
-        if (selectedAccessTypeRadioButton != null) {
-            AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-            Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
-            if (accessType != null) {
-                preferenceManager.setPreferenceAccessType(accessType);
-            }
+        for (int ii = 0; ii < accessTypeGroup.getChildCount(); ii++) {
+            ((RadioButton) accessTypeGroup.getChildAt(ii)).setChecked(false);
+        }
+        RadioButton selected = (RadioButton) view;
+        selected.setChecked(true);
+        AccessType accessType = (AccessType) selected.getTag();
+        Log.d(DefaultsActivity.class.getName(), "checked access type radio button is " + accessType);
+        if (accessType != null) {
+            new PreferenceManager(this).setPreferenceAccessType(accessType);
         }
     }
 
@@ -268,26 +267,10 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
-    private void prepareConnectToHostField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareConnectToHostField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        connectToHostText = findViewById(R.id.textview_activity_defaults_connect_to_host);
-        String connectToHost = preferenceManager.getPreferenceResolveAddress();
-        connectToHost = UIUtil.getNotSetIfEmpty(this, connectToHost);
-        setConnectToHost(connectToHost);
-        CardView connectToHostCardView = findViewById(R.id.cardview_activity_defaults_connect_to_host);
-        connectToHostCardView.setOnClickListener(this::showConnectToHostInputDialog);
-    }
-
-    private void prepareConnectToPortField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareConnectToPortField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        connectToPortText = findViewById(R.id.textview_activity_defaults_connect_to_port);
-        int resolvePort = preferenceManager.getPreferenceResolvePort();
-        String connectToPort = UIUtil.getNotSetIfNegative(this, resolvePort);
-        setConnectToPort(connectToPort);
-        CardView connectToPortCardView = findViewById(R.id.cardview_activity_defaults_connect_to_port);
-        connectToPortCardView.setOnClickListener(this::showConnectToPortInputDialog);
+    private void prepareResolveRulesField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareResolveRulesField");
+        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_resolve_rules);
+        matchHostCardView.setOnClickListener(this::showResolveEditDialog);
     }
 
     private void prepareStopOnSuccessSwitch() {
@@ -494,6 +477,42 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         }
     }
 
+    private void prepareSNMPVersionRadioButtons() {
+        Log.d(DefaultsActivity.class.getName(), "prepareSNMPVersionRadioButtons");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        RadioGroup snmpVersionGroup = findViewById(R.id.radiogroup_activity_defaults_snmp_version);
+        snmpVersionGroup.setOnCheckedChangeListener(null);
+        SNMPVersion version = preferenceManager.getPreferenceSNMPVersion();
+        RadioButton v1RadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v1);
+        RadioButton v2cRadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v2c);
+        v1RadioButton.setTextColor(getColor(R.color.textColor));
+        v1RadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        v2cRadioButton.setTextColor(getColor(R.color.textColor));
+        v2cRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        v1RadioButton.setChecked(version == null || version.isV1());
+        v2cRadioButton.setChecked(version != null && version.isV2C());
+        snmpVersionGroup.setOnCheckedChangeListener(this::onSNMPVersionChanged);
+    }
+
+    private void onSNMPVersionChanged(RadioGroup group, int checkedId) {
+        Log.d(DefaultsActivity.class.getName(), "onSNMPVersionChanged");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v1) {
+            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        } else if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v2c) {
+            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V2C);
+        }
+    }
+
+    private void prepareSNMPPortField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareSNMPPortField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        snmpPortText = findViewById(R.id.textview_activity_defaults_snmp_port);
+        setSNMPPort(String.valueOf(preferenceManager.getPreferenceSNMPPort()));
+        CardView snmpPortCardView = findViewById(R.id.cardview_activity_defaults_snmp_port);
+        snmpPortCardView.setOnClickListener(this::showSNMPPortInputDialog);
+    }
+
     private void prepareOnlyWifiSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareOnlyWifiSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -612,21 +631,14 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
-    private String getConnectToHost() {
-        return StringUtil.notNull(connectToHostText.getText());
+    private String getSNMPPort() {
+        return StringUtil.notNull(snmpPortText.getText());
     }
 
-    private void setConnectToHost(String connectToHost) {
-        connectToHostText.setText(StringUtil.notNull(connectToHost));
+    private void setSNMPPort(String port) {
+        snmpPortText.setText(StringUtil.notNull(port));
     }
 
-    private String getConnectToPort() {
-        return StringUtil.notNull(connectToPortText.getText());
-    }
-
-    private void setConnectToPort(String connectToPort) {
-        connectToPortText.setText(StringUtil.notNull(connectToPort));
-    }
 
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
@@ -670,20 +682,16 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         showInputDialog(input.toBundle());
     }
 
-    private void showConnectToHostInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showConnectToHostInputDialog");
-        List<String> validators = Collections.singletonList(ResolveHostFieldValidator.class.getName());
-        String connectToAddress = getConnectToHost().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getConnectToHost();
-        SettingsInput input = new SettingsInput(SettingsInput.Type.RESOLVEADDRESS, connectToAddress, getResources().getString(R.string.label_activity_defaults_connect_to_host), validators);
-        showInputDialog(input.toBundle());
-    }
-
-    private void showConnectToPortInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showConnectToPortInputDialog");
-        List<String> validators = Collections.singletonList(ResolvePortFieldValidator.class.getName());
-        String connectToPort = getConnectToPort().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getConnectToPort();
-        SettingsInput input = new SettingsInput(SettingsInput.Type.RESOLVEPORT, connectToPort, getResources().getString(R.string.label_activity_defaults_connect_to_port), validators);
-        showInputDialog(input.toBundle());
+    private void showResolveEditDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showResolveEditDialog");
+        ResolveEditDialog resolveEditDialog = new ResolveEditDialog();
+        Resolve resolve = new Resolve(this);
+        Bundle bundle = BundleUtil.bundleToBundle(resolveEditDialog.getResolveKey(), resolve.toBundle());
+        bundle = BundleUtil.integerToBundle(resolveEditDialog.getPositionKey(), -1, bundle);
+        bundle = BundleUtil.booleanToBundle(resolveEditDialog.getValidateListKey(), false, bundle);
+        bundle = BundleUtil.stringToBundle(resolveEditDialog.getNetworkTaskURLKey(), "", bundle);
+        resolveEditDialog.setArguments(bundle);
+        resolveEditDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
     }
 
     private void showInputDialog(Bundle bundle) {
@@ -703,6 +711,13 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         BundleUtil.booleanToBundle(headersDialog.getSupportsRestoreDefaultHeadersKey(), false, bundle);
         headersDialog.setArguments(bundle);
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
+    }
+
+    private void showSNMPPortInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showSNMPPortInputDialog");
+        List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.SNMPPORT, getSNMPPort(), getResources().getString(R.string.label_activity_defaults_snmp_port), validators);
+        showInputDialog(input.toBundle());
     }
 
     @Override
@@ -728,24 +743,9 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
-        } else if (SettingsInput.Type.RESOLVEADDRESS.equals(type.getType())) {
-            String resolveAddress = StringUtil.notNull(inputDialog.getValue()).trim();
-            if (StringUtil.isEmpty(UIUtil.getEmptyIfNotSet(this, resolveAddress))) {
-                setConnectToHost(getResources().getString(R.string.string_not_set));
-                preferenceManager.removePreferenceResolveAddress();
-            } else {
-                setConnectToHost(resolveAddress);
-                preferenceManager.setPreferenceResolveAddress(resolveAddress);
-            }
-        } else if (SettingsInput.Type.RESOLVEPORT.equals(type.getType())) {
-            String resolvePort = StringUtil.notNull(inputDialog.getValue()).trim();
-            if (StringUtil.isEmpty(UIUtil.getEmptyIfNotSet(this, resolvePort))) {
-                setConnectToPort(getResources().getString(R.string.string_not_set));
-                preferenceManager.removePreferenceResolvePort();
-            } else {
-                setConnectToPort(resolvePort);
-                preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(resolvePort, getResources().getInteger(R.integer.resolve_port_default)));
-            }
+        } else if (SettingsInput.Type.SNMPPORT.equals(type.getType())) {
+            setSNMPPort(inputDialog.getValue());
+            preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(getSNMPPort(), getResources().getInteger(R.integer.task_snmp_port_default)));
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }
@@ -773,6 +773,49 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     public void onHeadersDialogCancelClicked(HeadersDialog headersDialog) {
         Log.d(DefaultsActivity.class.getName(), "onHeadersDialogCancelClicked");
         headersDialog.dismiss();
+    }
+
+    @Override
+    public void onResolveEditDialogOkClicked(ResolveEditDialog resolveEditDialog, int position) {
+        Log.d(DefaultsActivity.class.getName(), "onResolveEditDialogOkClicked with position " + position);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        Resolve resolve = resolveEditDialog.getResolve();
+        String matchAddress = StringUtil.notNull(resolve.getSourceAddress()).trim();
+        if (StringUtil.isEmpty(matchAddress)) {
+            preferenceManager.removePreferenceResolveMatchAddress();
+        } else {
+            preferenceManager.setPreferenceResolveMatchAddress(matchAddress);
+        }
+        int matchPort = resolve.getSourcePort();
+        if (matchPort < 0) {
+            preferenceManager.removePreferenceResolveMatchPort();
+        } else {
+            preferenceManager.setPreferenceResolveMatchPort(NumberUtil.getIntValue(matchPort, getResources().getInteger(R.integer.resolve_port_match_default)));
+        }
+        String connectToAddress = StringUtil.notNull(resolve.getTargetAddress()).trim();
+        if (StringUtil.isEmpty(connectToAddress)) {
+            preferenceManager.removePreferenceResolveAddress();
+        } else {
+            preferenceManager.setPreferenceResolveAddress(connectToAddress);
+        }
+        int connectToPort = resolve.getTargetPort();
+        if (connectToPort < 0) {
+            preferenceManager.removePreferenceResolvePort();
+        } else {
+            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(connectToPort, getResources().getInteger(R.integer.resolve_port_default)));
+        }
+        resolveEditDialog.dismiss();
+    }
+
+    @Override
+    public void onResolveEditDialogCancelClicked(ResolveEditDialog resolveEditDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onResolveEditDialogCancelClicked");
+        resolveEditDialog.dismiss();
+    }
+
+    @Override
+    public List<Resolve> getExistingResolves() {
+        return Collections.emptyList();
     }
 
     private String getGlobalHeadersExpandedKey() {

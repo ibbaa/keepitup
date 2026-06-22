@@ -23,6 +23,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -92,6 +93,44 @@ public class AccessTypeDataValidatorTest {
         assertTrue(validator.validate(data));
     }
 
+    @Test
+    public void testValidateSNMPVersion() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPVersion(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpVersion(null);
+        assertFalse(validator.validateSNMPVersion(data));
+        assertFalse(validator.validate(data));
+    }
+
+    @Test
+    public void testValidateSNMPCommunity() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity(null);
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("");
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("   ");
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("x".repeat(256));
+        assertFalse(validator.validateSNMPCommunity(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpCommunity("x".repeat(255));
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpCommunity("invalid community");
+        assertFalse(validator.validateSNMPCommunity(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpCommunity("valid_community!");
+        assertTrue(validator.validateSNMPCommunity(data));
+        assertTrue(validator.validate(data));
+    }
+
     private AccessTypeData getAccessTypeData() {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);
@@ -102,6 +141,9 @@ public class AccessTypeDataValidatorTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 }

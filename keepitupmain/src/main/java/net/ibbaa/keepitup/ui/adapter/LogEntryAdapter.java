@@ -202,7 +202,7 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     }
 
     private String getHideSuccessfulKey() {
-        return LogEntryAdapter.class.getSimpleName() + "HideSuccessful";
+        return LogEntryAdapter.class.getSimpleName() + ".HideSuccessful";
     }
 
     public NetworkTask getNetworkTask() {

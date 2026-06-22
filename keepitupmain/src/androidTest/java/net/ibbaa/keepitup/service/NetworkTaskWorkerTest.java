@@ -33,7 +33,9 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
@@ -57,6 +59,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -67,6 +72,7 @@ public class NetworkTaskWorkerTest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private LogDAO logDAO;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -78,6 +84,8 @@ public class NetworkTaskWorkerTest {
         logDAO.deleteAllLogs();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @After
@@ -86,6 +94,7 @@ public class NetworkTaskWorkerTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         logDAO.deleteAllLogs();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @Test
@@ -876,9 +885,9 @@ public class NetworkTaskWorkerTest {
     @Test
     public void testNoWifiConnectionWithoutNotification() {
         NetworkTask task = getNetworkTask();
-        networkTaskDAO.insertNetworkTask(task);
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         task.setOnlyWifi(true);
+        task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -995,9 +1004,9 @@ public class NetworkTaskWorkerTest {
     @Test
     public void testNoWifiConnectionNumberInstancesAfterExecution() {
         NetworkTask task = getNetworkTask();
+        task.setOnlyWifi(true);
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
-        task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -1077,6 +1086,71 @@ public class NetworkTaskWorkerTest {
         assertEquals("DNS lookup for abc.com failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
+    @Test
+    public void testExecuteDNSLookupTimeout() {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        testNetworkTaskWorker.setMockDNSLookupTimeout(1);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("host.com", null, 30000, null));
+        NetworkTaskWorker.DNSExecutionResult dnsExecutionResult = testNetworkTaskWorker.executeDNSLookup("host.com", true);
+        assertNull(dnsExecutionResult.getAddress());
+        assertFalse(dnsExecutionResult.isInterrupted());
+        assertFalse(dnsExecutionResult.getLogEntry().isSuccess());
+        assertEquals("DNS lookup for host.com failed. No response within 1 second.", dnsExecutionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupMultipleHosts() throws Exception {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(List.of(InetAddress.getByName("127.0.0.1")), "abc.com", null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        List<NetworkTaskWorker.DNSExecutionResult> results = testNetworkTaskWorker.executeDNSLookup(Arrays.asList("host1.com", "host2.com", "host3.com"), true);
+        assertEquals(3, results.size());
+        for (NetworkTaskWorker.DNSExecutionResult result : results) {
+            assertFalse(result.isInterrupted());
+            assertTrue(result.getLogEntry().isSuccess());
+            assertEquals(InetAddress.getByName("127.0.0.1"), result.getAddress());
+            assertEquals("DNS lookup for abc.com successful. Resolved address is 127.0.0.1.", result.getLogEntry().getMessage());
+        }
+    }
+
+    @Test
+    public void testExecuteDNSLookupMultipleHostsAllFailed() {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), "abc.com", exception);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        List<NetworkTaskWorker.DNSExecutionResult> results = testNetworkTaskWorker.executeDNSLookup(Arrays.asList("host1.com", "host2.com", "host3.com"), true);
+        assertEquals(3, results.size());
+        for (NetworkTaskWorker.DNSExecutionResult result : results) {
+            assertFalse(result.isInterrupted());
+            assertFalse(result.getLogEntry().isSuccess());
+            assertNull(result.getAddress());
+            assertEquals("DNS lookup for abc.com failed. IllegalArgumentException: TestException", result.getLogEntry().getMessage());
+        }
+    }
+
+    @Test
+    public void testExecuteDNSLookupInterrupted() throws Exception {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        CountDownLatch startedLatch = new CountDownLatch(1);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("host.com", null, 60000, startedLatch));
+        AtomicReference<List<NetworkTaskWorker.DNSExecutionResult>> results = new AtomicReference<>();
+        CountDownLatch doneLatch = new CountDownLatch(1);
+        Thread thread = new Thread(() -> {
+            results.set(testNetworkTaskWorker.executeDNSLookup(Collections.singletonList("host.com"), true));
+            doneLatch.countDown();
+        });
+        thread.start();
+        assertTrue(startedLatch.await(5, TimeUnit.SECONDS));
+        thread.interrupt();
+        assertTrue(doneLatch.await(5, TimeUnit.SECONDS));
+        List<NetworkTaskWorker.DNSExecutionResult> executionResults = results.get();
+        assertEquals(1, executionResults.size());
+        assertTrue(executionResults.get(0).isInterrupted());
+        assertFalse(executionResults.get(0).getLogEntry().isSuccess());
+        assertEquals("DNS lookup for host.com failed. The task was stopped.", executionResults.get(0).getLogEntry().getMessage());
+    }
+
     private void setCurrentTime(TestNetworkTaskWorker testNetworkTaskWorker) {
         MockTimeService timeService = (MockTimeService) testNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
@@ -1109,6 +1183,7 @@ public class NetworkTaskWorkerTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(0);
         task.setHighPrio(true);
         return task;
@@ -1124,6 +1199,9 @@ public class NetworkTaskWorkerTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("public");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 

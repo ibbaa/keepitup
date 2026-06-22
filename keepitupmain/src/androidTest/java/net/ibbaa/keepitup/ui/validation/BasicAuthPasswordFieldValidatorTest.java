@@ -35,18 +35,18 @@ public class BasicAuthPasswordFieldValidatorTest {
     @Test
     public void testValidate() {
         BasicAuthPasswordFieldValidator validator = new BasicAuthPasswordFieldValidator("Password", TestRegistry.getContext());
-        ValidationResult result = validator.validate(null);
-        assertFalse(result.isValidationSuccessful());
-        assertEquals("Password", result.getFieldName());
-        assertEquals("No value specified", result.getMessage());
-        result = validator.validate("");
-        assertFalse(result.isValidationSuccessful());
-        assertEquals("Password", result.getFieldName());
-        assertEquals("No value specified", result.getMessage());
-        result = validator.validate(new String(new char[4096]));
+        ValidationResult result = validator.validate(new String(new char[4096]));
         assertFalse(result.isValidationSuccessful());
         assertEquals("Password", result.getFieldName());
         assertEquals("Maximum length: 4095", result.getMessage());
+        result = validator.validate(null);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Password", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validate("");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Password", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
         result = validator.validate(" ");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Password", result.getFieldName());

@@ -29,7 +29,10 @@
     <integer name="download_read_timeout">30</integer>
     <integer name="download_valid_poll_interval">300</integer>
     <integer name="download_max_redirect">10</integer>
+    <integer name="snmp_request_timeout">10</integer>
+    <integer name="snmp_request_retries">1</integer>
     <integer name="dns_lookup_timeout">60</integer>
+    <integer name="dns_max_parallel_lookups">10</integer>
     <string name="http_header_content_disposition">Content-Disposition</string>
     <string name="http_header_content_type">Content-Type</string>
     <string name="http_header_content_location">Location</string>
@@ -41,4 +44,9 @@
     <string name="http_header_accept_language_default_value">en-US,en;q=0.9</string>
     <integer name="http_header_name_max_length">128</integer>
     <integer name="http_header_value_max_length">8192</integer>
+    <integer name="snmp_community_max_length">255</integer>
+    <integer name="snmp_ifdescr_max_length">255</integer>
+    <integer name="snmp_oid_max_length">256</integer>
+    <integer name="snmp_ifoperstatus_minimum">1</integer>
+    <integer name="snmp_iftype_minimum">1</integer>
 </resources>

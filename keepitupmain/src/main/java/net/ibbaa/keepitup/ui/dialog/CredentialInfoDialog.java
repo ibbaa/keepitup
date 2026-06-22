@@ -63,7 +63,7 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
     }
 
     private void prepareTitle(View view, String title) {
-        Log.d(CredentialInfoDialog.class.getName(), "prepareTitle");
+        Log.d(CredentialInfoDialog.class.getName(), "prepareTitle, title is " + title);
         TextView titleView = view.findViewById(R.id.textview_dialog_credential_info_title);
         if (title == null) {
             title = getResources().getString(R.string.text_dialog_credential_info_title);
@@ -72,7 +72,7 @@ public class CredentialInfoDialog extends GridBasedMessageDialogBase {
     }
 
     private void prepareMessage(View view, String message) {
-        Log.d(CredentialInfoDialog.class.getName(), "prepareMessage");
+        Log.d(CredentialInfoDialog.class.getName(), "prepareMessage, message is " + message);
         TextView messageView = view.findViewById(R.id.textview_dialog_credential_info_message);
         if (message == null) {
             message = getResources().getString(R.string.text_dialog_credential_info_message);

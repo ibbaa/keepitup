@@ -324,6 +324,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         networkTask.setNotification(true);
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
+        networkTask.setLastSysUpTime(0);
         networkTask.setFailureCount(2);
         networkTask.setHighPrio(true);
         return networkTask;

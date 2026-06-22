@@ -20,7 +20,8 @@ public enum AccessType {
 
     PING(1, false),
     CONNECT(2, true),
-    DOWNLOAD(3, false);
+    DOWNLOAD(3, false),
+    SNMP(4, true);
 
     private final int code;
     private final boolean needsPort;
@@ -48,6 +49,10 @@ public enum AccessType {
 
     public boolean isDownload() {
         return DOWNLOAD.equals(this);
+    }
+
+    public boolean isSNMP() {
+        return SNMP.equals(this);
     }
 
     public static AccessType forCode(int code) {

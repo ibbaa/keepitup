@@ -33,4 +33,6 @@
     <bool name="ignore_ssl_error_default">false</bool>
     <string name="use_default_headers_key">use_default_headers_key</string>
     <bool name="use_default_headers_default">true</bool>
+    <string name="snmp_version_key">snmp_version_key</string>
+    <integer name="snmp_version_default">2</integer>
 </resources>

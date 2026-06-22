@@ -30,6 +30,7 @@
     <string name="header_json_key">header</string>
     <string name="accesstypedata_json_key">accesstypedata</string>
     <string name="resolve_json_key">resolve</string>
+    <string name="snmpitem_json_key">snmpitem</string>
     <string name="preferences_json_key">preferences</string>
     <string name="preferences_global_json_key">global</string>
     <string name="preferences_defaults_json_key">defaults</string>

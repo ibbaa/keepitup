@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2026 Alwin Ibba
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="label_dialog_resolves_resolves">Resolve rules</string>
+    <string name="text_dialog_resolves_no_resolves">No resolve rules defined</string>
+    <string name="label_dialog_resolves_delete_resolve">Delete resolve rule</string>
+    <string name="label_dialog_resolves_add_resolve">Add resolve rule</string>
+    <string name="list_item_resolve_match">Match: %s</string>
+    <string name="list_item_resolve_connect_to">Connect-to: %s</string>
+    <string name="text_dialog_confirm_delete_resolve">Really delete?</string>
+    <dimen name="list_item_resolve_text_size">12sp</dimen>
+    <string name="label_dialog_resolves_ok">@android:string/ok</string>
+    <string name="label_dialog_resolves_cancel">@android:string/cancel</string>
+</resources>

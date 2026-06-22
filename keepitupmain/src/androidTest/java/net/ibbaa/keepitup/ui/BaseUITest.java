@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 import android.content.Intent;
@@ -46,11 +47,13 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
 import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SchedulerState;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.encryption.MainKeyAccess;
 import net.ibbaa.keepitup.service.IFileManager;
@@ -97,9 +100,11 @@ public abstract class BaseUITest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private TestNetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
     private TestTimeBasedSuspensionScheduler timeBasedSuspensionScheduler;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private IFileManager fileManager;
     private MockTimeService timeService;
 
@@ -133,12 +138,16 @@ public abstract class BaseUITest {
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
+        snmpItemDAO.deleteAllSNMPItems();
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
@@ -167,9 +176,11 @@ public abstract class BaseUITest {
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
@@ -279,6 +290,7 @@ public abstract class BaseUITest {
     public Bundle getBypassSystemSAFBundle() {
         Bundle bundle = BundleUtil.booleanToBundle(SystemActivity.getBypassSystemSAFKey(), true);
         bundle.putBoolean(GlobalSettingsActivity.getBypassSystemSAFKey(), true);
+        bundle.putBoolean(NetworkTaskMainActivity.getBypassSystemSAFKey(), true);
         return bundle;
     }
 
@@ -314,6 +326,10 @@ public abstract class BaseUITest {
         return headerDAO;
     }
 
+    public SNMPItemDAO getSnmpItemDAO() {
+        return snmpItemDAO;
+    }
+
     public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
         return networkTaskProcessServiceScheduler;
     }
@@ -328,6 +344,10 @@ public abstract class BaseUITest {
 
     public PreferenceManager getPreferenceManager() {
         return preferenceManager;
+    }
+
+    public NoBackupPreferenceManager getNoBackupPreferenceManager() {
+        return noBackupPreferenceManager;
     }
 
     public void setLocale(Locale locale) {
@@ -412,7 +432,6 @@ public abstract class BaseUITest {
         return stringHolder[0];
     }
 
-
     public static ViewAction setNumber(int number) {
         return new ViewAction() {
             @Override
@@ -429,6 +448,25 @@ public abstract class BaseUITest {
             @Override
             public Matcher<View> getConstraints() {
                 return ViewMatchers.isAssignableFrom(NumberPicker.class);
+            }
+        };
+    }
+
+    public static ViewAction forceClick() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isDisplayed();
+            }
+
+            @Override
+            public String getDescription() {
+                return "force click";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
             }
         };
     }

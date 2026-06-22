@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.ResolveDAO;
+import net.ibbaa.keepitup.db.SNMPItemDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
@@ -45,6 +46,9 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.util.JSONUtil;
@@ -70,7 +74,9 @@ public class JSONSystemSetupTest {
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
     private HeaderDAO headerDAO;
+    private SNMPItemDAO snmpItemDAO;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private JSONSystemSetup setup;
     private JSONSystemSetup encryptedSetup;
 
@@ -83,14 +89,18 @@ public class JSONSystemSetupTest {
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
         headerDAO = new HeaderDAO(TestRegistry.getContext());
+        snmpItemDAO = new SNMPItemDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         setup = new JSONSystemSetup(TestRegistry.getContext(), false);
         encryptedSetup = new JSONSystemSetup(TestRegistry.getContext(), true);
     }
@@ -101,9 +111,11 @@ public class JSONSystemSetupTest {
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @Test
@@ -135,9 +147,13 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = resolveDAO.insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = resolveDAO.insertResolve(getResolve3(task2.getId()));
         Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
         Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
         Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
+        SNMPItem snmpItem1 = snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = snmpItemDAO.insertSNMPItem(getSNMPItem3(task2.getId()));
         SystemSetupResult result = encryptedSetup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
@@ -181,12 +197,14 @@ public class JSONSystemSetupTest {
         AccessTypeData task2AccessData = new AccessTypeData(JSONUtil.toMap((task2AccessDataJSON)));
         assertTrue(task1AccessData.isEqual(accessData1));
         assertTrue(task2AccessData.isEqual(accessData2));
-        JSONObject task1ResolveJSON = (JSONObject) task1Data.get("resolve");
-        JSONObject task2ResolveJSON = (JSONObject) task2Data.get("resolve");
-        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON)));
-        Resolve task2Resolve = new Resolve(JSONUtil.toMap((task2ResolveJSON)));
+        JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
+        JSONArray task2ResolveJSON = (JSONArray) task2Data.get("resolve");
+        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON.getJSONObject(0))));
+        Resolve task2Resolve1 = new Resolve(JSONUtil.toMap((task2ResolveJSON.getJSONObject(0))));
+        Resolve task2Resolve2 = new Resolve(JSONUtil.toMap((task2ResolveJSON.getJSONObject(1))));
         assertTrue(task1Resolve.isEqual(resolve1));
-        assertTrue(task2Resolve.isEqual(resolve2));
+        assertTrue(task2Resolve1.isEqual(resolve2));
+        assertTrue(task2Resolve2.isEqual(resolve3));
         JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
         JSONArray task2HeaderJSON = (JSONArray) task2Data.get("header");
         Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
@@ -195,6 +213,14 @@ public class JSONSystemSetupTest {
         assertTrue(task1Header.isEqual(header1));
         assertTrue(task2Header1.isEqual(header2));
         assertTrue(task2Header2.isEqual(header3));
+        JSONArray task1SNMPItemJSON = (JSONArray) task1Data.get("snmpitem");
+        JSONArray task2SNMPItemJSON = (JSONArray) task2Data.get("snmpitem");
+        SNMPItem task1SNMPItem1 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(0)));
+        SNMPItem task1SNMPItem2 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(1)));
+        SNMPItem task2SNMPItem1 = new SNMPItem(JSONUtil.toMap((JSONObject) task2SNMPItemJSON.get(0)));
+        assertTrue(task1SNMPItem1.isEqual(snmpItem1));
+        assertTrue(task1SNMPItem2.isEqual(snmpItem2));
+        assertTrue(task2SNMPItem1.isEqual(snmpItem3));
     }
 
     @Test
@@ -255,9 +281,30 @@ public class JSONSystemSetupTest {
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
         AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
         assertTrue(task1AccessData.isEqual(accessData1));
-        JSONObject task1ResolveJSON = (JSONObject) task1Data.get("resolve");
-        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON)));
+        JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
+        Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON.getJSONObject(0))));
         assertTrue(task1Resolve.isEqual(insertedResolve1));
+    }
+
+    @Test
+    public void testExportDatabaseSNMPItems() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SNMPItem snmpItem1 = snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = snmpItemDAO.insertSNMPItem(getSNMPItem3(task1.getId()));
+        SystemSetupResult result = encryptedSetup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONArray task1SNMPItemJSON = (JSONArray) task1Data.get("snmpitem");
+        assertEquals(3, task1SNMPItemJSON.length());
+        SNMPItem readSNMPItem1 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(0)));
+        SNMPItem readSNMPItem2 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(1)));
+        SNMPItem readSNMPItem3 = new SNMPItem(JSONUtil.toMap((JSONObject) task1SNMPItemJSON.get(2)));
+        assertTrue(readSNMPItem1.isEqual(snmpItem1));
+        assertTrue(readSNMPItem2.isEqual(snmpItem2));
+        assertTrue(readSNMPItem3.isEqual(snmpItem3));
     }
 
     @Test
@@ -277,13 +324,44 @@ public class JSONSystemSetupTest {
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONArray globalHeaderData = (JSONArray) databaseData.get("globalheader");
         assertEquals(1, globalHeaderData.length());
-        Header globalHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
+        Header globalHeader1 = new Header(JSONUtil.toMap(globalHeaderData.getJSONObject(0)));
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONArray task1HeaderJSON = (JSONArray) task1Data.get("header");
         assertEquals(1, task1HeaderJSON.length());
-        Header task1Header = new Header(JSONUtil.toMap((JSONObject) task1HeaderJSON.get(0)));
+        Header task1Header = new Header(JSONUtil.toMap(task1HeaderJSON.getJSONObject(0)));
         assertTrue(task1Header.isEqual(header1));
         assertTrue(globalHeader1.isEqual(header2));
+    }
+
+    @Test
+    public void testExportDatabaseAccessTypeDataInvalidKey() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        corruptKey();
+        SystemSetupResult result = encryptedSetup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
+        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        accessData1.setSnmpCommunity(null);
+        assertTrue(task1AccessData.isEqual(accessData1));
+    }
+
+    @Test
+    public void testExportDatabaseAccessTypeDataNotEncrypted() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.success());
+        JSONObject jsonData = new JSONObject(result.data());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
+        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        accessData1.setSnmpCommunity(null);
+        assertTrue(task1AccessData.isEqual(accessData1));
     }
 
     @Test
@@ -367,8 +445,12 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(15);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -377,7 +459,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
@@ -409,8 +492,12 @@ public class JSONSystemSetupTest {
         assertTrue(defaultsData.getBoolean("preferenceHighPrio"));
         assertFalse(defaultsData.getBoolean("preferenceUseDefaultHeaders"));
         assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
+        assertEquals("10.0.0.1", defaultsData.getString("preferenceResolveMatchAddress"));
+        assertEquals(789, defaultsData.getInt("preferenceResolveMatchPort"));
         assertEquals("127.0.0.1", defaultsData.getString("preferenceResolveAddress"));
-        assertEquals(123, defaultsData.getInt("preferenceResolvePort"));
+        assertEquals(456, defaultsData.getInt("preferenceResolvePort"));
+        assertEquals(SNMPVersion.V1, SNMPVersion.forCode(defaultsData.getInt("preferenceSNMPVersion")));
+        assertEquals(162, defaultsData.getInt("preferenceSNMPPort"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
         assertEquals("fileExport", systemSettingsData.getString("preferenceLastArbitraryExportFile"));
@@ -421,6 +508,7 @@ public class JSONSystemSetupTest {
         assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmOnHighPrio"));
         assertTrue(systemSettingsData.getBoolean("preferenceAskedNotificationPermission"));
+        assertTrue(systemSettingsData.getBoolean("preferenceSAFNoticeShown"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmInfoShown"));
     }
 
@@ -428,7 +516,9 @@ public class JSONSystemSetupTest {
     public void testExportSettingsInvalid() throws Exception {
         preferenceManager.setPreferenceNotificationAfterFailures(21);
         preferenceManager.setPreferencePingPackageSize(12345678);
+        preferenceManager.setPreferenceResolveMatchPort(12345678);
         preferenceManager.setPreferenceResolvePort(12345678);
+        preferenceManager.setPreferenceSNMPPort(12345678);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -449,7 +539,9 @@ public class JSONSystemSetupTest {
         assertEquals(25, defaultsData.getInt("preferencePingCount"));
         assertEquals(25, defaultsData.getInt("preferenceConnectCount"));
         assertEquals(12345678, defaultsData.getInt("preferencePingPackageSize"));
+        assertEquals(12345678, defaultsData.getInt("preferenceResolveMatchPort"));
         assertEquals(12345678, defaultsData.getInt("preferenceResolvePort"));
+        assertEquals(12345678, defaultsData.getInt("preferenceSNMPPort"));
     }
 
     @Test
@@ -514,26 +606,33 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = resolveDAO.insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = resolveDAO.insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = resolveDAO.insertResolve(getResolve3(task2.getId()));
         Header header1 = headerDAO.insertHeader(getHeader1(task1.getId()));
         Header header2 = headerDAO.insertHeader(getHeader2(task2.getId()));
         Header header3 = headerDAO.insertHeader(getHeader3(task2.getId()));
+        SNMPItem snmpItem1 = snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
+        SNMPItem snmpItem3 = snmpItemDAO.insertSNMPItem(getSNMPItem3(task2.getId()));
         SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -584,16 +683,27 @@ public class JSONSystemSetupTest {
         AccessTypeData accessData3 = new AccessTypeData(TestRegistry.getContext());
         accessData3.setNetworkTaskId(readAccessData3.getId());
         assertTrue(accessData3.isTechnicallyEqual(readAccessData3));
-        Resolve readResolve1 = resolveDAO.readResolveForNetworkTask(readTask1.getId());
-        Resolve readResolve2 = resolveDAO.readResolveForNetworkTask(readTask2.getId());
+        Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(readTask1.getId()).get(0);
+        Resolve readResolve2 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(0);
+        Resolve readResolve3 = resolveDAO.readAllResolvesForNetworkTask(readTask2.getId()).get(1);
+        resolve1.setIndex(0);
+        resolve2.setIndex(0);
+        resolve3.setIndex(1);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
-        assertNull(resolveDAO.readResolveForNetworkTask(readTask3.getId()));
+        assertTrue(resolve3.isTechnicallyEqual(readResolve3));
+        assertTrue(resolveDAO.readAllResolvesForNetworkTask(readTask3.getId()).isEmpty());
         List<Header> readHeaderList1 = headerDAO.readHeadersForNetworkTask(readTask1.getId());
         List<Header> readHeaderList2 = headerDAO.readHeadersForNetworkTask(readTask2.getId());
         assertTrue(header1.isTechnicallyEqual(readHeaderList1.get(0)));
         assertTrue(header2.isTechnicallyEqual(readHeaderList2.get(0)));
         assertTrue(header3.isTechnicallyEqual(readHeaderList2.get(1)));
+        List<SNMPItem> readSNMPItemList1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask1.getId());
+        List<SNMPItem> readSNMPItemList2 = snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask2.getId());
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
+        assertTrue(snmpItem3.isTechnicallyEqual(readSNMPItemList2.get(0)));
+        assertTrue(snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask3.getId()).isEmpty());
     }
 
     @Test
@@ -651,15 +761,32 @@ public class JSONSystemSetupTest {
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
-        setup.importData(exportResult.data().replace("\"address\":\"127.0.0.1\"", "\"address\":\"   127.0.0.1   \"").replace("\"targetAddress\":\"192.168.178.1\"", "\"targetAddress\":\"   192.168.178.1   \""));
+        resolveDAO.deleteAllResolves();
+        setup.importData(exportResult.data().replace("\"address\":\"127.0.0.1\"", "\"address\":\"   127.0.0.1   \"").replace("\"targetAddress\":\"192.168.178.1\"", "\"targetAddress\":\"   192.168.178.1   \"").replace("\"sourceAddress\":\"192.168.178.2\"", "\"sourceAddress\":\"   192.168.178.2   \""));
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         assertTrue(task1.isTechnicallyEqual(readTask1));
         assertEquals("127.0.0.1", readTask1.getAddress());
-        Resolve readResolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve readResolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertEquals("192.168.178.1", readResolve1.getTargetAddress());
+        assertEquals("192.168.178.2", readResolve1.getSourceAddress());
+    }
+
+    @Test
+    public void testImportDatabaseCommunityTrimmed() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        SystemSetupResult exportResult = encryptedSetup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        setup.importData(exportResult.data().replace("\"snmpCommunity\":\"community1\"", "\"snmpCommunity\":\"   community1   \""));
+        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        assertTrue(task1.isTechnicallyEqual(readTask1));
+        AccessTypeData readAccessData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertEquals("community1", readAccessData1.getSnmpCommunity());
     }
 
     @Test
@@ -672,21 +799,26 @@ public class JSONSystemSetupTest {
         Header header1 = headerDAO.insertHeader(getHeader1(-1));
         Header header2 = headerDAO.insertHeader(getHeader2(-1));
         headerDAO.insertHeader(getHeader1(task1.getId()));
+        SNMPItem snmpItem1 = snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem snmpItem2 = snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
         SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
         headerDAO.deleteAllHeaders();
+        snmpItemDAO.deleteAllSNMPItems();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(intervalDAO.readAllIntervals().isEmpty());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
         assertFalse(headerDAO.readAllHeaders().isEmpty());
         assertFalse(headerDAO.readGlobalHeaders().isEmpty());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -709,6 +841,9 @@ public class JSONSystemSetupTest {
         assertTrue(header1.isTechnicallyEqual(readHeader2));
         assertTrue(header2.isTechnicallyEqual(readHeader1));
         assertEquals(3, headerDAO.readAllHeaders().size());
+        List<SNMPItem> readSNMPItemList1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(readTask1.getId());
+        assertTrue(snmpItem1.isTechnicallyEqual(readSNMPItemList1.get(0)));
+        assertTrue(snmpItem2.isTechnicallyEqual(readSNMPItemList1.get(1)));
     }
 
     @Test
@@ -746,72 +881,88 @@ public class JSONSystemSetupTest {
         logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolveDAO.insertResolve(getResolve1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
         SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
+        snmpItemDAO.deleteAllSNMPItems();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task1 = getNetworkTask1();
         task1.setAccessType(null);
         task1 = networkTaskDAO.insertNetworkTask(task1);
         logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolveDAO.insertResolve(getResolve1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
+        snmpItemDAO.deleteAllSNMPItems();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task1 = getNetworkTask1();
         task1.setPort(100000);
         task1 = networkTaskDAO.insertNetworkTask(task1);
         logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolveDAO.insertResolve(getResolve1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
+        snmpItemDAO.deleteAllSNMPItems();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task1 = getNetworkTask1();
         task1.setInterval(-5);
         task1 = networkTaskDAO.insertNetworkTask(task1);
         logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolveDAO.insertResolve(getResolve1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
+        snmpItemDAO.deleteAllSNMPItems();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
     }
 
     @Test
@@ -825,23 +976,23 @@ public class JSONSystemSetupTest {
         SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
         task1 = networkTaskDAO.readAllNetworkTasks().get(0);
         data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         AccessTypeData defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task1.getId());
         assertTrue(defaultData.isTechnicallyEqual(data1));
-        Resolve resolve = resolveDAO.readResolveForNetworkTask(task1.getId());
+        Resolve resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         data1 = getAccessTypeData1(task1.getId());
@@ -851,23 +1002,23 @@ public class JSONSystemSetupTest {
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
         task1 = networkTaskDAO.readAllNetworkTasks().get(0);
         data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task1.getId());
         assertTrue(defaultData.isTechnicallyEqual(data1));
-        resolve = resolveDAO.readResolveForNetworkTask(task1.getId());
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         data1 = getAccessTypeData1(task1.getId());
@@ -877,19 +1028,65 @@ public class JSONSystemSetupTest {
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
         task1 = networkTaskDAO.readAllNetworkTasks().get(0);
         data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task1.getId());
         assertTrue(defaultData.isTechnicallyEqual(data1));
-        resolve = resolveDAO.readResolveForNetworkTask(task1.getId());
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
+        assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        data1 = getAccessTypeData1(task1.getId());
+        data1.setSnmpVersion(null);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        resolveDAO.insertResolve(getResolve1(task1.getId()));
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        defaultData = new AccessTypeData(TestRegistry.getContext());
+        defaultData.setNetworkTaskId(task1.getId());
+        assertTrue(defaultData.isTechnicallyEqual(data1));
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
+        assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        data1 = getAccessTypeData1(task1.getId());
+        data1.setSnmpCommunityValid(false);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        resolveDAO.insertResolve(getResolve1(task1.getId()));
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertFalse(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        defaultData = new AccessTypeData(TestRegistry.getContext());
+        defaultData.setNetworkTaskId(task1.getId());
+        assertTrue(defaultData.isTechnicallyEqual(data1));
+        resolve = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
         assertTrue(getResolve1(task1.getId()).isTechnicallyEqual(resolve));
     }
 
@@ -904,35 +1101,79 @@ public class JSONSystemSetupTest {
         SystemSetupResult exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
         task1 = networkTaskDAO.readAllNetworkTasks().get(0);
         AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         assertTrue(getAccessTypeData1(task1.getId()).isTechnicallyEqual(data1));
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resolve1 = getResolve1(task1.getId());
         resolve1.setTargetPort(123456789);
         resolveDAO.insertResolve(resolve1);
-        exportResult = setup.exportData();
+        exportResult = encryptedSetup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolve();
+        resolveDAO.deleteAllResolves();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(getAccessTypeData1(task1.getId()).isTechnicallyEqual(data1));
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        resolve1 = getResolve1(task1.getId());
+        resolve1.setSourcePort(9999999);
+        resolveDAO.insertResolve(resolve1);
+        exportResult = encryptedSetup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(getAccessTypeData1(task1.getId()).isTechnicallyEqual(data1));
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        resolve1 = getResolve1(task1.getId());
+        resolve1.setSourceAddress("wrong host");
+        resolveDAO.insertResolve(resolve1);
+        exportResult = encryptedSetup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        resolveDAO.deleteAllResolves();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolves().isEmpty());
         task1 = networkTaskDAO.readAllNetworkTasks().get(0);
         data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         assertTrue(getAccessTypeData1(task1.getId()).isTechnicallyEqual(data1));
@@ -1103,6 +1344,60 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportDatabaseInvalidSNMPItem() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SNMPItem invalidItem1 = getSNMPItem1(task1.getId());
+        invalidItem1.setOid(null);
+        snmpItemDAO.insertSNMPItem(invalidItem1);
+        SystemSetupResult exportResult = encryptedSetup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SNMPItem invalidItem2 = getSNMPItem1(task1.getId());
+        invalidItem2.setOid("not-a-valid-oid");
+        snmpItemDAO.insertSNMPItem(invalidItem2);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SNMPItem invalidItem3 = getSNMPItem1(task1.getId());
+        invalidItem3.setName(new String(new char[256]));
+        snmpItemDAO.insertSNMPItem(invalidItem3);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
+        SNMPItem invalidItem4 = getSNMPItem2(task1.getId());
+        invalidItem4.setOid(null);
+        snmpItemDAO.insertSNMPItem(invalidItem4);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        snmpItemDAO.deleteAllSNMPItems();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
+        assertEquals(1, snmpItemDAO.readAllSNMPItems().size());
+        task1 = networkTaskDAO.readAllNetworkTasks().get(0);
+        assertTrue(getSNMPItem1(task1.getId()).isTechnicallyEqual(snmpItemDAO.readAllSNMPItemsForNetworkTask(task1.getId()).get(0)));
+    }
+
+    @Test
     public void testImportDatabaseInvalidHeaderValue() {
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
@@ -1111,7 +1406,7 @@ public class JSONSystemSetupTest {
         headerDAO.insertHeaders(List.of(header1, header2));
         SystemSetupResult exportResult = setup.exportData();
         headerDAO.deleteAllHeaders();
-        SystemSetupResult importResult = setup.importData(exportResult.data().replaceAll("\"valueValid\":true", "\"valueValid\":false"));
+        SystemSetupResult importResult = setup.importData(exportResult.data().replace("\"valueValid\":true", "\"valueValid\":false"));
         assertTrue(importResult.success());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
@@ -1156,8 +1451,12 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -1166,10 +1465,12 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
@@ -1196,8 +1497,12 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals("fileExport", preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -1206,20 +1511,24 @@ public class JSONSystemSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
     @Test
     public void testImportSettingsAddressTrimmed() {
         preferenceManager.setPreferenceAddress("   address   ");
+        preferenceManager.setPreferenceResolveMatchAddress("   address   ");
         preferenceManager.setPreferenceResolveAddress("   address   ");
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertEquals("address", preferenceManager.getPreferenceAddress());
+        assertEquals("address", preferenceManager.getPreferenceResolveMatchAddress());
         assertEquals("address", preferenceManager.getPreferenceResolveAddress());
     }
 
@@ -1227,7 +1536,9 @@ public class JSONSystemSetupTest {
     public void testImportSettingsInvalid() {
         preferenceManager.setPreferenceNotificationAfterFailures(21);
         preferenceManager.setPreferencePingPackageSize(12345678);
+        preferenceManager.setPreferenceResolveMatchPort(12345678);
         preferenceManager.setPreferenceResolvePort(12345678);
+        preferenceManager.setPreferenceSNMPPort(12345678);
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -1236,12 +1547,16 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceTheme(5);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
@@ -1345,6 +1660,7 @@ public class JSONSystemSetupTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -1365,6 +1681,7 @@ public class JSONSystemSetupTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -1385,6 +1702,7 @@ public class JSONSystemSetupTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(3);
         task.setHighPrio(false);
         return task;
@@ -1472,6 +1790,9 @@ public class JSONSystemSetupTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community1");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -1485,13 +1806,17 @@ public class JSONSystemSetupTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity(null);
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
     private Resolve getResolve1(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
-        resolve.setSourceAddress("");
+        resolve.setIndex(0);
+        resolve.setSourceAddress("192.168.178.2");
         resolve.setSourcePort(-1);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setTargetAddress("192.168.178.1");
@@ -1502,11 +1827,24 @@ public class JSONSystemSetupTest {
     private Resolve getResolve2(long networkTaskId) {
         Resolve resolve = new Resolve();
         resolve.setId(0);
-        resolve.setSourceAddress("");
+        resolve.setIndex(1);
+        resolve.setSourceAddress("localhost");
         resolve.setSourcePort(-1);
         resolve.setNetworkTaskId(networkTaskId);
         resolve.setTargetAddress("127.0.0.1");
         resolve.setTargetPort(80);
+        return resolve;
+    }
+
+    private Resolve getResolve3(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setIndex(2);
+        resolve.setSourceAddress("10.0.0.1");
+        resolve.setSourcePort(8080);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setTargetAddress("10.0.0.2");
+        resolve.setTargetPort(-1);
         return resolve;
     }
 
@@ -1552,5 +1890,38 @@ public class JSONSystemSetupTest {
         header.setValue("value");
         header.setValueValid(true);
         return header;
+    }
+
+    private SNMPItem getSNMPItem1(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACETYPE);
+        item.setName("5");
+        item.setOid("1.3.6.1.2.1.1.1.0");
+        item.setMonitored(true);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem2(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEDESCR);
+        item.setName("ifInOctets");
+        item.setOid("1.3.6.1.2.1.2.2.1.10.1");
+        item.setMonitored(false);
+        return item;
+    }
+
+    private SNMPItem getSNMPItem3(long networkTaskId) {
+        SNMPItem item = new SNMPItem();
+        item.setId(0);
+        item.setNetworkTaskId(networkTaskId);
+        item.setSnmpItemType(SNMPItemType.INTERFACEALIAS);
+        item.setName("sysUpTime");
+        item.setOid("1.3.6.1.2.1.1.3.0");
+        item.setMonitored(true);
+        return item;
     }
 }

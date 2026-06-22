@@ -17,6 +17,6 @@
 package net.ibbaa.keepitup.model;
 
 public interface Equality<T> {
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
     boolean areEqual(T a, T b);
 }

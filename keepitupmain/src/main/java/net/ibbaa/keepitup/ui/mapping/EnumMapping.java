@@ -22,13 +22,12 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidator;
-import net.ibbaa.keepitup.ui.validation.NullResolveValidator;
-import net.ibbaa.keepitup.ui.validation.ResolveValidator;
 
 import java.lang.reflect.Constructor;
 
@@ -109,28 +108,14 @@ public class EnumMapping {
         return new NullAccessTypeDataValidator(getContext());
     }
 
-    public ResolveValidator getResolveValidator(AccessType accessType) {
-        Log.d(EnumMapping.class.getName(), "getResolveValidator for access type " + accessType);
-        if (accessType == null) {
-            Log.d(EnumMapping.class.getName(), "returning " + NullResolveValidator.class.getSimpleName());
-            return new NullResolveValidator(getContext());
-        }
-        String validatorClassName = getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_resolve_validator", "string", context.getPackageName()));
-        Log.d(EnumMapping.class.getName(), "specified validator class is " + validatorClassName);
-        try {
-            Class<?> validatorClass = getContext().getClassLoader().loadClass(validatorClassName);
-            Constructor<?> validatorClassConstructor = validatorClass.getConstructor(Context.class);
-            return (ResolveValidator) validatorClassConstructor.newInstance(getContext());
-        } catch (Throwable exc) {
-            Log.e(EnumMapping.class.getName(), "Error instantiating validator class", exc);
-        }
-        Log.d(EnumMapping.class.getName(), "returning " + NullAccessTypeDataValidator.class.getSimpleName());
-        return new NullResolveValidator(getContext());
-    }
-
     public String getContextOptionName(ContextOption contextOption) {
         Log.d(EnumMapping.class.getName(), "getContextOptionName for context option " + contextOption);
         return getResources().getString(getResources().getIdentifier(contextOption.getClass().getSimpleName() + "_" + contextOption.name() + "_name", "string", context.getPackageName()));
+    }
+
+    public String getSNMPVersionName(SNMPVersion snmpVersion) {
+        Log.d(EnumMapping.class.getName(), "getSNMPVersionName for SNMP version " + snmpVersion);
+        return getResources().getString(getResources().getIdentifier(snmpVersion.getClass().getSimpleName() + "_" + snmpVersion.name() + "_name", "string", context.getPackageName()));
     }
 
     private Context getContext() {

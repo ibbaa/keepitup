@@ -47,6 +47,8 @@ public class DBMigrate {
         versionDowngrades.put(6, this::version6DowngradeTo5);
         versionUpgrades.put(7, this::version7UpgradeFrom6);
         versionDowngrades.put(7, this::version7DowngradeTo6);
+        versionUpgrades.put(8, this::version8UpgradeFrom7);
+        versionDowngrades.put(8, this::version8DowngradeTo7);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -222,6 +224,67 @@ public class DBMigrate {
             setup.dropValueIVColumnFromHeaderTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "dropValueIVColumnFromHeaderTable failed ", exc);
+        }
+    }
+
+    private void version8UpgradeFrom7(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version8UpgradeFrom7");
+        setup.tryDropSNMPItemTable(db);
+        setup.createSNMPItemTable(db);
+        try {
+            setup.addIndexColumnToResolveTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addIndexColumnToResolveTable failed ", exc);
+        }
+        try {
+            setup.addLastSysUpTimeColumnToNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addLastSysUpTimeColumnToNetworkTaskTable failed ", exc);
+        }
+        try {
+            setup.addSnmpVersionColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpVersionColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpCommunityColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpCommunityColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpCommunityIVColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpCommunityIVColumnToAccessTypeDataTable failed ", exc);
+        }
+    }
+
+    private void version8DowngradeTo7(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version8DowngradeTo7");
+        setup.tryDropSNMPItemTable(db);
+        try {
+            setup.dropIndexColumnFromResolveTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropIndexColumnFromResolveTable failed ", exc);
+        }
+        try {
+            setup.dropLastSysUpTimeColumnFromNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropLastSysUpTimeColumnFromNetworkTaskTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpVersionColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpVersionColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpCommunityColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpCommunityColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpCommunityIVColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpCommunityIVColumnFromAccessTypeDataTable failed ", exc);
         }
     }
 

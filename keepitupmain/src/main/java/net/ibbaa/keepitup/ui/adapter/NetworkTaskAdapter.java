@@ -34,17 +34,19 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
+import net.ibbaa.keepitup.util.CollectionUtil;
+import net.ibbaa.keepitup.util.SNMPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
-import net.ibbaa.keepitup.util.URLUtil;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,15 +79,18 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder for position " + position);
         NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
         AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
-        Resolve resolve = networkTaskWrapperList.get(position).getResolve();
+        List<Resolve> resolves = networkTaskWrapperList.get(position).getResolves();
         List<Header> headers = networkTaskWrapperList.get(position).getHeaders();
+        List<SNMPItem> snmpItems = networkTaskWrapperList.get(position).getSnmpItems();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
         bindTitle(networkTaskViewHolder, networkTask);
         bindStatus(networkTaskViewHolder, networkTask);
         bindInstances(networkTaskViewHolder, networkTask);
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
-        bindConnectTo(networkTaskViewHolder, networkTask, resolve);
+        bindSNMPCommunity(networkTaskViewHolder, networkTask, accessTypeData);
+        bindSNMPInterfaces(networkTaskViewHolder, networkTask, snmpItems);
+        bindResolves(networkTaskViewHolder, networkTask, resolves);
         bindHeaders(position, networkTaskViewHolder, networkTask, accessTypeData, headers);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
@@ -149,9 +154,17 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         Log.d(NetworkTaskAdapter.class.getName(), "bindAccessType, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
         String accessTypeText = new EnumMapping(getContext()).getAccessTypeText(networkTask.getAccessType());
         String formattedAccessTypeText = getResources().getString(R.string.list_item_network_task_access_type, accessTypeText);
-        String formattedPackageSizeText = getPackageSizeText(networkTask, accessTypeData);
-        if (!StringUtil.isEmpty(formattedPackageSizeText)) {
-            formattedAccessTypeText += formattedPackageSizeText;
+        if (AccessType.PING.equals(networkTask.getAccessType())) {
+            String formattedPackageSizeText = getPackageSizeText(networkTask, accessTypeData);
+            if (!StringUtil.isEmpty(formattedPackageSizeText)) {
+                formattedAccessTypeText += formattedPackageSizeText;
+            }
+        }
+        if (AccessType.SNMP.equals(networkTask.getAccessType())) {
+            String formattedSNMPVersionText = getSNMPVersionText(networkTask, accessTypeData);
+            if (!StringUtil.isEmpty(formattedSNMPVersionText)) {
+                formattedAccessTypeText += formattedSNMPVersionText;
+            }
         }
         Log.d(NetworkTaskAdapter.class.getName(), "binding access type text " + formattedAccessTypeText);
         networkTaskViewHolder.setAccessType(formattedAccessTypeText);
@@ -170,6 +183,17 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return null;
     }
 
+    private String getSNMPVersionText(NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "getSNMPVersionText, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
+        if (AccessType.SNMP.equals(networkTask.getAccessType())) {
+            if (accessTypeData == null || accessTypeData.getSnmpVersion() == null) {
+                return null;
+            }
+            return new EnumMapping(getContext()).getSNMPVersionName(accessTypeData.getSnmpVersion());
+        }
+        return null;
+    }
+
     private void bindAddress(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindAddress, networkTask is " + networkTask);
         String addressText = String.format(getResources().getString(R.string.list_item_network_task_address), new EnumMapping(getContext()).getAccessTypeAddressText(networkTask.getAccessType()));
@@ -178,28 +202,51 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setAddress(formattedAddressText);
     }
 
-    private void bindConnectTo(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, Resolve resolve) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindConnectTo, networkTask is " + networkTask + ", resolve is " + resolve);
-        if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
-            networkTaskViewHolder.showConnectToTextView();
-            String hostAndPort;
-            if (resolve == null || resolve.isEmpty()) {
-                hostAndPort = getResources().getString(R.string.string_not_set);
-            } else {
-                URL url = URLUtil.getURL(networkTask.getAddress());
-                if (url == null) {
-                    hostAndPort = getResources().getString(R.string.string_not_set);
-                } else {
-                    String targetAddress = URLUtil.getTargetAddress(resolve, url);
-                    targetAddress = URLUtil.isValidIP6Address(targetAddress) ? "[" + targetAddress + "]" : targetAddress;
-                    int targetPort = URLUtil.getTargetPort(resolve, url);
-                    hostAndPort = targetAddress + ":" + targetPort;
+    private void bindSNMPCommunity(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindSNMPCommunity, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
+        if (AccessType.SNMP.equals(networkTask.getAccessType())) {
+            if (accessTypeData != null && !accessTypeData.isSnmpCommunityValid()) {
+                String invalid = getResources().getString(R.string.string_invalid);
+                String formattedCommunityText = getResources().getString(R.string.list_item_network_task_snmp_community, invalid);
+                networkTaskViewHolder.setCommunity(formattedCommunityText);
+                networkTaskViewHolder.showCommunityTextView();
+                networkTaskViewHolder.setCommunityColor(getColor(R.color.textErrorColor));
+                return;
+            }
+        }
+        networkTaskViewHolder.hideCommunityTextView();
+        networkTaskViewHolder.setCommunityColor(getColor(R.color.textColor));
+    }
+
+    private void bindSNMPInterfaces(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<SNMPItem> snmpItems) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindSNMPInterfaces, networkTask is " + networkTask);
+        if (AccessType.SNMP.equals(networkTask.getAccessType())) {
+            int found = 0;
+            int monitored = 0;
+            if (snmpItems != null) {
+                for (SNMPItem item : snmpItems) {
+                    if (SNMPItemType.INTERFACEDESCR.equals(item.getSnmpItemType())) {
+                        found++;
+                        if (item.isMonitored()) {
+                            monitored++;
+                        }
+                    }
                 }
             }
-            String formattedConnectToText = getResources().getString(R.string.list_item_network_task_connect_to, hostAndPort);
+            networkTaskViewHolder.setSnmpInterfaces(getResources().getString(R.string.list_item_network_task_snmp_interfaces, found, monitored));
+            networkTaskViewHolder.showSnmpInterfacesTextView();
+        } else {
+            networkTaskViewHolder.hideSnmpInterfacesTextView();
+        }
+    }
+
+    private void bindResolves(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, List<Resolve> resolves) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindResolves, networkTask is " + networkTask + ", resolve objects are " + resolves);
+        if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
+            String formattedConnectToText = getResources().getString(R.string.list_item_network_task_resolve_rules, CollectionUtil.getSize(resolves) + " " + getResources().getString(R.string.string_defined));
             networkTaskViewHolder.setConnectTo(formattedConnectToText);
         } else {
-            networkTaskViewHolder.hideConnectToTextView();
+            networkTaskViewHolder.hideResolveTextView();
         }
 
     }
@@ -359,7 +406,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve, List<Header> headers, LogEntry logEntry) {
+    public int replaceNetworkTask(NetworkTask task, AccessTypeData data, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, LogEntry logEntry) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
@@ -367,16 +414,19 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 if (data == null) {
                     data = currentTask.getAccessTypeData();
                 }
-                if (resolve == null) {
-                    resolve = currentTask.getResolve();
+                if (resolves == null) {
+                    resolves = currentTask.getResolves();
                 }
                 if (headers == null) {
                     headers = currentTask.getHeaders();
                 }
+                if (snmpItems == null) {
+                    snmpItems = currentTask.getSnmpItems();
+                }
                 if (logEntry == null) {
                     logEntry = currentTask.getLogEntry();
                 }
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolve, headers, logEntry));
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolves, headers, snmpItems, logEntry));
                 return ii;
             }
         }
@@ -388,12 +438,28 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         this.networkTaskWrapperList.addAll(networkTaskWrapperList);
     }
 
-    public boolean isIndexConsistent() {
-        Log.d(NetworkTaskAdapter.class.getName(), "isIndexConsistent");
+    public boolean isNetworkTaskIndexConsistent() {
+        Log.d(NetworkTaskAdapter.class.getName(), "isNetworkTaskIndexConsistent");
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTask currentTask = networkTaskWrapperList.get(ii).getNetworkTask();
             if (currentTask.getIndex() != ii) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isResolveIndexConsistent() {
+        Log.d(NetworkTaskAdapter.class.getName(), "isResolveIndexConsistent");
+        for (NetworkTaskUIWrapper currentWrapper : networkTaskWrapperList) {
+            List<Resolve> resolves = currentWrapper.getResolves();
+            if (resolves != null) {
+                for (int ii = 0; ii < resolves.size(); ii++) {
+                    Resolve currentResolve = resolves.get(ii);
+                    if (currentResolve.getIndex() != ii) {
+                        return false;
+                    }
+                }
             }
         }
         return true;
@@ -436,6 +502,36 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return Collections.unmodifiableList(networkTaskWrapperList);
     }
 
+    public List<NetworkTask> getInvalidSNMPCommunities() {
+        Log.d(NetworkTaskAdapter.class.getName(), "getInvalidSNMPCommunities");
+        List<NetworkTask> invalidSNMPCommunities = new ArrayList<>();
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
+                AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
+                if (accessTypeData != null && !accessTypeData.isSnmpCommunityValid()) {
+                    invalidSNMPCommunities.add(currentWrapper.getNetworkTask());
+                }
+            }
+        }
+        return invalidSNMPCommunities;
+    }
+
+    public List<NetworkTask> getValidSNMPCommunities() {
+        Log.d(NetworkTaskAdapter.class.getName(), "getValidSNMPCommunities");
+        List<NetworkTask> invalidSNMPCommunities = new ArrayList<>();
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
+                AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
+                if (accessTypeData != null && accessTypeData.isSnmpCommunityValid()) {
+                    invalidSNMPCommunities.add(currentWrapper.getNetworkTask());
+                }
+            }
+        }
+        return invalidSNMPCommunities;
+    }
+
     public Map<Long, List<Header>> getInvalidHeaders() {
         Log.d(NetworkTaskAdapter.class.getName(), "getInvalidHeaders");
         Map<Long, List<Header>> invalidHeaders = new TreeMap<>();
@@ -462,6 +558,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             }
         }
         return secretHeaders;
+    }
+
+    public NetworkTaskUIWrapper getItemForNetworkTask(long networkTaskId) {
+        Log.d(NetworkTaskAdapter.class.getName(), "getItemForNetworkTask for networkTaskId " + networkTaskId);
+        if (networkTaskId < 0) {
+            return null;
+        }
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            if (networkTaskId == currentWrapper.getId()) {
+                return currentWrapper;
+            }
+        }
+        return null;
     }
 
     public NetworkTaskUIWrapper getItem(int position) {

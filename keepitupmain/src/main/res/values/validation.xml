@@ -24,8 +24,13 @@
     <string name="accesstypedata_ping_count_field_name">Ping count</string>
     <string name="accesstypedata_ping_package_size_field_name">Package size</string>
     <string name="accesstypedata_connect_count_field_name">Connect count</string>
+    <string name="accesstypedata_snmp_community_field_name">Community</string>
     <string name="resolve_host_field_name">Connect-to host</string>
     <string name="resolve_port_field_name">Connect-to port</string>
+    <string name="resolve_match_host_field_name">Match host</string>
+    <string name="resolve_match_port_field_name">Match port</string>
+    <string name="resolve_match_host_port_field_name">Match host/port</string>
+    <string name="resolve_all_fields">Value</string>
     <string name="header_name_field_name">Header name</string>
     <string name="header_value_field_name">Header value</string>
     <string name="basic_auth_username_field_name">Basic auth username</string>
@@ -41,6 +46,7 @@
     <string name="invalid_file_name">No valid filename</string>
     <string name="invalid_characters">Value contains invalid characters</string>
     <string name="invalid_exists">Value already exists</string>
+    <string name="invalid_must_exist">At least one value must be specified</string>
     <string name="invalid_range_minimum">Minimum: %d</string>
     <string name="invalid_range_maximum">Maximum: %d</string>
     <string name="invalid_length_maximum">Maximum length: %d</string>

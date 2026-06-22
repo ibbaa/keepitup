@@ -47,6 +47,9 @@ import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialogTest;
 import net.ibbaa.keepitup.ui.dialog.PlaceholderFocusChangeListenerTest;
 import net.ibbaa.keepitup.ui.dialog.ProgressDialogTest;
 import net.ibbaa.keepitup.ui.dialog.RawTextDialogTest;
+import net.ibbaa.keepitup.ui.dialog.ResolveEditDialogTest;
+import net.ibbaa.keepitup.ui.dialog.ResolvesDialogTest;
+import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputTest;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalSelectDialogTest;
@@ -92,8 +95,11 @@ import org.junit.runners.Suite;
         PlaceholderFocusChangeListenerTest.class,
         ProgressDialogTest.class,
         RawTextDialogTest.class,
+        ResolveEditDialogTest.class,
+        ResolvesDialogTest.class,
         SettingsInputDialogTest.class,
         SettingsInputTest.class,
+        SNMPInterfacesDialogTest.class,
         SuspensionIntervalsDialogTest.class,
         SuspensionIntervalSelectDialogTest.class,
         TimeNumberPickerFormatterTest.class,

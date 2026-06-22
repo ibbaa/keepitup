@@ -153,6 +153,7 @@ public class ResolveValidatorTest {
     private Resolve getResolve() {
         Resolve resolve = new Resolve();
         resolve.setId(0);
+        resolve.setIndex(0);
         resolve.setNetworkTaskId(1);
         resolve.setSourceAddress("");
         resolve.setSourcePort(-1);

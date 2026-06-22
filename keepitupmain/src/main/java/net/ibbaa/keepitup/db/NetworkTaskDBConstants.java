@@ -36,6 +36,7 @@ class NetworkTaskDBConstants {
     private final String notificationColumnName;
     private final String runningColumnName;
     private final String lastScheduledColumnName;
+    private final String lastSysUpTimeColumnName;
     private final String failureCountColumnName;
     private final String highPrioColumnName;
 
@@ -54,6 +55,7 @@ class NetworkTaskDBConstants {
         notificationColumnName = context.getResources().getString(R.string.task_notification_column_name);
         runningColumnName = context.getResources().getString(R.string.task_running_column_name);
         lastScheduledColumnName = context.getResources().getString(R.string.task_lastscheduled_column_name);
+        lastSysUpTimeColumnName = context.getResources().getString(R.string.task_lastsysuptime_column_name);
         failureCountColumnName = context.getResources().getString(R.string.task_failurecount_column_name);
         highPrioColumnName = context.getResources().getString(R.string.task_highprio_column_name);
     }
@@ -114,6 +116,10 @@ class NetworkTaskDBConstants {
         return lastScheduledColumnName;
     }
 
+    public String getLastSysUpTimeColumnName() {
+        return lastSysUpTimeColumnName;
+    }
+
     public String getFailureCountColumnName() {
         return failureCountColumnName;
     }
@@ -137,6 +143,7 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + " INTEGER, " +
                 getRunningColumnName() + " INTEGER, " +
                 getLastScheduledColumnName() + " INTEGER, " +
+                getLastSysUpTimeColumnName() + " INTEGER, " +
                 getFailureCountColumnName() + " INTEGER, " +
                 getHighPrioColumnName() + " INTEGER);";
     }
@@ -156,6 +163,7 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + " INTEGER, " +
                 getRunningColumnName() + " INTEGER, " +
                 getLastScheduledColumnName() + " INTEGER, " +
+                getLastSysUpTimeColumnName() + " INTEGER, " +
                 getHighPrioColumnName() + " INTEGER);";
     }
 
@@ -173,7 +181,27 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + " INTEGER, " +
                 getRunningColumnName() + " INTEGER, " +
                 getLastScheduledColumnName() + " INTEGER, " +
+                getLastSysUpTimeColumnName() + " INTEGER, " +
                 getFailureCountColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutLastSysUpTime() {
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
+                getNameColumnName() + " TEXT, " +
+                getInstancesColumnName() + " INTEGER, " +
+                getAddressColumnName() + " TEXT, " +
+                getPortColumnName() + " INTEGER, " +
+                getAccessTypeColumnName() + " INTEGER, " +
+                getIntervalColumnName() + " INTEGER, " +
+                getOnlyWifiColumnName() + " TEXT, " +
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER, " +
+                getLastScheduledColumnName() + " INTEGER, " +
+                getFailureCountColumnName() + " INTEGER, " +
+                getHighPrioColumnName() + " INTEGER);";
     }
 
     public String getCreateTableStatementWithoutAddedColumns() {
@@ -220,6 +248,14 @@ class NetworkTaskDBConstants {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getNameColumnName() + ";";
     }
 
+    public String getAddLastSysUpTimeColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getLastSysUpTimeColumnName() + " INTEGER;";
+    }
+
+    public String getDropLastSysUpTimeColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getLastSysUpTimeColumnName() + ";";
+    }
+
     public String getReadNetworkTaskStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
@@ -235,6 +271,7 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + ", " +
                 getRunningColumnName() + ", " +
                 getLastScheduledColumnName() + ", " +
+                getLastSysUpTimeColumnName() + ", " +
                 getFailureCountColumnName() + ", " +
                 getHighPrioColumnName() +
                 " FROM " + getTableName() +
@@ -257,6 +294,7 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + ", " +
                 getRunningColumnName() + ", " +
                 getLastScheduledColumnName() + ", " +
+                getLastSysUpTimeColumnName() + ", " +
                 getFailureCountColumnName() + ", " +
                 getHighPrioColumnName() +
                 " FROM " + getTableName() +

@@ -24,35 +24,31 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.util.CollectionUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class NetworkTaskUIWrapper {
 
     private static final Equality<Header> HEADER_EQUALITY = Header::isEqual;
+    private static final Equality<Resolve> RESOLVE_EQUALITY = Resolve::isEqual;
+    private static final Equality<SNMPItem> SNMPITEM_EQUALITY = SNMPItem::isEqual;
 
     private final NetworkTask networkTask;
     private final AccessTypeData accessTypeData;
-    private final Resolve resolve;
+    private final List<Resolve> resolves;
     private final List<Header> headers;
+    private final List<SNMPItem> snmpItems;
     private final LogEntry logEntry;
 
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, List<Header> headers, LogEntry logEntry) {
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, LogEntry logEntry) {
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
-        this.resolve = resolve;
+        this.resolves = resolves;
         this.headers = headers;
-        this.logEntry = logEntry;
-    }
-
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, LogEntry logEntry) {
-        this.networkTask = networkTask;
-        this.accessTypeData = accessTypeData;
-        this.resolve = resolve;
-        this.headers = Collections.emptyList();
+        this.snmpItems = snmpItems;
         this.logEntry = logEntry;
     }
 
@@ -68,12 +64,16 @@ public class NetworkTaskUIWrapper {
         return accessTypeData;
     }
 
-    public Resolve getResolve() {
-        return resolve;
+    public List<Resolve> getResolves() {
+        return resolves;
     }
 
     public List<Header> getHeaders() {
         return headers;
+    }
+
+    public List<SNMPItem> getSnmpItems() {
+        return snmpItems;
     }
 
     public LogEntry getLogEntry() {
@@ -96,13 +96,13 @@ public class NetworkTaskUIWrapper {
         if (accessTypeData != null && !accessTypeData.isEqual(other.getAccessTypeData())) {
             return false;
         }
-        if (resolve == null && other.getResolve() != null) {
-            return false;
-        }
-        if (resolve != null && !resolve.isEqual(other.getResolve())) {
+        if (!CollectionUtil.areListsEqual(resolves, other.getResolves(), RESOLVE_EQUALITY)) {
             return false;
         }
         if (!CollectionUtil.areListsEqual(headers, other.getHeaders(), HEADER_EQUALITY)) {
+            return false;
+        }
+        if (!CollectionUtil.areListsEqual(snmpItems, other.getSnmpItems(), SNMPITEM_EQUALITY)) {
             return false;
         }
         if (logEntry == null && other.getLogEntry() != null) {
@@ -117,8 +117,9 @@ public class NetworkTaskUIWrapper {
         return "NetworkTaskUIWrapper{" +
                 "networkTask=" + networkTask +
                 ", accessTypeData=" + accessTypeData +
-                ", resolve=" + resolve +
+                ", resolves=" + resolves +
                 ", headers=" + headers +
+                ", snmpItems=" + snmpItems +
                 ", logEntry=" + logEntry +
                 '}';
     }

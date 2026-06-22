@@ -21,6 +21,10 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Resolve;
+
+import java.net.URL;
+import java.util.List;
 
 public class NullResolveValidator implements ResolveValidator {
 
@@ -28,6 +32,38 @@ public class NullResolveValidator implements ResolveValidator {
 
     public NullResolveValidator(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public ValidationResult validateSourceExists(List<Resolve> resolves, URL url, String value) {
+        Log.d(NullResolveValidator.class.getName(), "validateSourceExists, url is " + url + ", value is " + value);
+        String fieldName = getResources().getString(R.string.resolve_all_fields);
+        String failedMessage = getResources().getString(R.string.invalid_exists);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
+    public ValidationResult validateValueSet(Resolve resolve) {
+        Log.d(NullResolveValidator.class.getName(), "validateValueSet, resolve object is " + resolve);
+        String fieldName = getResources().getString(R.string.resolve_all_fields);
+        String failedMessage = getResources().getString(R.string.invalid_must_exist);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
+    public ValidationResult validateSourceAddress(String address) {
+        Log.d(NullResolveValidator.class.getName(), "validateSourceAddress, address is " + address);
+        String fieldName = getResources().getString(R.string.resolve_match_host_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
+    public ValidationResult validateSourcePort(String port) {
+        Log.d(NullResolveValidator.class.getName(), "validateSourcePort, port is " + port);
+        String fieldName = getResources().getString(R.string.resolve_match_port_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
     }
 
     @Override

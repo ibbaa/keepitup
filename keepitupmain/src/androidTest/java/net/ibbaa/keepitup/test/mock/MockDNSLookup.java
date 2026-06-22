@@ -19,17 +19,37 @@ package net.ibbaa.keepitup.test.mock;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 
+import java.util.concurrent.CountDownLatch;
+
 public class MockDNSLookup extends DNSLookup {
 
     private final DNSLookupResult dnsLookupResult;
+    private final long sleep;
+    private final CountDownLatch startedLatch;
 
     public MockDNSLookup(String host, DNSLookupResult dnsLookupResult) {
+        this(host, dnsLookupResult, 0, null);
+    }
+
+    public MockDNSLookup(String host, DNSLookupResult dnsLookupResult, long sleep, CountDownLatch startedLatch) {
         super(host);
         this.dnsLookupResult = dnsLookupResult;
+        this.sleep = sleep;
+        this.startedLatch = startedLatch;
     }
 
     @Override
     public DNSLookupResult call() {
+        if (startedLatch != null) {
+            startedLatch.countDown();
+        }
+        if (sleep > 0) {
+            try {
+                Thread.sleep(sleep);
+            } catch (InterruptedException exc) {
+                throw new RuntimeException(exc);
+            }
+        }
         return dnsLookupResult;
     }
 }

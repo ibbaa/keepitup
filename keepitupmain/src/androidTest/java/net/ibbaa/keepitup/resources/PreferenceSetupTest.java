@@ -25,6 +25,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -42,17 +43,21 @@ public class PreferenceSetupTest {
 
     private PreferenceSetup setup;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
         setup = new PreferenceSetup(TestRegistry.getContext());
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @Test
@@ -208,8 +213,12 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         Map<String, ?> defaults = new HashMap<>();
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -225,8 +234,12 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -245,8 +258,12 @@ public class PreferenceSetupTest {
         defaults.put("preferenceHighPrio", true);
         defaults.put("preferenceUseDefaultHeaders", false);
         defaults.put("preferencePingPackageSize", 1234);
+        defaults.put("preferenceResolveMatchAddress", "10.0.0.1");
+        defaults.put("preferenceResolveMatchPort", 789);
         defaults.put("preferenceResolveAddress", "127.0.0.1");
-        defaults.put("preferenceResolvePort", 123);
+        defaults.put("preferenceResolvePort", 456);
+        defaults.put("preferenceSNMPVersion", SNMPVersion.V1.getCode());
+        defaults.put("preferenceSNMPPort", 162);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -261,8 +278,12 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -281,8 +302,12 @@ public class PreferenceSetupTest {
         defaults.put("preferenceHighPrio", "true");
         defaults.put("preferenceUseDefaultHeaders", false);
         defaults.put("preferencePingPackageSize", "1234");
+        defaults.put("preferenceResolveMatchAddress", "10.0.0.1");
+        defaults.put("preferenceResolveMatchPort", "789");
         defaults.put("preferenceResolveAddress", "127.0.0.1");
-        defaults.put("preferenceResolvePort", "123");
+        defaults.put("preferenceResolvePort", "456");
+        defaults.put("preferenceSNMPVersion", String.valueOf(SNMPVersion.V1.getCode()));
+        defaults.put("preferenceSNMPPort", "162");
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -297,8 +322,12 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -317,8 +346,12 @@ public class PreferenceSetupTest {
         defaults.put("preferenceHighPrio", 1);
         defaults.put("preferenceUseDefaultHeaders", 1);
         defaults.put("preferencePingPackageSize", 12345678);
+        defaults.put("preferenceResolveMatchAddress", "1.1.1.1.1.1");
+        defaults.put("preferenceResolveMatchPort", 12345678);
         defaults.put("preferenceResolveAddress", "1.1.1.1.1.1");
         defaults.put("preferenceResolvePort", 12345678);
+        defaults.put("preferenceSNMPVersion", 99);
+        defaults.put("preferenceSNMPPort", 12345678);
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -333,8 +366,12 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -348,7 +385,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         Map<String, ?> systemSettings = new HashMap<>();
         setup.importSystemSettings(systemSettings);
@@ -361,7 +399,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -379,6 +418,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceAllowArbitraryFileLocation", true);
         systemSettings.put("preferenceAlarmOnHighPrio", true);
         systemSettings.put("preferenceAskedNotificationPermission", true);
+        systemSettings.put("preferenceSAFNoticeShown", true);
         systemSettings.put("preferenceAlarmInfoShown", true);
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -390,7 +430,8 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -408,6 +449,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceAllowArbitraryFileLocation", "true");
         systemSettings.put("preferenceAlarmOnHighPrio", "true");
         systemSettings.put("preferenceAskedNotificationPermission", "true");
+        systemSettings.put("preferenceSAFNoticeShown", "true");
         systemSettings.put("preferenceAlarmInfoShown", "true");
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -419,7 +461,8 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -437,6 +480,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceAllowArbitraryFileLocation", null);
         systemSettings.put("preferenceAlarmOnHighPrio", null);
         systemSettings.put("preferenceAskedNotificationPermission", null);
+        systemSettings.put("preferenceSAFNoticeShown", null);
         systemSettings.put("preferenceAlarmInfoShown", null);
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -448,7 +492,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -530,8 +575,12 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
+        assertEquals(defaults.get("preferenceResolveMatchAddress"), preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
+        assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
+        assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -549,8 +598,12 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
         preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         Map<String, ?> defaults = setup.exportDefaults();
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -565,8 +618,12 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -580,8 +637,12 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
+        assertEquals(defaults.get("preferenceResolveMatchAddress"), preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
+        assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
+        assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -596,7 +657,8 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceSAFNoticeShown"), preferenceManager.getPreferenceSAFNoticeShown());
         assertEquals(systemSettings.get("preferenceAlarmInfoShown"), preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -611,7 +673,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -623,7 +686,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceLastArbitraryExportFile"), preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -633,7 +696,8 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceSAFNoticeShown"), preferenceManager.getPreferenceSAFNoticeShown());
         assertEquals(systemSettings.get("preferenceAlarmInfoShown"), preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -696,8 +760,12 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         Map<String, ?> defaults = setup.exportDefaults();
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -713,8 +781,12 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertFalse(preferenceManager.getPreferenceUseDefaultHeaders());
+        assertEquals("10.0.0.1", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
-        assertEquals(123, preferenceManager.getPreferenceResolvePort());
+        assertEquals(456, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -728,8 +800,12 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceUseDefaultHeaders"), preferenceManager.getPreferenceUseDefaultHeaders());
+        assertEquals(defaults.get("preferenceResolveMatchAddress"), preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(defaults.get("preferenceResolveMatchPort"), preferenceManager.getPreferenceResolveMatchPort());
         assertEquals(defaults.get("preferenceResolveAddress"), preferenceManager.getPreferenceResolveAddress());
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
+        assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
+        assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -743,7 +819,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
@@ -756,7 +833,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceLastArbitraryExportFile"), preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -766,7 +843,8 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertEquals(systemSettings.get("preferenceSAFNoticeShown"), preferenceManager.getPreferenceSAFNoticeShown());
         assertEquals(systemSettings.get("preferenceAlarmInfoShown"), preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -845,8 +923,12 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         setup.removeDefaults();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -861,8 +943,12 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertTrue(preferenceManager.getPreferenceUseDefaultHeaders());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -876,7 +962,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         setup.removeSystemSettings();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -888,7 +975,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
@@ -915,8 +1003,12 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferencePingPackageSize(12);
+        preferenceManager.setPreferenceResolveMatchAddress("10.0.0.1");
+        preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
-        preferenceManager.setPreferenceResolvePort(123);
+        preferenceManager.setPreferenceResolvePort(456);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -931,7 +1023,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         setup.removeAllSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -955,8 +1048,12 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
@@ -971,7 +1068,8 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
         assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
     }
 }

@@ -1,33 +1,26 @@
-Keep it up checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
+Keep it up checks the availability and reachability of network services via Ping, TCP Connect, HTTP/HTTPS Download, and SNMP periodically. Each check is logged with its result and duration, and notifications can be sent on failure or on status changes.
 
 <b>Features</b>
 
-- Create multiple separate network tasks
-- One task monitors one network service at a specified interval
-- A task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site
-- Successful and unsuccessful attempts are logged
+- Create multiple independent network tasks, each monitoring one network service at a configurable interval
+- Supported types: Ping, TCP Connect, HTTP/HTTPS Download, SNMP (v1/v2c)
+- A can perform multiple attempts per execution. All results are logged including duration
+- SNMP queries the system group at each interval and supports per-interface monitoring with alerting on status changes
 - Downloaded files can automatically be deleted after a successful download or be kept
-- Notifications can be sent on failure or when a network service goes down or up
-- A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data
-- The configuration can be exported and imported as a JSON data file
-- Intervals can be defined during which all background work is suspended for battery saving
+- Notifications on failure, or when a service goes down or comes back up
+- Tasks can be restricted to WiFi connections to avoid unnecessary mobile data usage
+- Configurable suspension intervals for battery saving
+- Configuration can be exported and imported as JSON
 
 <b>Permissions</b>
+
 - <i>RECEIVE_BOOT_COMPLETED</i> for restarting running networks tasks on device boot
 - <i>ACCESS_NETWORK_STATE</i> for checking network accessibility
 - <i>INTERNET</i> for accessing the internet
 - <i>WAKE_LOCK</i> to keep the device awake while executing a task
 - <i>FOREGROUND_SERVICE</i> to start the foreground service for running tasks
-- <i>FOREGROUND_SERVICE_DATA_SYNC</i> to use the foreground service with data transmission
-- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> to use the foreground for task scheduling (Android 15+)
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i> to use the foreground for task scheduling
+- <i>FOREGROUND_SERVICE_SPECIAL_USE</i> to use the foreground for task scheduling (Android 14+)
 - <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications
-
-<b>Note</b>
-The app uses exact alarms to trigger network task execution. Power consumption during waiting is as high as for a calendar app waiting for reminders to trigger. During execution the power consumption is higher, of course, and short execution intervals cause more overall battery drain.
-
-The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
-
-For Android 15+, it is no longer possible (and no longer necessary) to directly disable battery optimization. Android 15+ provides a setting to allow background activity for an app, which is enabled by default. It is strongly recommended to leave it enabled. The app should work without it, but it can lead to unreliable behaviour.
-

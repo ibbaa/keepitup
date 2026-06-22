@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationBuilder;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
@@ -57,6 +58,7 @@ public class NotificationHandlerTest {
     private MockNotificationManager notificationManager;
     private MockPermissionManager permissionManager;
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -66,11 +68,14 @@ public class NotificationHandlerTest {
         notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     public void setLocale(Locale locale) {
@@ -400,6 +405,7 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(false);
         return task;
@@ -419,6 +425,7 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -439,6 +446,7 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(3);
         task.setHighPrio(true);
         return task;

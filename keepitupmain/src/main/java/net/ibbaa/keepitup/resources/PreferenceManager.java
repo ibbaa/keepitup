@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +49,11 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = getDefaultSharedPreferencesEditor();
         editor.remove(key);
         editor.commit();
+    }
+
+    public boolean isPreferenceValueConfigured(String key) {
+        Log.d(PreferenceManager.class.getName(), "isPreferenceValueConfigured, key is " + key);
+        return getDefaultSharedPreferences().contains(key);
     }
 
     public boolean getPreferenceBoolean(String key, boolean defaultValue) {
@@ -226,6 +232,36 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.use_default_headers_key));
     }
 
+    public String getPreferenceResolveMatchAddress() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceResolveMatchAddress");
+        return getPreferenceString(getResources().getString(R.string.resolve_address_match_key), "");
+    }
+
+    public void setPreferenceResolveMatchAddress(String address) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceResolveMatchAddress, address is " + address);
+        setPreferenceString(getResources().getString(R.string.resolve_address_match_key), address);
+    }
+
+    public void removePreferenceResolveMatchAddress() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceResolveMatchAddress");
+        removePreferenceValue(getResources().getString(R.string.resolve_address_match_key));
+    }
+
+    public int getPreferenceResolveMatchPort() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceResolveMatchPort");
+        return getPreferenceInt(getResources().getString(R.string.resolve_port_match_key), getResources().getInteger(R.integer.resolve_port_match_default));
+    }
+
+    public void setPreferenceResolveMatchPort(int port) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceResolveMatchPort, port is " + port);
+        setPreferenceInt(getResources().getString(R.string.resolve_port_match_key), port);
+    }
+
+    public void removePreferenceResolveMatchPort() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceResolveMatchPort");
+        removePreferenceValue(getResources().getString(R.string.resolve_port_match_key));
+    }
+
     public String getPreferenceResolveAddress() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceResolveAddress");
         return getPreferenceString(getResources().getString(R.string.resolve_address_key), "");
@@ -254,6 +290,36 @@ public class PreferenceManager {
     public void removePreferenceResolvePort() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceResolvePort");
         removePreferenceValue(getResources().getString(R.string.resolve_port_key));
+    }
+
+    public SNMPVersion getPreferenceSNMPVersion() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPVersion");
+        return SNMPVersion.forCode(getPreferenceInt(getResources().getString(R.string.snmp_version_key), getResources().getInteger(R.integer.snmp_version_default)));
+    }
+
+    public void setPreferenceSNMPVersion(SNMPVersion version) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPVersion, version is " + version);
+        setPreferenceInt(getResources().getString(R.string.snmp_version_key), version.getCode());
+    }
+
+    public void removePreferenceSNMPVersion() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPVersion");
+        removePreferenceValue(getResources().getString(R.string.snmp_version_key));
+    }
+
+    public int getPreferenceSNMPPort() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPPort");
+        return getPreferenceInt(getResources().getString(R.string.task_snmp_port_key), getResources().getInteger(R.integer.task_snmp_port_default));
+    }
+
+    public void setPreferenceSNMPPort(int port) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPPort, port is " + port);
+        setPreferenceInt(getResources().getString(R.string.task_snmp_port_key), port);
+    }
+
+    public void removePreferenceSNMPPort() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPPort");
+        removePreferenceValue(getResources().getString(R.string.task_snmp_port_key));
     }
 
     public int getPreferencePingCount() {
@@ -661,19 +727,19 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.file_dump_enabled_key));
     }
 
-    public boolean getPreferenceAskedNotificationPermission() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceAskedNotificationPermission");
-        return getPreferenceBoolean(getResources().getString(R.string.asked_notification_permission_key), getResources().getBoolean(R.bool.asked_notification_permission_default));
+    public boolean getPreferenceSAFNoticeShown() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSAFNoticeShown");
+        return getPreferenceBoolean(getResources().getString(R.string.saf_notice_shown_key), getResources().getBoolean(R.bool.saf_notice_shown_default));
     }
 
-    public void setPreferenceAskedNotificationPermission(boolean askedNotificationPermission) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceAskedNotificationPermission, askedNotificationPermission is " + askedNotificationPermission);
-        setPreferenceBoolean(getResources().getString(R.string.asked_notification_permission_key), askedNotificationPermission);
+    public void setPreferenceSAFNoticeShown(boolean safNoticeShown) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSAFNoticeShown, safNoticeShown is " + safNoticeShown);
+        setPreferenceBoolean(getResources().getString(R.string.saf_notice_shown_key), safNoticeShown);
     }
 
-    public void removePreferenceAskedNotificationPermission() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceAskedNotificationPermission");
-        removePreferenceValue(getResources().getString(R.string.asked_notification_permission_key));
+    public void removePreferenceSAFNoticeShown() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSAFNoticeShown");
+        removePreferenceValue(getResources().getString(R.string.saf_notice_shown_key));
     }
 
     public boolean getPreferenceAlarmInfoShown() {

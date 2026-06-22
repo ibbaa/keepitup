@@ -42,7 +42,9 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView instancesText;
     private final TextView accessTypeText;
     private final TextView addressText;
-    private final TextView connectToText;
+    private final TextView resolveText;
+    private final TextView communityText;
+    private final TextView snmpInterfacesText;
     private final TextView headersText;
     private final TextView intervalText;
     private final TextView notificationText;
@@ -74,7 +76,9 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         instancesText = itemView.findViewById(R.id.textview_list_item_network_task_instances);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
-        connectToText = itemView.findViewById(R.id.textview_list_item_network_task_connect_to);
+        communityText = itemView.findViewById(R.id.textview_list_item_network_task_snmp_community);
+        snmpInterfacesText = itemView.findViewById(R.id.textview_list_item_network_task_snmp_interfaces);
+        resolveText = itemView.findViewById(R.id.textview_list_item_network_task_resolve_rules);
         headersText = itemView.findViewById(R.id.textview_list_item_network_task_headers);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
@@ -113,11 +117,15 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setConnectTo(String connectTo) {
-        connectToText.setText(connectTo);
+        resolveText.setText(connectTo);
     }
 
     public void setHeaders(String headers) {
         headersText.setText(headers);
+    }
+
+    public void setCommunityColor(int color) {
+        communityText.setTextColor(color);
     }
 
     public void setHeadersColor(int color) {
@@ -188,12 +196,36 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         stopOnSuccessText.setVisibility(View.GONE);
     }
 
-    public void showConnectToTextView() {
-        connectToText.setVisibility(View.VISIBLE);
+    public void showCommunityTextView() {
+        communityText.setVisibility(View.VISIBLE);
     }
 
-    public void hideConnectToTextView() {
-        connectToText.setVisibility(View.GONE);
+    public void hideCommunityTextView() {
+        communityText.setVisibility(View.GONE);
+    }
+
+    public void setCommunity(String community) {
+        communityText.setText(community);
+    }
+
+    public void showSnmpInterfacesTextView() {
+        snmpInterfacesText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSnmpInterfacesTextView() {
+        snmpInterfacesText.setVisibility(View.GONE);
+    }
+
+    public void setSnmpInterfaces(String snmpInterfaces) {
+        snmpInterfacesText.setText(snmpInterfaces);
+    }
+
+    public void showResolveTextView() {
+        resolveText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideResolveTextView() {
+        resolveText.setVisibility(View.GONE);
     }
 
     public void showHeadersTextView() {
@@ -234,7 +266,9 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
                 instancesText,
                 accessTypeText,
                 addressText,
-                connectToText,
+                communityText,
+                snmpInterfacesText,
+                resolveText,
                 headersText,
                 intervalText,
                 ignoreSSLErrorText,

@@ -64,8 +64,11 @@ import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.resources.encryption.EncryptionSetupResult;
@@ -148,6 +151,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
@@ -156,6 +160,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -181,8 +186,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -200,6 +212,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -224,11 +237,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -245,6 +265,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -253,6 +274,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -278,8 +300,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -301,6 +330,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -325,11 +355,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -346,6 +383,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -354,6 +392,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -379,8 +418,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
@@ -400,6 +446,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, headerHandler.getGlobalHeaders().size());
         assertEquals("User-Agent", headerHandler.getGlobalHeaders().get(0).getName());
@@ -426,12 +473,20 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         assertNotNull(mainKey1.key());
         assertNotNull(mainKey2.key());
@@ -452,6 +507,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -460,6 +516,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -485,8 +542,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -508,6 +572,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(1, headerHandler.getGlobalHeaders().size());
         assertEquals("User-Agent", headerHandler.getGlobalHeaders().get(0).getName());
@@ -532,15 +597,23 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertFalse(getPreferenceManager().getPreferenceHighPrio());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         assertNotNull(mainKey1.key());
         assertNotNull(mainKey2.key());
@@ -562,6 +635,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -570,6 +644,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -595,8 +670,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -614,6 +696,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -639,11 +722,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -661,6 +751,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -669,6 +760,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -694,8 +786,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -718,6 +817,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -742,11 +842,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -763,6 +870,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -771,6 +879,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -796,8 +905,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -813,6 +929,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -837,11 +954,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -858,6 +982,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -866,6 +991,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -891,8 +1017,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -911,6 +1044,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -935,11 +1069,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -956,6 +1097,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -964,6 +1106,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -989,8 +1132,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1011,6 +1161,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1035,11 +1186,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1056,6 +1214,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1064,6 +1223,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1089,8 +1249,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1118,6 +1285,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1142,11 +1310,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1177,6 +1352,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1185,6 +1361,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1210,8 +1387,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1231,6 +1415,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1255,18 +1440,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1326,6 +1520,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -1353,11 +1553,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1396,6 +1603,7 @@ public class SystemActivityTest extends BaseUITest {
         secretGlobalHeader.setHeaderType(HeaderType.GENERICAUTH);
         getHeaderDAO().insertHeader(secretHeader);
         getHeaderDAO().insertHeader(secretGlobalHeader);
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1404,6 +1612,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1429,8 +1638,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1457,6 +1673,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1481,18 +1698,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1552,6 +1778,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -1579,11 +1811,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1615,6 +1854,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1623,6 +1863,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1648,8 +1889,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1677,6 +1925,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1701,18 +1950,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1763,6 +2021,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -1771,6 +2030,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -1798,11 +2063,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -1842,6 +2114,7 @@ public class SystemActivityTest extends BaseUITest {
         secretGlobalHeader.setHeaderType(HeaderType.GENERICAUTH);
         getHeaderDAO().insertHeader(secretHeader);
         getHeaderDAO().insertHeader(secretGlobalHeader);
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -1850,6 +2123,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1875,8 +2149,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1911,6 +2192,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1935,18 +2217,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -1997,6 +2288,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2005,6 +2297,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -2032,11 +2330,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2067,6 +2372,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -2075,6 +2381,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2100,8 +2407,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2123,6 +2437,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -2147,18 +2462,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2220,6 +2544,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -2247,11 +2577,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2290,6 +2627,7 @@ public class SystemActivityTest extends BaseUITest {
         secretGlobalHeader.setHeaderType(HeaderType.GENERICAUTH);
         getHeaderDAO().insertHeader(secretHeader);
         getHeaderDAO().insertHeader(secretGlobalHeader);
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         corruptKey();
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -2299,6 +2637,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2324,8 +2663,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2354,6 +2700,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -2378,18 +2725,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2443,6 +2799,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2451,6 +2808,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -2478,11 +2841,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2513,6 +2883,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -2521,6 +2892,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2546,8 +2918,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2571,6 +2950,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -2595,18 +2975,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2668,6 +3057,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -2695,11 +3090,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2738,6 +3140,7 @@ public class SystemActivityTest extends BaseUITest {
         secretGlobalHeader.setHeaderType(HeaderType.GENERICAUTH);
         getHeaderDAO().insertHeader(secretHeader);
         getHeaderDAO().insertHeader(secretGlobalHeader);
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         corruptKey();
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -2747,6 +3150,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2772,8 +3176,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2804,6 +3215,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(3, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -2828,18 +3240,27 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
-        getAccessTypeDataDAO().readAllAccessTypeData();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -2893,6 +3314,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2901,6 +3323,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -2928,11 +3356,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -2962,6 +3397,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -2970,6 +3406,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2995,8 +3432,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3026,6 +3470,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3050,11 +3495,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3084,6 +3536,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3092,6 +3545,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3117,8 +3571,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3154,6 +3615,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3178,11 +3640,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3212,6 +3681,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3220,6 +3690,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3245,8 +3716,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3272,6 +3750,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3296,11 +3775,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3308,8 +3794,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -3360,11 +3848,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        accessData1.setSnmpCommunity(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -3392,11 +3887,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3426,6 +3928,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3434,6 +3937,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3459,8 +3963,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3496,6 +4007,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3520,11 +4032,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3532,8 +4051,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         headerHandler.reset();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
@@ -3589,6 +4110,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
         assertEquals("Value1", headerHandler.getGlobalHeaders().get(0).getValue());
@@ -3616,11 +4143,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3638,6 +4172,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3646,6 +4181,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3671,8 +4207,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3693,6 +4236,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3717,11 +4261,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3739,6 +4290,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3747,6 +4299,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3772,8 +4325,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3798,6 +4358,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3822,11 +4383,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -3951,6 +4519,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -3959,6 +4528,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -3984,8 +4554,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4002,8 +4579,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4020,6 +4599,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(headerHandler.getGlobalHeaders().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
@@ -4044,11 +4624,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4065,6 +4652,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4073,6 +4661,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -4098,8 +4687,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4124,8 +4720,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -4133,6 +4731,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getHeaderDAO().readAllHeaders().isEmpty());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(headerHandler.getGlobalHeaders().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
@@ -4158,11 +4757,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4179,6 +4785,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4187,6 +4794,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -4212,8 +4820,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4230,8 +4845,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4249,6 +4866,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(headerHandler.getGlobalHeaders().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
@@ -4274,11 +4892,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4295,6 +4920,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4303,6 +4929,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -4328,8 +4955,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4357,8 +4991,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -4367,6 +5003,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertTrue(getResolveDAO().readAllResolves().isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertTrue(headerHandler.getGlobalHeaders().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
@@ -4392,11 +5029,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertFalse(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -4427,6 +5071,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4435,6 +5080,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -4460,8 +5106,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4477,8 +5130,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4542,6 +5197,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -4570,11 +5231,19 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -4606,6 +5275,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4614,6 +5284,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -4639,8 +5310,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -4655,8 +5333,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
@@ -4723,6 +5403,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -4751,11 +5437,19 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -4787,6 +5481,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4795,6 +5490,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -4820,8 +5516,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -4839,8 +5542,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptionResult.data(), outputStream, StandardCharsets.UTF_8);
@@ -4906,6 +5611,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -4934,11 +5645,19 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -4970,6 +5689,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
         getHeaderDAO().insertHeader(getHeader(task1.getId(), 1));
+        getResolveDAO().insertResolve(getResolve(task1.getId(), 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -4978,6 +5698,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(task1.getId()).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -5003,8 +5724,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5022,8 +5750,10 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().deleteAllHeaders();
+        getResolveDAO().deleteAllResolves();
         resetGlobalHeaderHandler();
         getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptionResult.data(), outputStream, StandardCharsets.UTF_8);
@@ -5092,6 +5822,12 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).size());
         assertEquals("Name1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getName());
         assertEquals("Value1", getHeaderDAO().readHeadersForNetworkTask(readTask1.getId()).get(0).getValue());
+        List<Resolve> resolves1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId());
+        assertEquals(1, resolves1.size());
+        assertEquals("sourceAddress1", resolves1.get(0).getSourceAddress());
+        assertEquals(1001, resolves1.get(0).getSourcePort());
+        assertEquals("targetAddress1", resolves1.get(0).getTargetAddress());
+        assertEquals(2001, resolves1.get(0).getTargetPort());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals("Name1", headerHandler.getGlobalHeaders().get(0).getName());
@@ -5120,11 +5856,19 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
     }
@@ -5177,6 +5921,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -5185,6 +5930,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -5210,8 +5956,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5233,6 +5986,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -5257,11 +6011,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -5279,6 +6040,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -5287,6 +6049,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -5312,8 +6075,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5335,6 +6105,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -5359,11 +6130,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -5381,6 +6159,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getHeaderDAO().insertHeader(getHeader(1));
+        getResolveDAO().insertResolve(getResolve(1, 1));
         resetGlobalHeaderHandler();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -5389,6 +6168,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -5414,8 +6194,15 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
-        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
+        getPreferenceManager().setPreferenceResolveMatchPort(789);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(456);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPPort(162);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5438,6 +6225,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(2, getHeaderDAO().readAllHeaders().size());
+        assertFalse(getResolveDAO().readAllResolvesForNetworkTask(1).isEmpty());
         HeaderSyncHandler headerHandler = new HeaderSyncHandler(TestRegistry.getContext());
         assertEquals(2, headerHandler.getGlobalHeaders().size());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -5462,11 +6250,18 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
-        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertEquals("10.0.0.1", getPreferenceManager().getPreferenceResolveMatchAddress());
+        assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
+        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
         activityScenario.close();
     }
 
@@ -5935,7 +6730,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        NoBackupPreferenceManager noBackupPreferenceManager = getNoBackupPreferenceManager();
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
@@ -5960,7 +6756,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         activityScenario.close();
     }
 
@@ -6147,6 +6943,7 @@ public class SystemActivityTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -6167,6 +6964,7 @@ public class SystemActivityTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setFailureCount(2);
         task.setHighPrio(false);
         return task;
@@ -6187,6 +6985,7 @@ public class SystemActivityTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setLastSysUpTime(0);
         task.setLastScheduled(1);
         task.setFailureCount(3);
         task.setHighPrio(false);
@@ -6233,6 +7032,9 @@ public class SystemActivityTest extends BaseUITest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V1);
+        data.setSnmpCommunity("community1");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 
@@ -6248,6 +7050,17 @@ public class SystemActivityTest extends BaseUITest {
         end.setMinute(12);
         interval.setEnd(end);
         return interval;
+    }
+
+    private Resolve getResolve(long networkTaskId, int number) {
+        Resolve resolve = new Resolve();
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setIndex(number);
+        resolve.setSourceAddress("sourceAddress" + number);
+        resolve.setSourcePort(1000 + number);
+        resolve.setTargetAddress("targetAddress" + number);
+        resolve.setTargetPort(2000 + number);
+        return resolve;
     }
 
     private Header getHeader(int number) {

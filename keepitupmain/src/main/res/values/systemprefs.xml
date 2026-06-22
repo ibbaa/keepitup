@@ -38,4 +38,6 @@
     <bool name="asked_notification_permission_default">false</bool>
     <string name="alarm_info_shown_key">alarm_info_shown_key</string>
     <bool name="alarm_info_shown_default">false</bool>
+    <string name="saf_notice_shown_key">saf_notice_shown_key</string>
+    <bool name="saf_notice_shown_default">false</bool>
 </resources>

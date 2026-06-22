@@ -17,7 +17,12 @@
 <resources>
     <integer name="resolve_port_minimum">0</integer>
     <integer name="resolve_port_maximum">65535</integer>
+    <integer name="resolve_port_match_minimum">0</integer>
+    <integer name="resolve_port_match_maximum">65535</integer>
     <string name="resolve_address_key">resolve_address_key</string>
     <integer name="resolve_port_default">-1</integer>
     <string name="resolve_port_key">resolve_port_key</string>
+    <string name="resolve_address_match_key">resolve_address_match_key</string>
+    <integer name="resolve_port_match_default">-1</integer>
+    <string name="resolve_port_match_key">resolve_port_match_key</string>
 </resources>

@@ -1,0 +1,7 @@
+* Now supports SNMP in addition to the existing Ping, TCP Connect and HTTP Download options
+* Supports SNMPv1 and SNMPv2c. SNMPv3 support is planned and will be released later
+* At each poll interval, the system group is queried, providing device information. Device reboots are detected automatically
+* Network interfaces can be discovered via a manual scan and individually configured for monitoring
+* Extended the connect-to feature to support multiple resolve rules with configurable match conditions
+* This is relevant when redirects are involved and brings the feature closer to what curl's connect-to option offers
+* Some bug fixes

@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
@@ -34,10 +35,12 @@ public class PreferenceSetup {
 
     private final Context context;
     private final PreferenceManager preferenceManager;
+    private final NoBackupPreferenceManager noBackupPreferenceManager;
 
     public PreferenceSetup(Context context) {
         this.context = context;
         this.preferenceManager = new PreferenceManager(context);
+        this.noBackupPreferenceManager = new NoBackupPreferenceManager(context);
     }
 
     public Map<String, ?> exportGlobalSettings() {
@@ -75,8 +78,12 @@ public class PreferenceSetup {
         defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
         defaults.put("preferenceUseDefaultHeaders", preferenceManager.getPreferenceUseDefaultHeaders());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
+        defaults.put("preferenceResolveMatchAddress", preferenceManager.getPreferenceResolveMatchAddress());
+        defaults.put("preferenceResolveMatchPort", preferenceManager.getPreferenceResolveMatchPort());
         defaults.put("preferenceResolveAddress", preferenceManager.getPreferenceResolveAddress());
         defaults.put("preferenceResolvePort", preferenceManager.getPreferenceResolvePort());
+        defaults.put("preferenceSNMPVersion", preferenceManager.getPreferenceSNMPVersion() != null ? preferenceManager.getPreferenceSNMPVersion().getCode() : -1);
+        defaults.put("preferenceSNMPPort", preferenceManager.getPreferenceSNMPPort());
         return defaults;
     }
 
@@ -92,8 +99,9 @@ public class PreferenceSetup {
         systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
         systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
         systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
-        systemSettings.put("preferenceAskedNotificationPermission", preferenceManager.getPreferenceAskedNotificationPermission());
+        systemSettings.put("preferenceAskedNotificationPermission", noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         systemSettings.put("preferenceAlarmInfoShown", preferenceManager.getPreferenceAlarmInfoShown());
+        systemSettings.put("preferenceSAFNoticeShown", preferenceManager.getPreferenceSAFNoticeShown());
         return systemSettings;
     }
 
@@ -260,6 +268,21 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferencePingPackageSize();
         }
+        Object resolveMatchAddress = defaults.get("preferenceResolveMatchAddress");
+        if (isValidAddress(resolveMatchAddress)) {
+            preferenceManager.setPreferenceResolveMatchAddress(resolveMatchAddress.toString().trim());
+        } else {
+            preferenceManager.removePreferenceResolveMatchAddress();
+        }
+        Object resolveMatchPort = defaults.get("preferenceResolveMatchPort");
+        int resolveMatchPortMin = getResources().getInteger(R.integer.resolve_port_match_minimum);
+        int resolveMatchPortMax = getResources().getInteger(R.integer.resolve_port_match_maximum);
+        int resolveMatchPortDefault = getResources().getInteger(R.integer.resolve_port_match_default);
+        if (isValidInteger(resolveMatchPort, resolveMatchPortMin, resolveMatchPortMax)) {
+            preferenceManager.setPreferenceResolveMatchPort(NumberUtil.getIntValue(resolveMatchPort, resolveMatchPortDefault));
+        } else {
+            preferenceManager.removePreferenceResolveMatchPort();
+        }
         Object resolveAddress = defaults.get("preferenceResolveAddress");
         if (isValidAddress(resolveAddress)) {
             preferenceManager.setPreferenceResolveAddress(resolveAddress.toString().trim());
@@ -274,6 +297,21 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(resolvePort, resolvePortDefault));
         } else {
             preferenceManager.removePreferenceResolvePort();
+        }
+        Object snmpVersion = defaults.get("preferenceSNMPVersion");
+        if (isValidSNMPVersion(snmpVersion)) {
+            preferenceManager.setPreferenceSNMPVersion(Objects.requireNonNull(SNMPVersion.forCode(NumberUtil.getIntValue(snmpVersion, -1))));
+        } else {
+            preferenceManager.removePreferenceSNMPVersion();
+        }
+        Object snmpPort = defaults.get("preferenceSNMPPort");
+        int snmpPortMin = getResources().getInteger(R.integer.task_snmp_port_minimum);
+        int snmpPortMax = getResources().getInteger(R.integer.task_snmp_port_maximum);
+        int snmpPortDefault = getResources().getInteger(R.integer.task_snmp_port_default);
+        if (isValidInteger(snmpPort, snmpPortMin, snmpPortMax)) {
+            preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(snmpPort, snmpPortDefault));
+        } else {
+            preferenceManager.removePreferenceSNMPPort();
         }
     }
 
@@ -357,15 +395,21 @@ public class PreferenceSetup {
         }
         Object askedNotificationPermission = systemSettings.get("preferenceAskedNotificationPermission");
         if (isValidBoolean(askedNotificationPermission)) {
-            preferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(askedNotificationPermission.toString()));
+            noBackupPreferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(askedNotificationPermission.toString()));
         } else {
-            preferenceManager.removePreferenceAskedNotificationPermission();
+            noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
         }
         Object alarmInfoShown = systemSettings.get("preferenceAlarmInfoShown");
         if (isValidBoolean(alarmInfoShown)) {
             preferenceManager.setPreferenceAlarmInfoShown(Boolean.parseBoolean(alarmInfoShown.toString()));
         } else {
             preferenceManager.removePreferenceAlarmInfoShown();
+        }
+        Object safNoticeShown = systemSettings.get("preferenceSAFNoticeShown");
+        if (isValidBoolean(safNoticeShown)) {
+            preferenceManager.setPreferenceSAFNoticeShown(Boolean.parseBoolean(safNoticeShown.toString()));
+        } else {
+            preferenceManager.removePreferenceSAFNoticeShown();
         }
     }
 
@@ -397,6 +441,13 @@ public class PreferenceSetup {
             return false;
         }
         return AccessType.forCode(NumberUtil.getIntValue(value, -1)) != null;
+    }
+
+    private boolean isValidSNMPVersion(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return SNMPVersion.forCode(NumberUtil.getIntValue(value, -1)) != null;
     }
 
     private boolean isValidNotificationType(Object value) {
@@ -443,8 +494,12 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceNotification();
         preferenceManager.removePreferenceHighPrio();
         preferenceManager.removePreferenceUseDefaultHeaders();
+        preferenceManager.removePreferenceResolveMatchAddress();
+        preferenceManager.removePreferenceResolveMatchPort();
         preferenceManager.removePreferenceResolveAddress();
         preferenceManager.removePreferenceResolvePort();
+        preferenceManager.removePreferenceSNMPVersion();
+        preferenceManager.removePreferenceSNMPPort();
     }
 
     public void removeSystemSettings() {
@@ -458,13 +513,15 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceTheme();
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
         preferenceManager.removePreferenceAlarmOnHighPrio();
-        preferenceManager.removePreferenceAskedNotificationPermission();
+        noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
         preferenceManager.removePreferenceAlarmInfoShown();
+        preferenceManager.removePreferenceSAFNoticeShown();
     }
 
     public void removeAllSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeAllSettings");
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
     }
 
     private Context getContext() {

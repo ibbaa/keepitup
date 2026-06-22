@@ -40,6 +40,7 @@ public class HeaderDBConstantsTest {
         assertEquals(getResourceString(R.string.header_headertype_column_name), dbConstants.getHeaderTypeColumnName());
         assertEquals(getResourceString(R.string.header_name_column_name), dbConstants.getNameColumnName());
         assertEquals(getResourceString(R.string.header_value_column_name), dbConstants.getValueColumnName());
+        assertEquals(getResourceString(R.string.header_value_iv_column_name), dbConstants.getValueIVColumnName());
     }
 
     private String getResourceString(int id) {

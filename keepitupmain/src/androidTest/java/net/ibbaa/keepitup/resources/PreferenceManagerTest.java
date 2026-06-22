@@ -23,8 +23,10 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -49,6 +51,15 @@ public class PreferenceManagerTest {
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+    }
+
+    @Test
+    public void testIsPreferenceValueConfigured() {
+        assertFalse(preferenceManager.isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
+        preferenceManager.removePreferenceAllowArbitraryFileLocation();
+        assertFalse(preferenceManager.isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
     }
 
     @Test
@@ -196,6 +207,30 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceResolveMatchAddress() {
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        preferenceManager.setPreferenceResolveMatchAddress("www.host.com");
+        assertEquals("www.host.com", preferenceManager.getPreferenceResolveMatchAddress());
+        preferenceManager.removeAllPreferences();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+        preferenceManager.setPreferenceResolveMatchAddress("www.host.com");
+        preferenceManager.removePreferenceResolveMatchAddress();
+        assertEquals("", preferenceManager.getPreferenceResolveMatchAddress());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceResolveMatchPort() {
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        preferenceManager.setPreferenceResolveMatchPort(80);
+        assertEquals(80, preferenceManager.getPreferenceResolveMatchPort());
+        preferenceManager.removeAllPreferences();
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+        preferenceManager.setPreferenceResolveMatchPort(80);
+        preferenceManager.removePreferenceResolveMatchPort();
+        assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceResolveAddress() {
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         preferenceManager.setPreferenceResolveAddress("www.host.com");
@@ -217,6 +252,30 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceResolvePort(80);
         preferenceManager.removePreferenceResolvePort();
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPVersion() {
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.removeAllPreferences();
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.removePreferenceSNMPVersion();
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPPort() {
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        preferenceManager.setPreferenceSNMPPort(162);
+        assertEquals(162, preferenceManager.getPreferenceSNMPPort());
+        preferenceManager.removeAllPreferences();
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.removePreferenceSNMPPort();
+        assertEquals(161, preferenceManager.getPreferenceSNMPPort());
     }
 
     @Test
@@ -544,15 +603,15 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testPreferenceAskedNotificationPermission() {
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
-        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+    public void testPreferenceSAFNoticeShown() {
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
+        preferenceManager.setPreferenceSAFNoticeShown(true);
+        assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
         preferenceManager.removeAllPreferences();
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
-        preferenceManager.setPreferenceAskedNotificationPermission(true);
-        preferenceManager.removePreferenceAskedNotificationPermission();
-        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
+        preferenceManager.setPreferenceSAFNoticeShown(true);
+        preferenceManager.removePreferenceSAFNoticeShown();
+        assertFalse(preferenceManager.getPreferenceSAFNoticeShown());
     }
 
     @Test

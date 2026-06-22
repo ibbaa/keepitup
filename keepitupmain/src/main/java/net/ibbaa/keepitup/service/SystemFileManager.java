@@ -347,11 +347,11 @@ public class SystemFileManager implements IFileManager {
         }
         if (!StringUtil.isEmpty(extension)) {
             String fileNameWithExtension = fileNameWithoutExtension + "." + extension;
-            fileNameWithExtension = fileNameWithExtension.toLowerCase().replaceAll("/", "_");
+            fileNameWithExtension = fileNameWithExtension.toLowerCase().replace("/", "_");
             Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithExtension);
             return fileNameWithExtension;
         }
-        fileNameWithoutExtension = fileNameWithoutExtension.toLowerCase().replaceAll("/", "_");
+        fileNameWithoutExtension = fileNameWithoutExtension.toLowerCase().replace("/", "_");
         Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithoutExtension);
         return fileNameWithoutExtension;
     }
@@ -380,7 +380,7 @@ public class SystemFileManager implements IFileManager {
             logFileName = logFileName + "_" + host;
         }
         logFileName = logFileName.toLowerCase() + "_id_" + String.format("%08X", id);
-        logFileName = logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_").replaceAll("[:*?\"<>|]", "_") + extension;
+        logFileName = logFileName.replaceAll("\\.", "_").replace("/", "_").replaceAll("\\s+", "_").replaceAll("[:*?\"<>|]", "_") + extension;
         Log.d(SystemFileManager.class.getName(), "Returning file name " + logFileName);
         return logFileName;
     }
@@ -416,7 +416,7 @@ public class SystemFileManager implements IFileManager {
         if (StringUtil.isEmpty(fileName)) {
             return true;
         }
-        return fileName.replaceAll("/", "").replaceAll("\\.", "").isEmpty();
+        return fileName.replace("/", "").replaceAll("\\.", "").isEmpty();
     }
 
 
@@ -436,7 +436,7 @@ public class SystemFileManager implements IFileManager {
     public String getValidFileName(File folder, String file) {
         Log.d(SystemFileManager.class.getName(), "getValidFileName, folder is " + folder + ", file is " + file);
         try {
-            file = file.replaceAll("/", "");
+            file = file.replace("/", "");
             if (!folder.exists()) {
                 if (!folder.mkdirs()) {
                     Log.e(SystemFileManager.class.getName(), "Error creating " + folder);

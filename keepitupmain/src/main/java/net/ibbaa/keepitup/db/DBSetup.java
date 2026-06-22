@@ -29,11 +29,13 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.model.validation.HeaderValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.model.validation.ResolveValidator;
+import net.ibbaa.keepitup.model.validation.SNMPItemValidator;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class DBSetup {
     private final AccessTypeDataDBConstants accessTypeDataDBConstants;
     private final ResolveDBConstants resolveDBConstants;
     private final HeaderDBConstants headerDBConstants;
+    private final SNMPItemDBConstants snmpItemDBConstants;
 
     public DBSetup(Context context) {
         this.context = context;
@@ -62,6 +65,7 @@ public class DBSetup {
         this.accessTypeDataDBConstants = new AccessTypeDataDBConstants(context);
         this.resolveDBConstants = new ResolveDBConstants(context);
         this.headerDBConstants = new HeaderDBConstants(context);
+        this.snmpItemDBConstants = new SNMPItemDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {
@@ -74,6 +78,7 @@ public class DBSetup {
         createAccessTypeDataTable(db);
         createResolveTable(db);
         createHeaderTable(db);
+        createSNMPItemTable(db);
     }
 
     public void tryDropTables(SQLiteDatabase db) {
@@ -118,6 +123,11 @@ public class DBSetup {
         } catch (Exception exc) {
             Log.d(DBSetup.class.getName(), "dropHeaderTable failed ", exc);
         }
+        try {
+            dropSNMPItemTable(db);
+        } catch (Exception exc) {
+            Log.d(DBSetup.class.getName(), "dropSNMPItemTable failed ", exc);
+        }
     }
 
     public void createNetworkTaskTable(SQLiteDatabase db) {
@@ -138,6 +148,11 @@ public class DBSetup {
     public void addNameColumnToNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "addNameColumnToNetworkTaskTable, adding column " + networkTaskDBConstants.getNameColumnName() + " to table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getAddNameColumnStatement());
+    }
+
+    public void addLastSysUpTimeColumnToNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addLastSysUpTimeColumnToNetworkTaskTable, adding column " + networkTaskDBConstants.getLastSysUpTimeColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getAddLastSysUpTimeColumnStatement());
     }
 
     public void initializeFailureCountColumn(SQLiteDatabase db) {
@@ -179,7 +194,6 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getCreateTableStatement());
     }
 
-    @SuppressWarnings({"ExtractMethodRecommender"})
     public void initializeAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "initializeAccessTypeDataTable");
         executeDBOperationInTransaction(db, database -> database.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement()));
@@ -192,6 +206,7 @@ public class DBSetup {
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
+        values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
         executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
     }
 
@@ -210,15 +225,40 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getAddUseDefaultHeadersColumnStatement());
     }
 
+    public void addSnmpVersionColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpVersionColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpVersionColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpVersionColumnStatement());
+    }
+
+    public void addSnmpCommunityColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpCommunityColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpCommunityColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpCommunityColumnStatement());
+    }
+
+    public void addSnmpCommunityIVColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpCommunityIVColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpCommunityIVColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpCommunityIVColumnStatement());
+    }
+
     public void createResolveTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "createResolveTable, table is " + resolveDBConstants.getTableName());
         db.execSQL(resolveDBConstants.getCreateTableStatement());
+    }
+
+    public void addIndexColumnToResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addIndexColumnToResolveTable, adding column " + resolveDBConstants.getIndexColumnName() + " to table " + resolveDBConstants.getTableName());
+        db.execSQL(resolveDBConstants.getAddIndexColumnStatement());
     }
 
     public void createHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "createHeaderTable, table is " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getCreateTableStatement());
         initializeHeaderTable(db);
+    }
+
+    public void createSNMPItemTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "createSNMPItemTable, table is " + snmpItemDBConstants.getTableName());
+        db.execSQL(snmpItemDBConstants.getCreateTableStatement());
     }
 
     public void initializeHeaderTable(SQLiteDatabase db) {
@@ -274,6 +314,7 @@ public class DBSetup {
         dropAccessTypeDataTable(db);
         dropResolveTable(db);
         dropHeaderTable(db);
+        dropSNMPItemTable(db);
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
@@ -302,6 +343,11 @@ public class DBSetup {
     public void dropNameColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropNameColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getNameColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropNameColumnStatement());
+    }
+
+    public void dropLastSysUpTimeColumnFromNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropLastSysUpTimeColumnFromNetworkTaskTable, dropping column " + networkTaskDBConstants.getLastSysUpTimeColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getDropLastSysUpTimeColumnStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
@@ -384,6 +430,21 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getDropUseDefaultHeadersColumnStatement());
     }
 
+    public void dropSnmpVersionColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpVersionColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpVersionColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpVersionColumnStatement());
+    }
+
+    public void dropSnmpCommunityColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpCommunityColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpCommunityColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpCommunityColumnStatement());
+    }
+
+    public void dropSnmpCommunityIVColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpCommunityIVColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpCommunityIVColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpCommunityIVColumnStatement());
+    }
+
     public void dropResolveTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropResolveTable, table is " + resolveDBConstants.getTableName());
         db.execSQL(resolveDBConstants.getDropTableStatement());
@@ -397,6 +458,11 @@ public class DBSetup {
         }
     }
 
+    public void dropIndexColumnFromResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropIndexColumnFromResolveTable, dropping column " + resolveDBConstants.getIndexColumnName() + " from table " + resolveDBConstants.getTableName());
+        db.execSQL(resolveDBConstants.getDropIndexColumnStatement());
+    }
+
     public void dropHeaderTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropHeaderTable, table is " + headerDBConstants.getTableName());
         db.execSQL(headerDBConstants.getDropTableStatement());
@@ -407,6 +473,19 @@ public class DBSetup {
             dropHeaderTable(db);
         } catch (Exception exc) {
             Log.d(DBSetup.class.getName(), "dropHeaderTable failed ", exc);
+        }
+    }
+
+    public void dropSNMPItemTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSNMPItemTable, table is " + snmpItemDBConstants.getTableName());
+        db.execSQL(snmpItemDBConstants.getDropTableStatement());
+    }
+
+    public void tryDropSNMPItemTable(SQLiteDatabase db) {
+        try {
+            dropSNMPItemTable(db);
+        } catch (Exception exc) {
+            Log.d(DBSetup.class.getName(), "dropSNMPItemTable failed ", exc);
         }
     }
 
@@ -462,6 +541,12 @@ public class DBSetup {
         createHeaderTable(db);
     }
 
+    public void recreateSNMPItemTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateSNMPItemTable");
+        dropSNMPItemTable(db);
+        createSNMPItemTable(db);
+    }
+
     public void recreateSchedulerStateTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateSchedulerStateTable");
         dropSchedulerStateTable(db);
@@ -498,6 +583,10 @@ public class DBSetup {
         addNameColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addLastSysUpTimeColumnToNetworkTaskTable() {
+        addLastSysUpTimeColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void addStopOnSuccessColumnToAccessTypeDataTable() {
         addStopOnSuccessColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -508,6 +597,18 @@ public class DBSetup {
 
     public void addUseDefaultHeadersColumnToAccessTypeDataTable() {
         addUseDefaultHeadersColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpVersionColumnToAccessTypeDataTable() {
+        addSnmpVersionColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpCommunityColumnToAccessTypeDataTable() {
+        addSnmpCommunityColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpCommunityIVColumnToAccessTypeDataTable() {
+        addSnmpCommunityIVColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void initializeFailureCountColumn() {
@@ -542,8 +643,16 @@ public class DBSetup {
         createResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addIndexColumnToResolveTable() {
+        addIndexColumnToResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void createHeaderTable() {
         createHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void createSNMPItemTable() {
+        createSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void initializeHeaderTable() {
@@ -597,8 +706,28 @@ public class DBSetup {
     }
 
     @SuppressWarnings({"unused"})
+    public void dropSnmpVersionColumnFromAccessTypeDataTable() {
+        dropSnmpVersionColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpCommunityColumnFromAccessTypeDataTable() {
+        dropSnmpCommunityColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpCommunityIVColumnFromAccessTypeDataTable() {
+        dropSnmpCommunityIVColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
     public void dropNameColumnFromNetworkTaskTable() {
         dropNameColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropLastSysUpTimeColumnFromNetworkTaskTable() {
+        dropLastSysUpTimeColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropLogTable() {
@@ -655,6 +784,11 @@ public class DBSetup {
         tryDropResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    @SuppressWarnings({"unused"})
+    public void dropIndexColumnFromResolveTable() {
+        dropIndexColumnFromResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropHeaderTable() {
         dropHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -662,6 +796,15 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void tryDropHeaderTable() {
         tryDropHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void dropSNMPItemTable() {
+        dropSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void tryDropSNMPItemTable() {
+        tryDropSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})
@@ -704,6 +847,10 @@ public class DBSetup {
 
     public void recreateHeaderTable() {
         recreateHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void recreateSNMPItemTable() {
+        recreateSNMPItemTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void recreateTables() {
@@ -749,7 +896,7 @@ public class DBSetup {
     public void deleteAllResolve() {
         Log.d(DBSetup.class.getName(), "deleteAllResolve");
         ResolveDAO dao = new ResolveDAO(getContext());
-        dao.deleteAllResolve();
+        dao.deleteAllResolves();
     }
 
     public void deleteAllHeaders() {
@@ -758,10 +905,18 @@ public class DBSetup {
         dao.deleteAllHeaders();
     }
 
+    public void deleteAllSNMPItems() {
+        Log.d(DBSetup.class.getName(), "deleteAllSNMPItems");
+        SNMPItemDAO dao = new SNMPItemDAO(getContext());
+        dao.deleteAllSNMPItems();
+    }
+
     public void normalizeUIIndex() {
         Log.d(DBSetup.class.getName(), "normalizeUIIndex");
-        NetworkTaskDAO dao = new NetworkTaskDAO(getContext());
-        dao.normalizeUIIndex();
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        networkTaskDAO.normalizeUIIndex();
+        ResolveDAO resolveDAO = new ResolveDAO(getContext());
+        resolveDAO.normalizeUIIndex();
     }
 
     public List<Map<String, ?>> exportNetworkTasks() {
@@ -786,18 +941,37 @@ public class DBSetup {
         return exportedList;
     }
 
-    public Map<String, ?> exportAccessTypeDataForNetworkTask(long networkTaskId) {
-        Log.d(DBSetup.class.getName(), "exportAccessTypeDataForNetworkTask, networkTaskId is " + networkTaskId);
+    public Map<String, ?> exportAccessTypeDataForNetworkTask(long networkTaskId, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "exportAccessTypeDataForNetworkTask, networkTaskId is " + networkTaskId + ", encrypted is " + encrypted);
         AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
         AccessTypeData accessTypeData = dao.readAccessTypeDataForNetworkTask(networkTaskId);
-        return accessTypeData != null ? accessTypeData.toMap() : null;
+        if (accessTypeData != null) {
+            if (!shouldExportSNMPCommunity(accessTypeData, encrypted)) {
+                accessTypeData.setSnmpCommunity(null);
+            }
+            accessTypeData.setSnmpCommunityValid(true);
+            return accessTypeData.toMap();
+        }
+        return null;
     }
 
-    public Map<String, ?> exportResolveForNetworkTask(long networkTaskId) {
-        Log.d(DBSetup.class.getName(), "exportResolveForNetworkTask, networkTaskId is " + networkTaskId);
+    private boolean shouldExportSNMPCommunity(AccessTypeData accessTypeData, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExportSNMPCommunity, accessTypeData is " + accessTypeData + ", encrypted is " + encrypted);
+        if (!accessTypeData.isSnmpCommunityValid()) {
+            return false;
+        }
+        return encrypted;
+    }
+
+    public List<Map<String, ?>> exportResolvesForNetworkTask(long networkTaskId) {
+        Log.d(DBSetup.class.getName(), "exportResolvesForNetworkTask, networkTaskId is " + networkTaskId);
         ResolveDAO dao = new ResolveDAO(getContext());
-        Resolve resolve = dao.readResolveForNetworkTask(networkTaskId);
-        return resolve != null ? resolve.toMap() : null;
+        List<Resolve> resolves = dao.readAllResolvesForNetworkTask(networkTaskId);
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (Resolve resolve : resolves) {
+            exportedList.add(resolve.toMap());
+        }
+        return exportedList;
     }
 
     public List<Map<String, ?>> exportHeadersForNetworkTask(long networkTaskId, boolean encrypted) {
@@ -806,9 +980,20 @@ public class DBSetup {
         List<Header> headerList = dao.readHeadersForNetworkTask(networkTaskId);
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Header header : headerList) {
-            if (shouldExport(header, encrypted)) {
+            if (shouldExportHeader(header, encrypted)) {
                 exportedList.add(header.toMap());
             }
+        }
+        return exportedList;
+    }
+
+    public List<Map<String, ?>> exportSNMPItemsForNetworkTask(long networkTaskId) {
+        Log.d(DBSetup.class.getName(), "exportSNMPItemsForNetworkTask, networkTaskId is " + networkTaskId);
+        SNMPItemDAO dao = new SNMPItemDAO(getContext());
+        List<SNMPItem> snmpItems = dao.readAllSNMPItemsForNetworkTask(networkTaskId);
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (SNMPItem snmpItem : snmpItems) {
+            exportedList.add(snmpItem.toMap());
         }
         return exportedList;
     }
@@ -830,15 +1015,15 @@ public class DBSetup {
         List<Header> headerList = dao.readGlobalHeaders();
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Header header : headerList) {
-            if (shouldExport(header, encrypted)) {
+            if (shouldExportHeader(header, encrypted)) {
                 exportedList.add(header.toMap());
             }
         }
         return exportedList;
     }
 
-    private boolean shouldExport(Header header, boolean encrypted) {
-        Log.d(DBSetup.class.getName(), "shouldExport, header is " + header + ", encrypted is " + encrypted);
+    private boolean shouldExportHeader(Header header, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExportHeader, header is " + header + ", encrypted is " + encrypted);
         if (!header.isValueValid()) {
             return false;
         }
@@ -848,11 +1033,11 @@ public class DBSetup {
         return encrypted;
     }
 
-    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headerList) {
-        importNetworkTaskWithAssociatedObjects(taskMap, logList, accessTypeDataMap, resolveMap, headerList, true);
+    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList, List<Map<String, ?>> snmpItemList) {
+        importNetworkTaskWithAssociatedObjects(taskMap, logList, accessTypeDataMap, resolveList, headerList, snmpItemList, true);
     }
 
-    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, List<Map<String, ?>> headerList, boolean resetRunnning) {
+    public void importNetworkTaskWithAssociatedObjects(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, List<Map<String, ?>> resolveList, List<Map<String, ?>> headerList, List<Map<String, ?>> snmpItemList, boolean resetRunnning) {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithAssociatedObjects, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
@@ -873,8 +1058,9 @@ public class DBSetup {
         if (task.getId() > 0) {
             importLogs(logList, task);
             importAccessTypeData(accessTypeDataMap, task);
-            importResolve(resolveMap, task);
+            importResolves(resolveList, task);
             importHeaders(headerList, task);
+            importSNMPItems(snmpItemList, task);
         }
     }
 
@@ -886,24 +1072,29 @@ public class DBSetup {
         });
     }
 
-    private void importResolve(Map<String, ?> resolveMap, NetworkTask task) {
-        Log.d(DBSetup.class.getName(), "importResolve");
-        if (resolveMap == null) {
-            Log.d(DBSetup.class.getName(), "Resolve map is null. Nothing to import.");
+    private void importResolves(List<Map<String, ?>> resolveList, NetworkTask task) {
+        Log.d(DBSetup.class.getName(), "importResolves");
+        if (resolveList == null) {
+            Log.d(DBSetup.class.getName(), "Resolve list is null. Nothing to import.");
         } else {
             ResolveDAO resolveDAO = new ResolveDAO(getContext());
             ResolveValidator resolveValidator = new ResolveValidator(getContext());
-            Resolve resolve = new Resolve(resolveMap);
-            resolve.setNetworkTaskId(task.getId());
-            if (resolve.getTargetAddress() != null) {
-                resolve.setTargetAddress(resolve.getTargetAddress().trim());
-            }
-            Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
-            if (resolveValidator.validate(resolve)) {
-                Log.d(DBSetup.class.getName(), "Importing resolve object.");
-                resolveDAO.insertResolve(resolve);
-            } else {
-                Log.e(DBSetup.class.getName(), "Resolve object is invalid and will not be imported: " + resolve);
+            for (Map<String, ?> resolveMap : resolveList) {
+                Resolve resolve = new Resolve(resolveMap);
+                resolve.setNetworkTaskId(task.getId());
+                if (resolve.getTargetAddress() != null) {
+                    resolve.setTargetAddress(resolve.getTargetAddress().trim());
+                }
+                if (resolve.getSourceAddress() != null) {
+                    resolve.setSourceAddress(resolve.getSourceAddress().trim());
+                }
+                Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
+                if (resolveValidator.validate(resolve)) {
+                    Log.d(DBSetup.class.getName(), "Importing resolve object.");
+                    resolveDAO.insertResolve(resolve);
+                } else {
+                    Log.e(DBSetup.class.getName(), "Resolve object is invalid and will not be imported: " + resolve);
+                }
             }
         }
     }
@@ -914,8 +1105,11 @@ public class DBSetup {
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
         AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(accessTypeDataMap);
         accessTypeData.setNetworkTaskId(task.getId());
+        if (accessTypeData.getSnmpCommunity() != null) {
+            accessTypeData.setSnmpCommunity(accessTypeData.getSnmpCommunity().trim());
+        }
         Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
-        if (accessTypeDataValidator.validate(accessTypeData)) {
+        if (accessTypeDataValidator.validate(accessTypeData) && accessTypeData.isSnmpCommunityValid()) {
             Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
             accessTypeDataDAO.insertAccessTypeData(accessTypeData);
         } else {
@@ -997,6 +1191,29 @@ public class DBSetup {
         }
         Log.d(DBSetup.class.getName(), "Inserting all headers...");
         dao.insertHeaders(headersToInsert);
+    }
+
+    private void importSNMPItems(List<Map<String, ?>> snmpItemList, NetworkTask task) {
+        Log.d(DBSetup.class.getName(), "importSNMPItems");
+        if (snmpItemList == null) {
+            return;
+        }
+        SNMPItemDAO dao = new SNMPItemDAO(getContext());
+        SNMPItemValidator validator = new SNMPItemValidator(getContext());
+        List<SNMPItem> snmpItemsToInsert = new ArrayList<>();
+        for (Map<String, ?> snmpItemMap : snmpItemList) {
+            SNMPItem snmpItem = new SNMPItem(snmpItemMap);
+            snmpItem.setNetworkTaskId(task.getId());
+            Log.d(DBSetup.class.getName(), "SNMPItem is " + snmpItem);
+            if (validator.validate(snmpItem)) {
+                Log.e(DBSetup.class.getName(), "Adding snmp item object to import list.");
+                snmpItemsToInsert.add(snmpItem);
+            } else {
+                Log.e(DBSetup.class.getName(), "SNMPItem is invalid and will not be imported: " + snmpItem);
+            }
+        }
+        Log.d(DBSetup.class.getName(), "Inserting all snmp item objects...");
+        dao.insertSNMPItems(snmpItemsToInsert);
     }
 
     private Context getContext() {

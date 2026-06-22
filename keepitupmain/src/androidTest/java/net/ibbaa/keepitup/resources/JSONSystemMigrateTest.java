@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 public class JSONSystemMigrateTest {
 
     private PreferenceManager preferenceManager;
+    private NoBackupPreferenceManager noBackupPreferenceManager;
     private JSONSystemMigrate migrate;
     private HeaderDAO headerDAO;
 
@@ -47,6 +48,8 @@ public class JSONSystemMigrateTest {
         Dump.initialize(null);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
+        noBackupPreferenceManager.removeAllPreferences();
         migrate = new JSONSystemMigrate(TestRegistry.getContext());
         headerDAO = new HeaderDAO(TestRegistry.getContext());
         headerDAO.deleteAllHeaders();
@@ -55,6 +58,7 @@ public class JSONSystemMigrateTest {
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.removeAllPreferences();
         headerDAO.deleteAllHeaders();
     }
 

@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.test.mock.MockConnectCommand;
@@ -252,6 +253,7 @@ public class ConnectNetworkTaskWorkerTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setLastSysUpTime(0);
         task.setFailureCount(1);
         task.setHighPrio(true);
         return task;
@@ -267,6 +269,9 @@ public class ConnectNetworkTaskWorkerTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         data.setUseDefaultHeaders(false);
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunity("community");
+        data.setSnmpCommunityValid(true);
         return data;
     }
 }

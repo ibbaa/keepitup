@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -36,13 +37,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Equality;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
@@ -54,6 +58,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
@@ -63,6 +68,7 @@ import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
+import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
 import net.ibbaa.keepitup.ui.sync.HeaderBulkDeleteTask;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
@@ -72,6 +78,7 @@ import net.ibbaa.keepitup.ui.validation.CredentialInfo;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskNameFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.CollectionUtil;
+import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
@@ -86,14 +93,25 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport, MessageSupport {
+
+    private enum Message {
+        SAFNOTICE,
+    }
 
     private static final Equality<Header> HEADER_TECHNICAL_EQUALITY = Header::isTechnicallyEqual;
+    private static final Equality<Resolve> RESOLVE_TECHNICAL_EQUALITY = Resolve::isTechnicallyEqual;
+    private static final Equality<SNMPItem> SNMPITEM_TECHNICAL_EQUALITY = SNMPItem::isTechnicallyEqual;
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private IPermissionManager permissionManager;
     private ItemTouchHelper itemTouchHelper;
     private boolean credentialInfoDialogShown;
+    private boolean folderPermissionNotificationSent;
+
+    public static String getBypassSystemSAFKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + ".BypassSystemSAF";
+    }
 
     public void injectPermissionManager(IPermissionManager permissionManager) {
         this.permissionManager = permissionManager;
@@ -122,12 +140,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         initEdgeToEdgeInsets(R.id.layout_activity_main);
+        restoreInstanceState(savedInstanceState);
         initRecyclerView();
         checkIndexConsistency();
         initDragAndDrop();
         prepareAddImageButton();
         startForegroundServiceDelayed();
-        checkInvalidHeaders();
+        checkInvalidCredentials();
+        checkPermissions();
+        //handleSAFNotice();
     }
 
     private void initDragAndDrop() {
@@ -140,13 +161,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     @SuppressWarnings("NotifyDataSetChanged")
     private void checkIndexConsistency() {
         Log.d(NetworkTaskMainActivity.class.getName(), "checkIndexConsistency");
-        boolean isIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isIndexConsistent();
-        if (!isIndexConsistent) {
+        boolean isNetworkTaskIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isNetworkTaskIndexConsistent();
+        if (!isNetworkTaskIndexConsistent) {
             Log.e(NetworkTaskMainActivity.class.getName(), "UI index is inconsistent. Repairing...");
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(this);
             networkTaskDAO.normalizeUIIndex();
             ((NetworkTaskAdapter) getAdapter()).replaceItems(readNetworkTasksFromDatabase());
             getAdapter().notifyDataSetChanged();
+        }
+        boolean isResolveIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isResolveIndexConsistent();
+        if (!isResolveIndexConsistent) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "Resolve index is inconsistent. Repairing...");
+            ResolveDAO resolveDAO = new ResolveDAO(this);
+            resolveDAO.normalizeUIIndex();
         }
     }
 
@@ -167,22 +194,24 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
-    private void checkInvalidHeaders() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "checkInvalidHeaders");
+    private void checkInvalidCredentials() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkInvalidCredentials");
         NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
         Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
         HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
+        List<NetworkTask> invalidSNMPCommunities = adapter.getInvalidSNMPCommunities();
         List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
         List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
-        if (invalidHeaders.isEmpty() && invalidDefaultHeaders.isEmpty()) {
+        if (invalidSNMPCommunities.isEmpty() && invalidHeaders.isEmpty() && invalidDefaultHeaders.isEmpty()) {
             return;
         }
         List<Header> toDelete = new ArrayList<>();
-        List<CredentialInfo> toDisplay = collectHeadersActionLists(adapter, invalidHeaders, invalidDefaultHeaders, toDelete);
+        List<CredentialInfo> toDisplay = collectCredentialsActionLists(adapter, invalidSNMPCommunities, invalidHeaders, invalidDefaultHeaders, toDelete);
         if (!credentialInfoDialogShown && !toDisplay.isEmpty()) {
             String tag = CredentialInfoDialog.class.getName();
             FragmentManager fragmentManager = getSupportFragmentManager();
             if (fragmentManager.findFragmentByTag(tag) == null) {
+                credentialInfoDialogShown = true;
                 showCredentialInfoDialog(toDisplay);
             }
         }
@@ -192,11 +221,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
-    private List<CredentialInfo> collectHeadersActionLists(NetworkTaskAdapter adapter, Map<Long, List<Header>> headers, List<Header> defaultHeaders, List<Header> toDelete) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "collectHeadersActionLists");
+    private List<CredentialInfo> collectCredentialsActionLists(NetworkTaskAdapter adapter, List<NetworkTask> snmpCommunities, Map<Long, List<Header>> headers, List<Header> defaultHeaders, List<Header> toDelete) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "collectCredentialsActionLists");
         List<CredentialInfo> toDisplay = new ArrayList<>();
+        if (snmpCommunities != null && !snmpCommunities.isEmpty()) {
+            List<CredentialInfo> credentialInfos = UIUtil.snmpCommunitiesToCredentialInfoList(this, snmpCommunities);
+            toDisplay.addAll(credentialInfos);
+        }
         if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
-            List<CredentialInfo> credentialInfos = UIUtil.toCredentialInfoList(this, null, defaultHeaders);
+            List<CredentialInfo> credentialInfos = UIUtil.headersToCredentialInfoList(this, null, defaultHeaders);
             toDisplay.addAll(credentialInfos);
         }
         if (headers != null && !headers.isEmpty()) {
@@ -207,13 +240,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 List<Header> taskInvalidHeaders = headers.get(networkTaskId);
                 if (taskInvalidHeaders != null) {
                     boolean useDefaultHeaders = currentItem.getAccessTypeData() == null || currentItem.getAccessTypeData().isUseDefaultHeaders();
-                    boolean isDownload = task.getAccessType() != null && task.getAccessType().isDownload();
+                    boolean isDownload = HTTPUtil.isDownloadTask(task);
                     if (useDefaultHeaders || !isDownload) {
                         if (toDelete != null) {
                             toDelete.addAll(taskInvalidHeaders);
                         }
                     } else {
-                        List<CredentialInfo> credentialInfos = UIUtil.toCredentialInfoList(this, task, taskInvalidHeaders);
+                        List<CredentialInfo> credentialInfos = UIUtil.headersToCredentialInfoList(this, task, taskInvalidHeaders);
                         toDisplay.addAll(credentialInfos);
                     }
                 }
@@ -229,7 +262,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         registerReceiver();
         NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
         ThreadUtil.execute(uiInitTask);
-        checkPermissions();
         checkActiveAlarm();
         scrollToProvidedEntry();
     }
@@ -238,18 +270,27 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     protected void onSaveInstanceState(@NotNull Bundle state) {
         super.onSaveInstanceState(state);
         state.putBoolean(getCredentialInfoDialogShownKey(), credentialInfoDialogShown);
+        state.putBoolean(getFolderPermissionNotificationSentKey(), folderPermissionNotificationSent);
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NotNull Bundle state) {
-        super.onRestoreInstanceState(state);
+    private void restoreInstanceState(Bundle state) {
+        if (state == null) {
+            return;
+        }
         if (state.containsKey(getCredentialInfoDialogShownKey())) {
             credentialInfoDialogShown = state.getBoolean(getCredentialInfoDialogShownKey());
+        }
+        if (state.containsKey(getFolderPermissionNotificationSentKey())) {
+            folderPermissionNotificationSent = state.getBoolean(getFolderPermissionNotificationSentKey());
         }
     }
 
     private String getCredentialInfoDialogShownKey() {
-        return NetworkTaskMainActivity.class.getSimpleName() + ".CredentialInfoDialogShownKey";
+        return NetworkTaskMainActivity.class.getSimpleName() + ".CredentialInfoDialogShown";
+    }
+
+    private String getFolderPermissionNotificationSentKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + ".FolderPermissionNotificationSent";
     }
 
     private void scrollToProvidedEntry() {
@@ -340,18 +381,60 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private void checkPermissions() {
         Log.d(NetworkTaskMainActivity.class.getName(), "checkPermissions");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
+        NoBackupPreferenceManager noBackupPreferenceManager = new NoBackupPreferenceManager(this);
         IPermissionManager permissionManager = getPermissionManager();
-        if (!permissionManager.hasPostNotificationsPermission(this) && !preferenceManager.getPreferenceAskedNotificationPermission()) {
+        if (!permissionManager.hasPostNotificationsPermission(this) && !noBackupPreferenceManager.getPreferenceAskedNotificationPermission()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to post notifications is missing");
-            preferenceManager.setPreferenceAskedNotificationPermission(true);
+            noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
             permissionManager.requestPostNotificationsPermission(this);
         }
         if (!createAlarmManager().canScheduleAlarms()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to schedule alarms is missing");
             showAlarmPermissionDialog();
         }
-        if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+        checkSAFPermissions();
+    }
+
+    @SuppressWarnings("unused")
+    private void handleSAFNotice() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "handleSAFNotice");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (!SystemUtil.supportsSAFFeature() || bypassSystemSAF) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "SAF not supported. Not showing dialog.");
+            return;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "SAF is enabled. Not showing dialog.");
+            return;
+        }
+        //Set default to true in systemprefs.xml, remove initializeSAFFlag in StartupService, SystemActivity.onImportDone, SystemActivity.onPurgeDone
+        if (!preferenceManager.getPreferenceSAFNoticeShown()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            String tag = GeneralMessageDialog.class.getName();
+            if (fragmentManager.findFragmentByTag(tag) == null) {
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_saf_notice_title), getResources().getString(R.string.text_dialog_general_message_saf_notice_message), Typeface.NORMAL, Message.SAFNOTICE.name(), true);
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private boolean canSAFBeEnabledInBackground() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "canSAFBeEnabledInBackground");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        boolean allowArbitraryFileLocationKeyPresent = preferenceManager.isPreferenceValueConfigured(getResources().getString(R.string.allow_arbitrary_file_location_key));
+        boolean downloadExternalStorageEnabled = preferenceManager.getPreferenceDownloadExternalStorage();
+        boolean logFileEnabled = preferenceManager.getPreferenceLogFile();
+        Log.d(NetworkTaskMainActivity.class.getName(), "allowArbitraryFileLocationKeyPresent is " + allowArbitraryFileLocationKeyPresent);
+        Log.d(NetworkTaskMainActivity.class.getName(), "downloadExternalStorageEnabled is " + downloadExternalStorageEnabled);
+        Log.d(NetworkTaskMainActivity.class.getName(), "logFileEnabled is " + logFileEnabled);
+        return !allowArbitraryFileLocationKeyPresent && !downloadExternalStorageEnabled && !logFileEnabled;
+    }
+
+    private void checkSAFPermissions() {
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        IPermissionManager permissionManager = getPermissionManager();
+        if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation() && permissionManager.hasPostNotificationsPermission(this) && !folderPermissionNotificationSent) {
             if (preferenceManager.getPreferenceLogFile()) {
                 if (!checkArbitraryLogFolderPermission(preferenceManager)) {
                     Log.d(NetworkTaskMainActivity.class.getName(), "Log folder permission is missing");
@@ -364,6 +447,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                     createNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
                 }
             }
+            folderPermissionNotificationSent = true;
         }
     }
 
@@ -431,7 +515,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_system triggered");
             Intent intent = new Intent(this, SystemActivity.class);
             intent.setPackage(getPackageName());
-            Bundle bundle = prepareSystemActivityCredentionInfoBundle();
+            Bundle bundle = prepareSystemActivityCredentialInfoBundle();
             if (bundle != null) {
                 intent.putExtra(SystemActivity.getCredentialsKey(), bundle);
             }
@@ -446,17 +530,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    private Bundle prepareSystemActivityCredentionInfoBundle() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareSystemActivityCredentionInfoBundle");
+    private Bundle prepareSystemActivityCredentialInfoBundle() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "prepareSystemActivityCredentialInfoBundle");
         NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
+        List<NetworkTask> invalidSNMPCommunities = adapter.getInvalidSNMPCommunities();
+        List<NetworkTask> validSNMPCommunities = adapter.getValidSNMPCommunities();
         Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
         Map<Long, List<Header>> secretHeaders = adapter.getSecretHeaders();
         HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
         List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
         List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
         List<Header> secretDefaultHeaders = syncHandler.getSecretHeaders(defaultHeaders);
-        List<CredentialInfo> toDisplayInvalid = collectHeadersActionLists(adapter, invalidHeaders, invalidDefaultHeaders, null);
-        List<CredentialInfo> toDisplaySecret = collectHeadersActionLists(adapter, secretHeaders, secretDefaultHeaders, null);
+        List<CredentialInfo> toDisplayInvalid = collectCredentialsActionLists(adapter, invalidSNMPCommunities, invalidHeaders, invalidDefaultHeaders, null);
+        List<CredentialInfo> toDisplaySecret = collectCredentialsActionLists(adapter, validSNMPCommunities, secretHeaders, secretDefaultHeaders, null);
         if (!toDisplayInvalid.isEmpty() || !toDisplaySecret.isEmpty()) {
             Bundle bundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), toDisplayInvalid);
             BundleUtil.credentialInfoListToBundle(SystemActivity.getCredentialsBaseKey(), toDisplaySecret, bundle);
@@ -491,11 +577,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     public void onMainAddClicked(View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        Resolve resolve = new Resolve(this);
-        openNetworkTaskEditDialog(task, data, resolve, null, -1);
+        openNetworkTaskEditDialog(task, data, null, null, null, -1);
     }
 
     public void onMainStartStopClicked(int position) {
@@ -554,9 +638,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = uiWrapper.getNetworkTask();
         AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
-        Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : uiWrapper.getResolve();
+        List<Resolve> resolves = uiWrapper.getResolves();
         List<Header> headers = uiWrapper.getHeaders();
-        openNetworkTaskEditDialog(task, accessTypeData, resolve, headers, position);
+        List<SNMPItem> snmpItems = uiWrapper.getSnmpItems();
+        openNetworkTaskEditDialog(task, accessTypeData, resolves, headers, snmpItems, position);
     }
 
     public void onMainCopyClicked(int position) {
@@ -572,13 +657,14 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = new NetworkTask(uiWrapper.getNetworkTask());
         AccessTypeData accessTypeData = new AccessTypeData(uiWrapper.getAccessTypeData());
-        Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : new Resolve(uiWrapper.getResolve());
+        List<Resolve> resolves = uiWrapper.getResolves() == null ? null : new ArrayList<>(uiWrapper.getResolves());
         List<Header> headers = uiWrapper.getHeaders() == null ? null : new ArrayList<>(uiWrapper.getHeaders());
-        openNetworkTaskEditDialog(task, accessTypeData, resolve, headers, position);
+        List<SNMPItem> snmpItems = uiWrapper.getSnmpItems() == null ? null : new ArrayList<>(uiWrapper.getSnmpItems());
+        openNetworkTaskEditDialog(task, accessTypeData, resolves, headers, snmpItems, position);
     }
 
-    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, Resolve resolve, List<Header> headers, int position) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is" + accessTypeData + ", resolve is" + resolve + ", position is " + position);
+    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, List<Resolve> resolves, List<Header> headers, List<SNMPItem> snmpItems, int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is, position is " + position);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
             editDialog.injectPermissionManager(permissionManager);
@@ -586,10 +672,17 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), position);
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
         bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), accessTypeData.toBundle(), bundle);
-        bundle = BundleUtil.bundleToBundle(editDialog.getResolveKey(), resolve.toBundle(), bundle);
+        if (resolves != null) {
+            Bundle resolvesBundle = BundleUtil.resolveListToBundle(editDialog.getResolvesBaseKey(), resolves);
+            bundle = BundleUtil.bundleToBundle(editDialog.getResolvesKey(), resolvesBundle, bundle);
+        }
         if (headers != null) {
-            Bundle headersBundle = BundleUtil.headerListToBundle(editDialog.getHeadersKey(), headers);
+            Bundle headersBundle = BundleUtil.headerListToBundle(editDialog.getHeadersBaseKey(), headers);
             bundle = BundleUtil.bundleToBundle(editDialog.getHeadersKey(), headersBundle, bundle);
+        }
+        if (snmpItems != null) {
+            Bundle snmpItemsBundle = BundleUtil.snmpItemListToBundle(editDialog.getSNMPItemsBaseKey(), snmpItems);
+            bundle = BundleUtil.bundleToBundle(editDialog.getSNMPItemsKey(), snmpItemsBundle, bundle);
         }
         editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
@@ -618,42 +711,49 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
         NetworkTask task = editDialog.getNetworkTask();
         AccessTypeData accessTypeData = editDialog.getAccessTypeData();
-        Resolve resolve = editDialog.getResolve();
-        resolve.setNetworkTaskId(task.getId());
+        List<Resolve> resolves = editDialog.getResolves();
+        setResolvesNetworkTaskId(resolves, task.getId());
         List<Header> headers = editDialog.getHeaders();
         setHeadersNetworkTaskId(headers, task.getId());
-        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolve is " + resolve);
+        List<SNMPItem> snmpItems = editDialog.getSnmpItems();
+        setSNMPItemsNetworkTaskId(snmpItems, task.getId());
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolves are " + resolves + ", headers are " + headers + ", snmp items are " + snmpItems);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
-            handler.insertNetworkTask(task, accessTypeData, resolve, headers);
+            handler.insertNetworkTask(task, accessTypeData, resolves, headers, snmpItems);
             getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
             scrollToEntryByIndex(task.getIndex());
         } else {
             NetworkTask initialTask = editDialog.getInitialNetworkTask();
             AccessTypeData initialAccessTypeData = editDialog.getInitialAccessTypeData();
             initialAccessTypeData.setNetworkTaskId(initialTask.getId());
-            Resolve initialResolve = editDialog.getInitialResolve();
-            initialResolve.setNetworkTaskId(initialTask.getId());
+            List<Resolve> initialResolves = editDialog.getInitialResolves();
+            setResolvesNetworkTaskId(initialResolves, task.getId());
             List<Header> initialHeaders = editDialog.getInitialHeaders();
             setHeadersNetworkTaskId(initialHeaders, task.getId());
+            List<SNMPItem> initialSnmpItems = editDialog.getInitialSnmpItems();
+            setSNMPItemsNetworkTaskId(initialSnmpItems, task.getId());
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task is " + initialTask);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data is " + initialAccessTypeData);
-            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve object is " + initialResolve);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve objects are " + initialResolves);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial headers are " + initialHeaders);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial snmp items are " + initialSnmpItems);
             boolean taskChanged = !initialTask.isTechnicallyEqual(task);
             boolean accessTypeDataChanged = !initialAccessTypeData.isTechnicallyEqual(accessTypeData);
-            boolean resolveChanged = !initialResolve.isTechnicallyEqual(resolve);
+            boolean resolvesChanged = resolves != null && !CollectionUtil.areListsEqual(initialResolves, resolves, RESOLVE_TECHNICAL_EQUALITY);
             boolean headersChanged = headers != null && !CollectionUtil.areListsEqual(initialHeaders, headers, HEADER_TECHNICAL_EQUALITY);
+            boolean snmpItemsChanged = snmpItems != null && !CollectionUtil.areListsEqual(initialSnmpItems, snmpItems, SNMPITEM_TECHNICAL_EQUALITY);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task changed: " + taskChanged);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data changed: " + accessTypeDataChanged);
-            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve object changed: " + resolveChanged);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve objects changed: " + resolvesChanged);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial headers changed: " + headersChanged);
-            if (!taskChanged && !accessTypeDataChanged && !resolveChanged && !headersChanged) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial snmp items changed: " + snmpItemsChanged);
+            if (!taskChanged && !accessTypeDataChanged && !resolvesChanged && !headersChanged && !snmpItemsChanged) {
                 Log.d(NetworkTaskMainActivity.class.getName(), "No changes were made. Skipping update.");
             } else {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolveChanged ? resolve : null, headersChanged ? headers : null);
+                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolvesChanged ? resolves : null, headersChanged ? headers : null, snmpItemsChanged ? snmpItems : null);
                 getAdapter().notifyItemChanged(editDialog.getPosition());
             }
         }
@@ -664,6 +764,22 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (headers != null) {
             for (Header header : headers) {
                 header.setNetworkTaskId(taskId);
+            }
+        }
+    }
+
+    private void setResolvesNetworkTaskId(List<Resolve> resolves, long taskId) {
+        if (resolves != null) {
+            for (Resolve resolve : resolves) {
+                resolve.setNetworkTaskId(taskId);
+            }
+        }
+    }
+
+    private void setSNMPItemsNetworkTaskId(List<SNMPItem> snmpItems, long taskId) {
+        if (snmpItems != null) {
+            for (SNMPItem snmpItem : snmpItems) {
+                snmpItem.setNetworkTaskId(taskId);
             }
         }
     }
@@ -710,7 +826,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         IPermissionManager permissionManager = getPermissionManager();
         permissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        if (permissionManager.hasPostNotificationsPermission(this)) {
+            checkSAFPermissions();
+        }
     }
+
 
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked for type " + type);
@@ -794,6 +914,18 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onMessageDialogOkClicked(GeneralMessageDialog messageDialog) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMessageDialogOkClicked");
+        String extraData = messageDialog.getExtraData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMessageDialogOkClicked, extraData is " + extraData);
+        messageDialog.dismiss();
+        if (Message.SAFNOTICE.name().equals(extraData)) {
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            preferenceManager.setPreferenceSAFNoticeShown(messageDialog.isDoNotShowAgain());
         }
     }
 
