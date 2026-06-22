@@ -16,15 +16,18 @@
 
 package net.ibbaa.keepitup.model;
 
-public enum SNMPVersion {
+public enum SNMPPrivAlgorithm {
 
-    V1(1),
-    V2C(2),
-    V3(3);
+    NONE(1),
+    DES(2),
+    AES128(3),
+    AES192(4),
+    AES256(5),
+    AES256C(6);
 
     private final int code;
 
-    SNMPVersion(int code) {
+    SNMPPrivAlgorithm(int code) {
         this.code = code;
     }
 
@@ -32,21 +35,33 @@ public enum SNMPVersion {
         return code;
     }
 
-    public boolean isV1() {
-        return V1.equals(this);
+    public boolean isNone() {
+        return NONE.equals(this);
     }
 
-    public boolean isV2C() {
-        return V2C.equals(this);
+    public boolean isDES() {
+        return DES.equals(this);
     }
 
-    public boolean isV3() {
-        return V3.equals(this);
+    public boolean isAES128() {
+        return AES128.equals(this);
     }
 
-    public static SNMPVersion forCode(int code) {
-        SNMPVersion[] values = SNMPVersion.values();
-        for (SNMPVersion value : values) {
+    public boolean isAES192() {
+        return AES192.equals(this);
+    }
+
+    public boolean isAES256() {
+        return AES256.equals(this);
+    }
+
+    public boolean isAES256C() {
+        return AES256C.equals(this);
+    }
+
+    public static SNMPPrivAlgorithm forCode(int code) {
+        SNMPPrivAlgorithm[] values = SNMPPrivAlgorithm.values();
+        for (SNMPPrivAlgorithm value : values) {
             if (code == value.getCode()) {
                 return value;
             }

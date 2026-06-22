@@ -16,15 +16,14 @@
 
 package net.ibbaa.keepitup.model;
 
-public enum SNMPVersion {
+public enum SNMPTransport {
 
-    V1(1),
-    V2C(2),
-    V3(3);
+    UDP(1),
+    TCP(2);
 
     private final int code;
 
-    SNMPVersion(int code) {
+    SNMPTransport(int code) {
         this.code = code;
     }
 
@@ -32,21 +31,17 @@ public enum SNMPVersion {
         return code;
     }
 
-    public boolean isV1() {
-        return V1.equals(this);
+    public boolean isUDP() {
+        return UDP.equals(this);
     }
 
-    public boolean isV2C() {
-        return V2C.equals(this);
+    public boolean isTCP() {
+        return TCP.equals(this);
     }
 
-    public boolean isV3() {
-        return V3.equals(this);
-    }
-
-    public static SNMPVersion forCode(int code) {
-        SNMPVersion[] values = SNMPVersion.values();
-        for (SNMPVersion value : values) {
+    public static SNMPTransport forCode(int code) {
+        SNMPTransport[] values = SNMPTransport.values();
+        for (SNMPTransport value : values) {
             if (code == value.getCode()) {
                 return value;
             }

@@ -16,15 +16,19 @@
 
 package net.ibbaa.keepitup.model;
 
-public enum SNMPVersion {
+public enum SNMPAuthAlgorithm {
 
-    V1(1),
-    V2C(2),
-    V3(3);
+    NONE(1),
+    MD5(2),
+    SHA1(3),
+    SHA224(4),
+    SHA256(5),
+    SHA384(6),
+    SHA512(7);
 
     private final int code;
 
-    SNMPVersion(int code) {
+    SNMPAuthAlgorithm(int code) {
         this.code = code;
     }
 
@@ -32,21 +36,37 @@ public enum SNMPVersion {
         return code;
     }
 
-    public boolean isV1() {
-        return V1.equals(this);
+    public boolean isNone() {
+        return NONE.equals(this);
     }
 
-    public boolean isV2C() {
-        return V2C.equals(this);
+    public boolean isMD5() {
+        return MD5.equals(this);
     }
 
-    public boolean isV3() {
-        return V3.equals(this);
+    public boolean isSHA1() {
+        return SHA1.equals(this);
     }
 
-    public static SNMPVersion forCode(int code) {
-        SNMPVersion[] values = SNMPVersion.values();
-        for (SNMPVersion value : values) {
+    public boolean isSHA224() {
+        return SHA224.equals(this);
+    }
+
+    public boolean isSHA256() {
+        return SHA256.equals(this);
+    }
+
+    public boolean isSHA384() {
+        return SHA384.equals(this);
+    }
+
+    public boolean isSHA512() {
+        return SHA512.equals(this);
+    }
+
+    public static SNMPAuthAlgorithm forCode(int code) {
+        SNMPAuthAlgorithm[] values = SNMPAuthAlgorithm.values();
+        for (SNMPAuthAlgorithm value : values) {
             if (code == value.getCode()) {
                 return value;
             }
