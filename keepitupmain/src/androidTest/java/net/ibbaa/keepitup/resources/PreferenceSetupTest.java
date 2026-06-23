@@ -25,6 +25,9 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -208,6 +211,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -219,6 +224,9 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolvePort(456);
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         Map<String, ?> defaults = new HashMap<>();
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -229,6 +237,8 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -240,6 +250,9 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
     }
 
     @Test
@@ -253,6 +266,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceConnectCount", 10);
         defaults.put("preferenceStopOnSuccess", true);
         defaults.put("preferenceIgnoreSSLError", true);
+        defaults.put("preferenceFailureOnCertificateExpiry", true);
+        defaults.put("preferenceFailureOnCertificateExpiryDays", 14);
         defaults.put("preferenceOnlyWifi", true);
         defaults.put("preferenceNotification", true);
         defaults.put("preferenceHighPrio", true);
@@ -262,8 +277,11 @@ public class PreferenceSetupTest {
         defaults.put("preferenceResolveMatchPort", 789);
         defaults.put("preferenceResolveAddress", "127.0.0.1");
         defaults.put("preferenceResolvePort", 456);
-        defaults.put("preferenceSNMPVersion", SNMPVersion.V1.getCode());
+        defaults.put("preferenceSNMPVersion", SNMPVersion.V2C.getCode());
         defaults.put("preferenceSNMPPort", 162);
+        defaults.put("preferenceSNMPTransport", SNMPTransport.TCP.getCode());
+        defaults.put("preferenceSNMPAuthAlgorithm", SNMPAuthAlgorithm.SHA256.getCode());
+        defaults.put("preferenceSNMPPrivAlgorithm", SNMPPrivAlgorithm.AES256.getCode());
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -273,6 +291,8 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -282,8 +302,11 @@ public class PreferenceSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(162, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, preferenceManager.getPreferenceSNMPPrivAlgorithm());
     }
 
     @Test
@@ -297,6 +320,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceConnectCount", "10");
         defaults.put("preferenceStopOnSuccess", "true");
         defaults.put("preferenceIgnoreSSLError", "true");
+        defaults.put("preferenceFailureOnCertificateExpiry", "true");
+        defaults.put("preferenceFailureOnCertificateExpiryDays", "14");
         defaults.put("preferenceOnlyWifi", "true");
         defaults.put("preferenceNotification", "true");
         defaults.put("preferenceHighPrio", "true");
@@ -306,8 +331,11 @@ public class PreferenceSetupTest {
         defaults.put("preferenceResolveMatchPort", "789");
         defaults.put("preferenceResolveAddress", "127.0.0.1");
         defaults.put("preferenceResolvePort", "456");
-        defaults.put("preferenceSNMPVersion", String.valueOf(SNMPVersion.V1.getCode()));
+        defaults.put("preferenceSNMPVersion", String.valueOf(SNMPVersion.V3.getCode()));
         defaults.put("preferenceSNMPPort", "162");
+        defaults.put("preferenceSNMPTransport", String.valueOf(SNMPTransport.TCP.getCode()));
+        defaults.put("preferenceSNMPAuthAlgorithm", String.valueOf(SNMPAuthAlgorithm.SHA256.getCode()));
+        defaults.put("preferenceSNMPPrivAlgorithm", String.valueOf(SNMPPrivAlgorithm.AES256.getCode()));
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -317,6 +345,8 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -326,8 +356,11 @@ public class PreferenceSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(162, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, preferenceManager.getPreferenceSNMPPrivAlgorithm());
     }
 
     @Test
@@ -341,6 +374,8 @@ public class PreferenceSetupTest {
         defaults.put("preferenceConnectCount", 55);
         defaults.put("preferenceStopOnSuccess", 1);
         defaults.put("preferenceIgnoreSSLError", 1);
+        defaults.put("preferenceFailureOnCertificateExpiry", 1);
+        defaults.put("preferenceFailureOnCertificateExpiryDays", 0);
         defaults.put("preferenceOnlyWifi", 1);
         defaults.put("preferenceNotification", 1);
         defaults.put("preferenceHighPrio", 1);
@@ -352,6 +387,9 @@ public class PreferenceSetupTest {
         defaults.put("preferenceResolvePort", 12345678);
         defaults.put("preferenceSNMPVersion", 99);
         defaults.put("preferenceSNMPPort", 12345678);
+        defaults.put("preferenceSNMPTransport", 99);
+        defaults.put("preferenceSNMPAuthAlgorithm", 99);
+        defaults.put("preferenceSNMPPrivAlgorithm", 99);
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -361,6 +399,8 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -372,6 +412,9 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
     }
 
     @Test
@@ -570,6 +613,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(defaults.get("preferenceFailureOnCertificateExpiry"), preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(defaults.get("preferenceFailureOnCertificateExpiryDays"), preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
@@ -581,6 +626,9 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
         assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
         assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
+        assertEquals(defaults.get("preferenceSNMPTransport"), preferenceManager.getPreferenceSNMPTransport().getCode());
+        assertEquals(defaults.get("preferenceSNMPAuthAlgorithm"), preferenceManager.getPreferenceSNMPAuthAlgorithm().getCode());
+        assertEquals(defaults.get("preferenceSNMPPrivAlgorithm"), preferenceManager.getPreferenceSNMPPrivAlgorithm().getCode());
     }
 
     @Test
@@ -593,6 +641,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -604,6 +654,9 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolvePort(456);
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         Map<String, ?> defaults = setup.exportDefaults();
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -613,6 +666,8 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -624,6 +679,9 @@ public class PreferenceSetupTest {
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(162, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, preferenceManager.getPreferenceSNMPPrivAlgorithm());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -632,6 +690,8 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(defaults.get("preferenceFailureOnCertificateExpiry"), preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(defaults.get("preferenceFailureOnCertificateExpiryDays"), preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
@@ -643,6 +703,9 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceResolvePort"), preferenceManager.getPreferenceResolvePort());
         assertEquals(defaults.get("preferenceSNMPVersion"), preferenceManager.getPreferenceSNMPVersion().getCode());
         assertEquals(defaults.get("preferenceSNMPPort"), preferenceManager.getPreferenceSNMPPort());
+        assertEquals(defaults.get("preferenceSNMPTransport"), preferenceManager.getPreferenceSNMPTransport().getCode());
+        assertEquals(defaults.get("preferenceSNMPAuthAlgorithm"), preferenceManager.getPreferenceSNMPAuthAlgorithm().getCode());
+        assertEquals(defaults.get("preferenceSNMPPrivAlgorithm"), preferenceManager.getPreferenceSNMPPrivAlgorithm().getCode());
     }
 
     @Test
@@ -919,6 +982,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -929,6 +994,9 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolvePort(456);
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         setup.removeDefaults();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -939,6 +1007,8 @@ public class PreferenceSetupTest {
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -949,6 +1019,9 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
     }
 
     @Test
@@ -1009,8 +1082,13 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceResolvePort(456);
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -1054,8 +1132,13 @@ public class PreferenceSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());

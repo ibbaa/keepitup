@@ -25,6 +25,9 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 
 import java.util.ArrayList;
@@ -98,42 +101,48 @@ public class AccessTypeDataDAO extends BaseDAO {
     private boolean encrypt(ContentValues values, AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataDAO.class.getName(), "encrypt, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
-        String communityColumn = dbConstants.getSnmpCommunityColumnName();
-        String ivColumn = dbConstants.getSnmpCommunityIVColumnName();
-        String community = accessTypeData.getSnmpCommunity();
-        if (community == null) {
-            values.putNull(communityColumn);
-            values.putNull(ivColumn);
-            return true;
-        }
-        EncryptResult result = encrypt(values, communityColumn, ivColumn, community);
-        accessTypeData.setSnmpCommunityValid(result.success());
-        if (!result.success()) {
-            values.putNull(communityColumn);
-            values.putNull(ivColumn);
-        }
-        return result.success();
+        boolean community = encryptSecretField(values, dbConstants.getSnmpCommunityColumnName(), dbConstants.getSnmpCommunityIVColumnName(), accessTypeData.getSnmpCommunity(), accessTypeData::setSnmpCommunity, accessTypeData::setSnmpCommunityValid);
+        boolean auth = encryptSecretField(values, dbConstants.getSnmpAuthPassphraseColumnName(), dbConstants.getSnmpAuthPassphraseIVColumnName(), accessTypeData.getSnmpAuthPassphrase(), accessTypeData::setSnmpAuthPassphrase, accessTypeData::setSnmpAuthPassphraseValid);
+        boolean priv = encryptSecretField(values, dbConstants.getSnmpPrivPassphraseColumnName(), dbConstants.getSnmpPrivPassphraseIVColumnName(), accessTypeData.getSnmpPrivPassphrase(), accessTypeData::setSnmpPrivPassphrase, accessTypeData::setSnmpPrivPassphraseValid);
+        return community && auth && priv;
     }
 
     private void decrypt(Cursor cursor, AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataDAO.class.getName(), "decrypt, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
-        String communityColumn = dbConstants.getSnmpCommunityColumnName();
-        String ivColumn = dbConstants.getSnmpCommunityIVColumnName();
+        decryptSecretField(cursor, dbConstants.getSnmpCommunityColumnName(), dbConstants.getSnmpCommunityIVColumnName(), accessTypeData::setSnmpCommunity, accessTypeData::setSnmpCommunityValid);
+        decryptSecretField(cursor, dbConstants.getSnmpAuthPassphraseColumnName(), dbConstants.getSnmpAuthPassphraseIVColumnName(), accessTypeData::setSnmpAuthPassphrase, accessTypeData::setSnmpAuthPassphraseValid);
+        decryptSecretField(cursor, dbConstants.getSnmpPrivPassphraseColumnName(), dbConstants.getSnmpPrivPassphraseIVColumnName(), accessTypeData::setSnmpPrivPassphrase, accessTypeData::setSnmpPrivPassphraseValid);
+    }
+
+    private boolean encryptSecretField(ContentValues values, String valueColumn, String ivColumn, String plainText, StringSetter valueSetter, BooleanSetter validSetter) {
+        values.putNull(ivColumn);
+        if (plainText == null) {
+            values.putNull(valueColumn);
+            validSetter.set(true);
+            return true;
+        }
+        EncryptResult result = encrypt(values, valueColumn, ivColumn, plainText);
+        if (!result.success()) {
+            values.putNull(valueColumn);
+            valueSetter.set(null);
+            validSetter.set(false);
+            return false;
+        }
+        validSetter.set(true);
+        return true;
+    }
+
+    private void decryptSecretField(Cursor cursor, String valueColumn, String ivColumn, StringSetter valueSetter, BooleanSetter validSetter) {
         int indexIVColumn = cursor.getColumnIndex(ivColumn);
         if (!cursor.isNull(indexIVColumn)) {
-            DecryptResult result = decrypt(cursor, communityColumn, ivColumn);
-            if (result.success()) {
-                accessTypeData.setSnmpCommunity(result.plainText());
-                accessTypeData.setSnmpCommunityValid(true);
-            } else {
-                accessTypeData.setSnmpCommunity(null);
-                accessTypeData.setSnmpCommunityValid(false);
-            }
+            DecryptResult result = decrypt(cursor, valueColumn, ivColumn);
+            valueSetter.set(result.success() ? result.plainText() : null);
+            validSetter.set(result.success());
             return;
         }
-        accessTypeData.setSnmpCommunity(null);
-        accessTypeData.setSnmpCommunityValid(true);
+        valueSetter.set(null);
+        validSetter.set(true);
     }
 
     private void dumpDatabase(String message) {
@@ -152,9 +161,14 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
-        values.putNull(dbConstants.getSnmpCommunityIVColumnName());
+        values.put(dbConstants.getSnmpTransportColumnName(), accessTypeData.getSnmpTransport() == null ? null : accessTypeData.getSnmpTransport().getCode());
+        values.put(dbConstants.getSnmpAuthAlgorithmColumnName(), accessTypeData.getSnmpAuthAlgorithm() == null ? null : accessTypeData.getSnmpAuthAlgorithm().getCode());
+        values.put(dbConstants.getSnmpUserNameColumnName(), accessTypeData.getSnmpUserName());
+        values.put(dbConstants.getSnmpPrivAlgorithmColumnName(), accessTypeData.getSnmpPrivAlgorithm() == null ? null : accessTypeData.getSnmpPrivAlgorithm().getCode());
         boolean encryptSuccess = encrypt(values, accessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
@@ -162,14 +176,9 @@ public class AccessTypeDataDAO extends BaseDAO {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
         }
         accessTypeData.setId(rowid);
-        if (!encryptSuccess) {
-            accessTypeData.setSnmpCommunity(null);
-        }
-        accessTypeData.setSnmpCommunityValid(encryptSuccess);
         return accessTypeData;
     }
 
-    @SuppressWarnings({"ExtractMethodRecommender"})
     private AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
         Log.d(AccessTypeDataDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
@@ -182,16 +191,17 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
-        values.putNull(dbConstants.getSnmpCommunityIVColumnName());
+        values.put(dbConstants.getSnmpTransportColumnName(), accessTypeData.getSnmpTransport() == null ? null : accessTypeData.getSnmpTransport().getCode());
+        values.put(dbConstants.getSnmpAuthAlgorithmColumnName(), accessTypeData.getSnmpAuthAlgorithm() == null ? null : accessTypeData.getSnmpAuthAlgorithm().getCode());
+        values.put(dbConstants.getSnmpUserNameColumnName(), accessTypeData.getSnmpUserName());
+        values.put(dbConstants.getSnmpPrivAlgorithmColumnName(), accessTypeData.getSnmpPrivAlgorithm() == null ? null : accessTypeData.getSnmpPrivAlgorithm().getCode());
         boolean encryptSuccess = encrypt(values, accessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "encryptSuccess is " + encryptSuccess);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
-        if (!encryptSuccess) {
-            accessTypeData.setSnmpCommunity(null);
-        }
-        accessTypeData.setSnmpCommunityValid(encryptSuccess);
         return accessTypeData;
     }
 
@@ -293,8 +303,14 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexConnectCountColumn = cursor.getColumnIndex(dbConstants.getConnectCountColumnName());
         int indexStopOnSuccessColumn = cursor.getColumnIndex(dbConstants.getStopOnSuccessColumnName());
         int indexIgnoreSSLErrorColumn = cursor.getColumnIndex(dbConstants.getIgnoreSSLErrorColumnName());
+        int indexFailureOnCertificateExpiryColumn = cursor.getColumnIndex(dbConstants.getFailureOnCertificateExpiryColumnName());
+        int indexFailureOnCertificateExpiryDaysColumn = cursor.getColumnIndex(dbConstants.getFailureOnCertificateExpiryDaysColumnName());
         int indexUseDefaultHeadersColumn = cursor.getColumnIndex(dbConstants.getUseDefaultHeadersColumnName());
         int indexSnmpVersionColumn = cursor.getColumnIndex(dbConstants.getSnmpVersionColumnName());
+        int indexSnmpTransportColumn = cursor.getColumnIndex(dbConstants.getSnmpTransportColumnName());
+        int indexSnmpAuthAlgorithmColumn = cursor.getColumnIndex(dbConstants.getSnmpAuthAlgorithmColumnName());
+        int indexSnmpUserNameColumn = cursor.getColumnIndex(dbConstants.getSnmpUserNameColumnName());
+        int indexSnmpPrivAlgorithmColumn = cursor.getColumnIndex(dbConstants.getSnmpPrivAlgorithmColumnName());
         accessTypeData.setId(cursor.getLong(indexIdColumn));
         accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
@@ -302,11 +318,29 @@ public class AccessTypeDataDAO extends BaseDAO {
         accessTypeData.setConnectCount(cursor.getInt(indexConnectCountColumn));
         accessTypeData.setStopOnSuccess(cursor.getInt(indexStopOnSuccessColumn) >= 1);
         accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
+        if (!cursor.isNull(indexFailureOnCertificateExpiryColumn)) {
+            accessTypeData.setFailureOnCertificateExpiry(cursor.getInt(indexFailureOnCertificateExpiryColumn) >= 1);
+        }
+        if (!cursor.isNull(indexFailureOnCertificateExpiryDaysColumn)) {
+            accessTypeData.setFailureOnCertificateExpiryDays(cursor.getInt(indexFailureOnCertificateExpiryDaysColumn));
+        }
         accessTypeData.setUseDefaultHeaders(cursor.getInt(indexUseDefaultHeadersColumn) >= 1);
         if (cursor.isNull(indexSnmpVersionColumn)) {
             accessTypeData.setSnmpVersion(null);
         } else {
             accessTypeData.setSnmpVersion(SNMPVersion.forCode(cursor.getInt(indexSnmpVersionColumn)));
+        }
+        if (!cursor.isNull(indexSnmpTransportColumn)) {
+            accessTypeData.setSnmpTransport(SNMPTransport.forCode(cursor.getInt(indexSnmpTransportColumn)));
+        }
+        if (!cursor.isNull(indexSnmpAuthAlgorithmColumn)) {
+            accessTypeData.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.forCode(cursor.getInt(indexSnmpAuthAlgorithmColumn)));
+        }
+        if (!cursor.isNull(indexSnmpUserNameColumn)) {
+            accessTypeData.setSnmpUserName(cursor.getString(indexSnmpUserNameColumn));
+        }
+        if (!cursor.isNull(indexSnmpPrivAlgorithmColumn)) {
+            accessTypeData.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.forCode(cursor.getInt(indexSnmpPrivAlgorithmColumn)));
         }
         decrypt(cursor, accessTypeData);
         return accessTypeData;
@@ -315,5 +349,17 @@ public class AccessTypeDataDAO extends BaseDAO {
     @FunctionalInterface
     private interface AccessTypeDataCollector {
         void collect(AccessTypeData data);
+    }
+
+    @SuppressWarnings({"unused"})
+    @FunctionalInterface
+    private interface StringSetter {
+        void set(String value);
+    }
+
+    @SuppressWarnings({"unused"})
+    @FunctionalInterface
+    private interface BooleanSetter {
+        void set(boolean value);
     }
 }

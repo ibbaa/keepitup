@@ -46,8 +46,11 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -440,6 +443,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -451,6 +456,9 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolvePort(456);
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -487,6 +495,8 @@ public class JSONSystemSetupTest {
         assertEquals(10, defaultsData.getInt("preferenceConnectCount"));
         assertTrue(defaultsData.getBoolean("preferenceStopOnSuccess"));
         assertTrue(defaultsData.getBoolean("preferenceIgnoreSSLError"));
+        assertTrue(defaultsData.getBoolean("preferenceFailureOnCertificateExpiry"));
+        assertEquals(14, defaultsData.getInt("preferenceFailureOnCertificateExpiryDays"));
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
         assertTrue(defaultsData.getBoolean("preferenceHighPrio"));
@@ -498,6 +508,9 @@ public class JSONSystemSetupTest {
         assertEquals(456, defaultsData.getInt("preferenceResolvePort"));
         assertEquals(SNMPVersion.V1, SNMPVersion.forCode(defaultsData.getInt("preferenceSNMPVersion")));
         assertEquals(162, defaultsData.getInt("preferenceSNMPPort"));
+        assertEquals(SNMPTransport.TCP, SNMPTransport.forCode(defaultsData.getInt("preferenceSNMPTransport")));
+        assertEquals(SNMPAuthAlgorithm.SHA256, SNMPAuthAlgorithm.forCode(defaultsData.getInt("preferenceSNMPAuthAlgorithm")));
+        assertEquals(SNMPPrivAlgorithm.AES256, SNMPPrivAlgorithm.forCode(defaultsData.getInt("preferenceSNMPPrivAlgorithm")));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
         assertEquals("fileExport", systemSettingsData.getString("preferenceLastArbitraryExportFile"));
@@ -519,6 +532,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(12345678);
         preferenceManager.setPreferenceResolvePort(12345678);
         preferenceManager.setPreferenceSNMPPort(12345678);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(0);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -542,6 +556,7 @@ public class JSONSystemSetupTest {
         assertEquals(12345678, defaultsData.getInt("preferenceResolveMatchPort"));
         assertEquals(12345678, defaultsData.getInt("preferenceResolvePort"));
         assertEquals(12345678, defaultsData.getInt("preferenceSNMPPort"));
+        assertEquals(0, defaultsData.getInt("preferenceFailureOnCertificateExpiryDays"));
     }
 
     @Test
@@ -1446,6 +1461,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -1455,8 +1472,11 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(789);
         preferenceManager.setPreferenceResolveAddress("127.0.0.1");
         preferenceManager.setPreferenceResolvePort(456);
-        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V3);
         preferenceManager.setPreferenceSNMPPort(162);
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -1492,6 +1512,8 @@ public class JSONSystemSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -1501,8 +1523,11 @@ public class JSONSystemSetupTest {
         assertEquals(789, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
         assertEquals(456, preferenceManager.getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(162, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, preferenceManager.getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, preferenceManager.getPreferenceSNMPPrivAlgorithm());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals("fileExport", preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -1539,6 +1564,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceResolveMatchPort(12345678);
         preferenceManager.setPreferenceResolvePort(12345678);
         preferenceManager.setPreferenceSNMPPort(12345678);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(0);
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -1557,6 +1583,7 @@ public class JSONSystemSetupTest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());

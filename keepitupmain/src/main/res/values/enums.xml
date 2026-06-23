@@ -41,4 +41,5 @@
     <string name="ContextOption_PASTE_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_PASTE_name">Paste</string>
     <string name="SNMPVersion_V1_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V1_name">v1</string>
     <string name="SNMPVersion_V2C_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V2C_name">v2c</string>
+    <string name="SNMPVersion_V3_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V3_name">v3</string>
 </resources>

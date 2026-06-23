@@ -26,6 +26,9 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -257,8 +260,8 @@ public class PreferenceManagerTest {
     @Test
     public void testGetSetRemovePreferenceSNMPVersion() {
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
-        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
-        assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
+        preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V3);
+        assertEquals(SNMPVersion.V3, preferenceManager.getPreferenceSNMPVersion());
         preferenceManager.removeAllPreferences();
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
@@ -276,6 +279,42 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.removePreferenceSNMPPort();
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPTransport() {
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        assertEquals(SNMPTransport.TCP, preferenceManager.getPreferenceSNMPTransport());
+        preferenceManager.removeAllPreferences();
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+        preferenceManager.setPreferenceSNMPTransport(SNMPTransport.TCP);
+        preferenceManager.removePreferenceSNMPTransport();
+        assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPAuthAlgorithm() {
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        assertEquals(SNMPAuthAlgorithm.SHA256, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        preferenceManager.removeAllPreferences();
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        preferenceManager.removePreferenceSNMPAuthAlgorithm();
+        assertEquals(SNMPAuthAlgorithm.MD5, preferenceManager.getPreferenceSNMPAuthAlgorithm());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceSNMPPrivAlgorithm() {
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        assertEquals(SNMPPrivAlgorithm.AES256, preferenceManager.getPreferenceSNMPPrivAlgorithm());
+        preferenceManager.removeAllPreferences();
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        preferenceManager.removePreferenceSNMPPrivAlgorithm();
+        assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
     }
 
     @Test
@@ -336,6 +375,30 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.removePreferenceIgnoreSSLError();
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceFailureOnCertificateExpiry() {
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.removePreferenceFailureOnCertificateExpiry();
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceFailureOnCertificateExpiryDays() {
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        preferenceManager.removeAllPreferences();
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
+        preferenceManager.removePreferenceFailureOnCertificateExpiryDays();
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
     }
 
     @Test

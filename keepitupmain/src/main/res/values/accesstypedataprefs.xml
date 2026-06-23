@@ -31,8 +31,20 @@
     <bool name="stop_on_success_default">false</bool>
     <string name="ignore_ssl_error_key">ignore_ssl_error_key</string>
     <bool name="ignore_ssl_error_default">false</bool>
+    <string name="failure_on_certificate_expiry_key">failure_on_certificate_expiry_key</string>
+    <bool name="failure_on_certificate_expiry_default">false</bool>
+    <string name="failure_on_certificate_expiry_days_key">failure_on_certificate_expiry_days_key</string>
+    <integer name="failure_on_certificate_expiry_days_default">30</integer>
+    <integer name="failure_on_certificate_expiry_days_minimum">1</integer>
+    <integer name="failure_on_certificate_expiry_days_maximum">3650</integer>
     <string name="use_default_headers_key">use_default_headers_key</string>
     <bool name="use_default_headers_default">true</bool>
     <string name="snmp_version_key">snmp_version_key</string>
     <integer name="snmp_version_default">2</integer>
+    <string name="snmp_transport_key">snmp_transport_key</string>
+    <integer name="snmp_transport_default">1</integer>
+    <string name="snmp_auth_algorithm_key">snmp_auth_algorithm_key</string>
+    <integer name="snmp_auth_algorithm_default">2</integer>
+    <string name="snmp_priv_algorithm_key">snmp_priv_algorithm_key</string>
+    <integer name="snmp_priv_algorithm_default">3</integer>
 </resources>

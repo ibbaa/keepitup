@@ -205,8 +205,13 @@ public class DBSetup {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
+        values.put(dbConstants.getSnmpTransportColumnName(), accessTypeData.getSnmpTransport() == null ? null : accessTypeData.getSnmpTransport().getCode());
+        values.put(dbConstants.getSnmpAuthAlgorithmColumnName(), accessTypeData.getSnmpAuthAlgorithm() == null ? null : accessTypeData.getSnmpAuthAlgorithm().getCode());
+        values.put(dbConstants.getSnmpPrivAlgorithmColumnName(), accessTypeData.getSnmpPrivAlgorithm() == null ? null : accessTypeData.getSnmpPrivAlgorithm().getCode());
         executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
     }
 
@@ -238,6 +243,56 @@ public class DBSetup {
     public void addSnmpCommunityIVColumnToAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "addSnmpCommunityIVColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpCommunityIVColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddSnmpCommunityIVColumnStatement());
+    }
+
+    public void addFailureOnCertificateExpiryColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addFailureOnCertificateExpiryColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getFailureOnCertificateExpiryColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddFailureOnCertificateExpiryColumnStatement());
+    }
+
+    public void addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getFailureOnCertificateExpiryDaysColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddFailureOnCertificateExpiryDaysColumnStatement());
+    }
+
+    public void addSnmpTransportColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpTransportColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpTransportColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpTransportColumnStatement());
+    }
+
+    public void addSnmpAuthAlgorithmColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpAuthAlgorithmColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpAuthAlgorithmColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpAuthAlgorithmColumnStatement());
+    }
+
+    public void addSnmpUserNameColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpUserNameColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpUserNameColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpUserNameColumnStatement());
+    }
+
+    public void addSnmpAuthPassphraseColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpAuthPassphraseColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpAuthPassphraseColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpAuthPassphraseColumnStatement());
+    }
+
+    public void addSnmpAuthPassphraseIVColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpAuthPassphraseIVColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpAuthPassphraseIVColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpAuthPassphraseIVColumnStatement());
+    }
+
+    public void addSnmpPrivAlgorithmColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpPrivAlgorithmColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpPrivAlgorithmColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpPrivAlgorithmColumnStatement());
+    }
+
+    public void addSnmpPrivPassphraseColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpPrivPassphraseColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpPrivPassphraseColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpPrivPassphraseColumnStatement());
+    }
+
+    public void addSnmpPrivPassphraseIVColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addSnmpPrivPassphraseIVColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getSnmpPrivPassphraseIVColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddSnmpPrivPassphraseIVColumnStatement());
     }
 
     public void createResolveTable(SQLiteDatabase db) {
@@ -445,6 +500,56 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getDropSnmpCommunityIVColumnStatement());
     }
 
+    public void dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getFailureOnCertificateExpiryColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropFailureOnCertificateExpiryColumnStatement());
+    }
+
+    public void dropFailureOnCertificateExpiryDaysColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropFailureOnCertificateExpiryDaysColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getFailureOnCertificateExpiryDaysColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropFailureOnCertificateExpiryDaysColumnStatement());
+    }
+
+    public void dropSnmpTransportColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpTransportColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpTransportColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpTransportColumnStatement());
+    }
+
+    public void dropSnmpAuthAlgorithmColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpAuthAlgorithmColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpAuthAlgorithmColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpAuthAlgorithmColumnStatement());
+    }
+
+    public void dropSnmpUserNameColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpUserNameColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpUserNameColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpUserNameColumnStatement());
+    }
+
+    public void dropSnmpAuthPassphraseColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpAuthPassphraseColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpAuthPassphraseColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpAuthPassphraseColumnStatement());
+    }
+
+    public void dropSnmpAuthPassphraseIVColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpAuthPassphraseIVColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpAuthPassphraseIVColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpAuthPassphraseIVColumnStatement());
+    }
+
+    public void dropSnmpPrivAlgorithmColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpPrivAlgorithmColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpPrivAlgorithmColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpPrivAlgorithmColumnStatement());
+    }
+
+    public void dropSnmpPrivPassphraseColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpPrivPassphraseColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpPrivPassphraseColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpPrivPassphraseColumnStatement());
+    }
+
+    public void dropSnmpPrivPassphraseIVColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropSnmpPrivPassphraseIVColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getSnmpPrivPassphraseIVColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropSnmpPrivPassphraseIVColumnStatement());
+    }
+
     public void dropResolveTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropResolveTable, table is " + resolveDBConstants.getTableName());
         db.execSQL(resolveDBConstants.getDropTableStatement());
@@ -611,6 +716,46 @@ public class DBSetup {
         addSnmpCommunityIVColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addFailureOnCertificateExpiryColumnToAccessTypeDataTable() {
+        addFailureOnCertificateExpiryColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable() {
+        addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpTransportColumnToAccessTypeDataTable() {
+        addSnmpTransportColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpAuthAlgorithmColumnToAccessTypeDataTable() {
+        addSnmpAuthAlgorithmColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpUserNameColumnToAccessTypeDataTable() {
+        addSnmpUserNameColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpAuthPassphraseColumnToAccessTypeDataTable() {
+        addSnmpAuthPassphraseColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpAuthPassphraseIVColumnToAccessTypeDataTable() {
+        addSnmpAuthPassphraseIVColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpPrivAlgorithmColumnToAccessTypeDataTable() {
+        addSnmpPrivAlgorithmColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpPrivPassphraseColumnToAccessTypeDataTable() {
+        addSnmpPrivPassphraseColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addSnmpPrivPassphraseIVColumnToAccessTypeDataTable() {
+        addSnmpPrivPassphraseIVColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void initializeFailureCountColumn() {
         initializeFailureCountColumn(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -718,6 +863,56 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropSnmpCommunityIVColumnFromAccessTypeDataTable() {
         dropSnmpCommunityIVColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable() {
+        dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropFailureOnCertificateExpiryDaysColumnFromAccessTypeDataTable() {
+        dropFailureOnCertificateExpiryDaysColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpTransportColumnFromAccessTypeDataTable() {
+        dropSnmpTransportColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpAuthAlgorithmColumnFromAccessTypeDataTable() {
+        dropSnmpAuthAlgorithmColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpUserNameColumnFromAccessTypeDataTable() {
+        dropSnmpUserNameColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpAuthPassphraseColumnFromAccessTypeDataTable() {
+        dropSnmpAuthPassphraseColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpAuthPassphraseIVColumnFromAccessTypeDataTable() {
+        dropSnmpAuthPassphraseIVColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpPrivAlgorithmColumnFromAccessTypeDataTable() {
+        dropSnmpPrivAlgorithmColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpPrivPassphraseColumnFromAccessTypeDataTable() {
+        dropSnmpPrivPassphraseColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropSnmpPrivPassphraseIVColumnFromAccessTypeDataTable() {
+        dropSnmpPrivPassphraseIVColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})

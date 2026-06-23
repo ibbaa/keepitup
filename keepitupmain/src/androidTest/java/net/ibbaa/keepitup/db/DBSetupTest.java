@@ -282,6 +282,25 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddSNMPV3ColumnsToAccessTypeDataTable() {
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPV3Columns());
+        setup.addFailureOnCertificateExpiryColumnToAccessTypeDataTable();
+        setup.addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable();
+        setup.addSnmpTransportColumnToAccessTypeDataTable();
+        setup.addSnmpAuthAlgorithmColumnToAccessTypeDataTable();
+        setup.addSnmpUserNameColumnToAccessTypeDataTable();
+        setup.addSnmpAuthPassphraseColumnToAccessTypeDataTable();
+        setup.addSnmpAuthPassphraseIVColumnToAccessTypeDataTable();
+        setup.addSnmpPrivAlgorithmColumnToAccessTypeDataTable();
+        setup.addSnmpPrivPassphraseColumnToAccessTypeDataTable();
+        setup.addSnmpPrivPassphraseIVColumnToAccessTypeDataTable();
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+    }
+
+    @Test
     public void testInitializeFailureCountColumn() {
         NetworkTask task1 = new NetworkTask();
         NetworkTask task2 = new NetworkTask();

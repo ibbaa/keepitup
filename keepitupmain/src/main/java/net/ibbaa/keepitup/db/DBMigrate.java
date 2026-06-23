@@ -49,6 +49,8 @@ public class DBMigrate {
         versionDowngrades.put(7, this::version7DowngradeTo6);
         versionUpgrades.put(8, this::version8UpgradeFrom7);
         versionDowngrades.put(8, this::version8DowngradeTo7);
+        versionUpgrades.put(9, this::version9UpgradeFrom8);
+        versionDowngrades.put(9, this::version9DowngradeTo8);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -285,6 +287,114 @@ public class DBMigrate {
             setup.dropSnmpCommunityIVColumnFromAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "dropSnmpCommunityIVColumnFromAccessTypeDataTable failed ", exc);
+        }
+    }
+
+    private void version9UpgradeFrom8(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version9UpgradeFrom8");
+        try {
+            setup.addFailureOnCertificateExpiryColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addFailureOnCertificateExpiryColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpTransportColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpTransportColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpAuthAlgorithmColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpAuthAlgorithmColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpUserNameColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpUserNameColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpAuthPassphraseColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpAuthPassphraseColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpAuthPassphraseIVColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpAuthPassphraseIVColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpPrivAlgorithmColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpPrivAlgorithmColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpPrivPassphraseColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpPrivPassphraseColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.addSnmpPrivPassphraseIVColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addSnmpPrivPassphraseIVColumnToAccessTypeDataTable failed ", exc);
+        }
+    }
+
+    private void version9DowngradeTo8(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version9DowngradeTo8");
+        try {
+            setup.dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropFailureOnCertificateExpiryDaysColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropFailureOnCertificateExpiryDaysColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpTransportColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpTransportColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpAuthAlgorithmColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpAuthAlgorithmColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpUserNameColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpUserNameColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpAuthPassphraseColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpAuthPassphraseColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpAuthPassphraseIVColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpAuthPassphraseIVColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpPrivAlgorithmColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpPrivAlgorithmColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpPrivPassphraseColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpPrivPassphraseColumnFromAccessTypeDataTable failed ", exc);
+        }
+        try {
+            setup.dropSnmpPrivPassphraseIVColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropSnmpPrivPassphraseIVColumnFromAccessTypeDataTable failed ", exc);
         }
     }
 

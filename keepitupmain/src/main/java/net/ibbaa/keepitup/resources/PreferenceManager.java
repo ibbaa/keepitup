@@ -24,6 +24,9 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 
 import java.util.HashSet;
@@ -322,6 +325,51 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.task_snmp_port_key));
     }
 
+    public SNMPTransport getPreferenceSNMPTransport() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPTransport");
+        return SNMPTransport.forCode(getPreferenceInt(getResources().getString(R.string.snmp_transport_key), getResources().getInteger(R.integer.snmp_transport_default)));
+    }
+
+    public void setPreferenceSNMPTransport(SNMPTransport transport) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPTransport, transport is " + transport);
+        setPreferenceInt(getResources().getString(R.string.snmp_transport_key), transport.getCode());
+    }
+
+    public void removePreferenceSNMPTransport() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPTransport");
+        removePreferenceValue(getResources().getString(R.string.snmp_transport_key));
+    }
+
+    public SNMPAuthAlgorithm getPreferenceSNMPAuthAlgorithm() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPAuthAlgorithm");
+        return SNMPAuthAlgorithm.forCode(getPreferenceInt(getResources().getString(R.string.snmp_auth_algorithm_key), getResources().getInteger(R.integer.snmp_auth_algorithm_default)));
+    }
+
+    public void setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm authAlgorithm) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPAuthAlgorithm, authAlgorithm is " + authAlgorithm);
+        setPreferenceInt(getResources().getString(R.string.snmp_auth_algorithm_key), authAlgorithm.getCode());
+    }
+
+    public void removePreferenceSNMPAuthAlgorithm() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPAuthAlgorithm");
+        removePreferenceValue(getResources().getString(R.string.snmp_auth_algorithm_key));
+    }
+
+    public SNMPPrivAlgorithm getPreferenceSNMPPrivAlgorithm() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSNMPPrivAlgorithm");
+        return SNMPPrivAlgorithm.forCode(getPreferenceInt(getResources().getString(R.string.snmp_priv_algorithm_key), getResources().getInteger(R.integer.snmp_priv_algorithm_default)));
+    }
+
+    public void setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm privAlgorithm) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSNMPPrivAlgorithm, privAlgorithm is " + privAlgorithm);
+        setPreferenceInt(getResources().getString(R.string.snmp_priv_algorithm_key), privAlgorithm.getCode());
+    }
+
+    public void removePreferenceSNMPPrivAlgorithm() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSNMPPrivAlgorithm");
+        removePreferenceValue(getResources().getString(R.string.snmp_priv_algorithm_key));
+    }
+
     public int getPreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "getPreferencePingCount");
         return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));
@@ -395,6 +443,36 @@ public class PreferenceManager {
     public void removePreferenceIgnoreSSLError() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceIgnoreSSLError");
         removePreferenceValue(getResources().getString(R.string.ignore_ssl_error_key));
+    }
+
+    public boolean getPreferenceFailureOnCertificateExpiry() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceFailureOnCertificateExpiry");
+        return getPreferenceBoolean(getResources().getString(R.string.failure_on_certificate_expiry_key), getResources().getBoolean(R.bool.failure_on_certificate_expiry_default));
+    }
+
+    public void setPreferenceFailureOnCertificateExpiry(boolean failureOnCertificateExpiry) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceFailureOnCertificateExpiry, failureOnCertificateExpiry is " + failureOnCertificateExpiry);
+        setPreferenceBoolean(getResources().getString(R.string.failure_on_certificate_expiry_key), failureOnCertificateExpiry);
+    }
+
+    public void removePreferenceFailureOnCertificateExpiry() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceFailureOnCertificateExpiry");
+        removePreferenceValue(getResources().getString(R.string.failure_on_certificate_expiry_key));
+    }
+
+    public int getPreferenceFailureOnCertificateExpiryDays() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceFailureOnCertificateExpiryDays");
+        return getPreferenceInt(getResources().getString(R.string.failure_on_certificate_expiry_days_key), getResources().getInteger(R.integer.failure_on_certificate_expiry_days_default));
+    }
+
+    public void setPreferenceFailureOnCertificateExpiryDays(int days) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceFailureOnCertificateExpiryDays, days is " + days);
+        setPreferenceInt(getResources().getString(R.string.failure_on_certificate_expiry_days_key), days);
+    }
+
+    public void removePreferenceFailureOnCertificateExpiryDays() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceFailureOnCertificateExpiryDays");
+        removePreferenceValue(getResources().getString(R.string.failure_on_certificate_expiry_days_key));
     }
 
     public NotificationType getPreferenceNotificationType() {

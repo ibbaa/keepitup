@@ -23,6 +23,9 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.URLUtil;
@@ -73,6 +76,8 @@ public class PreferenceSetup {
         defaults.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         defaults.put("preferenceStopOnSuccess", preferenceManager.getPreferenceStopOnSuccess());
         defaults.put("preferenceIgnoreSSLError", preferenceManager.getPreferenceIgnoreSSLError());
+        defaults.put("preferenceFailureOnCertificateExpiry", preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        defaults.put("preferenceFailureOnCertificateExpiryDays", preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
         defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
@@ -84,6 +89,9 @@ public class PreferenceSetup {
         defaults.put("preferenceResolvePort", preferenceManager.getPreferenceResolvePort());
         defaults.put("preferenceSNMPVersion", preferenceManager.getPreferenceSNMPVersion() != null ? preferenceManager.getPreferenceSNMPVersion().getCode() : -1);
         defaults.put("preferenceSNMPPort", preferenceManager.getPreferenceSNMPPort());
+        defaults.put("preferenceSNMPTransport", preferenceManager.getPreferenceSNMPTransport() != null ? preferenceManager.getPreferenceSNMPTransport().getCode() : -1);
+        defaults.put("preferenceSNMPAuthAlgorithm", preferenceManager.getPreferenceSNMPAuthAlgorithm() != null ? preferenceManager.getPreferenceSNMPAuthAlgorithm().getCode() : -1);
+        defaults.put("preferenceSNMPPrivAlgorithm", preferenceManager.getPreferenceSNMPPrivAlgorithm() != null ? preferenceManager.getPreferenceSNMPPrivAlgorithm().getCode() : -1);
         return defaults;
     }
 
@@ -235,6 +243,21 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceIgnoreSSLError();
         }
+        Object failureOnCertificateExpiry = defaults.get("preferenceFailureOnCertificateExpiry");
+        if (isValidBoolean(failureOnCertificateExpiry)) {
+            preferenceManager.setPreferenceFailureOnCertificateExpiry(Boolean.parseBoolean(failureOnCertificateExpiry.toString()));
+        } else {
+            preferenceManager.removePreferenceFailureOnCertificateExpiry();
+        }
+        Object failureOnCertificateExpiryDays = defaults.get("preferenceFailureOnCertificateExpiryDays");
+        int failureOnCertificateExpiryDaysMin = getResources().getInteger(R.integer.failure_on_certificate_expiry_days_minimum);
+        int failureOnCertificateExpiryDaysMax = getResources().getInteger(R.integer.failure_on_certificate_expiry_days_maximum);
+        int failureOnCertificateExpiryDaysDefault = getResources().getInteger(R.integer.failure_on_certificate_expiry_days_default);
+        if (isValidInteger(failureOnCertificateExpiryDays, failureOnCertificateExpiryDaysMin, failureOnCertificateExpiryDaysMax)) {
+            preferenceManager.setPreferenceFailureOnCertificateExpiryDays(NumberUtil.getIntValue(failureOnCertificateExpiryDays, failureOnCertificateExpiryDaysDefault));
+        } else {
+            preferenceManager.removePreferenceFailureOnCertificateExpiryDays();
+        }
         Object onlyWifi = defaults.get("preferenceOnlyWifi");
         if (isValidBoolean(onlyWifi)) {
             preferenceManager.setPreferenceOnlyWifi(Boolean.parseBoolean(onlyWifi.toString()));
@@ -312,6 +335,24 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(snmpPort, snmpPortDefault));
         } else {
             preferenceManager.removePreferenceSNMPPort();
+        }
+        Object snmpTransport = defaults.get("preferenceSNMPTransport");
+        if (isValidSNMPTransport(snmpTransport)) {
+            preferenceManager.setPreferenceSNMPTransport(Objects.requireNonNull(SNMPTransport.forCode(NumberUtil.getIntValue(snmpTransport, -1))));
+        } else {
+            preferenceManager.removePreferenceSNMPTransport();
+        }
+        Object snmpAuthAlgorithm = defaults.get("preferenceSNMPAuthAlgorithm");
+        if (isValidSNMPAuthAlgorithm(snmpAuthAlgorithm)) {
+            preferenceManager.setPreferenceSNMPAuthAlgorithm(Objects.requireNonNull(SNMPAuthAlgorithm.forCode(NumberUtil.getIntValue(snmpAuthAlgorithm, -1))));
+        } else {
+            preferenceManager.removePreferenceSNMPAuthAlgorithm();
+        }
+        Object snmpPrivAlgorithm = defaults.get("preferenceSNMPPrivAlgorithm");
+        if (isValidSNMPPrivAlgorithm(snmpPrivAlgorithm)) {
+            preferenceManager.setPreferenceSNMPPrivAlgorithm(Objects.requireNonNull(SNMPPrivAlgorithm.forCode(NumberUtil.getIntValue(snmpPrivAlgorithm, -1))));
+        } else {
+            preferenceManager.removePreferenceSNMPPrivAlgorithm();
         }
     }
 
@@ -450,6 +491,27 @@ public class PreferenceSetup {
         return SNMPVersion.forCode(NumberUtil.getIntValue(value, -1)) != null;
     }
 
+    private boolean isValidSNMPTransport(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return SNMPTransport.forCode(NumberUtil.getIntValue(value, -1)) != null;
+    }
+
+    private boolean isValidSNMPAuthAlgorithm(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return SNMPAuthAlgorithm.forCode(NumberUtil.getIntValue(value, -1)) != null;
+    }
+
+    private boolean isValidSNMPPrivAlgorithm(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return SNMPPrivAlgorithm.forCode(NumberUtil.getIntValue(value, -1)) != null;
+    }
+
     private boolean isValidNotificationType(Object value) {
         if (!NumberUtil.isValidIntValue(value)) {
             return false;
@@ -489,6 +551,8 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceStopOnSuccess();
         preferenceManager.removePreferenceIgnoreSSLError();
+        preferenceManager.removePreferenceFailureOnCertificateExpiry();
+        preferenceManager.removePreferenceFailureOnCertificateExpiryDays();
         preferenceManager.removePreferencePingPackageSize();
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();
@@ -500,6 +564,9 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceResolvePort();
         preferenceManager.removePreferenceSNMPVersion();
         preferenceManager.removePreferenceSNMPPort();
+        preferenceManager.removePreferenceSNMPTransport();
+        preferenceManager.removePreferenceSNMPAuthAlgorithm();
+        preferenceManager.removePreferenceSNMPPrivAlgorithm();
     }
 
     public void removeSystemSettings() {

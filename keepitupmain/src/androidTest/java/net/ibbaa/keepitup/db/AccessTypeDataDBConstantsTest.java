@@ -42,10 +42,20 @@ public class AccessTypeDataDBConstantsTest {
         assertEquals(getResourceString(R.string.accesstypedata_connect_count_column_name), dbConstants.getConnectCountColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_stop_on_success_column_name), dbConstants.getStopOnSuccessColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_ignore_ssl_error_column_name), dbConstants.getIgnoreSSLErrorColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_failure_on_certificate_expiry_column_name), dbConstants.getFailureOnCertificateExpiryColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_failure_on_certificate_expiry_days_column_name), dbConstants.getFailureOnCertificateExpiryDaysColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_use_default_headers_column_name), dbConstants.getUseDefaultHeadersColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_snmp_version_column_name), dbConstants.getSnmpVersionColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_snmp_community_column_name), dbConstants.getSnmpCommunityColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_snmp_community_iv_column_name), dbConstants.getSnmpCommunityIVColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_transport_column_name), dbConstants.getSnmpTransportColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_auth_algorithm_column_name), dbConstants.getSnmpAuthAlgorithmColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_user_name_column_name), dbConstants.getSnmpUserNameColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_auth_passphrase_column_name), dbConstants.getSnmpAuthPassphraseColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_auth_passphrase_iv_column_name), dbConstants.getSnmpAuthPassphraseIVColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_priv_algorithm_column_name), dbConstants.getSnmpPrivAlgorithmColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_priv_passphrase_column_name), dbConstants.getSnmpPrivPassphraseColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_snmp_priv_passphrase_iv_column_name), dbConstants.getSnmpPrivPassphraseIVColumnName());
     }
 
     private String getResourceString(int id) {

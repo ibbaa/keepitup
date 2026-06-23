@@ -39,10 +39,20 @@ public class AccessTypeData {
     private int connectCount;
     private boolean stopOnSuccess;
     private boolean ignoreSSLError;
+    private boolean failureOnCertificateExpiry;
+    private int failureOnCertificateExpiryDays;
     private boolean useDefaultHeaders;
     private SNMPVersion snmpVersion;
     private String snmpCommunity;
     private boolean snmpCommunityValid;
+    private SNMPTransport snmpTransport;
+    private SNMPAuthAlgorithm snmpAuthAlgorithm;
+    private String snmpUserName;
+    private String snmpAuthPassphrase;
+    private boolean snmpAuthPassphraseValid;
+    private SNMPPrivAlgorithm snmpPrivAlgorithm;
+    private String snmpPrivPassphrase;
+    private boolean snmpPrivPassphraseValid;
 
     public AccessTypeData() {
         this.id = -1;
@@ -52,10 +62,20 @@ public class AccessTypeData {
         this.connectCount = 1;
         this.stopOnSuccess = false;
         this.ignoreSSLError = false;
+        this.failureOnCertificateExpiry = false;
+        this.failureOnCertificateExpiryDays = 30;
         this.useDefaultHeaders = true;
         this.snmpVersion = null;
         this.snmpCommunity = null;
         this.snmpCommunityValid = true;
+        this.snmpTransport = null;
+        this.snmpAuthAlgorithm = null;
+        this.snmpUserName = null;
+        this.snmpAuthPassphrase = null;
+        this.snmpAuthPassphraseValid = true;
+        this.snmpPrivAlgorithm = null;
+        this.snmpPrivPassphrase = null;
+        this.snmpPrivPassphraseValid = true;
     }
 
     public AccessTypeData(AccessTypeData otherData) {
@@ -65,9 +85,18 @@ public class AccessTypeData {
         this.connectCount = otherData.getConnectCount();
         this.stopOnSuccess = otherData.isStopOnSuccess();
         this.ignoreSSLError = otherData.isIgnoreSSLError();
+        this.failureOnCertificateExpiry = otherData.isFailureOnCertificateExpiry();
+        this.failureOnCertificateExpiryDays = otherData.getFailureOnCertificateExpiryDays();
         this.useDefaultHeaders = otherData.isUseDefaultHeaders();
         this.snmpVersion = otherData.getSnmpVersion();
         this.snmpCommunity = otherData.getSnmpCommunity();
+        this.snmpTransport = otherData.getSnmpTransport();
+        this.snmpAuthAlgorithm = otherData.getSnmpAuthAlgorithm();
+        this.snmpUserName = otherData.getSnmpUserName();
+        this.snmpAuthPassphrase = otherData.getSnmpAuthPassphrase();
+        this.snmpPrivAlgorithm = otherData.getSnmpPrivAlgorithm();
+        this.snmpPrivPassphrase = otherData.getSnmpPrivPassphrase();
+        // snmpCommunityValid, snmpAuthPassphraseValid, snmpPrivPassphraseValid reset to default (true)
     }
 
     public AccessTypeData(Context context) {
@@ -78,8 +107,13 @@ public class AccessTypeData {
         this.connectCount = preferenceManager.getPreferenceConnectCount();
         this.stopOnSuccess = preferenceManager.getPreferenceStopOnSuccess();
         this.ignoreSSLError = preferenceManager.getPreferenceIgnoreSSLError();
+        this.failureOnCertificateExpiry = preferenceManager.getPreferenceFailureOnCertificateExpiry();
+        this.failureOnCertificateExpiryDays = preferenceManager.getPreferenceFailureOnCertificateExpiryDays();
         this.useDefaultHeaders = preferenceManager.getPreferenceUseDefaultHeaders();
         this.snmpVersion = preferenceManager.getPreferenceSNMPVersion();
+        this.snmpTransport = preferenceManager.getPreferenceSNMPTransport();
+        this.snmpAuthAlgorithm = preferenceManager.getPreferenceSNMPAuthAlgorithm();
+        this.snmpPrivAlgorithm = preferenceManager.getPreferenceSNMPPrivAlgorithm();
     }
 
     public AccessTypeData(PersistableBundle bundle) {
@@ -95,12 +129,28 @@ public class AccessTypeData {
         this.connectCount = bundle.getInt("connectCount");
         this.stopOnSuccess = bundle.getInt("stopOnSuccess") >= 1;
         this.ignoreSSLError = bundle.getInt("ignoreSSLError") >= 1;
+        this.failureOnCertificateExpiry = bundle.getInt("failureOnCertificateExpiry") >= 1;
+        this.failureOnCertificateExpiryDays = bundle.getInt("failureOnCertificateExpiryDays");
         this.useDefaultHeaders = bundle.getInt("useDefaultHeaders") >= 1;
         if (bundle.containsKey("snmpVersion")) {
             snmpVersion = SNMPVersion.forCode(bundle.getInt("snmpVersion"));
         }
         this.snmpCommunity = bundle.getString("snmpCommunity");
         this.snmpCommunityValid = bundle.getInt("snmpCommunityValid") >= 1;
+        if (bundle.containsKey("snmpTransport")) {
+            snmpTransport = SNMPTransport.forCode(bundle.getInt("snmpTransport"));
+        }
+        if (bundle.containsKey("snmpAuthAlgorithm")) {
+            snmpAuthAlgorithm = SNMPAuthAlgorithm.forCode(bundle.getInt("snmpAuthAlgorithm"));
+        }
+        this.snmpUserName = bundle.getString("snmpUserName");
+        this.snmpAuthPassphrase = bundle.getString("snmpAuthPassphrase");
+        this.snmpAuthPassphraseValid = bundle.getInt("snmpAuthPassphraseValid") >= 1;
+        if (bundle.containsKey("snmpPrivAlgorithm")) {
+            snmpPrivAlgorithm = SNMPPrivAlgorithm.forCode(bundle.getInt("snmpPrivAlgorithm"));
+        }
+        this.snmpPrivPassphrase = bundle.getString("snmpPrivPassphrase");
+        this.snmpPrivPassphraseValid = bundle.getInt("snmpPrivPassphraseValid") >= 1;
     }
 
     public AccessTypeData(Map<String, ?> map) {
@@ -126,6 +176,12 @@ public class AccessTypeData {
         if (map.get("ignoreSSLError") != null) {
             this.ignoreSSLError = Boolean.parseBoolean(Objects.requireNonNull(map.get("ignoreSSLError")).toString());
         }
+        if (map.get("failureOnCertificateExpiry") != null) {
+            this.failureOnCertificateExpiry = Boolean.parseBoolean(Objects.requireNonNull(map.get("failureOnCertificateExpiry")).toString());
+        }
+        if (NumberUtil.isValidIntValue(map.get("failureOnCertificateExpiryDays"))) {
+            this.failureOnCertificateExpiryDays = NumberUtil.getIntValue(map.get("failureOnCertificateExpiryDays"), 30);
+        }
         if (map.get("useDefaultHeaders") != null) {
             this.useDefaultHeaders = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("useDefaultHeaders")).toString());
         }
@@ -137,6 +193,30 @@ public class AccessTypeData {
         }
         if (map.get("snmpCommunityValid") != null) {
             this.snmpCommunityValid = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("snmpCommunityValid")).toString());
+        }
+        if (NumberUtil.isValidIntValue(map.get("snmpTransport"))) {
+            this.snmpTransport = SNMPTransport.forCode(NumberUtil.getIntValue(map.get("snmpTransport"), -1));
+        }
+        if (NumberUtil.isValidIntValue(map.get("snmpAuthAlgorithm"))) {
+            this.snmpAuthAlgorithm = SNMPAuthAlgorithm.forCode(NumberUtil.getIntValue(map.get("snmpAuthAlgorithm"), -1));
+        }
+        if (map.get("snmpUserName") != null) {
+            this.snmpUserName = Objects.requireNonNull(map.get("snmpUserName")).toString();
+        }
+        if (map.get("snmpAuthPassphrase") != null) {
+            this.snmpAuthPassphrase = Objects.requireNonNull(map.get("snmpAuthPassphrase")).toString();
+        }
+        if (map.get("snmpAuthPassphraseValid") != null) {
+            this.snmpAuthPassphraseValid = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("snmpAuthPassphraseValid")).toString());
+        }
+        if (NumberUtil.isValidIntValue(map.get("snmpPrivAlgorithm"))) {
+            this.snmpPrivAlgorithm = SNMPPrivAlgorithm.forCode(NumberUtil.getIntValue(map.get("snmpPrivAlgorithm"), -1));
+        }
+        if (map.get("snmpPrivPassphrase") != null) {
+            this.snmpPrivPassphrase = Objects.requireNonNull(map.get("snmpPrivPassphrase")).toString();
+        }
+        if (map.get("snmpPrivPassphraseValid") != null) {
+            this.snmpPrivPassphraseValid = !"false".equalsIgnoreCase(Objects.requireNonNull(map.get("snmpPrivPassphraseValid")).toString());
         }
     }
 
@@ -196,6 +276,22 @@ public class AccessTypeData {
         this.ignoreSSLError = ignoreSSLError;
     }
 
+    public boolean isFailureOnCertificateExpiry() {
+        return failureOnCertificateExpiry;
+    }
+
+    public void setFailureOnCertificateExpiry(boolean failureOnCertificateExpiry) {
+        this.failureOnCertificateExpiry = failureOnCertificateExpiry;
+    }
+
+    public int getFailureOnCertificateExpiryDays() {
+        return failureOnCertificateExpiryDays;
+    }
+
+    public void setFailureOnCertificateExpiryDays(int failureOnCertificateExpiryDays) {
+        this.failureOnCertificateExpiryDays = failureOnCertificateExpiryDays;
+    }
+
     public boolean isUseDefaultHeaders() {
         return useDefaultHeaders;
     }
@@ -228,6 +324,70 @@ public class AccessTypeData {
         this.snmpCommunityValid = snmpCommunityValid;
     }
 
+    public SNMPTransport getSnmpTransport() {
+        return snmpTransport;
+    }
+
+    public void setSnmpTransport(SNMPTransport snmpTransport) {
+        this.snmpTransport = snmpTransport;
+    }
+
+    public SNMPAuthAlgorithm getSnmpAuthAlgorithm() {
+        return snmpAuthAlgorithm;
+    }
+
+    public void setSnmpAuthAlgorithm(SNMPAuthAlgorithm snmpAuthAlgorithm) {
+        this.snmpAuthAlgorithm = snmpAuthAlgorithm;
+    }
+
+    public String getSnmpUserName() {
+        return snmpUserName;
+    }
+
+    public void setSnmpUserName(String snmpUserName) {
+        this.snmpUserName = snmpUserName;
+    }
+
+    public String getSnmpAuthPassphrase() {
+        return snmpAuthPassphrase;
+    }
+
+    public void setSnmpAuthPassphrase(String snmpAuthPassphrase) {
+        this.snmpAuthPassphrase = snmpAuthPassphrase;
+    }
+
+    public boolean isSnmpAuthPassphraseValid() {
+        return snmpAuthPassphraseValid;
+    }
+
+    public void setSnmpAuthPassphraseValid(boolean snmpAuthPassphraseValid) {
+        this.snmpAuthPassphraseValid = snmpAuthPassphraseValid;
+    }
+
+    public SNMPPrivAlgorithm getSnmpPrivAlgorithm() {
+        return snmpPrivAlgorithm;
+    }
+
+    public void setSnmpPrivAlgorithm(SNMPPrivAlgorithm snmpPrivAlgorithm) {
+        this.snmpPrivAlgorithm = snmpPrivAlgorithm;
+    }
+
+    public String getSnmpPrivPassphrase() {
+        return snmpPrivPassphrase;
+    }
+
+    public void setSnmpPrivPassphrase(String snmpPrivPassphrase) {
+        this.snmpPrivPassphrase = snmpPrivPassphrase;
+    }
+
+    public boolean isSnmpPrivPassphraseValid() {
+        return snmpPrivPassphraseValid;
+    }
+
+    public void setSnmpPrivPassphraseValid(boolean snmpPrivPassphraseValid) {
+        this.snmpPrivPassphraseValid = snmpPrivPassphraseValid;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -237,6 +397,8 @@ public class AccessTypeData {
         bundle.putInt("connectCount", connectCount);
         bundle.putInt("stopOnSuccess", stopOnSuccess ? 1 : 0);
         bundle.putInt("ignoreSSLError", ignoreSSLError ? 1 : 0);
+        bundle.putInt("failureOnCertificateExpiry", failureOnCertificateExpiry ? 1 : 0);
+        bundle.putInt("failureOnCertificateExpiryDays", failureOnCertificateExpiryDays);
         bundle.putInt("useDefaultHeaders", useDefaultHeaders ? 1 : 0);
         if (snmpVersion != null) {
             bundle.putInt("snmpVersion", snmpVersion.getCode());
@@ -245,6 +407,26 @@ public class AccessTypeData {
             bundle.putString("snmpCommunity", snmpCommunity);
         }
         bundle.putInt("snmpCommunityValid", snmpCommunityValid ? 1 : 0);
+        if (snmpTransport != null) {
+            bundle.putInt("snmpTransport", snmpTransport.getCode());
+        }
+        if (snmpAuthAlgorithm != null) {
+            bundle.putInt("snmpAuthAlgorithm", snmpAuthAlgorithm.getCode());
+        }
+        if (snmpUserName != null) {
+            bundle.putString("snmpUserName", snmpUserName);
+        }
+        if (snmpAuthPassphrase != null) {
+            bundle.putString("snmpAuthPassphrase", snmpAuthPassphrase);
+        }
+        bundle.putInt("snmpAuthPassphraseValid", snmpAuthPassphraseValid ? 1 : 0);
+        if (snmpPrivAlgorithm != null) {
+            bundle.putInt("snmpPrivAlgorithm", snmpPrivAlgorithm.getCode());
+        }
+        if (snmpPrivPassphrase != null) {
+            bundle.putString("snmpPrivPassphrase", snmpPrivPassphrase);
+        }
+        bundle.putInt("snmpPrivPassphraseValid", snmpPrivPassphraseValid ? 1 : 0);
         return bundle;
     }
 
@@ -261,6 +443,8 @@ public class AccessTypeData {
         map.put("connectCount", connectCount);
         map.put("stopOnSuccess", stopOnSuccess);
         map.put("ignoreSSLError", ignoreSSLError);
+        map.put("failureOnCertificateExpiry", failureOnCertificateExpiry);
+        map.put("failureOnCertificateExpiryDays", failureOnCertificateExpiryDays);
         map.put("useDefaultHeaders", useDefaultHeaders);
         if (snmpVersion != null) {
             map.put("snmpVersion", snmpVersion.getCode());
@@ -269,6 +453,26 @@ public class AccessTypeData {
             map.put("snmpCommunity", snmpCommunity);
         }
         map.put("snmpCommunityValid", snmpCommunityValid);
+        if (snmpTransport != null) {
+            map.put("snmpTransport", snmpTransport.getCode());
+        }
+        if (snmpAuthAlgorithm != null) {
+            map.put("snmpAuthAlgorithm", snmpAuthAlgorithm.getCode());
+        }
+        if (snmpUserName != null) {
+            map.put("snmpUserName", snmpUserName);
+        }
+        if (snmpAuthPassphrase != null) {
+            map.put("snmpAuthPassphrase", snmpAuthPassphrase);
+        }
+        map.put("snmpAuthPassphraseValid", snmpAuthPassphraseValid);
+        if (snmpPrivAlgorithm != null) {
+            map.put("snmpPrivAlgorithm", snmpPrivAlgorithm.getCode());
+        }
+        if (snmpPrivPassphrase != null) {
+            map.put("snmpPrivPassphrase", snmpPrivPassphrase);
+        }
+        map.put("snmpPrivPassphraseValid", snmpPrivPassphraseValid);
         return map;
     }
 
@@ -300,13 +504,43 @@ public class AccessTypeData {
         if (!Objects.equals(ignoreSSLError, other.ignoreSSLError)) {
             return false;
         }
+        if (!Objects.equals(failureOnCertificateExpiry, other.failureOnCertificateExpiry)) {
+            return false;
+        }
+        if (failureOnCertificateExpiryDays != other.failureOnCertificateExpiryDays) {
+            return false;
+        }
         if (!Objects.equals(snmpVersion, other.snmpVersion)) {
             return false;
         }
         if (!Objects.equals(snmpCommunity, other.snmpCommunity)) {
             return false;
         }
-        return snmpCommunityValid == other.snmpCommunityValid;
+        if (snmpCommunityValid != other.snmpCommunityValid) {
+            return false;
+        }
+        if (!Objects.equals(snmpTransport, other.snmpTransport)) {
+            return false;
+        }
+        if (!Objects.equals(snmpAuthAlgorithm, other.snmpAuthAlgorithm)) {
+            return false;
+        }
+        if (!Objects.equals(snmpUserName, other.snmpUserName)) {
+            return false;
+        }
+        if (!Objects.equals(snmpAuthPassphrase, other.snmpAuthPassphrase)) {
+            return false;
+        }
+        if (snmpAuthPassphraseValid != other.snmpAuthPassphraseValid) {
+            return false;
+        }
+        if (!Objects.equals(snmpPrivAlgorithm, other.snmpPrivAlgorithm)) {
+            return false;
+        }
+        if (!Objects.equals(snmpPrivPassphrase, other.snmpPrivPassphrase)) {
+            return false;
+        }
+        return snmpPrivPassphraseValid == other.snmpPrivPassphraseValid;
     }
 
     public boolean isTechnicallyEqual(AccessTypeData other) {
@@ -334,13 +568,43 @@ public class AccessTypeData {
         if (!Objects.equals(ignoreSSLError, other.ignoreSSLError)) {
             return false;
         }
+        if (!Objects.equals(failureOnCertificateExpiry, other.failureOnCertificateExpiry)) {
+            return false;
+        }
+        if (failureOnCertificateExpiryDays != other.failureOnCertificateExpiryDays) {
+            return false;
+        }
         if (!Objects.equals(snmpVersion, other.snmpVersion)) {
             return false;
         }
         if (!Objects.equals(snmpCommunity, other.snmpCommunity)) {
             return false;
         }
-        return snmpCommunityValid == other.snmpCommunityValid;
+        if (snmpCommunityValid != other.snmpCommunityValid) {
+            return false;
+        }
+        if (!Objects.equals(snmpTransport, other.snmpTransport)) {
+            return false;
+        }
+        if (!Objects.equals(snmpAuthAlgorithm, other.snmpAuthAlgorithm)) {
+            return false;
+        }
+        if (!Objects.equals(snmpUserName, other.snmpUserName)) {
+            return false;
+        }
+        if (!Objects.equals(snmpAuthPassphrase, other.snmpAuthPassphrase)) {
+            return false;
+        }
+        if (snmpAuthPassphraseValid != other.snmpAuthPassphraseValid) {
+            return false;
+        }
+        if (!Objects.equals(snmpPrivAlgorithm, other.snmpPrivAlgorithm)) {
+            return false;
+        }
+        if (!Objects.equals(snmpPrivPassphrase, other.snmpPrivPassphrase)) {
+            return false;
+        }
+        return snmpPrivPassphraseValid == other.snmpPrivPassphraseValid;
     }
 
     @NonNull
@@ -354,10 +618,20 @@ public class AccessTypeData {
                 ", connectCount=" + connectCount +
                 ", stopOnSuccess=" + stopOnSuccess +
                 ", ignoreSSLError=" + ignoreSSLError +
+                ", failureOnCertificateExpiry=" + failureOnCertificateExpiry +
+                ", failureOnCertificateExpiryDays=" + failureOnCertificateExpiryDays +
                 ", useDefaultHeaders=" + useDefaultHeaders +
                 ", snmpVersion=" + snmpVersion +
                 ", snmpCommunity='" + StringUtil.maskSecret(snmpCommunity, true) + '\'' +
                 ", snmpCommunityValid=" + snmpCommunityValid +
+                ", snmpTransport=" + snmpTransport +
+                ", snmpAuthAlgorithm=" + snmpAuthAlgorithm +
+                ", snmpUserName='" + snmpUserName + '\'' +
+                ", snmpAuthPassphrase='" + StringUtil.maskSecret(snmpAuthPassphrase, true) + '\'' +
+                ", snmpAuthPassphraseValid=" + snmpAuthPassphraseValid +
+                ", snmpPrivAlgorithm=" + snmpPrivAlgorithm +
+                ", snmpPrivPassphrase='" + StringUtil.maskSecret(snmpPrivPassphrase, true) + '\'' +
+                ", snmpPrivPassphraseValid=" + snmpPrivPassphraseValid +
                 '}';
     }
 }

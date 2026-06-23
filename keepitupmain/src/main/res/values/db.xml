@@ -16,7 +16,7 @@
 
 <resources>
     <string name="db_name">keepitup.db</string>
-    <integer name="db_version">8</integer>
+    <integer name="db_version">9</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
@@ -62,10 +62,20 @@
     <string name="accesstypedata_connect_count_column_name">CONNECTCOUNT</string>
     <string name="accesstypedata_stop_on_success_column_name">STOPONSUCCESS</string>
     <string name="accesstypedata_ignore_ssl_error_column_name">IGNORESSLERROR</string>
+    <string name="accesstypedata_failure_on_certificate_expiry_column_name">FAILUREONCERTIFICATEEXPIRY</string>
+    <string name="accesstypedata_failure_on_certificate_expiry_days_column_name">FAILUREONCERTIFICATEEXPIRYDAYS</string>
     <string name="accesstypedata_use_default_headers_column_name">USEDEFAULTHEADERS</string>
     <string name="accesstypedata_snmp_version_column_name">SNMPVERSION</string>
     <string name="accesstypedata_snmp_community_column_name">SNMPCOMMUNITY</string>
     <string name="accesstypedata_snmp_community_iv_column_name">SNMPCOMMUNITYIV</string>
+    <string name="accesstypedata_snmp_transport_column_name">SNMPTRANSPORT</string>
+    <string name="accesstypedata_snmp_auth_algorithm_column_name">SNMPAUTHALGORITHM</string>
+    <string name="accesstypedata_snmp_user_name_column_name">SNMPUSERNAME</string>
+    <string name="accesstypedata_snmp_auth_passphrase_column_name">SNMPAUTHPASSPHRASE</string>
+    <string name="accesstypedata_snmp_auth_passphrase_iv_column_name">SNMPAUTHPASSPHRASEIV</string>
+    <string name="accesstypedata_snmp_priv_algorithm_column_name">SNMPPRIVALGORITHM</string>
+    <string name="accesstypedata_snmp_priv_passphrase_column_name">SNMPPRIVPASSPHRASE</string>
+    <string name="accesstypedata_snmp_priv_passphrase_iv_column_name">SNMPPRIVPASSPHRASEIV</string>
     <string name="resolve_table_name">RESOLVE</string>
     <string name="resolve_id_column_name">_id</string>
     <string name="resolve_index_column_name">UIINDEX</string>

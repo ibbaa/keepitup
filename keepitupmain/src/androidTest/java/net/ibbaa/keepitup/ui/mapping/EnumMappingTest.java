@@ -87,5 +87,6 @@ public class EnumMappingTest {
     public void testGetSNMPVersionName() {
         assertEquals("v1", enumMapping.getSNMPVersionName(SNMPVersion.V1));
         assertEquals("v2c", enumMapping.getSNMPVersionName(SNMPVersion.V2C));
+        assertEquals("v3", enumMapping.getSNMPVersionName(SNMPVersion.V3));
     }
 }
