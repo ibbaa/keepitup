@@ -34,7 +34,7 @@ public class AccessTypeDataValidator {
 
     public boolean validate(AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataValidator.class.getName(), "validate accessTypeData " + accessTypeData);
-        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateSNMPVersion(accessTypeData) && validateSNMPCommunity(accessTypeData);
+        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateFailureOnCertificateExpiryDays(accessTypeData) && validateSNMPCommunity(accessTypeData);
     }
 
     public boolean validatePingCount(AccessTypeData accessTypeData) {
@@ -73,13 +73,15 @@ public class AccessTypeDataValidator {
         return true;
     }
 
-    public boolean validateSNMPVersion(AccessTypeData accessTypeData) {
-        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPVersion of accessTypeData " + accessTypeData);
-        if (accessTypeData.getSnmpVersion() == null) {
-            Log.d(AccessTypeDataValidator.class.getName(), "SNMPVersion is null. Returning false.");
+    public boolean validateFailureOnCertificateExpiryDays(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataValidator.class.getName(), "validateFailureOnCertificateExpiryDays of accessTypeData " + accessTypeData);
+        int min = context.getResources().getInteger(R.integer.failure_on_certificate_expiry_days_minimum);
+        int max = context.getResources().getInteger(R.integer.failure_on_certificate_expiry_days_maximum);
+        if (accessTypeData.getFailureOnCertificateExpiryDays() < min || accessTypeData.getFailureOnCertificateExpiryDays() > max) {
+            Log.d(AccessTypeDataValidator.class.getName(), "failureOnCertificateExpiryDays is invalid. Returning false.");
             return false;
         }
-        Log.d(AccessTypeDataValidator.class.getName(), "SNMPVersion is valid. Returning true.");
+        Log.d(AccessTypeDataValidator.class.getName(), "failureOnCertificateExpiryDays is valid. Returning true.");
         return true;
     }
 

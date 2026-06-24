@@ -96,7 +96,6 @@ public class AccessTypeData {
         this.snmpAuthPassphrase = otherData.getSnmpAuthPassphrase();
         this.snmpPrivAlgorithm = otherData.getSnmpPrivAlgorithm();
         this.snmpPrivPassphrase = otherData.getSnmpPrivPassphrase();
-        // snmpCommunityValid, snmpAuthPassphraseValid, snmpPrivPassphraseValid reset to default (true)
     }
 
     public AccessTypeData(Context context) {

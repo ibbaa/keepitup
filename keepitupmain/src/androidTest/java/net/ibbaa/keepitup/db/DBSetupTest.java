@@ -40,6 +40,9 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
@@ -687,6 +690,10 @@ public class DBSetupTest {
         data = getAccessTypeData(task.getId());
         data.setSnmpCommunityValid(true);
         data.setSnmpCommunity(null);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpAuthPassphrase(null);
+        data.setSnmpPrivPassphraseValid(true);
+        data.setSnmpPrivPassphrase(null);
         assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
     }
 
@@ -700,6 +707,10 @@ public class DBSetupTest {
         data = getAccessTypeData(task.getId());
         data.setSnmpCommunityValid(true);
         data.setSnmpCommunity(null);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpAuthPassphrase(null);
+        data.setSnmpPrivPassphraseValid(true);
+        data.setSnmpPrivPassphrase(null);
         assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
     }
 
@@ -1094,30 +1105,6 @@ public class DBSetupTest {
         snmpItemDAO.deleteAllSNMPItems();
         data = getAccessTypeData(0);
         data.setConnectCount(11);
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
-        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
-        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertFalse(resolveDAO.readAllResolves().isEmpty());
-        assertFalse(headerDAO.readAllHeaders().isEmpty());
-        assertFalse(snmpItemDAO.readAllSNMPItems().isEmpty());
-        task = networkTaskDAO.readAllNetworkTasks().get(0);
-        data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
-        defaultData = new AccessTypeData(TestRegistry.getContext());
-        defaultData.setNetworkTaskId(task.getId());
-        assertTrue(defaultData.isTechnicallyEqual(data));
-        resolve = resolveDAO.readAllResolvesForNetworkTask(task.getId()).get(0);
-        assertTrue(getResolve(task.getId(), 0).isTechnicallyEqual(resolve));
-        header = headerDAO.readAllHeaders().get(0);
-        assertTrue(getHeader(task.getId(), 1).isTechnicallyEqual(header));
-        snmpItem = snmpItemDAO.readAllSNMPItems().get(0);
-        assertTrue(getSNMPItem(task.getId()).isTechnicallyEqual(snmpItem));
-        networkTaskDAO.deleteAllNetworkTasks();
-        accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolves();
-        headerDAO.deleteAllHeaders();
-        snmpItemDAO.deleteAllSNMPItems();
-        data = getAccessTypeData(0);
-        data.setSnmpVersion(null);
         setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), data.toMap(), Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
@@ -1713,10 +1700,20 @@ public class DBSetupTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("community");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 

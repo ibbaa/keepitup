@@ -65,4 +65,66 @@ public class TestAccessTypeDataDAO extends AccessTypeDataDAO {
         }
         return result;
     }
+
+    public Map<String, String> readEncryptedAuthPassphraseAndAuthPassphraseIV(long id) {
+        AccessTypeData accessTypeData = new AccessTypeData();
+        accessTypeData.setId(id);
+        return executeDBOperationInTransaction(accessTypeData, this::readEncryptedAuthPassphraseAndAuthPassphraseIV);
+    }
+
+    @SuppressWarnings("TryFinallyCanBeTryWithResources")
+    private Map<String, String> readEncryptedAuthPassphraseAndAuthPassphraseIV(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Map<String, String> result = new HashMap<>();
+        Cursor cursor = null;
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        try {
+            cursor = db.rawQuery(dbConstants.getReadEncryptedAuthPassphraseAndAuthPassphraseIV(), new String[]{String.valueOf(accessTypeData.getId())});
+            while (cursor.moveToNext()) {
+                int indexAuthPassphraseColumn = cursor.getColumnIndex(dbConstants.getSnmpAuthPassphraseColumnName());
+                int indexIVColumn = cursor.getColumnIndex(dbConstants.getSnmpAuthPassphraseIVColumnName());
+                result.put(dbConstants.getSnmpAuthPassphraseColumnName(), cursor.getString(indexAuthPassphraseColumn));
+                result.put(dbConstants.getSnmpAuthPassphraseIVColumnName(), cursor.getString(indexIVColumn));
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(HeaderDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        return result;
+    }
+
+    public Map<String, String> readEncryptedPrivPassphraseAndPrivPassphraseIV(long id) {
+        AccessTypeData accessTypeData = new AccessTypeData();
+        accessTypeData.setId(id);
+        return executeDBOperationInTransaction(accessTypeData, this::readEncryptedPrivPassphraseAndPrivPassphraseIV);
+    }
+
+    @SuppressWarnings("TryFinallyCanBeTryWithResources")
+    private Map<String, String> readEncryptedPrivPassphraseAndPrivPassphraseIV(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Map<String, String> result = new HashMap<>();
+        Cursor cursor = null;
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        try {
+            cursor = db.rawQuery(dbConstants.getReadEncryptedPrivPassphraseAndPrivPassphraseIV(), new String[]{String.valueOf(accessTypeData.getId())});
+            while (cursor.moveToNext()) {
+                int indexPrivPassphraseColumn = cursor.getColumnIndex(dbConstants.getSnmpPrivPassphraseColumnName());
+                int indexIVColumn = cursor.getColumnIndex(dbConstants.getSnmpPrivPassphraseIVColumnName());
+                result.put(dbConstants.getSnmpPrivPassphraseColumnName(), cursor.getString(indexPrivPassphraseColumn));
+                result.put(dbConstants.getSnmpPrivPassphraseIVColumnName(), cursor.getString(indexIVColumn));
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(HeaderDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        return result;
+    }
 }

@@ -349,6 +349,8 @@ public class JSONSystemSetupTest {
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
         AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(task1AccessData.isEqual(accessData1));
     }
 
@@ -364,6 +366,8 @@ public class JSONSystemSetupTest {
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
         AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(task1AccessData.isEqual(accessData1));
     }
 
@@ -1816,10 +1820,20 @@ public class JSONSystemSetupTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("community1");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpUserName("user1");
+        data.setSnmpAuthPassphrase("authpass1");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphrase("privpass1");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -1832,10 +1846,17 @@ public class JSONSystemSetupTest {
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity(null);
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.MD5);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.DES);
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 

@@ -37,6 +37,9 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -630,10 +633,20 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("public");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpUserName("user1");
+        data.setSnmpAuthPassphrase("authpass1");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphrase("privpass1");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -646,10 +659,17 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(2);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(true);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity(null);
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.MD5);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.DES);
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -662,10 +682,20 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(7);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("community");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA512);
+        data.setSnmpUserName("admin");
+        data.setSnmpAuthPassphrase("authpass3");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES128);
+        data.setSnmpPrivPassphrase("privpass3");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -678,10 +708,20 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(60);
         data.setUseDefaultHeaders(true);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity("private");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA224);
+        data.setSnmpUserName("user4");
+        data.setSnmpAuthPassphrase("authpass4");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
+        data.setSnmpPrivPassphrase("privpass4");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 

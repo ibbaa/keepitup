@@ -716,6 +716,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         snmpVersionGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_snmp_version);
         snmpVersionGroup.setOnCheckedChangeListener(null);
         SNMPVersion version = accessTypeData.getSnmpVersion();
+        if (version == null) {
+            version = new PreferenceManager(requireContext()).getPreferenceSNMPVersion();
+        }
         RadioButton v1RadioButton = dialogView.findViewById(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1);
         RadioButton v2cRadioButton = dialogView.findViewById(R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c);
         v1RadioButton.setTextColor(getColor(R.color.textColor));

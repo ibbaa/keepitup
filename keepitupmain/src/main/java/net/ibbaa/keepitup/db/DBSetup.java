@@ -1145,6 +1145,14 @@ public class DBSetup {
                 accessTypeData.setSnmpCommunity(null);
             }
             accessTypeData.setSnmpCommunityValid(true);
+            if (!shouldExportSNMPAuthPassphrase(accessTypeData, encrypted)) {
+                accessTypeData.setSnmpAuthPassphrase(null);
+            }
+            accessTypeData.setSnmpAuthPassphraseValid(true);
+            if (!shouldExportSNMPPrivPassphrase(accessTypeData, encrypted)) {
+                accessTypeData.setSnmpPrivPassphrase(null);
+            }
+            accessTypeData.setSnmpPrivPassphraseValid(true);
             return accessTypeData.toMap();
         }
         return null;
@@ -1153,6 +1161,22 @@ public class DBSetup {
     private boolean shouldExportSNMPCommunity(AccessTypeData accessTypeData, boolean encrypted) {
         Log.d(DBSetup.class.getName(), "shouldExportSNMPCommunity, accessTypeData is " + accessTypeData + ", encrypted is " + encrypted);
         if (!accessTypeData.isSnmpCommunityValid()) {
+            return false;
+        }
+        return encrypted;
+    }
+
+    private boolean shouldExportSNMPAuthPassphrase(AccessTypeData accessTypeData, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExportSNMPAuthPassphrase, accessTypeData is " + accessTypeData + ", encrypted is " + encrypted);
+        if (!accessTypeData.isSnmpAuthPassphraseValid()) {
+            return false;
+        }
+        return encrypted;
+    }
+
+    private boolean shouldExportSNMPPrivPassphrase(AccessTypeData accessTypeData, boolean encrypted) {
+        Log.d(DBSetup.class.getName(), "shouldExportSNMPPrivPassphrase, accessTypeData is " + accessTypeData + ", encrypted is " + encrypted);
+        if (!accessTypeData.isSnmpPrivPassphraseValid()) {
             return false;
         }
         return encrypted;

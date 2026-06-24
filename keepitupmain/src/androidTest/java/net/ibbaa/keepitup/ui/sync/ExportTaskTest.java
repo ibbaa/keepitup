@@ -225,6 +225,10 @@ public class ExportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         accessData1.setSnmpCommunity(null);
         accessData2.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData2.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
+        accessData2.setSnmpPrivPassphrase(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
         Resolve readResolve1 = getResolveDAO().readAllResolvesForNetworkTask(readTask1.getId()).get(0);
@@ -846,10 +850,20 @@ public class ExportTaskTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(true);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("community1");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpUserName("user1");
+        data.setSnmpAuthPassphrase("authpass1");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphrase("privpass1");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -862,10 +876,17 @@ public class ExportTaskTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity(null);
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.MD5);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.DES);
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 

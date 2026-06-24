@@ -34,6 +34,9 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestAccessTypeDataDAO;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -120,6 +123,20 @@ public class AccessTypeDataDAOTest {
         assertNotEquals("community1", encryptedValues1.get("SNMPCOMMUNITY"));
         assertNull(encryptedValues2.get("SNMPCOMMUNITY"));
         assertNull(encryptedValues2.get("SNMPCOMMUNITYIV"));
+        Map<String, String> encryptedAuthValues1 = accessTypeDataDAO.readEncryptedAuthPassphraseAndAuthPassphraseIV(accessTypeData1.getId());
+        Map<String, String> encryptedAuthValues2 = accessTypeDataDAO.readEncryptedAuthPassphraseAndAuthPassphraseIV(accessTypeData2.getId());
+        assertNotNull(encryptedAuthValues1.get("SNMPAUTHPASSPHRASE"));
+        assertNotNull(encryptedAuthValues1.get("SNMPAUTHPASSPHRASEIV"));
+        assertNotEquals("authpass1", encryptedAuthValues1.get("SNMPAUTHPASSPHRASE"));
+        assertNull(encryptedAuthValues2.get("SNMPAUTHPASSPHRASE"));
+        assertNull(encryptedAuthValues2.get("SNMPAUTHPASSPHRASEIV"));
+        Map<String, String> encryptedPrivValues1 = accessTypeDataDAO.readEncryptedPrivPassphraseAndPrivPassphraseIV(accessTypeData1.getId());
+        Map<String, String> encryptedPrivValues2 = accessTypeDataDAO.readEncryptedPrivPassphraseAndPrivPassphraseIV(accessTypeData2.getId());
+        assertNotNull(encryptedPrivValues1.get("SNMPPRIVPASSPHRASE"));
+        assertNotNull(encryptedPrivValues1.get("SNMPPRIVPASSPHRASEIV"));
+        assertNotEquals("privpass1", encryptedPrivValues1.get("SNMPPRIVPASSPHRASE"));
+        assertNull(encryptedPrivValues2.get("SNMPPRIVPASSPHRASE"));
+        assertNull(encryptedPrivValues2.get("SNMPPRIVPASSPHRASEIV"));
     }
 
     @Test
@@ -130,9 +147,17 @@ public class AccessTypeDataDAOTest {
         AccessTypeData readData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(0);
         assertNull(readData.getSnmpCommunity());
         assertFalse(readData.isSnmpCommunityValid());
+        assertNull(readData.getSnmpAuthPassphrase());
+        assertFalse(readData.isSnmpAuthPassphraseValid());
+        assertNull(readData.getSnmpPrivPassphrase());
+        assertFalse(readData.isSnmpPrivPassphraseValid());
         readData = accessTypeDataDAO.readAllAccessTypeData().get(0);
         assertNull(readData.getSnmpCommunity());
         assertFalse(readData.isSnmpCommunityValid());
+        assertNull(readData.getSnmpAuthPassphrase());
+        assertFalse(readData.isSnmpAuthPassphraseValid());
+        assertNull(readData.getSnmpPrivPassphrase());
+        assertFalse(readData.isSnmpPrivPassphraseValid());
     }
 
     @Test
@@ -199,6 +224,28 @@ public class AccessTypeDataDAOTest {
         encryptedValues = accessTypeDataDAO.readEncryptedCommunityAndCommunityIV(accessTypeData.getId());
         assertNull(encryptedValues.get("SNMPCOMMUNITY"));
         assertNull(encryptedValues.get("SNMPCOMMUNITYIV"));
+        accessTypeData.setSnmpAuthPassphrase("myauthpass");
+        accessTypeDataDAO.updateAccessTypeData(accessTypeData);
+        Map<String, String> encryptedAuthValues = accessTypeDataDAO.readEncryptedAuthPassphraseAndAuthPassphraseIV(accessTypeData.getId());
+        assertNotNull(encryptedAuthValues.get("SNMPAUTHPASSPHRASE"));
+        assertNotNull(encryptedAuthValues.get("SNMPAUTHPASSPHRASEIV"));
+        assertNotEquals("myauthpass", encryptedAuthValues.get("SNMPAUTHPASSPHRASE"));
+        accessTypeData.setSnmpAuthPassphrase(null);
+        accessTypeDataDAO.updateAccessTypeData(accessTypeData);
+        encryptedAuthValues = accessTypeDataDAO.readEncryptedAuthPassphraseAndAuthPassphraseIV(accessTypeData.getId());
+        assertNull(encryptedAuthValues.get("SNMPAUTHPASSPHRASE"));
+        assertNull(encryptedAuthValues.get("SNMPAUTHPASSPHRASEIV"));
+        accessTypeData.setSnmpPrivPassphrase("myprivpass");
+        accessTypeDataDAO.updateAccessTypeData(accessTypeData);
+        Map<String, String> encryptedPrivValues = accessTypeDataDAO.readEncryptedPrivPassphraseAndPrivPassphraseIV(accessTypeData.getId());
+        assertNotNull(encryptedPrivValues.get("SNMPPRIVPASSPHRASE"));
+        assertNotNull(encryptedPrivValues.get("SNMPPRIVPASSPHRASEIV"));
+        assertNotEquals("myprivpass", encryptedPrivValues.get("SNMPPRIVPASSPHRASE"));
+        accessTypeData.setSnmpPrivPassphrase(null);
+        accessTypeDataDAO.updateAccessTypeData(accessTypeData);
+        encryptedPrivValues = accessTypeDataDAO.readEncryptedPrivPassphraseAndPrivPassphraseIV(accessTypeData.getId());
+        assertNull(encryptedPrivValues.get("SNMPPRIVPASSPHRASE"));
+        assertNull(encryptedPrivValues.get("SNMPPRIVPASSPHRASEIV"));
     }
 
     @Test
@@ -268,10 +315,20 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity("community1");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpUserName("user1");
+        data.setSnmpAuthPassphrase("authpass1");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphrase("privpass1");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -284,10 +341,17 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(2);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity(null);
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.MD5);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.DES);
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 
@@ -300,10 +364,20 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(7);
         data.setUseDefaultHeaders(true);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("community3");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA512);
+        data.setSnmpUserName("admin");
+        data.setSnmpAuthPassphrase("authpass3");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES128);
+        data.setSnmpPrivPassphrase("privpass3");
+        data.setSnmpPrivPassphraseValid(true);
         return data;
     }
 }

@@ -23,6 +23,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -94,13 +97,22 @@ public class AccessTypeDataValidatorTest {
     }
 
     @Test
-    public void testValidateSNMPVersion() {
+    public void testValidateFailureOnCertificateExpiryDays() {
         AccessTypeData data = getAccessTypeData();
-        assertTrue(validator.validateSNMPVersion(data));
+        assertTrue(validator.validateFailureOnCertificateExpiryDays(data));
         assertTrue(validator.validate(data));
-        data.setSnmpVersion(null);
-        assertFalse(validator.validateSNMPVersion(data));
+        data.setFailureOnCertificateExpiryDays(3651);
+        assertFalse(validator.validateFailureOnCertificateExpiryDays(data));
         assertFalse(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(0);
+        assertFalse(validator.validateFailureOnCertificateExpiryDays(data));
+        assertFalse(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(1);
+        assertTrue(validator.validateFailureOnCertificateExpiryDays(data));
+        assertTrue(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(3650);
+        assertTrue(validator.validateFailureOnCertificateExpiryDays(data));
+        assertTrue(validator.validate(data));
     }
 
     @Test
@@ -144,6 +156,16 @@ public class AccessTypeDataValidatorTest {
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("public");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.MD5);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.DES);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         return data;
     }
 }
