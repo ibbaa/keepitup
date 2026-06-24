@@ -1,0 +1,2 @@
+* Fixed a bug where importing a backup file could incorrectly reset all network task settings if the file was created with an older app version that did not yet include SNMP support
+* Fixed a bug where switching a network task to SNMP access type showed V1 instead of the configured default SNMP version when the task was created before SNMP support was introduced
