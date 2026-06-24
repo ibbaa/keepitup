@@ -420,6 +420,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertTrue(networkTaskEntry.isTechnicallyEqual(readEntry));
         assertEquals(readTask.getId(), readEntry.getNetworkTaskId());
         AccessTypeData readAccessData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask.getId());
+        accessTypeData.setSnmpAuthPassphrase(null);
+        accessTypeData.setSnmpPrivPassphrase(null);
         assertTrue(accessTypeData.isTechnicallyEqual(readAccessData));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -532,6 +534,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertTrue(taskEntry.isTechnicallyEqual(readEntry));
         assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         AccessTypeData readAccessData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask.getId());
+        accessData.setSnmpAuthPassphrase(null);
+        accessData.setSnmpPrivPassphrase(null);
         assertTrue(accessData.isTechnicallyEqual(readAccessData));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());

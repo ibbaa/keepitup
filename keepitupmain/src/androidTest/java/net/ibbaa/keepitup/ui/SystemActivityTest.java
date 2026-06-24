@@ -2025,6 +2025,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2292,6 +2294,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -2803,6 +2807,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -3318,6 +3324,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -3852,6 +3860,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
         accessData1.setSnmpCommunity(null);
+        accessData1.setSnmpAuthPassphrase(null);
+        accessData1.setSnmpPrivPassphrase(null);
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
