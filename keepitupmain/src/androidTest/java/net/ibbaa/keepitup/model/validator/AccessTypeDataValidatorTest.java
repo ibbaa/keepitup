@@ -94,16 +94,6 @@ public class AccessTypeDataValidatorTest {
     }
 
     @Test
-    public void testValidateSNMPVersion() {
-        AccessTypeData data = getAccessTypeData();
-        assertTrue(validator.validateSNMPVersion(data));
-        assertTrue(validator.validate(data));
-        data.setSnmpVersion(null);
-        assertFalse(validator.validateSNMPVersion(data));
-        assertFalse(validator.validate(data));
-    }
-
-    @Test
     public void testValidateSNMPCommunity() {
         AccessTypeData data = getAccessTypeData();
         assertTrue(validator.validateSNMPCommunity(data));

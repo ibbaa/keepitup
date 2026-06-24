@@ -34,7 +34,7 @@ public class AccessTypeDataValidator {
 
     public boolean validate(AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataValidator.class.getName(), "validate accessTypeData " + accessTypeData);
-        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateSNMPVersion(accessTypeData) && validateSNMPCommunity(accessTypeData);
+        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateSNMPCommunity(accessTypeData);
     }
 
     public boolean validatePingCount(AccessTypeData accessTypeData) {
@@ -70,16 +70,6 @@ public class AccessTypeDataValidator {
             return false;
         }
         Log.d(AccessTypeDataValidator.class.getName(), "connectCount is valid. Returning true.");
-        return true;
-    }
-
-    public boolean validateSNMPVersion(AccessTypeData accessTypeData) {
-        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPVersion of accessTypeData " + accessTypeData);
-        if (accessTypeData.getSnmpVersion() == null) {
-            Log.d(AccessTypeDataValidator.class.getName(), "SNMPVersion is null. Returning false.");
-            return false;
-        }
-        Log.d(AccessTypeDataValidator.class.getName(), "SNMPVersion is valid. Returning true.");
         return true;
     }
 
