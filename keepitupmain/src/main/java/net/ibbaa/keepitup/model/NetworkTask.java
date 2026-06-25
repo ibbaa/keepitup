@@ -122,8 +122,8 @@ public class NetworkTask {
         this.highPrio = bundle.getInt("highPrio") >= 1;
     }
 
-    public NetworkTask(Map<String, ?> map) {
-        this();
+    public NetworkTask(Context context, Map<String, ?> map) {
+        this(context);
         if (NumberUtil.isValidLongValue(map.get("id"))) {
             this.id = NumberUtil.getLongValue(map.get("id"), -1);
         }

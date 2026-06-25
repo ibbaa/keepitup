@@ -352,13 +352,23 @@ public class ResolveDAO extends BaseDAO {
         int indexSourcePortColumn = cursor.getColumnIndex(dbConstants.getSourcePortColumnName());
         int indexTargetAddressColumn = cursor.getColumnIndex(dbConstants.getTargetAddressColumnName());
         int indexTargetPortColumn = cursor.getColumnIndex(dbConstants.getTargetPortColumnName());
-        resolve.setId(cursor.getLong(indexIdColumn));
-        resolve.setIndex(cursor.getInt(indexIndexColumn));
-        resolve.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
+        if (!cursor.isNull(indexIdColumn)) {
+            resolve.setId(cursor.getLong(indexIdColumn));
+        }
+        if (!cursor.isNull(indexIndexColumn)) {
+            resolve.setIndex(cursor.getInt(indexIndexColumn));
+        }
+        if (!cursor.isNull(indexNetworkTaskIdColumn)) {
+            resolve.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
+        }
         resolve.setSourceAddress(cursor.getString(indexSourceAddressColumn));
-        resolve.setSourcePort(cursor.getInt(indexSourcePortColumn));
+        if (!cursor.isNull(indexSourcePortColumn)) {
+            resolve.setSourcePort(cursor.getInt(indexSourcePortColumn));
+        }
         resolve.setTargetAddress(cursor.getString(indexTargetAddressColumn));
-        resolve.setTargetPort(cursor.getInt(indexTargetPortColumn));
+        if (!cursor.isNull(indexTargetPortColumn)) {
+            resolve.setTargetPort(cursor.getInt(indexTargetPortColumn));
+        }
         return resolve;
     }
 

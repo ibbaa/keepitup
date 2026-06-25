@@ -96,7 +96,7 @@ dependencies {
     implementation 'net.ibbaa.phonelog:phonelog:2.1.2'
     implementation 'com.squareup.okhttp3:okhttp:5.4.0'
     implementation 'org.bouncycastle:bcprov-lts8on:2.73.11'
-    implementation 'org.snmp4j:snmp4j:3.11.0'
+    implementation 'org.snmp4j:snmp4j:3.12.2'
     testImplementation 'androidx.annotation:annotation:1.10.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.23.0'

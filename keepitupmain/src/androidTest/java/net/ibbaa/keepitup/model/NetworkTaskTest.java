@@ -115,15 +115,15 @@ public class NetworkTaskTest {
         assertFalse(task.isHighPrio());
         Map<String, ?> map = task.toMap();
         assertNotNull(map);
-        task = new NetworkTask(map);
+        task = new NetworkTask(TestRegistry.getContext(), map);
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
-        assertNull(task.getName());
+        assertEquals("Network task", task.getName());
         assertEquals(0, task.getInstances());
-        assertNull(task.getAddress());
+        assertEquals("192.168.178.1", task.getAddress());
         assertEquals(0, task.getPort());
-        assertNull(task.getAccessType());
+        assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(0, task.getInterval());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
@@ -175,16 +175,16 @@ public class NetworkTaskTest {
 
     @Test
     public void testEmptyMap() {
-        NetworkTask task = new NetworkTask(new HashMap<>());
+        NetworkTask task = new NetworkTask(TestRegistry.getContext(), new HashMap<>());
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
-        assertNull(task.getName());
+        assertEquals("Network task", task.getName());
         assertEquals(0, task.getInstances());
-        assertNull(task.getAddress());
-        assertEquals(0, task.getPort());
-        assertNull(task.getAccessType());
-        assertEquals(0, task.getInterval());
+        assertEquals("192.168.178.1", task.getAddress());
+        assertEquals(22, task.getPort());
+        assertEquals(AccessType.PING, task.getAccessType());
+        assertEquals(15, task.getInterval());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
@@ -213,16 +213,16 @@ public class NetworkTaskTest {
         map.put("lastSysUpTime", "xyz");
         map.put("failureCount", "zyx");
         map.put("highPrio", "zyx");
-        NetworkTask task = new NetworkTask(map);
+        NetworkTask task = new NetworkTask(TestRegistry.getContext(), map);
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
-        assertNull(task.getName());
+        assertEquals("Network task", task.getName());
         assertEquals(0, task.getInstances());
-        assertNull(task.getAddress());
-        assertEquals(0, task.getPort());
+        assertEquals("192.168.178.1", task.getAddress());
+        assertEquals(22, task.getPort());
         assertNull(task.getAccessType());
-        assertEquals(0, task.getInterval());
+        assertEquals(15, task.getInterval());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
@@ -251,7 +251,7 @@ public class NetworkTaskTest {
         map.put("lastSysUpTime", "8");
         map.put("failureCount", "3");
         map.put("highPrio", "true");
-        NetworkTask task = new NetworkTask(map);
+        NetworkTask task = new NetworkTask(TestRegistry.getContext(), map);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
@@ -414,7 +414,7 @@ public class NetworkTaskTest {
         task.setHighPrio(true);
         Map<String, ?> map = task.toMap();
         assertNotNull(map);
-        task = new NetworkTask(map);
+        task = new NetworkTask(TestRegistry.getContext(), map);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());

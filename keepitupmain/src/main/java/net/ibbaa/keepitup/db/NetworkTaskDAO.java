@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerId;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -743,6 +744,7 @@ public class NetworkTaskDAO extends BaseDAO {
     private NetworkTask mapCursorToNetworkTask(Cursor cursor) {
         NetworkTask networkTask = new NetworkTask();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
         int indexSchedulerIdColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
@@ -759,26 +761,62 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexLastSysUpTimeColumn = cursor.getColumnIndex(dbConstants.getLastSysUpTimeColumnName());
         int indexFailureCountColumn = cursor.getColumnIndex(dbConstants.getFailureCountColumnName());
         int indexHighPrioColumn = cursor.getColumnIndex(dbConstants.getHighPrioColumnName());
-        networkTask.setId(cursor.getLong(indexIdColumn));
-        networkTask.setIndex(cursor.getInt(indexIndexColumn));
-        networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
-        networkTask.setName(cursor.getString(indexNameColumn));
-        networkTask.setInstances(cursor.getInt(indexInstancesColumn));
-        networkTask.setAddress(cursor.getString(indexAddressColumn));
-        networkTask.setPort(cursor.getInt(indexPortColumn));
-        if (cursor.isNull(indexAccessTypeColumn)) {
-            networkTask.setAccessType(null);
-        } else {
-            networkTask.setAccessType(AccessType.forCode(cursor.getInt(indexAccessTypeColumn)));
+        if (!cursor.isNull(indexIdColumn)) {
+            networkTask.setId(cursor.getLong(indexIdColumn));
         }
-        networkTask.setInterval(cursor.getInt(indexIntervalColumn));
-        networkTask.setOnlyWifi(cursor.getInt(indexOnlyWifiColumn) >= 1);
-        networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
-        networkTask.setRunning(cursor.getInt(indexRunningColumn) >= 1);
-        networkTask.setLastScheduled(cursor.getLong(indexLastScheduledColumn));
-        networkTask.setLastSysUpTime(cursor.getLong(indexLastSysUpTimeColumn));
-        networkTask.setFailureCount(cursor.getInt(indexFailureCountColumn));
-        networkTask.setHighPrio(cursor.getInt(indexHighPrioColumn) >= 1);
+        if (!cursor.isNull(indexIndexColumn)) {
+            networkTask.setIndex(cursor.getInt(indexIndexColumn));
+        }
+        if (!cursor.isNull(indexSchedulerIdColumn)) {
+            networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
+        }
+        networkTask.setName(cursor.getString(indexNameColumn));
+        if (!cursor.isNull(indexInstancesColumn)) {
+            networkTask.setInstances(cursor.getInt(indexInstancesColumn));
+        }
+        networkTask.setAddress(cursor.getString(indexAddressColumn));
+        if (!cursor.isNull(indexPortColumn)) {
+            networkTask.setPort(cursor.getInt(indexPortColumn));
+        } else {
+            networkTask.setPort(preferenceManager.getPreferencePort());
+        }
+        if (!cursor.isNull(indexAccessTypeColumn)) {
+            networkTask.setAccessType(AccessType.forCode(cursor.getInt(indexAccessTypeColumn)));
+        } else {
+            networkTask.setAccessType(preferenceManager.getPreferenceAccessType());
+        }
+        if (!cursor.isNull(indexIntervalColumn)) {
+            networkTask.setInterval(cursor.getInt(indexIntervalColumn));
+        } else {
+            networkTask.setInterval(preferenceManager.getPreferenceInterval());
+        }
+        if (!cursor.isNull(indexOnlyWifiColumn)) {
+            networkTask.setOnlyWifi(cursor.getInt(indexOnlyWifiColumn) >= 1);
+        } else {
+            networkTask.setOnlyWifi(preferenceManager.getPreferenceOnlyWifi());
+        }
+        if (!cursor.isNull(indexNotificationColumn)) {
+            networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
+        } else {
+            networkTask.setNotification(preferenceManager.getPreferenceNotification());
+        }
+        if (!cursor.isNull(indexRunningColumn)) {
+            networkTask.setRunning(cursor.getInt(indexRunningColumn) >= 1);
+        }
+        if (!cursor.isNull(indexLastScheduledColumn)) {
+            networkTask.setLastScheduled(cursor.getLong(indexLastScheduledColumn));
+        }
+        if (!cursor.isNull(indexLastSysUpTimeColumn)) {
+            networkTask.setLastSysUpTime(cursor.getLong(indexLastSysUpTimeColumn));
+        }
+        if (!cursor.isNull(indexFailureCountColumn)) {
+            networkTask.setFailureCount(cursor.getInt(indexFailureCountColumn));
+        }
+        if (!cursor.isNull(indexHighPrioColumn)) {
+            networkTask.setHighPrio(cursor.getInt(indexHighPrioColumn) >= 1);
+        } else {
+            networkTask.setHighPrio(preferenceManager.getPreferenceHighPrio());
+        }
         return networkTask;
     }
 }

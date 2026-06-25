@@ -152,8 +152,8 @@ public class AccessTypeData {
         this.snmpPrivPassphraseValid = bundle.getInt("snmpPrivPassphraseValid") >= 1;
     }
 
-    public AccessTypeData(Map<String, ?> map) {
-        this();
+    public AccessTypeData(Context context, Map<String, ?> map) {
+        this(context);
         if (NumberUtil.isValidLongValue(map.get("id"))) {
             this.id = NumberUtil.getLongValue(map.get("id"), -1);
         }

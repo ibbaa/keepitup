@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -296,6 +297,7 @@ public class AccessTypeDataDAO extends BaseDAO {
     private AccessTypeData mapCursorToAccessTypeData(Cursor cursor) {
         AccessTypeData accessTypeData = new AccessTypeData();
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
         int indexPingCountColumn = cursor.getColumnIndex(dbConstants.getPingCountColumnName());
@@ -311,36 +313,72 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexSnmpAuthAlgorithmColumn = cursor.getColumnIndex(dbConstants.getSnmpAuthAlgorithmColumnName());
         int indexSnmpUserNameColumn = cursor.getColumnIndex(dbConstants.getSnmpUserNameColumnName());
         int indexSnmpPrivAlgorithmColumn = cursor.getColumnIndex(dbConstants.getSnmpPrivAlgorithmColumnName());
-        accessTypeData.setId(cursor.getLong(indexIdColumn));
-        accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
-        accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
-        accessTypeData.setPingPackageSize(cursor.getInt(indexPingPackageSizeColumn));
-        accessTypeData.setConnectCount(cursor.getInt(indexConnectCountColumn));
-        accessTypeData.setStopOnSuccess(cursor.getInt(indexStopOnSuccessColumn) >= 1);
-        accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
+        if (!cursor.isNull(indexIdColumn)) {
+            accessTypeData.setId(cursor.getLong(indexIdColumn));
+        }
+        if (!cursor.isNull(indexNetworkTaskIdColumn)) {
+            accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
+        }
+        if (!cursor.isNull(indexPingCountColumn)) {
+            accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
+        } else {
+            accessTypeData.setPingCount(preferenceManager.getPreferencePingCount());
+        }
+        if (!cursor.isNull(indexPingPackageSizeColumn)) {
+            accessTypeData.setPingPackageSize(cursor.getInt(indexPingPackageSizeColumn));
+        } else {
+            accessTypeData.setPingPackageSize(preferenceManager.getPreferencePingPackageSize());
+        }
+        if (!cursor.isNull(indexConnectCountColumn)) {
+            accessTypeData.setConnectCount(cursor.getInt(indexConnectCountColumn));
+        } else {
+            accessTypeData.setConnectCount(preferenceManager.getPreferenceConnectCount());
+        }
+        if (!cursor.isNull(indexStopOnSuccessColumn)) {
+            accessTypeData.setStopOnSuccess(cursor.getInt(indexStopOnSuccessColumn) >= 1);
+        } else {
+            accessTypeData.setStopOnSuccess(preferenceManager.getPreferenceStopOnSuccess());
+        }
+        if (!cursor.isNull(indexIgnoreSSLErrorColumn)) {
+            accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
+        } else {
+            accessTypeData.setIgnoreSSLError(preferenceManager.getPreferenceIgnoreSSLError());
+        }
         if (!cursor.isNull(indexFailureOnCertificateExpiryColumn)) {
             accessTypeData.setFailureOnCertificateExpiry(cursor.getInt(indexFailureOnCertificateExpiryColumn) >= 1);
+        } else {
+            accessTypeData.setFailureOnCertificateExpiry(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         }
         if (!cursor.isNull(indexFailureOnCertificateExpiryDaysColumn)) {
             accessTypeData.setFailureOnCertificateExpiryDays(cursor.getInt(indexFailureOnCertificateExpiryDaysColumn));
-        }
-        accessTypeData.setUseDefaultHeaders(cursor.getInt(indexUseDefaultHeadersColumn) >= 1);
-        if (cursor.isNull(indexSnmpVersionColumn)) {
-            accessTypeData.setSnmpVersion(null);
         } else {
+            accessTypeData.setFailureOnCertificateExpiryDays(preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        }
+        if (!cursor.isNull(indexUseDefaultHeadersColumn)) {
+            accessTypeData.setUseDefaultHeaders(cursor.getInt(indexUseDefaultHeadersColumn) >= 1);
+        } else {
+            accessTypeData.setUseDefaultHeaders(preferenceManager.getPreferenceUseDefaultHeaders());
+        }
+        if (!cursor.isNull(indexSnmpVersionColumn)) {
             accessTypeData.setSnmpVersion(SNMPVersion.forCode(cursor.getInt(indexSnmpVersionColumn)));
+        } else {
+            accessTypeData.setSnmpVersion(preferenceManager.getPreferenceSNMPVersion());
         }
         if (!cursor.isNull(indexSnmpTransportColumn)) {
             accessTypeData.setSnmpTransport(SNMPTransport.forCode(cursor.getInt(indexSnmpTransportColumn)));
+        } else {
+            accessTypeData.setSnmpTransport(preferenceManager.getPreferenceSNMPTransport());
         }
         if (!cursor.isNull(indexSnmpAuthAlgorithmColumn)) {
             accessTypeData.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.forCode(cursor.getInt(indexSnmpAuthAlgorithmColumn)));
+        } else {
+            accessTypeData.setSnmpAuthAlgorithm(preferenceManager.getPreferenceSNMPAuthAlgorithm());
         }
-        if (!cursor.isNull(indexSnmpUserNameColumn)) {
-            accessTypeData.setSnmpUserName(cursor.getString(indexSnmpUserNameColumn));
-        }
+        accessTypeData.setSnmpUserName(cursor.getString(indexSnmpUserNameColumn));
         if (!cursor.isNull(indexSnmpPrivAlgorithmColumn)) {
             accessTypeData.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.forCode(cursor.getInt(indexSnmpPrivAlgorithmColumn)));
+        } else {
+            accessTypeData.setSnmpPrivAlgorithm(preferenceManager.getPreferenceSNMPPrivAlgorithm());
         }
         decrypt(cursor, accessTypeData);
         return accessTypeData;

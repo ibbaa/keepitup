@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -167,9 +166,9 @@ public class JSONSystemSetupTest {
         JSONObject task1NetworkTaskData = (JSONObject) task1Data.get("networktask");
         JSONObject task2NetworkTaskData = (JSONObject) task2Data.get("networktask");
         JSONObject task3NetworkTaskData = (JSONObject) task3Data.get("networktask");
-        NetworkTask task1NetworkTask = new NetworkTask(JSONUtil.toMap(task1NetworkTaskData));
-        NetworkTask task2NetworkTask = new NetworkTask(JSONUtil.toMap(task2NetworkTaskData));
-        NetworkTask task3NetworkTask = new NetworkTask(JSONUtil.toMap(task3NetworkTaskData));
+        NetworkTask task1NetworkTask = new NetworkTask(TestRegistry.getContext(), JSONUtil.toMap(task1NetworkTaskData));
+        NetworkTask task2NetworkTask = new NetworkTask(TestRegistry.getContext(), JSONUtil.toMap(task2NetworkTaskData));
+        NetworkTask task3NetworkTask = new NetworkTask(TestRegistry.getContext(), JSONUtil.toMap(task3NetworkTaskData));
         assertTrue(task1.isEqual(task1NetworkTask));
         assertTrue(task2.isEqual(task2NetworkTask));
         assertTrue(task3.isEqual(task3NetworkTask));
@@ -196,8 +195,8 @@ public class JSONSystemSetupTest {
         assertTrue(task3Entry3.isEqual(task3LogEntry3));
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
         JSONObject task2AccessDataJSON = (JSONObject) task2Data.get("accesstypedata");
-        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
-        AccessTypeData task2AccessData = new AccessTypeData(JSONUtil.toMap((task2AccessDataJSON)));
+        AccessTypeData task1AccessData = new AccessTypeData(TestRegistry.getContext(), JSONUtil.toMap((task1AccessDataJSON)));
+        AccessTypeData task2AccessData = new AccessTypeData(TestRegistry.getContext(), JSONUtil.toMap((task2AccessDataJSON)));
         assertTrue(task1AccessData.isEqual(accessData1));
         assertTrue(task2AccessData.isEqual(accessData2));
         JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
@@ -242,7 +241,7 @@ public class JSONSystemSetupTest {
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONObject task1NetworkTaskData = (JSONObject) task1Data.get("networktask");
-        NetworkTask task1NetworkTask = new NetworkTask(JSONUtil.toMap(task1NetworkTaskData));
+        NetworkTask task1NetworkTask = new NetworkTask(TestRegistry.getContext(), JSONUtil.toMap(task1NetworkTaskData));
         assertTrue(task1.isEqual(task1NetworkTask));
         JSONArray task1LogData = (JSONArray) task1Data.get("logentry");
         LogEntry task1LogEntry1 = new LogEntry(JSONUtil.toMap((JSONObject) task1LogData.get(0)));
@@ -279,10 +278,10 @@ public class JSONSystemSetupTest {
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONObject task1NetworkTaskData = (JSONObject) task1Data.get("networktask");
-        NetworkTask task1NetworkTask = new NetworkTask(JSONUtil.toMap(task1NetworkTaskData));
+        NetworkTask task1NetworkTask = new NetworkTask(TestRegistry.getContext(), JSONUtil.toMap(task1NetworkTaskData));
         assertTrue(task1.isEqual(task1NetworkTask));
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
-        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        AccessTypeData task1AccessData = new AccessTypeData(TestRegistry.getContext(), JSONUtil.toMap((task1AccessDataJSON)));
         assertTrue(task1AccessData.isEqual(accessData1));
         JSONArray task1ResolveJSON = (JSONArray) task1Data.get("resolve");
         Resolve task1Resolve = new Resolve(JSONUtil.toMap((task1ResolveJSON.getJSONObject(0))));
@@ -347,7 +346,7 @@ public class JSONSystemSetupTest {
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
-        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        AccessTypeData task1AccessData = new AccessTypeData(TestRegistry.getContext(), JSONUtil.toMap((task1AccessDataJSON)));
         accessData1.setSnmpCommunity(null);
         accessData1.setSnmpAuthPassphrase(null);
         accessData1.setSnmpPrivPassphrase(null);
@@ -364,7 +363,7 @@ public class JSONSystemSetupTest {
         JSONObject databaseData = (JSONObject) jsonData.get("database");
         JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
         JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
-        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        AccessTypeData task1AccessData = new AccessTypeData(TestRegistry.getContext(), JSONUtil.toMap((task1AccessDataJSON)));
         accessData1.setSnmpCommunity(null);
         accessData1.setSnmpAuthPassphrase(null);
         accessData1.setSnmpPrivPassphrase(null);
@@ -768,7 +767,7 @@ public class JSONSystemSetupTest {
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         NetworkTask readTask = networkTaskDAO.readAllNetworkTasks().get(0);
-        assertNull(readTask.getName());
+        assertEquals("Network task", readTask.getName());
     }
 
     @Test
@@ -806,6 +805,40 @@ public class JSONSystemSetupTest {
         assertTrue(task1.isTechnicallyEqual(readTask1));
         AccessTypeData readAccessData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask1.getId());
         assertEquals("community1", readAccessData1.getSnmpCommunity());
+    }
+
+    @Test
+    @SuppressWarnings("ExtractMethodRecommender")
+    public void testImportDatabaseMissingPreferenceFields() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        SystemSetupResult exportResult = encryptedSetup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        String json = exportResult.data();
+        json = json.replace("\"accessType\":", "\"accessType_removed\":");
+        json = json.replace("\"port\":", "\"port_removed\":");
+        json = json.replace("\"snmpVersion\":", "\"snmpVersion_removed\":");
+        json = json.replace("\"snmpTransport\":", "\"snmpTransport_removed\":");
+        json = json.replace("\"snmpAuthAlgorithm\":", "\"snmpAuthAlgorithm_removed\":");
+        json = json.replace("\"snmpPrivAlgorithm\":", "\"snmpPrivAlgorithm_removed\":");
+        json = json.replace("\"pingCount\":", "\"pingCount_removed\":");
+        setup.importData(json);
+        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        assertEquals(1, tasks.size());
+        NetworkTask readTask = tasks.get(0);
+        assertEquals(AccessType.PING, readTask.getAccessType());
+        assertEquals(22, readTask.getPort());
+        assertEquals(1, readTask.getInterval());
+        assertEquals("host.com", readTask.getAddress());
+        AccessTypeData readData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask.getId());
+        assertEquals(SNMPVersion.V2C, readData.getSnmpVersion());
+        assertEquals(SNMPTransport.UDP, readData.getSnmpTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, readData.getSnmpAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, readData.getSnmpPrivAlgorithm());
+        assertEquals(3, readData.getPingCount());
+        assertEquals(1234, readData.getPingPackageSize());
     }
 
     @Test
@@ -909,28 +942,6 @@ public class JSONSystemSetupTest {
         resolveDAO.deleteAllResolves();
         snmpItemDAO.deleteAllSNMPItems();
         SystemSetupResult importResult = setup.importData(exportResult.data());
-        assertTrue(importResult.success());
-        assertEquals(exportResult.data(), importResult.data());
-        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
-        assertTrue(logDAO.readAllLogs().isEmpty());
-        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolves().isEmpty());
-        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
-        task1 = getNetworkTask1();
-        task1.setAccessType(null);
-        task1 = networkTaskDAO.insertNetworkTask(task1);
-        logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
-        resolveDAO.insertResolve(getResolve1(task1.getId()));
-        snmpItemDAO.insertSNMPItem(getSNMPItem1(task1.getId()));
-        snmpItemDAO.insertSNMPItem(getSNMPItem2(task1.getId()));
-        exportResult = setup.exportData();
-        networkTaskDAO.deleteAllNetworkTasks();
-        logDAO.deleteAllLogs();
-        accessTypeDataDAO.deleteAllAccessTypeData();
-        resolveDAO.deleteAllResolves();
-        snmpItemDAO.deleteAllSNMPItems();
-        importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());

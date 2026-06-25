@@ -60,9 +60,9 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
-import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
@@ -370,7 +370,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(5, resultData.getConnectCount());
         assertTrue(resultData.isStopOnSuccess());
         assertFalse(resultData.isIgnoreSSLError());
-        assertNull(resultData.getSnmpVersion());
         assertNull(resultData.getSnmpCommunity());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
     }

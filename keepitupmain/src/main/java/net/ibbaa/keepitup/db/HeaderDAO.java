@@ -368,7 +368,9 @@ public class HeaderDAO extends BaseDAO {
         int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
         int indexHeaderTypeColumn = cursor.getColumnIndex(dbConstants.getHeaderTypeColumnName());
         int indexNameColumn = cursor.getColumnIndex(dbConstants.getNameColumnName());
-        header.setId(cursor.getLong(indexIdColumn));
+        if (!cursor.isNull(indexIdColumn)) {
+            header.setId(cursor.getLong(indexIdColumn));
+        }
         header.setNetworkTaskId(cursor.isNull(indexNetworkTaskIdColumn) ? -1 : cursor.getLong(indexNetworkTaskIdColumn));
         if (cursor.isNull(indexHeaderTypeColumn)) {
             header.setHeaderType(null);

@@ -326,14 +326,20 @@ public class SNMPItemDAO extends BaseDAO {
         int indexNameColumn = cursor.getColumnIndex(dbConstants.getNameColumnName());
         int indexOidColumn = cursor.getColumnIndex(dbConstants.getOidColumnName());
         int indexMonitoredColumn = cursor.getColumnIndex(dbConstants.getMonitoredColumnName());
-        snmpItem.setId(cursor.getLong(indexIdColumn));
-        snmpItem.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
+        if (!cursor.isNull(indexIdColumn)) {
+            snmpItem.setId(cursor.getLong(indexIdColumn));
+        }
+        if (!cursor.isNull(indexNetworkTaskIdColumn)) {
+            snmpItem.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
+        }
         if (!cursor.isNull(indexSnmpItemTypeColumn)) {
             snmpItem.setSnmpItemType(SNMPItemType.forCode(cursor.getInt(indexSnmpItemTypeColumn)));
         }
         snmpItem.setName(cursor.getString(indexNameColumn));
         snmpItem.setOid(cursor.getString(indexOidColumn));
-        snmpItem.setMonitored(cursor.getInt(indexMonitoredColumn) >= 1);
+        if (!cursor.isNull(indexMonitoredColumn)) {
+            snmpItem.setMonitored(cursor.getInt(indexMonitoredColumn) >= 1);
+        }
         return snmpItem;
     }
 

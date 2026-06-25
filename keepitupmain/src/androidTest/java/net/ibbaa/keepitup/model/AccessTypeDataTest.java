@@ -130,7 +130,7 @@ public class AccessTypeDataTest {
         assertTrue(data.isSnmpPrivPassphraseValid());
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
-        data = new AccessTypeData(map);
+        data = new AccessTypeData(TestRegistry.getContext(), map);
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
         assertEquals(3, data.getPingCount());
@@ -141,15 +141,15 @@ public class AccessTypeDataTest {
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
-        assertNull(data.getSnmpVersion());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
         assertNull(data.getSnmpCommunity());
         assertTrue(data.isSnmpCommunityValid());
-        assertNull(data.getSnmpTransport());
-        assertNull(data.getSnmpAuthAlgorithm());
+        assertEquals(SNMPTransport.UDP, data.getSnmpTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, data.getSnmpAuthAlgorithm());
         assertNull(data.getSnmpUserName());
         assertNull(data.getSnmpAuthPassphrase());
         assertTrue(data.isSnmpAuthPassphraseValid());
-        assertNull(data.getSnmpPrivAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertNull(data.getSnmpPrivPassphrase());
         assertTrue(data.isSnmpPrivPassphraseValid());
     }
@@ -204,7 +204,7 @@ public class AccessTypeDataTest {
 
     @Test
     public void testEmptyMap() {
-        AccessTypeData data = new AccessTypeData(new HashMap<>());
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext(), new HashMap<>());
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
         assertEquals(3, data.getPingCount());
@@ -215,15 +215,15 @@ public class AccessTypeDataTest {
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
-        assertNull(data.getSnmpVersion());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
         assertNull(data.getSnmpCommunity());
         assertTrue(data.isSnmpCommunityValid());
-        assertNull(data.getSnmpTransport());
-        assertNull(data.getSnmpAuthAlgorithm());
+        assertEquals(SNMPTransport.UDP, data.getSnmpTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, data.getSnmpAuthAlgorithm());
         assertNull(data.getSnmpUserName());
         assertNull(data.getSnmpAuthPassphrase());
         assertTrue(data.isSnmpAuthPassphraseValid());
-        assertNull(data.getSnmpPrivAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertNull(data.getSnmpPrivPassphrase());
         assertTrue(data.isSnmpPrivPassphraseValid());
     }
@@ -248,7 +248,7 @@ public class AccessTypeDataTest {
         map.put("snmpAuthPassphraseValid", "zyx");
         map.put("snmpPrivAlgorithm", "snmpPrivAlgorithm");
         map.put("snmpPrivPassphraseValid", "zyx");
-        AccessTypeData data = new AccessTypeData(map);
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext(), map);
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
         assertEquals(3, data.getPingCount());
@@ -259,15 +259,15 @@ public class AccessTypeDataTest {
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
-        assertNull(data.getSnmpVersion());
+        assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
         assertNull(data.getSnmpCommunity());
         assertTrue(data.isSnmpCommunityValid());
-        assertNull(data.getSnmpTransport());
-        assertNull(data.getSnmpAuthAlgorithm());
+        assertEquals(SNMPTransport.UDP, data.getSnmpTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, data.getSnmpAuthAlgorithm());
         assertNull(data.getSnmpUserName());
         assertNull(data.getSnmpAuthPassphrase());
         assertTrue(data.isSnmpAuthPassphraseValid());
-        assertNull(data.getSnmpPrivAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertNull(data.getSnmpPrivPassphrase());
         assertTrue(data.isSnmpPrivPassphraseValid());
     }
@@ -296,7 +296,7 @@ public class AccessTypeDataTest {
         map.put("snmpPrivAlgorithm", "3");
         map.put("snmpPrivPassphrase", "privpass");
         map.put("snmpPrivPassphraseValid", "false");
-        AccessTypeData data = new AccessTypeData(map);
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext(), map);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());
@@ -503,7 +503,7 @@ public class AccessTypeDataTest {
         data.setSnmpPrivPassphraseValid(false);
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
-        data = new AccessTypeData(map);
+        data = new AccessTypeData(TestRegistry.getContext(), map);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());

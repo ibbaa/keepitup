@@ -342,6 +342,11 @@ public class DBMigrate {
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "addSnmpPrivPassphraseIVColumnToAccessTypeDataTable failed ", exc);
         }
+        try {
+            setup.initializeVersion9AccessTypeDataColumns(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "initializeVersion9AccessTypeDataColumns failed ", exc);
+        }
     }
 
     private void version9DowngradeTo8(SQLiteDatabase db) {

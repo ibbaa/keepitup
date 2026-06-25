@@ -155,15 +155,6 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getAddLastSysUpTimeColumnStatement());
     }
 
-    public void initializeFailureCountColumn(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "initializeFailureCountColumn");
-        Log.d(DBSetup.class.getName(), "Setting " + networkTaskDBConstants.getFailureCountColumnName() + " to 0 in " + networkTaskDBConstants.getTableName());
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
-        ContentValues values = new ContentValues();
-        values.put(dbConstants.getFailureCountColumnName(), 0);
-        executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
-    }
-
     public void createLogTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "createLogTable, table is " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getCreateTableStatement());
@@ -209,6 +200,19 @@ public class DBSetup {
         values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
         values.put(dbConstants.getSnmpVersionColumnName(), accessTypeData.getSnmpVersion() == null ? null : accessTypeData.getSnmpVersion().getCode());
+        values.put(dbConstants.getSnmpTransportColumnName(), accessTypeData.getSnmpTransport() == null ? null : accessTypeData.getSnmpTransport().getCode());
+        values.put(dbConstants.getSnmpAuthAlgorithmColumnName(), accessTypeData.getSnmpAuthAlgorithm() == null ? null : accessTypeData.getSnmpAuthAlgorithm().getCode());
+        values.put(dbConstants.getSnmpPrivAlgorithmColumnName(), accessTypeData.getSnmpPrivAlgorithm() == null ? null : accessTypeData.getSnmpPrivAlgorithm().getCode());
+        executeDBOperationInTransaction(db, database -> database.update(dbConstants.getTableName(), values, null, null));
+    }
+
+    public void initializeVersion9AccessTypeDataColumns(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "initializeVersion9AccessTypeDataColumns");
+        AccessTypeData accessTypeData = new AccessTypeData(getContext());
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
+        values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getSnmpTransportColumnName(), accessTypeData.getSnmpTransport() == null ? null : accessTypeData.getSnmpTransport().getCode());
         values.put(dbConstants.getSnmpAuthAlgorithmColumnName(), accessTypeData.getSnmpAuthAlgorithm() == null ? null : accessTypeData.getSnmpAuthAlgorithm().getCode());
         values.put(dbConstants.getSnmpPrivAlgorithmColumnName(), accessTypeData.getSnmpPrivAlgorithm() == null ? null : accessTypeData.getSnmpPrivAlgorithm().getCode());
@@ -756,8 +760,8 @@ public class DBSetup {
         addSnmpPrivPassphraseIVColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void initializeFailureCountColumn() {
-        initializeFailureCountColumn(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    public void initializeVersion9AccessTypeDataColumns() {
+        initializeVersion9AccessTypeDataColumns(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void createLogTable() {
@@ -1260,7 +1264,7 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithAssociatedObjects, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
-        NetworkTask task = new NetworkTask(taskMap);
+        NetworkTask task = new NetworkTask(getContext(), taskMap);
         if (task.getAddress() != null) {
             task.setAddress(task.getAddress().trim());
         }
@@ -1322,7 +1326,7 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "importAccessTypeData");
         AccessTypeDataValidator accessTypeDataValidator = new AccessTypeDataValidator(getContext());
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
-        AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(accessTypeDataMap);
+        AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(getContext(), accessTypeDataMap);
         accessTypeData.setNetworkTaskId(task.getId());
         if (accessTypeData.getSnmpCommunity() != null) {
             accessTypeData.setSnmpCommunity(accessTypeData.getSnmpCommunity().trim());

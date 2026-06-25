@@ -38,9 +38,9 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
-import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
@@ -58,6 +58,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -301,19 +302,6 @@ public class DBSetupTest {
         setup.addSnmpPrivPassphraseIVColumnToAccessTypeDataTable();
         accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
         assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
-    }
-
-    @Test
-    public void testInitializeFailureCountColumn() {
-        NetworkTask task1 = new NetworkTask();
-        NetworkTask task2 = new NetworkTask();
-        task1.setFailureCount(1);
-        task2.setFailureCount(2);
-        task1 = networkTaskDAO.insertNetworkTask(task1);
-        task2 = networkTaskDAO.insertNetworkTask(task2);
-        setup.initializeFailureCountColumn();
-        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(task1.getId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(task2.getId()));
     }
 
     @Test
@@ -604,6 +592,32 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testInitializeVersion9AccessTypeDataColumns() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
+        AccessTypeData data1 = new AccessTypeData();
+        data1.setNetworkTaskId(task1.getId());
+        AccessTypeData data2 = new AccessTypeData();
+        data2.setNetworkTaskId(task2.getId());
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        accessTypeDataDAO.insertAccessTypeData(data2);
+        setup.initializeVersion9AccessTypeDataColumns();
+        AccessTypeData readData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        AccessTypeData readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task2.getId());
+        AccessTypeData expectedData = new AccessTypeData(TestRegistry.getContext());
+        assertEquals(expectedData.isFailureOnCertificateExpiry(), readData1.isFailureOnCertificateExpiry());
+        assertEquals(expectedData.getFailureOnCertificateExpiryDays(), readData1.getFailureOnCertificateExpiryDays());
+        assertEquals(expectedData.getSnmpTransport(), readData1.getSnmpTransport());
+        assertEquals(expectedData.getSnmpAuthAlgorithm(), readData1.getSnmpAuthAlgorithm());
+        assertEquals(expectedData.getSnmpPrivAlgorithm(), readData1.getSnmpPrivAlgorithm());
+        assertEquals(expectedData.isFailureOnCertificateExpiry(), readData2.isFailureOnCertificateExpiry());
+        assertEquals(expectedData.getFailureOnCertificateExpiryDays(), readData2.getFailureOnCertificateExpiryDays());
+        assertEquals(expectedData.getSnmpTransport(), readData2.getSnmpTransport());
+        assertEquals(expectedData.getSnmpAuthAlgorithm(), readData2.getSnmpAuthAlgorithm());
+        assertEquals(expectedData.getSnmpPrivAlgorithm(), readData2.getSnmpPrivAlgorithm());
+    }
+
+    @Test
     public void testNormalizeUIIndex() {
         NetworkTask insertedTask1 = getNetworkTask1();
         NetworkTask insertedTask2 = getNetworkTask2();
@@ -637,9 +651,9 @@ public class DBSetupTest {
         networkTaskDAO.insertNetworkTask(getNetworkTask2());
         networkTaskDAO.insertNetworkTask(getNetworkTask3());
         List<Map<String, ?>> taskList = setup.exportNetworkTasks();
-        NetworkTask task1 = new NetworkTask(taskList.get(0));
-        NetworkTask task2 = new NetworkTask(taskList.get(1));
-        NetworkTask task3 = new NetworkTask(taskList.get(2));
+        NetworkTask task1 = new NetworkTask(TestRegistry.getContext(), taskList.get(0));
+        NetworkTask task2 = new NetworkTask(TestRegistry.getContext(), taskList.get(1));
+        NetworkTask task3 = new NetworkTask(TestRegistry.getContext(), taskList.get(2));
         assertTrue(task1.isTechnicallyEqual(getNetworkTask1()));
         assertTrue(task2.isTechnicallyEqual(getNetworkTask2()));
         assertTrue(task3.isTechnicallyEqual(getNetworkTask3()));
@@ -677,7 +691,7 @@ public class DBSetupTest {
         accessTypeDataDAO.insertAccessTypeData(data);
         Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId(), true);
         data.setSnmpCommunityValid(true);
-        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
+        assertTrue(new AccessTypeData(TestRegistry.getContext(), dataMap).isTechnicallyEqual(data));
     }
 
     @Test
@@ -694,7 +708,7 @@ public class DBSetupTest {
         data.setSnmpAuthPassphrase(null);
         data.setSnmpPrivPassphraseValid(true);
         data.setSnmpPrivPassphrase(null);
-        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
+        assertTrue(new AccessTypeData(TestRegistry.getContext(), dataMap).isTechnicallyEqual(data));
     }
 
     @Test
@@ -711,7 +725,7 @@ public class DBSetupTest {
         data.setSnmpAuthPassphrase(null);
         data.setSnmpPrivPassphraseValid(true);
         data.setSnmpPrivPassphrase(null);
-        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(data));
+        assertTrue(new AccessTypeData(TestRegistry.getContext(), dataMap).isTechnicallyEqual(data));
     }
 
     @Test
@@ -932,6 +946,35 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testImportNetworkTaskMissingPreferenceFields() {
+        Map<String, Object> taskMap = new HashMap<>(getNetworkTask2().toMap());
+        taskMap.remove("accessType");
+        taskMap.remove("port");
+        Map<String, Object> dataMap = new HashMap<>(getAccessTypeData(0).toMap());
+        dataMap.remove("snmpVersion");
+        dataMap.remove("snmpTransport");
+        dataMap.remove("snmpAuthAlgorithm");
+        dataMap.remove("snmpPrivAlgorithm");
+        dataMap.remove("pingCount");
+        setup.importNetworkTaskWithAssociatedObjects(taskMap, Collections.emptyList(), dataMap, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
+        assertEquals(1, taskList.size());
+        NetworkTask importedTask = taskList.get(0);
+        assertEquals(AccessType.PING, importedTask.getAccessType());
+        assertEquals(22, importedTask.getPort());
+        assertEquals(1, importedTask.getInterval());
+        assertEquals("host.com", importedTask.getAddress());
+        AccessTypeData importedData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(importedTask.getId());
+        assertEquals(SNMPVersion.V2C, importedData.getSnmpVersion());
+        assertEquals(SNMPTransport.UDP, importedData.getSnmpTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, importedData.getSnmpAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, importedData.getSnmpPrivAlgorithm());
+        assertEquals(3, importedData.getPingCount());
+        assertEquals(1234, importedData.getPingPackageSize());
+        assertEquals("community", importedData.getSnmpCommunity());
+    }
+
+    @Test
     public void testImportNetworkTaskWithAssociatedObjectsMissing() {
         Map<String, ?> taskMap = getNetworkTask1().toMap();
         Map<String, ?> entryMap1 = getLogEntry1(0).toMap();
@@ -999,17 +1042,6 @@ public class DBSetupTest {
         assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
         task = getNetworkTask1();
         task.setPort(80000);
-        taskMap = task.toMap();
-        dataMap = getAccessTypeData(0).toMap();
-        setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
-        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
-        assertTrue(logDAO.readAllLogs().isEmpty());
-        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        assertTrue(resolveDAO.readAllResolves().isEmpty());
-        assertTrue(headerDAO.readAllHeaders().isEmpty());
-        assertTrue(snmpItemDAO.readAllSNMPItems().isEmpty());
-        task = getNetworkTask1();
-        task.setAccessType(null);
         taskMap = task.toMap();
         dataMap = getAccessTypeData(0).toMap();
         setup.importNetworkTaskWithAssociatedObjects(taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap, Collections.singletonList(resolveMap), Collections.singletonList(headerMap), Collections.singletonList(snmpItemMap));
@@ -1586,7 +1618,7 @@ public class DBSetupTest {
         task.setInstances(2);
         task.setAddress("host.com");
         task.setPort(21);
-        task.setAccessType(null);
+        task.setAccessType(AccessType.CONNECT);
         task.setInterval(1);
         task.setOnlyWifi(true);
         task.setNotification(false);
@@ -1605,7 +1637,7 @@ public class DBSetupTest {
         task.setSchedulerId(0);
         task.setName("name");
         task.setInstances(3);
-        task.setAddress(null);
+        task.setAddress("10.0.0.1");
         task.setPort(456);
         task.setAccessType(AccessType.PING);
         task.setInterval(200);
