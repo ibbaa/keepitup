@@ -42,4 +42,19 @@
     <string name="SNMPVersion_V1_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V1_name">v1</string>
     <string name="SNMPVersion_V2C_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V2C_name">v2c</string>
     <string name="SNMPVersion_V3_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPVersion_V3_name">v3</string>
+    <string name="SNMPTransport_UDP_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPTransport_UDP_name">UDP</string>
+    <string name="SNMPTransport_TCP_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPTransport_TCP_name">TCP</string>
+    <string name="SNMPAuthAlgorithm_NONE_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_NONE_name">None</string>
+    <string name="SNMPAuthAlgorithm_MD5_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_MD5_name">MD5</string>
+    <string name="SNMPAuthAlgorithm_SHA1_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_SHA1_name">SHA-1</string>
+    <string name="SNMPAuthAlgorithm_SHA224_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_SHA224_name">SHA-224</string>
+    <string name="SNMPAuthAlgorithm_SHA256_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_SHA256_name">SHA-256</string>
+    <string name="SNMPAuthAlgorithm_SHA384_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_SHA384_name">SHA-384</string>
+    <string name="SNMPAuthAlgorithm_SHA512_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPAuthAlgorithm_SHA512_name">SHA-512</string>
+    <string name="SNMPPrivAlgorithm_NONE_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPPrivAlgorithm_NONE_name">None</string>
+    <string name="SNMPPrivAlgorithm_DES_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPPrivAlgorithm_DES_name">DES</string>
+    <string name="SNMPPrivAlgorithm_AES128_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPPrivAlgorithm_AES128_name">AES-128</string>
+    <string name="SNMPPrivAlgorithm_AES192_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPPrivAlgorithm_AES192_name">AES-192</string>
+    <string name="SNMPPrivAlgorithm_AES256_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPPrivAlgorithm_AES256_name">AES-256</string>
+    <string name="SNMPPrivAlgorithm_AES256C_name" tools:ignore="ExtraTranslation" tools:keep="@string/SNMPPrivAlgorithm_AES256C_name">AES-256C</string>
 </resources>

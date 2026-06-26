@@ -143,6 +143,63 @@ public class AccessTypeDataValidatorTest {
         assertTrue(validator.validate(data));
     }
 
+    @Test
+    public void testValidateSNMPUserName() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpUserName(null);
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpUserName("");
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpUserName("x".repeat(256));
+        assertFalse(validator.validateSNMPUserName(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpUserName("x".repeat(255));
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+    }
+
+    @Test
+    public void testValidateSNMPAuthPassphrase() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpAuthPassphrase(null);
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpAuthPassphrase("");
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpAuthPassphrase("x".repeat(256));
+        assertFalse(validator.validateSNMPAuthPassphrase(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpAuthPassphrase("x".repeat(255));
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+    }
+
+    @Test
+    public void testValidateSNMPPrivPassphrase() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpPrivPassphrase(null);
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpPrivPassphrase("");
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpPrivPassphrase("x".repeat(256));
+        assertFalse(validator.validateSNMPPrivPassphrase(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpPrivPassphrase("x".repeat(255));
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+    }
+
     private AccessTypeData getAccessTypeData() {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);

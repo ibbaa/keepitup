@@ -23,6 +23,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
@@ -88,5 +91,32 @@ public class EnumMappingTest {
         assertEquals("v1", enumMapping.getSNMPVersionName(SNMPVersion.V1));
         assertEquals("v2c", enumMapping.getSNMPVersionName(SNMPVersion.V2C));
         assertEquals("v3", enumMapping.getSNMPVersionName(SNMPVersion.V3));
+    }
+
+    @Test
+    public void testGetSNMPTransportName() {
+        assertEquals("UDP", enumMapping.getSNMPTransportName(SNMPTransport.UDP));
+        assertEquals("TCP", enumMapping.getSNMPTransportName(SNMPTransport.TCP));
+    }
+
+    @Test
+    public void testGetSNMPAuthAlgorithmName() {
+        assertEquals("None", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.NONE));
+        assertEquals("MD5", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.MD5));
+        assertEquals("SHA-1", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.SHA1));
+        assertEquals("SHA-224", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.SHA224));
+        assertEquals("SHA-256", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.SHA256));
+        assertEquals("SHA-384", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.SHA384));
+        assertEquals("SHA-512", enumMapping.getSNMPAuthAlgorithmName(SNMPAuthAlgorithm.SHA512));
+    }
+
+    @Test
+    public void testGetSNMPPrivAlgorithmName() {
+        assertEquals("None", enumMapping.getSNMPPrivAlgorithmName(SNMPPrivAlgorithm.NONE));
+        assertEquals("DES", enumMapping.getSNMPPrivAlgorithmName(SNMPPrivAlgorithm.DES));
+        assertEquals("AES-128", enumMapping.getSNMPPrivAlgorithmName(SNMPPrivAlgorithm.AES128));
+        assertEquals("AES-192", enumMapping.getSNMPPrivAlgorithmName(SNMPPrivAlgorithm.AES192));
+        assertEquals("AES-256", enumMapping.getSNMPPrivAlgorithmName(SNMPPrivAlgorithm.AES256));
+        assertEquals("AES-256C", enumMapping.getSNMPPrivAlgorithmName(SNMPPrivAlgorithm.AES256C));
     }
 }

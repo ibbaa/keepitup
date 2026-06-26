@@ -34,7 +34,7 @@ public class AccessTypeDataValidator {
 
     public boolean validate(AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataValidator.class.getName(), "validate accessTypeData " + accessTypeData);
-        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateFailureOnCertificateExpiryDays(accessTypeData) && validateSNMPCommunity(accessTypeData);
+        return validatePingCount(accessTypeData) && validatePingPackageSize(accessTypeData) && validateConnectCount(accessTypeData) && validateFailureOnCertificateExpiryDays(accessTypeData) && validateSNMPCommunity(accessTypeData) && validateSNMPUserName(accessTypeData) && validateSNMPAuthPassphrase(accessTypeData) && validateSNMPPrivPassphrase(accessTypeData);
     }
 
     public boolean validatePingCount(AccessTypeData accessTypeData) {
@@ -101,6 +101,51 @@ public class AccessTypeDataValidator {
             return false;
         }
         Log.d(AccessTypeDataValidator.class.getName(), "Community string is valid. Returning true.");
+        return true;
+    }
+
+    public boolean validateSNMPUserName(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPUserName of accessTypeData " + accessTypeData);
+        String snmpUserName = accessTypeData.getSnmpUserName();
+        if (StringUtil.isEmpty(snmpUserName)) {
+            return true;
+        }
+        int userNameMaxLength = context.getResources().getInteger(R.integer.snmp_user_name_max_length);
+        if (snmpUserName.length() > userNameMaxLength) {
+            Log.d(AccessTypeDataValidator.class.getName(), "User name is too long. Returning false.");
+            return false;
+        }
+        Log.d(AccessTypeDataValidator.class.getName(), "User name is valid. Returning true.");
+        return true;
+    }
+
+    public boolean validateSNMPAuthPassphrase(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPAuthPassphrase of accessTypeData " + accessTypeData);
+        String snmpAuthPassphrase = accessTypeData.getSnmpAuthPassphrase();
+        if (StringUtil.isEmpty(snmpAuthPassphrase)) {
+            return true;
+        }
+        int authPassphraseMaxLength = context.getResources().getInteger(R.integer.snmp_auth_passphrase_max_length);
+        if (snmpAuthPassphrase.length() > authPassphraseMaxLength) {
+            Log.d(AccessTypeDataValidator.class.getName(), "Auth passphrase is too long. Returning false.");
+            return false;
+        }
+        Log.d(AccessTypeDataValidator.class.getName(), "Auth passphrase is valid. Returning true.");
+        return true;
+    }
+
+    public boolean validateSNMPPrivPassphrase(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataValidator.class.getName(), "validateSNMPPrivPassphrase of accessTypeData " + accessTypeData);
+        String snmpPrivPassphrase = accessTypeData.getSnmpPrivPassphrase();
+        if (StringUtil.isEmpty(snmpPrivPassphrase)) {
+            return true;
+        }
+        int privPassphraseMaxLength = context.getResources().getInteger(R.integer.snmp_priv_passphrase_max_length);
+        if (snmpPrivPassphrase.length() > privPassphraseMaxLength) {
+            Log.d(AccessTypeDataValidator.class.getName(), "Priv passphrase is too long. Returning false.");
+            return false;
+        }
+        Log.d(AccessTypeDataValidator.class.getName(), "Priv passphrase is valid. Returning true.");
         return true;
     }
 }

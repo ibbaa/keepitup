@@ -22,6 +22,9 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
@@ -116,6 +119,21 @@ public class EnumMapping {
     public String getSNMPVersionName(SNMPVersion snmpVersion) {
         Log.d(EnumMapping.class.getName(), "getSNMPVersionName for SNMP version " + snmpVersion);
         return getResources().getString(getResources().getIdentifier(snmpVersion.getClass().getSimpleName() + "_" + snmpVersion.name() + "_name", "string", context.getPackageName()));
+    }
+
+    public String getSNMPTransportName(SNMPTransport snmpTransport) {
+        Log.d(EnumMapping.class.getName(), "getSNMPTransportName for SNMP transport " + snmpTransport);
+        return getResources().getString(getResources().getIdentifier(snmpTransport.getClass().getSimpleName() + "_" + snmpTransport.name() + "_name", "string", context.getPackageName()));
+    }
+
+    public String getSNMPAuthAlgorithmName(SNMPAuthAlgorithm snmpAuthAlgorithm) {
+        Log.d(EnumMapping.class.getName(), "getSNMPAuthAlgorithmName for SNMP auth algorithm " + snmpAuthAlgorithm);
+        return getResources().getString(getResources().getIdentifier(snmpAuthAlgorithm.getClass().getSimpleName() + "_" + snmpAuthAlgorithm.name() + "_name", "string", context.getPackageName()));
+    }
+
+    public String getSNMPPrivAlgorithmName(SNMPPrivAlgorithm snmpPrivAlgorithm) {
+        Log.d(EnumMapping.class.getName(), "getSNMPPrivAlgorithmName for SNMP priv algorithm " + snmpPrivAlgorithm);
+        return getResources().getString(getResources().getIdentifier(snmpPrivAlgorithm.getClass().getSimpleName() + "_" + snmpPrivAlgorithm.name() + "_name", "string", context.getPackageName()));
     }
 
     private Context getContext() {

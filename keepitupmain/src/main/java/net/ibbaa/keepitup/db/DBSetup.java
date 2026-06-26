@@ -1332,7 +1332,7 @@ public class DBSetup {
             accessTypeData.setSnmpCommunity(accessTypeData.getSnmpCommunity().trim());
         }
         Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
-        if (accessTypeDataValidator.validate(accessTypeData) && accessTypeData.isSnmpCommunityValid()) {
+        if (accessTypeDataValidator.validate(accessTypeData) && accessTypeData.isSnmpCommunityValid() && accessTypeData.isSnmpAuthPassphraseValid() && accessTypeData.isSnmpPrivPassphraseValid()) {
             Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
             accessTypeDataDAO.insertAccessTypeData(accessTypeData);
         } else {

@@ -45,6 +45,9 @@
     <integer name="http_header_name_max_length">128</integer>
     <integer name="http_header_value_max_length">8192</integer>
     <integer name="snmp_community_max_length">255</integer>
+    <integer name="snmp_user_name_max_length">255</integer>
+    <integer name="snmp_auth_passphrase_max_length">255</integer>
+    <integer name="snmp_priv_passphrase_max_length">255</integer>
     <integer name="snmp_ifdescr_max_length">255</integer>
     <integer name="snmp_oid_max_length">256</integer>
     <integer name="snmp_ifoperstatus_minimum">1</integer>
