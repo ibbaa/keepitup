@@ -31,7 +31,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -46,16 +45,17 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Resolve;
-import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
+import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.ResolveEditSupport;
+import net.ibbaa.keepitup.ui.support.SNMPDefaultsSupport;
 import net.ibbaa.keepitup.ui.sync.DBSyncResult;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
@@ -76,10 +76,9 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport {
+public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport, SNMPDefaultsSupport {
 
     private GridLayout accessTypeGroup;
-    private TextView snmpPortText;
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
@@ -119,8 +118,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         prepareStopOnSuccessSwitch();
         prepareIgnoreSSLErrorSwitch();
         prepareGlobalHeadersField();
-        prepareSNMPVersionRadioButtons();
-        prepareSNMPPortField();
+        prepareSNMPSettingsField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -477,40 +475,10 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         }
     }
 
-    private void prepareSNMPVersionRadioButtons() {
-        Log.d(DefaultsActivity.class.getName(), "prepareSNMPVersionRadioButtons");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        RadioGroup snmpVersionGroup = findViewById(R.id.radiogroup_activity_defaults_snmp_version);
-        snmpVersionGroup.setOnCheckedChangeListener(null);
-        SNMPVersion version = preferenceManager.getPreferenceSNMPVersion();
-        RadioButton v1RadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v1);
-        RadioButton v2cRadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v2c);
-        v1RadioButton.setTextColor(getColor(R.color.textColor));
-        v1RadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
-        v2cRadioButton.setTextColor(getColor(R.color.textColor));
-        v2cRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
-        v1RadioButton.setChecked(version == null || version.isV1());
-        v2cRadioButton.setChecked(version != null && version.isV2C());
-        snmpVersionGroup.setOnCheckedChangeListener(this::onSNMPVersionChanged);
-    }
-
-    private void onSNMPVersionChanged(RadioGroup group, int checkedId) {
-        Log.d(DefaultsActivity.class.getName(), "onSNMPVersionChanged");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v1) {
-            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
-        } else if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v2c) {
-            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V2C);
-        }
-    }
-
-    private void prepareSNMPPortField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareSNMPPortField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        snmpPortText = findViewById(R.id.textview_activity_defaults_snmp_port);
-        setSNMPPort(String.valueOf(preferenceManager.getPreferenceSNMPPort()));
-        CardView snmpPortCardView = findViewById(R.id.cardview_activity_defaults_snmp_port);
-        snmpPortCardView.setOnClickListener(this::showSNMPPortInputDialog);
+    private void prepareSNMPSettingsField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareSNMPSettingsField");
+        CardView snmpSettingsCardView = findViewById(R.id.cardview_activity_defaults_snmp_settings);
+        snmpSettingsCardView.setOnClickListener(this::showSNMPDefaultsDialog);
     }
 
     private void prepareOnlyWifiSwitch() {
@@ -631,15 +599,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
-    private String getSNMPPort() {
-        return StringUtil.notNull(snmpPortText.getText());
-    }
-
-    private void setSNMPPort(String port) {
-        snmpPortText.setText(StringUtil.notNull(port));
-    }
-
-
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
@@ -713,11 +672,9 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }
 
-    private void showSNMPPortInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showSNMPPortInputDialog");
-        List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.SNMPPORT, getSNMPPort(), getResources().getString(R.string.label_activity_defaults_snmp_port), validators);
-        showInputDialog(input.toBundle());
+    private void showSNMPDefaultsDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showSNMPDefaultsDialog");
+        new SNMPDefaultsDialog().show(getSupportFragmentManager(), SNMPDefaultsDialog.class.getName());
     }
 
     @Override
@@ -743,9 +700,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
-        } else if (SettingsInput.Type.SNMPPORT.equals(type.getType())) {
-            setSNMPPort(inputDialog.getValue());
-            preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(getSNMPPort(), getResources().getInteger(R.integer.task_snmp_port_default)));
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }
@@ -811,6 +765,24 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     public void onResolveEditDialogCancelClicked(ResolveEditDialog resolveEditDialog) {
         Log.d(DefaultsActivity.class.getName(), "onResolveEditDialogCancelClicked");
         resolveEditDialog.dismiss();
+    }
+
+    @Override
+    public void onSNMPDefaultsDialogOkClicked(SNMPDefaultsDialog snmpDefaultsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onSNMPDefaultsDialogOkClicked");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceSNMPVersion(snmpDefaultsDialog.getSNMPVersion());
+        preferenceManager.setPreferenceSNMPPort(snmpDefaultsDialog.getSNMPPort());
+        preferenceManager.setPreferenceSNMPTransport(snmpDefaultsDialog.getSNMPTransport());
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(snmpDefaultsDialog.getSNMPAuthAlgorithm());
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(snmpDefaultsDialog.getSNMPPrivAlgorithm());
+        snmpDefaultsDialog.dismiss();
+    }
+
+    @Override
+    public void onSNMPDefaultsDialogCancelClicked(SNMPDefaultsDialog snmpDefaultsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onSNMPDefaultsDialogCancelClicked");
+        snmpDefaultsDialog.dismiss();
     }
 
     @Override

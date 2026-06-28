@@ -61,7 +61,6 @@ import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
-import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -580,8 +579,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onMainAddClicked(View view) {
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        //openNetworkTaskEditDialog(task, data, null, null, null, -1);
-        new SNMPDefaultsDialog().show(getSupportFragmentManager(), SNMPDefaultsDialog.class.getName());
+        openNetworkTaskEditDialog(task, data, null, null, null, -1);
     }
 
     public void onMainStartStopClicked(int position) {
