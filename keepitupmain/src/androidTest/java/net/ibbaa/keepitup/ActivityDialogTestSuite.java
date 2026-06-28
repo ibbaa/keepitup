@@ -49,6 +49,7 @@ import net.ibbaa.keepitup.ui.dialog.ProgressDialogTest;
 import net.ibbaa.keepitup.ui.dialog.RawTextDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ResolveEditDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ResolvesDialogTest;
+import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputTest;
@@ -99,6 +100,7 @@ import org.junit.runners.Suite;
         ResolvesDialogTest.class,
         SettingsInputDialogTest.class,
         SettingsInputTest.class,
+        SNMPDefaultsDialogTest.class,
         SNMPInterfacesDialogTest.class,
         SuspensionIntervalsDialogTest.class,
         SuspensionIntervalSelectDialogTest.class,
