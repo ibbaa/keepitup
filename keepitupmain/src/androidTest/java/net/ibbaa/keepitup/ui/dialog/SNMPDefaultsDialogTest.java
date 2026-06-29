@@ -208,7 +208,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAllSNMPVersionOptions() {
+    public void testSNMPVersionOptions() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SNMPDefaultsDialog dialog = openSNMPDefaultsDialog();
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v1)).perform(click());
@@ -247,7 +247,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAllSNMPAuthAlgorithmOptions() {
+    public void testSNMPAuthAlgorithmOptions() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SNMPDefaultsDialog dialog = openSNMPDefaultsDialog();
         onView(withId(R.id.spinner_dialog_snmp_defaults_snmp_auth_algorithm)).perform(click());
@@ -267,7 +267,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testAllSNMPPrivAlgorithmOptions() {
+    public void testSNMPPrivAlgorithmOptions() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SNMPDefaultsDialog dialog = openSNMPDefaultsDialog();
         onView(withId(R.id.spinner_dialog_snmp_defaults_snmp_priv_algorithm)).perform(click());

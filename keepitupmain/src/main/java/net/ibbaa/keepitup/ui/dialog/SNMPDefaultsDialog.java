@@ -239,11 +239,11 @@ public class SNMPDefaultsDialog extends DialogFragmentBase implements ContextOpt
     }
 
     private String getSNMPAuthAlgorithmKey() {
-        return SNMPDefaultsDialog.class.getName() + ".SNMPAuthAlgorithmKey";
+        return SNMPDefaultsDialog.class.getName() + ".SNMPAuthAlgorithm";
     }
 
     private String getSNMPPrivAlgorithmKey() {
-        return SNMPDefaultsDialog.class.getName() + ".SNMPPrivAlgorithmKey";
+        return SNMPDefaultsDialog.class.getName() + ".SNMPPrivAlgorithm";
     }
 
     public SNMPVersion getSNMPVersion() {
