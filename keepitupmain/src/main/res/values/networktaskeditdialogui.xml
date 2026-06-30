@@ -28,6 +28,9 @@
         <item quantity="other">Click here (%d rules)</item>
     </plurals>
     <string name="label_dialog_network_task_edit_snmp_version">SNMP Version:</string>
+    <string name="label_dialog_network_task_edit_snmp_transport">Transport:</string>
+    <string name="label_dialog_network_task_edit_snmp_auth">Authentication:</string>
+    <string name="text_dialog_network_task_edit_snmp_auth_value">Click here</string>
     <string name="label_dialog_network_task_edit_snmp_community">Community:</string>
     <string name="label_dialog_network_task_edit_snmp_interfaces">Interfaces:</string>
     <plurals name="text_dialog_network_task_edit_snmp_interfaces_value">

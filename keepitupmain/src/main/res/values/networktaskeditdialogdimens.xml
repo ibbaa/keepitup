@@ -43,6 +43,14 @@
     <dimen name="radiobutton_dialog_network_task_edit_snmp_version_padding_top">0dp</dimen>
     <dimen name="radiobutton_dialog_network_task_edit_snmp_version_padding_bottom">0dp</dimen>
     <dimen name="radiobutton_dialog_network_task_edit_snmp_version_min_height">0dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_snmp_transport_label_margin_top">14dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_transport_margin_top">10dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_transport_margin_left">10dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_transport_padding_top">0dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_transport_padding_bottom">0dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_transport_min_height">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_auth_margin_top">10dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_auth_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_snmp_community_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_snmp_community_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_snmp_community_width">120dp</dimen>

@@ -16,6 +16,7 @@
 
 <resources>
     <dimen name="linearlayout_dialog_snmp_auth_padding">20dp</dimen>
+    <dimen name="linearlayout_dialog_snmp_auth_min_width">200dp</dimen>
     <dimen name="linearlayout_dialog_snmp_auth_title_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_snmp_auth_title_margin_bottom">10dp</dimen>
     <dimen name="linearlayout_dialog_snmp_auth_title_margin_left">10dp</dimen>

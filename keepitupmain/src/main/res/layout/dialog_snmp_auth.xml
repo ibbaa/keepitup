@@ -25,6 +25,7 @@
         android:id="@+id/linearlayout_dialog_snmp_auth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minWidth="@dimen/linearlayout_dialog_snmp_auth_min_width"
         android:padding="@dimen/linearlayout_dialog_snmp_auth_padding"
         android:focusable="true"
         android:focusableInTouchMode="true"

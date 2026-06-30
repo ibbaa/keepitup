@@ -471,6 +471,26 @@ public abstract class BaseUITest {
         };
     }
 
+    public static ViewAction performClickIgnoringVisibility() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isEnabled();
+            }
+
+            @Override
+            public String getDescription() {
+                return "perform click ignoring visibility constraints";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
+                uiController.loopMainThreadUntilIdle();
+            }
+        };
+    }
+
     public static Matcher<View> isEllipsized() {
         return new EllipsizedMatcher();
     }
