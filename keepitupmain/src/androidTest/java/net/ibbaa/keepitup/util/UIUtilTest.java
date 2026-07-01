@@ -90,6 +90,22 @@ public class UIUtilTest {
     }
 
     @Test
+    public void testSNMPAuthenticationsToCredentialInfoList() {
+        assertTrue(UIUtil.snmpAuthenticationsToCredentialInfoList(TestRegistry.getContext(), null).isEmpty());
+        assertTrue(UIUtil.snmpAuthenticationsToCredentialInfoList(TestRegistry.getContext(), Collections.emptyList()).isEmpty());
+        NetworkTask task1 = new NetworkTask();
+        task1.setName("My Task");
+        NetworkTask task2 = new NetworkTask();
+        task2.setIndex(2);
+        List<CredentialInfo> credentialInfoList = UIUtil.snmpAuthenticationsToCredentialInfoList(TestRegistry.getContext(), List.of(task1, task2));
+        assertEquals(2, credentialInfoList.size());
+        assertEquals("My Task", credentialInfoList.get(0).getName());
+        assertEquals("SNMP authentication", credentialInfoList.get(0).getMessage());
+        assertEquals("Network task 3", credentialInfoList.get(1).getName());
+        assertEquals("SNMP authentication", credentialInfoList.get(1).getMessage());
+    }
+
+    @Test
     public void testHeadersToCredentialInfoList() {
         NetworkTask task = new NetworkTask();
         task.setName("My Task");

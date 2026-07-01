@@ -833,9 +833,16 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareSNMPAuthField() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareSNMPAuthField");
-        snmpAuthText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_auth_value);
+        prepareSNMPAuthText();
         LinearLayout snmpAuthLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_snmp_auth);
         snmpAuthLinearLayout.setOnClickListener(this::showSNMPAuthDialog);
+    }
+
+    private void prepareSNMPAuthText() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareSNMPAuthText");
+        snmpAuthText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_snmp_auth_value);
+        boolean valid = currentAccessTypeData == null || (currentAccessTypeData.isSnmpAuthPassphraseValid() && currentAccessTypeData.isSnmpPrivPassphraseValid());
+        snmpAuthText.setTextColor(valid ? getColor(R.color.textColor) : getColor(R.color.textErrorColor));
     }
 
     private void onSNMPVersionChanged(RadioGroup group, int checkedId) {
@@ -1343,7 +1350,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (isSNMPCommunityVisible()) {
             accessTypeData.setSnmpCommunity(getSNMPCommunity());
         }
-        if (isSNMPAuthVisible()) {
+        if (isSNMPAuthVisible() && currentAccessTypeData != null) {
             accessTypeData.setSnmpUserName(currentAccessTypeData.getSnmpUserName());
             accessTypeData.setSnmpAuthPassphrase(currentAccessTypeData.getSnmpAuthPassphrase());
             accessTypeData.setSnmpAuthAlgorithm(currentAccessTypeData.getSnmpAuthAlgorithm());
@@ -1351,6 +1358,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             accessTypeData.setSnmpPrivAlgorithm(currentAccessTypeData.getSnmpPrivAlgorithm());
         }
         accessTypeData.setSnmpCommunityValid(true);
+        if (currentAccessTypeData != null) {
+            accessTypeData.setSnmpAuthPassphraseValid(currentAccessTypeData.isSnmpAuthPassphraseValid());
+            accessTypeData.setSnmpPrivPassphraseValid(currentAccessTypeData.isSnmpPrivPassphraseValid());
+        }
         Log.d(NetworkTaskEditDialog.class.getName(), "getAccessTypeData, access type data task is " + accessTypeData);
         return accessTypeData;
     }
@@ -1759,7 +1770,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         currentAccessTypeData.setSnmpAuthAlgorithm(snmpAuthDialog.getSNMPAuthAlgorithm());
         currentAccessTypeData.setSnmpPrivPassphrase(snmpAuthDialog.getSNMPPrivPassphrase());
         currentAccessTypeData.setSnmpPrivAlgorithm(snmpAuthDialog.getSNMPPrivAlgorithm());
+        currentAccessTypeData.setSnmpAuthPassphraseValid(true);
+        currentAccessTypeData.setSnmpPrivPassphraseValid(true);
         snmpAuthDialog.dismiss();
+        prepareSNMPAuthText();
     }
 
     @Override

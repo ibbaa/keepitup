@@ -79,6 +79,20 @@ public class UIUtil {
         return credentialInfoList;
     }
 
+    public static List<CredentialInfo> snmpAuthenticationsToCredentialInfoList(Context context, List<NetworkTask> tasks) {
+        if (tasks == null) {
+            return Collections.emptyList();
+        }
+        List<CredentialInfo> credentialInfoList = new ArrayList<>(tasks.size());
+        String snmpAuthText = context.getResources().getString(R.string.text_dialog_credential_info_snmp_auth);
+        for (NetworkTask task : tasks) {
+            String name = getNetworkTaskTitleName(context, task, false, false);
+            CredentialInfo credentialInfo = new CredentialInfo(name, snmpAuthText);
+            credentialInfoList.add(credentialInfo);
+        }
+        return credentialInfoList;
+    }
+
     public static List<CredentialInfo> headersToCredentialInfoList(Context context, NetworkTask task, List<Header> headers) {
         if (headers == null) {
             return Collections.emptyList();

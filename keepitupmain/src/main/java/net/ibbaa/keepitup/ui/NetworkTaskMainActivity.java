@@ -200,13 +200,14 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
         HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
         List<NetworkTask> invalidSNMPCommunities = adapter.getInvalidSNMPCommunities();
+        List<NetworkTask> invalidSNMPAuthentications = adapter.getInvalidSNMPAuthentications();
         List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
         List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
-        if (invalidSNMPCommunities.isEmpty() && invalidHeaders.isEmpty() && invalidDefaultHeaders.isEmpty()) {
+        if (invalidSNMPCommunities.isEmpty() && invalidSNMPAuthentications.isEmpty() && invalidHeaders.isEmpty() && invalidDefaultHeaders.isEmpty()) {
             return;
         }
         List<Header> toDelete = new ArrayList<>();
-        List<CredentialInfo> toDisplay = collectCredentialsActionLists(adapter, invalidSNMPCommunities, invalidHeaders, invalidDefaultHeaders, toDelete);
+        List<CredentialInfo> toDisplay = collectCredentialsActionLists(adapter, invalidSNMPCommunities, invalidSNMPAuthentications, invalidHeaders, invalidDefaultHeaders, toDelete);
         if (!credentialInfoDialogShown && !toDisplay.isEmpty()) {
             String tag = CredentialInfoDialog.class.getName();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -221,11 +222,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
     }
 
-    private List<CredentialInfo> collectCredentialsActionLists(NetworkTaskAdapter adapter, List<NetworkTask> snmpCommunities, Map<Long, List<Header>> headers, List<Header> defaultHeaders, List<Header> toDelete) {
+    private List<CredentialInfo> collectCredentialsActionLists(NetworkTaskAdapter adapter, List<NetworkTask> snmpCommunities, List<NetworkTask> snmpAuthentications, Map<Long, List<Header>> headers, List<Header> defaultHeaders, List<Header> toDelete) {
         Log.d(NetworkTaskMainActivity.class.getName(), "collectCredentialsActionLists");
         List<CredentialInfo> toDisplay = new ArrayList<>();
         if (snmpCommunities != null && !snmpCommunities.isEmpty()) {
             List<CredentialInfo> credentialInfos = UIUtil.snmpCommunitiesToCredentialInfoList(this, snmpCommunities);
+            toDisplay.addAll(credentialInfos);
+        }
+        if (snmpAuthentications != null && !snmpAuthentications.isEmpty()) {
+            List<CredentialInfo> credentialInfos = UIUtil.snmpAuthenticationsToCredentialInfoList(this, snmpAuthentications);
             toDisplay.addAll(credentialInfos);
         }
         if (defaultHeaders != null && !defaultHeaders.isEmpty()) {
@@ -535,14 +540,16 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTaskAdapter adapter = (NetworkTaskAdapter) getAdapter();
         List<NetworkTask> invalidSNMPCommunities = adapter.getInvalidSNMPCommunities();
         List<NetworkTask> validSNMPCommunities = adapter.getValidSNMPCommunities();
+        List<NetworkTask> invalidSNMPAuthentications = adapter.getInvalidSNMPAuthentications();
+        List<NetworkTask> validSNMPAuthentications = adapter.getValidSNMPAuthentications();
         Map<Long, List<Header>> invalidHeaders = adapter.getInvalidHeaders();
         Map<Long, List<Header>> secretHeaders = adapter.getSecretHeaders();
         HeaderSyncHandler syncHandler = new HeaderSyncHandler(this);
         List<Header> defaultHeaders = syncHandler.getGlobalHeaders();
         List<Header> invalidDefaultHeaders = syncHandler.getInvalidHeaders(defaultHeaders);
         List<Header> secretDefaultHeaders = syncHandler.getSecretHeaders(defaultHeaders);
-        List<CredentialInfo> toDisplayInvalid = collectCredentialsActionLists(adapter, invalidSNMPCommunities, invalidHeaders, invalidDefaultHeaders, null);
-        List<CredentialInfo> toDisplaySecret = collectCredentialsActionLists(adapter, validSNMPCommunities, secretHeaders, secretDefaultHeaders, null);
+        List<CredentialInfo> toDisplayInvalid = collectCredentialsActionLists(adapter, invalidSNMPCommunities, invalidSNMPAuthentications, invalidHeaders, invalidDefaultHeaders, null);
+        List<CredentialInfo> toDisplaySecret = collectCredentialsActionLists(adapter, validSNMPCommunities, validSNMPAuthentications, secretHeaders, secretDefaultHeaders, null);
         if (!toDisplayInvalid.isEmpty() || !toDisplaySecret.isEmpty()) {
             Bundle bundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), toDisplayInvalid);
             BundleUtil.credentialInfoListToBundle(SystemActivity.getCredentialsBaseKey(), toDisplaySecret, bundle);

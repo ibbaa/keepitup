@@ -198,6 +198,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -252,6 +255,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -312,6 +318,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -370,6 +379,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -428,8 +440,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
@@ -485,6 +500,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
@@ -554,6 +572,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
         MainKeyAccess.MainKey mainKey1 = mainKeyAccess.getMainKey();
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -612,6 +633,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
@@ -682,6 +706,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -737,6 +764,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -798,6 +828,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
@@ -857,6 +890,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -917,6 +953,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -969,6 +1008,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -1029,6 +1071,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1084,6 +1129,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -1144,6 +1192,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1201,6 +1252,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -1261,6 +1315,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1325,6 +1382,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -1397,8 +1457,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1453,8 +1516,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
@@ -1566,8 +1632,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -1648,8 +1717,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1711,8 +1783,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
@@ -1824,8 +1899,44 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testExportConfigurationWithSecretSNMPCredentials() throws Exception {
+        Bundle bundle = getBypassSystemSAFBundle();
+        addSecretCredentials(bundle, new CredentialInfo("Network task 1", "SNMP community"), new CredentialInfo("Network task 2", "SNMP authentication"));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, bundle);
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        resetGlobalHeaderHandler();
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The configuration"))));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP community"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Network task 2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP authentication"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         activityScenario.close();
     }
 
@@ -1901,6 +2012,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -1965,6 +2079,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -2080,6 +2197,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -2163,6 +2283,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2234,6 +2357,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -2349,6 +2475,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -2421,8 +2550,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2479,8 +2611,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().readAllAccessTypeData();
@@ -2594,8 +2729,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -2677,8 +2815,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2742,8 +2883,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -2860,8 +3004,45 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testExportConfigurationWithInvalidSNMPCredentials() throws Exception {
+        Bundle bundle = getBypassSystemSAFBundle();
+        addInvalidCredentials(bundle, new CredentialInfo("Network task 1", "SNMP community"), new CredentialInfo("Network task 2", "SNMP authentication"));
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, bundle);
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        resetGlobalHeaderHandler();
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Invalid credentials")));
+        onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following credentials"))));
+        onView(allOf(withText("Network task 1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP community"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Network task 2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("SNMP authentication"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
+        onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         activityScenario.close();
     }
 
@@ -2936,6 +3117,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2996,6 +3180,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3111,6 +3298,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -3194,6 +3384,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3261,6 +3454,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3379,6 +3575,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -3452,6 +3651,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3518,6 +3720,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -3591,6 +3796,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -3663,6 +3871,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -3736,6 +3947,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3798,6 +4012,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -3912,6 +4129,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -3985,6 +4205,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4057,6 +4280,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
@@ -4168,6 +4394,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -4229,6 +4458,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -4286,6 +4518,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -4347,6 +4582,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4408,6 +4646,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -4576,6 +4817,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4649,6 +4893,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -4709,6 +4956,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -4782,6 +5032,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -4842,6 +5095,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -4917,6 +5173,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -4977,6 +5236,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
@@ -5054,6 +5316,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(-1, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V2C, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(161, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.UDP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.MD5, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES128, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -5126,8 +5391,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -5254,8 +5522,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5332,6 +5603,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5462,6 +5736,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5536,8 +5813,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolveMatchPort(789);
         getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
         getPreferenceManager().setPreferenceResolvePort(456);
-        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
+        getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V3);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5668,8 +5948,11 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(789, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
-        assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
+        assertEquals(SNMPVersion.V3, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5746,6 +6029,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -5881,6 +6167,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         activityScenario.close();
@@ -5978,6 +6267,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -6036,6 +6328,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -6097,6 +6392,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -6155,6 +6453,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -6216,6 +6517,9 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceResolvePort(456);
         getPreferenceManager().setPreferenceSNMPVersion(SNMPVersion.V1);
         getPreferenceManager().setPreferenceSNMPPort(162);
+        getPreferenceManager().setPreferenceSNMPTransport(SNMPTransport.TCP);
+        getPreferenceManager().setPreferenceSNMPAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -6275,6 +6579,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceResolvePort());
         assertEquals(SNMPVersion.V1, getPreferenceManager().getPreferenceSNMPVersion());
         assertEquals(162, getPreferenceManager().getPreferenceSNMPPort());
+        assertEquals(SNMPTransport.TCP, getPreferenceManager().getPreferenceSNMPTransport());
+        assertEquals(SNMPAuthAlgorithm.SHA256, getPreferenceManager().getPreferenceSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         activityScenario.close();
     }
 
@@ -7112,9 +7419,19 @@ public class SystemActivityTest extends BaseUITest {
         bundle.putBundle(SystemActivity.getCredentialsKey(), credentialBundle);
     }
 
+    private void addSecretCredentials(Bundle bundle, CredentialInfo... credentialInfos) {
+        Bundle credentialBundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getCredentialsBaseKey(), Arrays.asList(credentialInfos));
+        bundle.putBundle(SystemActivity.getCredentialsKey(), credentialBundle);
+    }
+
     private void addInvalidCredentials(Bundle bundle, String... names) {
         List<CredentialInfo> credentialInfos = getCredentials(names);
         Bundle credentialBundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), credentialInfos);
+        bundle.putBundle(SystemActivity.getCredentialsKey(), credentialBundle);
+    }
+
+    private void addInvalidCredentials(Bundle bundle, CredentialInfo... credentialInfos) {
+        Bundle credentialBundle = BundleUtil.credentialInfoListToBundle(SystemActivity.getInvalidCredentialsBaseKey(), Arrays.asList(credentialInfos));
         bundle.putBundle(SystemActivity.getCredentialsKey(), credentialBundle);
     }
 

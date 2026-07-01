@@ -34,6 +34,7 @@
     <string name="list_item_network_task_address">%s</string>
     <string name="list_item_network_task_resolve_rules">Resolve rules: %s</string>
     <string name="list_item_network_task_snmp_community">Community: %s</string>
+    <string name="list_item_network_task_snmp_auth">Authentication: %s</string>
     <string name="list_item_network_task_snmp_interfaces" tools:ignore="PluralsCandidate">Interfaces: %1$d configured, %2$d monitored</string>
     <string name="list_item_network_task_headers">Headers: %s</string>
     <string name="list_item_network_task_interval">Interval: %1$d %2$s</string>

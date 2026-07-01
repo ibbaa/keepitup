@@ -340,6 +340,76 @@ public class SNMPAuthDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testAuthPassphraseLabelColorValid() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openSNMPAuthDialog();
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthPassphraseLabelColorInvalid() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthPassphraseValid(false);
+        openSNMPAuthDialog(data);
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthPassphraseLabelColorInvalidScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthPassphraseValid(false);
+        openSNMPAuthDialog(data);
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPrivPassphraseLabelColorValid() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openSNMPAuthDialog();
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPrivPassphraseLabelColorInvalid() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpPrivPassphraseValid(false);
+        openSNMPAuthDialog(data);
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPrivPassphraseLabelColorInvalidScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpPrivPassphraseValid(false);
+        openSNMPAuthDialog(data);
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testAuthPassphraseToggle() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openSNMPAuthDialog();

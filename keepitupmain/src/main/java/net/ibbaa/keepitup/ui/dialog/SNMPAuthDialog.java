@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -165,6 +166,8 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
     @SuppressLint("ClickableViewAccessibility")
     private void prepareAuthPassphraseTextField(AccessTypeData accessTypeData, Bundle savedInstanceState) {
         Log.d(SNMPAuthDialog.class.getName(), "prepareAuthPassphraseTextField");
+        TextView snmpAuthPassphraseLabel = dialogView.findViewById(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label);
+        snmpAuthPassphraseLabel.setTextColor(accessTypeData.isSnmpAuthPassphraseValid() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor));
         snmpAuthPassphraseEditText = dialogView.findViewById(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase);
         snmpAuthPassphraseToggleTouchListener = new PasswordToggleTouchListener(snmpAuthPassphraseEditText);
         if (savedInstanceState == null) {
@@ -211,6 +214,8 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
     @SuppressLint("ClickableViewAccessibility")
     private void preparePrivPassphraseTextField(AccessTypeData accessTypeData, Bundle savedInstanceState) {
         Log.d(SNMPAuthDialog.class.getName(), "preparePrivPassphraseTextField");
+        TextView snmpPrivPassphraseLabel = dialogView.findViewById(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label);
+        snmpPrivPassphraseLabel.setTextColor(accessTypeData.isSnmpPrivPassphraseValid() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor));
         snmpPrivPassphraseEditText = dialogView.findViewById(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase);
         snmpPrivPassphraseToggleTouchListener = new PasswordToggleTouchListener(snmpPrivPassphraseEditText);
         if (savedInstanceState == null) {

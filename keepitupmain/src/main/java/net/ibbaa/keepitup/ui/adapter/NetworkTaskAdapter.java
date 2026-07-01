@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
@@ -88,7 +89,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindInstances(networkTaskViewHolder, networkTask);
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
-        bindSNMPCommunity(networkTaskViewHolder, networkTask, accessTypeData);
+        bindSNMPAuthInvalid(networkTaskViewHolder, networkTask, accessTypeData);
         bindSNMPInterfaces(networkTaskViewHolder, networkTask, snmpItems);
         bindResolves(networkTaskViewHolder, networkTask, resolves);
         bindHeaders(position, networkTaskViewHolder, networkTask, accessTypeData, headers);
@@ -189,7 +190,12 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             if (accessTypeData == null || accessTypeData.getSnmpVersion() == null) {
                 return null;
             }
-            return new EnumMapping(getContext()).getSNMPVersionName(accessTypeData.getSnmpVersion());
+            EnumMapping enumMapping = new EnumMapping(getContext());
+            String versionText = enumMapping.getSNMPVersionName(accessTypeData.getSnmpVersion());
+            if (accessTypeData.getSnmpTransport() != null && accessTypeData.getSnmpTransport().isTCP()) {
+                versionText += " (" + enumMapping.getSNMPTransportName(accessTypeData.getSnmpTransport()) + ")";
+            }
+            return versionText;
         }
         return null;
     }
@@ -202,13 +208,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setAddress(formattedAddressText);
     }
 
-    private void bindSNMPCommunity(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindSNMPCommunity, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
-        if (AccessType.SNMP.equals(networkTask.getAccessType())) {
-            if (accessTypeData != null && !accessTypeData.isSnmpCommunityValid()) {
-                String invalid = getResources().getString(R.string.string_invalid);
+    private void bindSNMPAuthInvalid(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindSNMPAuthInvalid, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
+        if (AccessType.SNMP.equals(networkTask.getAccessType()) && accessTypeData != null) {
+            String invalid = getResources().getString(R.string.string_invalid);
+            if (isSNMPCommunityVersion(accessTypeData) && !accessTypeData.isSnmpCommunityValid()) {
                 String formattedCommunityText = getResources().getString(R.string.list_item_network_task_snmp_community, invalid);
                 networkTaskViewHolder.setCommunity(formattedCommunityText);
+                networkTaskViewHolder.showCommunityTextView();
+                networkTaskViewHolder.setCommunityColor(getColor(R.color.textErrorColor));
+                return;
+            }
+            if (isSNMPAuthVersion(accessTypeData) && (!accessTypeData.isSnmpAuthPassphraseValid() || !accessTypeData.isSnmpPrivPassphraseValid())) {
+                String formattedAuthText = getResources().getString(R.string.list_item_network_task_snmp_auth, invalid);
+                networkTaskViewHolder.setCommunity(formattedAuthText);
                 networkTaskViewHolder.showCommunityTextView();
                 networkTaskViewHolder.setCommunityColor(getColor(R.color.textErrorColor));
                 return;
@@ -509,7 +522,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         for (NetworkTaskUIWrapper currentWrapper : allItems) {
             if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
                 AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
-                if (accessTypeData != null && !accessTypeData.isSnmpCommunityValid()) {
+                if (accessTypeData != null && isSNMPCommunityVersion(accessTypeData) && !accessTypeData.isSnmpCommunityValid()) {
                     invalidSNMPCommunities.add(currentWrapper.getNetworkTask());
                 }
             }
@@ -519,17 +532,57 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     public List<NetworkTask> getValidSNMPCommunities() {
         Log.d(NetworkTaskAdapter.class.getName(), "getValidSNMPCommunities");
-        List<NetworkTask> invalidSNMPCommunities = new ArrayList<>();
+        List<NetworkTask> validSNMPCommunities = new ArrayList<>();
         List<NetworkTaskUIWrapper> allItems = getAllItems();
         for (NetworkTaskUIWrapper currentWrapper : allItems) {
             if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
                 AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
-                if (accessTypeData != null && accessTypeData.isSnmpCommunityValid()) {
-                    invalidSNMPCommunities.add(currentWrapper.getNetworkTask());
+                if (accessTypeData != null && isSNMPCommunityVersion(accessTypeData) && accessTypeData.isSnmpCommunityValid()) {
+                    validSNMPCommunities.add(currentWrapper.getNetworkTask());
                 }
             }
         }
-        return invalidSNMPCommunities;
+        return validSNMPCommunities;
+    }
+
+    private boolean isSNMPCommunityVersion(AccessTypeData accessTypeData) {
+        SNMPVersion version = accessTypeData.getSnmpVersion();
+        return version != null && (version.isV1() || version.isV2C());
+    }
+
+    public List<NetworkTask> getInvalidSNMPAuthentications() {
+        Log.d(NetworkTaskAdapter.class.getName(), "getInvalidSNMPAuthentications");
+        List<NetworkTask> invalidSNMPAuthentications = new ArrayList<>();
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
+                AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
+                if (accessTypeData != null && isSNMPAuthVersion(accessTypeData) && (!accessTypeData.isSnmpAuthPassphraseValid() || !accessTypeData.isSnmpPrivPassphraseValid())) {
+                    invalidSNMPAuthentications.add(currentWrapper.getNetworkTask());
+                }
+            }
+        }
+        return invalidSNMPAuthentications;
+    }
+
+    public List<NetworkTask> getValidSNMPAuthentications() {
+        Log.d(NetworkTaskAdapter.class.getName(), "getValidSNMPAuthentications");
+        List<NetworkTask> validSNMPAuthentications = new ArrayList<>();
+        List<NetworkTaskUIWrapper> allItems = getAllItems();
+        for (NetworkTaskUIWrapper currentWrapper : allItems) {
+            if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
+                AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
+                if (accessTypeData != null && isSNMPAuthVersion(accessTypeData) && accessTypeData.isSnmpAuthPassphraseValid() && accessTypeData.isSnmpPrivPassphraseValid()) {
+                    validSNMPAuthentications.add(currentWrapper.getNetworkTask());
+                }
+            }
+        }
+        return validSNMPAuthentications;
+    }
+
+    private boolean isSNMPAuthVersion(AccessTypeData accessTypeData) {
+        SNMPVersion version = accessTypeData.getSnmpVersion();
+        return version != null && version.isV3();
     }
 
     public Map<Long, List<Header>> getInvalidHeaders() {
