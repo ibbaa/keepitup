@@ -185,6 +185,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         LoggingConsistencyTest.class,
+        TestSuiteCompletenessTest.class,
         //net.ibbaa.keepitup.db
         AccessTypeDataDAOTest.class,
         AccessTypeDataDBConstantsTest.class,

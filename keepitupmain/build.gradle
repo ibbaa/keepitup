@@ -59,6 +59,9 @@ android {
 
 tasks.register('copyJavaSourceAssets', Sync) {
     from('src/main/java')
+    from('src/androidTest/java') {
+        into 'androidTestSrc'
+    }
     into(javaAssetsDir)
 }
 
