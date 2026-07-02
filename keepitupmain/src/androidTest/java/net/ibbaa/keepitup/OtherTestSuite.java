@@ -20,6 +20,7 @@ import net.ibbaa.keepitup.db.AccessTypeDataDAOTest;
 import net.ibbaa.keepitup.db.AccessTypeDataDBConstantsTest;
 import net.ibbaa.keepitup.db.DBMigrateTest;
 import net.ibbaa.keepitup.db.DBSetupTest;
+import net.ibbaa.keepitup.db.HeaderDAOTest;
 import net.ibbaa.keepitup.db.HeaderDBConstantsTest;
 import net.ibbaa.keepitup.db.IntervalDAOTest;
 import net.ibbaa.keepitup.db.IntervalDBConstantsTest;
@@ -131,6 +132,7 @@ import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HostFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.IntervalFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.NetworkTaskNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidatorTest;
@@ -147,7 +149,10 @@ import net.ibbaa.keepitup.ui.validation.ResolveHostMatchExistsFieldValidatorTest
 import net.ibbaa.keepitup.ui.validation.ResolveHostMatchFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortMatchFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPAuthPassphraseFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.SNMPCommunityFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPPrivPassphraseFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPUserNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHeaderValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
@@ -185,6 +190,7 @@ import org.junit.runners.Suite;
         AccessTypeDataDBConstantsTest.class,
         DBMigrateTest.class,
         DBSetupTest.class,
+        HeaderDAOTest.class,
         HeaderDBConstantsTest.class,
         IntervalDAOTest.class,
         IntervalDBConstantsTest.class,
@@ -310,6 +316,7 @@ import org.junit.runners.Suite;
         HeaderValueFieldValidatorTest.class,
         HostFieldValidatorTest.class,
         IntervalFieldValidatorTest.class,
+        NetworkTaskNameFieldValidatorTest.class,
         NotificationAfterFailuresFieldValidatorTest.class,
         NullAccessTypeDataValidatorTest.class,
         NullNetworkTaskValidatorTest.class,
@@ -326,7 +333,10 @@ import org.junit.runners.Suite;
         ResolveHostMatchFieldValidatorTest.class,
         ResolvePortFieldValidatorTest.class,
         ResolvePortMatchFieldValidatorTest.class,
+        SNMPAuthPassphraseFieldValidatorTest.class,
         SNMPCommunityFieldValidatorTest.class,
+        SNMPPrivPassphraseFieldValidatorTest.class,
+        SNMPUserNameFieldValidatorTest.class,
         StandardAccessTypeDataValidatorTest.class,
         StandardHeaderValidatorTest.class,
         StandardHostPortValidatorTest.class,
