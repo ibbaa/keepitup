@@ -20,7 +20,9 @@ import android.content.Context;
 import android.os.PowerManager;
 
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.SNMPNetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
@@ -40,7 +42,9 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
 
     public TestSNMPNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
-        mockSNMPCommand = new MockSNMPCommand(context, 0L, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "community", Collections.emptyList(), -1, false);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("community");
+        mockSNMPCommand = new MockSNMPCommand(context, 0L, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, SNMPTransport.UDP, authInfo, Collections.emptyList(), -1, false);
     }
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {
@@ -73,7 +77,7 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
+    protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
         capturedLastSysUpTime = lastSysUpTime;
         return mockSNMPCommand;
     }

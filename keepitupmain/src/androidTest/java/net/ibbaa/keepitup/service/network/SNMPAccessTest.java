@@ -26,10 +26,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestSNMPAccess;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +56,14 @@ public class SNMPAccessTest {
 
     @Before
     public void beforeEachTestMethod() {
-        snmpAccess = new TestSNMPAccess(TestRegistry.getContext(), InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", false);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        snmpAccess = new TestSNMPAccess(TestRegistry.getContext(), InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, SNMPTransport.UDP, authInfo, false);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        snmpAccess.close();
     }
 
     @Test

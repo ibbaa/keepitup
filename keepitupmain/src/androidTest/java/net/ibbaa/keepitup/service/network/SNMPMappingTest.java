@@ -26,16 +26,29 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.snmp4j.security.AuthHMAC128SHA224;
+import org.snmp4j.security.AuthHMAC192SHA256;
+import org.snmp4j.security.AuthHMAC256SHA384;
+import org.snmp4j.security.AuthHMAC384SHA512;
+import org.snmp4j.security.AuthMD5;
+import org.snmp4j.security.AuthSHA;
+import org.snmp4j.security.PrivAES128;
+import org.snmp4j.security.PrivAES192;
+import org.snmp4j.security.PrivAES256;
+import org.snmp4j.security.PrivDES;
+import org.snmp4j.security.nonstandard.PrivAES256With3DESKeyExtension;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TimeTicks;
 
@@ -167,6 +180,29 @@ public class SNMPMappingTest {
         assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_lowerlayerdown_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_lowerlayerdown)));
         assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(99));
         assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(0));
+    }
+
+    @Test
+    public void testGetAuthAlgorithmOID() {
+        assertNull(snmpMapping.getAuthAlgorithmOID(null));
+        assertNull(snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.NONE));
+        assertEquals(AuthMD5.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.MD5));
+        assertEquals(AuthSHA.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA1));
+        assertEquals(AuthHMAC128SHA224.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA224));
+        assertEquals(AuthHMAC192SHA256.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA256));
+        assertEquals(AuthHMAC256SHA384.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA384));
+        assertEquals(AuthHMAC384SHA512.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA512));
+    }
+
+    @Test
+    public void testGetPrivAlgorithmOID() {
+        assertNull(snmpMapping.getPrivAlgorithmOID(null));
+        assertNull(snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.NONE));
+        assertEquals(PrivDES.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.DES));
+        assertEquals(PrivAES128.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES128));
+        assertEquals(PrivAES192.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES192));
+        assertEquals(PrivAES256.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES256));
+        assertEquals(PrivAES256With3DESKeyExtension.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES256C));
     }
 
     @Test

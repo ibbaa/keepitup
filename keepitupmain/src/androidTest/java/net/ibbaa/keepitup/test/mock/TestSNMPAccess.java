@@ -18,11 +18,14 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
 
-import org.snmp4j.CommunityTarget;
 import org.snmp4j.Snmp;
+import org.snmp4j.Target;
+import org.snmp4j.smi.Address;
 import org.snmp4j.smi.Variable;
 
 import java.net.InetAddress;
@@ -38,8 +41,8 @@ public class TestSNMPAccess extends SNMPAccess {
     private boolean subtreeEmpty;
     private RuntimeException subtreeException;
 
-    public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, String community, boolean ip6) {
-        super(context, address, port, snmpVersion, community, ip6);
+    public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, boolean ip6) {
+        super(context, address, port, snmpVersion, snmpTransport, authInfo, ip6);
         reset();
     }
 
@@ -67,7 +70,7 @@ public class TestSNMPAccess extends SNMPAccess {
     }
 
     @Override
-    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors, boolean emptyIsValid) {
+    protected boolean fetchAndProcessSubtree(Snmp snmp, Target<Address> target, String oid, Map<String, Variable> results, List<String> errors, boolean emptyIsValid) {
         if (subtreeException != null) {
             throw subtreeException;
         }

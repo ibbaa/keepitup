@@ -62,6 +62,30 @@ public class NullAccessTypeDataValidator implements AccessTypeDataValidator {
         return new ValidationResult(false, fieldName, failedMessage);
     }
 
+    @Override
+    public ValidationResult validateSNMPUserName(String snmpUserName) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validateSNMPUserName, snmpUserName is " + snmpUserName);
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_user_name_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
+    public ValidationResult validateSNMPAuthPassphrase(String snmpAuthPassphrase) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validateSNMPAuthPassphrase");
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_auth_passphrase_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
+    @Override
+    public ValidationResult validateSNMPPrivPassphrase(String snmpPrivPassphrase) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validateSNMPPrivPassphrase");
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_priv_passphrase_field_name);
+        String failedMessage = getResources().getString(R.string.invalid_no_value);
+        return new ValidationResult(false, fieldName, failedMessage);
+    }
+
     private Context getContext() {
         return context;
     }

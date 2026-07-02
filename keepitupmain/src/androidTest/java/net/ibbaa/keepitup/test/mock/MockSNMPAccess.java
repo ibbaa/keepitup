@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
 
@@ -32,7 +34,13 @@ public class MockSNMPAccess extends SNMPAccess {
     private WalkResult walkInterfacesAliasResult;
 
     public MockSNMPAccess(Context context) {
-        super(context, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", false);
+        super(context, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo(), false);
+    }
+
+    private static SNMPAuthInfo createAuthInfo() {
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        return authInfo;
     }
 
     public void setWalkResult(WalkResult walkResult) {

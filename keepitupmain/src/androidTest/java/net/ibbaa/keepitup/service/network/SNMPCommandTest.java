@@ -26,8 +26,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestSNMPCommand;
@@ -657,7 +659,9 @@ public class SNMPCommandTest {
     }
 
     private TestSNMPCommand createCommand(long lastSysUpTime, List<SNMPItem> interfaces) {
-        return new TestSNMPCommand(TestRegistry.getContext(), 0L, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", interfaces, lastSysUpTime, false);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        return new TestSNMPCommand(TestRegistry.getContext(), 0L, InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, SNMPTransport.UDP, authInfo, interfaces, lastSysUpTime, false);
     }
 
     private SNMPAccess.WalkResult successResult(Map<String, String> map) {

@@ -21,16 +21,29 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.validation.SNMPInterfaceInfoValidator;
 import net.ibbaa.keepitup.model.validation.SNMPItemValidator;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import org.snmp4j.security.AuthHMAC128SHA224;
+import org.snmp4j.security.AuthHMAC192SHA256;
+import org.snmp4j.security.AuthHMAC256SHA384;
+import org.snmp4j.security.AuthHMAC384SHA512;
+import org.snmp4j.security.AuthMD5;
+import org.snmp4j.security.AuthSHA;
+import org.snmp4j.security.PrivAES128;
+import org.snmp4j.security.PrivAES192;
+import org.snmp4j.security.PrivAES256;
+import org.snmp4j.security.PrivDES;
+import org.snmp4j.security.nonstandard.PrivAES256With3DESKeyExtension;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.Variable;
 
@@ -48,13 +61,18 @@ public class SNMPMapping {
 
     private final Map<String, String> oidLabels;
     private final Map<Integer, String> ifStatusLabels;
+    private final Map<SNMPAuthAlgorithm, OID> authAlgorithms;
+    private final Map<SNMPPrivAlgorithm, OID> privAlgorithms;
     private final Context context;
 
     public SNMPMapping(Context context) {
         this.oidLabels = new HashMap<>();
         this.ifStatusLabels = new HashMap<>();
+        this.authAlgorithms = new HashMap<>();
+        this.privAlgorithms = new HashMap<>();
         this.context = context;
         initSystemOIDMap();
+        initAlgorithmOIDMap();
     }
 
     private void initSystemOIDMap() {
@@ -71,6 +89,36 @@ public class SNMPMapping {
         ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_dormant), getResources().getString(R.string.interface_operstatus_dormant_label));
         ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_notpresent), getResources().getString(R.string.interface_operstatus_notpresent_label));
         ifStatusLabels.put(getResources().getInteger(R.integer.interface_operstatus_lowerlayerdown), getResources().getString(R.string.interface_operstatus_lowerlayerdown_label));
+    }
+
+    private void initAlgorithmOIDMap() {
+        authAlgorithms.put(SNMPAuthAlgorithm.NONE, null);
+        authAlgorithms.put(SNMPAuthAlgorithm.MD5, AuthMD5.ID);
+        authAlgorithms.put(SNMPAuthAlgorithm.SHA1, AuthSHA.ID);
+        authAlgorithms.put(SNMPAuthAlgorithm.SHA224, AuthHMAC128SHA224.ID);
+        authAlgorithms.put(SNMPAuthAlgorithm.SHA256, AuthHMAC192SHA256.ID);
+        authAlgorithms.put(SNMPAuthAlgorithm.SHA384, AuthHMAC256SHA384.ID);
+        authAlgorithms.put(SNMPAuthAlgorithm.SHA512, AuthHMAC384SHA512.ID);
+        privAlgorithms.put(SNMPPrivAlgorithm.NONE, null);
+        privAlgorithms.put(SNMPPrivAlgorithm.DES, PrivDES.ID);
+        privAlgorithms.put(SNMPPrivAlgorithm.AES128, PrivAES128.ID);
+        privAlgorithms.put(SNMPPrivAlgorithm.AES192, PrivAES192.ID);
+        privAlgorithms.put(SNMPPrivAlgorithm.AES256, PrivAES256.ID);
+        privAlgorithms.put(SNMPPrivAlgorithm.AES256C, PrivAES256With3DESKeyExtension.ID);
+    }
+
+    public OID getAuthAlgorithmOID(SNMPAuthAlgorithm authAlgorithm) {
+        if (authAlgorithm == null) {
+            return null;
+        }
+        return authAlgorithms.get(authAlgorithm);
+    }
+
+    public OID getPrivAlgorithmOID(SNMPPrivAlgorithm privAlgorithm) {
+        if (privAlgorithm == null) {
+            return null;
+        }
+        return privAlgorithms.get(privAlgorithm);
     }
 
     public String getSystemOID() {

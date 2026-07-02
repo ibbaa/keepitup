@@ -66,6 +66,33 @@ public class StandardAccessTypeDataValidator implements AccessTypeDataValidator 
         return result;
     }
 
+    @Override
+    public ValidationResult validateSNMPUserName(String snmpUserName) {
+        Log.d(StandardAccessTypeDataValidator.class.getName(), "validateSNMPUserName, snmpUserName is " + snmpUserName);
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_user_name_field_name);
+        ValidationResult result = new SNMPUserNameFieldValidator(fieldName, getContext()).validate(snmpUserName);
+        Log.d(StandardAccessTypeDataValidator.class.getName(), SNMPUserNameFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateSNMPAuthPassphrase(String snmpAuthPassphrase) {
+        Log.d(StandardAccessTypeDataValidator.class.getName(), "validateSNMPAuthPassphrase");
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_auth_passphrase_field_name);
+        ValidationResult result = new SNMPAuthPassphraseFieldValidator(fieldName, getContext()).validate(snmpAuthPassphrase);
+        Log.d(StandardAccessTypeDataValidator.class.getName(), SNMPAuthPassphraseFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
+    public ValidationResult validateSNMPPrivPassphrase(String snmpPrivPassphrase) {
+        Log.d(StandardAccessTypeDataValidator.class.getName(), "validateSNMPPrivPassphrase");
+        String fieldName = getResources().getString(R.string.accesstypedata_snmp_priv_passphrase_field_name);
+        ValidationResult result = new SNMPPrivPassphraseFieldValidator(fieldName, getContext()).validate(snmpPrivPassphrase);
+        Log.d(StandardAccessTypeDataValidator.class.getName(), SNMPPrivPassphraseFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
     protected Context getContext() {
         return context;
     }

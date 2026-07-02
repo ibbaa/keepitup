@@ -25,8 +25,10 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPCommand;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
@@ -79,7 +81,8 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult snmpExecutionResult = executeSNMPCommand(networkTask.getId(), address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpCommunity(), networkTask.getLastSysUpTime(), ip6);
+            SNMPAuthInfo authInfo = buildSNMPAuthInfo(data);
+            ExecutionResult snmpExecutionResult = executeSNMPCommand(networkTask.getId(), address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpTransport(), authInfo, networkTask.getLastSysUpTime(), ip6);
             LogEntry logEntry = snmpExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(SNMPNetworkTaskWorker.class.getName(), "Returning " + snmpExecutionResult);
@@ -92,17 +95,29 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         return dnsExecutionResult;
     }
 
+    private SNMPAuthInfo buildSNMPAuthInfo(AccessTypeData data) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "buildSNMPAuthInfo");
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity(data.getSnmpCommunity());
+        authInfo.setAuthAlgorithm(data.getSnmpAuthAlgorithm());
+        authInfo.setUserName(data.getSnmpUserName());
+        authInfo.setAuthPassphrase(data.getSnmpAuthPassphrase());
+        authInfo.setPrivAlgorithm(data.getSnmpPrivAlgorithm());
+        authInfo.setPrivPassphrase(data.getSnmpPrivPassphrase());
+        return authInfo;
+    }
+
     private void completeLogEntry(NetworkTask networkTask, LogEntry logEntry) {
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
     @SuppressWarnings("resource")
-    private ExecutionResult executeSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, long lastSysUpTime, boolean ip6) {
-        Log.d(SNMPNetworkTaskWorker.class.getName(), "executeSNMPCommand, networktaskId is " + networkTaskId + ", address is " + address + ", port is " + port + ", snmpVersion is " + snmpVersion + ", lastSysUpTime is " + lastSysUpTime + ", ip6 is " + ip6);
+    private ExecutionResult executeSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, long lastSysUpTime, boolean ip6) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "executeSNMPCommand, networktaskId is " + networkTaskId + ", address is " + address + ", port is " + port + ", snmpVersion is " + snmpVersion + ", snmpTransport is " + snmpTransport + ", lastSysUpTime is " + lastSysUpTime + ", ip6 is " + ip6);
         List<SNMPItem> snmpItems = readSNMPItems();
         boolean initiallyEmpty = snmpItems.isEmpty();
-        Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(networkTaskId, address, port, snmpVersion, snmpCommunity, snmpItems, lastSysUpTime, ip6);
+        Callable<SNMPCommandResult> snmpCommand = getSNMPCommand(networkTaskId, address, port, snmpVersion, snmpTransport, authInfo, snmpItems, lastSysUpTime, ip6);
         int snmpTimeout = getResources().getInteger(R.integer.snmp_request_timeout) * 9;
         Log.d(SNMPNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -308,7 +323,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         return addressPort + ":" + port;
     }
 
-    protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String snmpCommunity, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
-        return new SNMPCommand(getContext(), networkTaskId, address, port, snmpVersion, snmpCommunity, snmpItems, lastSysUpTime, ip6);
+    protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
+        return new SNMPCommand(getContext(), networkTaskId, address, port, snmpVersion, snmpTransport, authInfo, snmpItems, lastSysUpTime, ip6);
     }
 }

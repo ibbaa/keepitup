@@ -25,6 +25,9 @@
     <string name="accesstypedata_ping_package_size_field_name">Package size</string>
     <string name="accesstypedata_connect_count_field_name">Connect count</string>
     <string name="accesstypedata_snmp_community_field_name">Community</string>
+    <string name="accesstypedata_snmp_user_name_field_name">Auth username</string>
+    <string name="accesstypedata_snmp_auth_passphrase_field_name">Auth passphrase</string>
+    <string name="accesstypedata_snmp_priv_passphrase_field_name">Privacy passphrase</string>
     <string name="resolve_host_field_name">Connect-to host</string>
     <string name="resolve_port_field_name">Connect-to port</string>
     <string name="resolve_match_host_field_name">Match host</string>

@@ -44,6 +44,7 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
 import net.ibbaa.keepitup.model.SNMPTransport;
@@ -1656,11 +1657,26 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         bundle.putInt(dialog.getPortKey(), snmpPort);
         bundle.putString(dialog.getSNMPVersionKey(), getSNMPVersion().name());
-        bundle.putString(dialog.getCommunityKey(), getSNMPCommunity());
+        bundle.putString(dialog.getSNMPTransportKey(), getSNMPTransport().name());
+        BundleUtil.bundleToBundle(dialog.getAuthInfoKey(), buildSNMPAuthInfo().toBundle(), bundle);
         BundleUtil.snmpItemListToBundle(dialog.getInitialSNMPItemsKey(), currentSnmpItems != null ? currentSnmpItems : Collections.emptyList(), bundle);
         BundleUtil.longToBundle(dialog.getNetworkTaskIdKey(), task.getId(), bundle);
         dialog.setArguments(bundle);
         dialog.show(getParentFragmentManager(), SNMPInterfacesDialog.class.getName());
+    }
+
+    private SNMPAuthInfo buildSNMPAuthInfo() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "buildSNMPAuthInfo");
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity(getSNMPCommunity());
+        if (currentAccessTypeData != null) {
+            authInfo.setAuthAlgorithm(currentAccessTypeData.getSnmpAuthAlgorithm());
+            authInfo.setUserName(currentAccessTypeData.getSnmpUserName());
+            authInfo.setAuthPassphrase(currentAccessTypeData.getSnmpAuthPassphrase());
+            authInfo.setPrivAlgorithm(currentAccessTypeData.getSnmpPrivAlgorithm());
+            authInfo.setPrivPassphrase(currentAccessTypeData.getSnmpPrivPassphrase());
+        }
+        return authInfo;
     }
 
     private void showContextOptionsDialog(EditText editText) {

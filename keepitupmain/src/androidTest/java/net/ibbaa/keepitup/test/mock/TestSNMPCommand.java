@@ -18,7 +18,9 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
 import net.ibbaa.keepitup.service.network.SNMPCommand;
@@ -30,8 +32,8 @@ public class TestSNMPCommand extends SNMPCommand {
 
     private final MockSNMPAccess mockSNMPAccess;
 
-    public TestSNMPCommand(Context context, long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String community, List<SNMPItem> interfaces, long lastSysUpTime, boolean ip6) {
-        super(context, networkTaskId, address, port, snmpVersion, community, interfaces, lastSysUpTime, ip6);
+    public TestSNMPCommand(Context context, long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, List<SNMPItem> interfaces, long lastSysUpTime, boolean ip6) {
+        super(context, networkTaskId, address, port, snmpVersion, snmpTransport, authInfo, interfaces, lastSysUpTime, ip6);
         mockSNMPAccess = new MockSNMPAccess(context);
     }
 

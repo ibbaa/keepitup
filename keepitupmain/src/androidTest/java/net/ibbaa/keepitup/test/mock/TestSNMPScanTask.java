@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
@@ -32,8 +34,8 @@ public class TestSNMPScanTask extends SNMPScanTask {
     private MockDNSLookup mockDNSLookup;
     private MockSNMPAccess mockSNMPAccess;
 
-    public TestSNMPScanTask(Context context, long networktaskId, String address, int port, SNMPVersion snmpVersion, String community) {
-        super(null, context, networktaskId, address, port, snmpVersion, community);
+    public TestSNMPScanTask(Context context, long networktaskId, String address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo) {
+        super(null, context, networktaskId, address, port, snmpVersion, snmpTransport, authInfo);
     }
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {

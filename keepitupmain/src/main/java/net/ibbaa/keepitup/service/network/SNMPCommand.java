@@ -21,10 +21,12 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.ITimeService;
@@ -45,19 +47,21 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
     private final InetAddress address;
     private final int port;
     private final SNMPVersion snmpVersion;
-    private final String community;
+    private final SNMPTransport snmpTransport;
+    private final SNMPAuthInfo authInfo;
     private final List<SNMPItem> interfaces;
     private final long lastSysUpTime;
     private final boolean ip6;
     private final ITimeService timeService;
 
-    public SNMPCommand(Context context, long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, String community, List<SNMPItem> interfaces, long lastSysUpTime, boolean ip6) {
+    public SNMPCommand(Context context, long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, List<SNMPItem> interfaces, long lastSysUpTime, boolean ip6) {
         this.context = context;
         this.networkTaskId = networkTaskId;
         this.address = address;
         this.port = port;
         this.snmpVersion = snmpVersion;
-        this.community = community;
+        this.snmpTransport = snmpTransport;
+        this.authInfo = authInfo;
         this.interfaces = interfaces;
         this.lastSysUpTime = lastSysUpTime;
         this.ip6 = ip6;
@@ -68,63 +72,64 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
     public SNMPCommandResult call() {
         Log.d(SNMPCommand.class.getName(), "call");
         long start = timeService.getCurrentTimestamp();
-        SNMPAccess snmpAccess = getSNMPAccess();
-        SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        SNMPAccess.WalkResult systemWalkResult = snmpAccess.walkSystem();
-        Map<String, String> systemResult = systemWalkResult.result() != null ? systemWalkResult.result() : Collections.emptyMap();
-        long currentSysUpTime = snmpMapping.getSysUpTime(systemResult);
-        boolean rebooted = wasRebooted(currentSysUpTime);
-        if (!systemWalkResult.success()) {
+        try (SNMPAccess snmpAccess = getSNMPAccess()) {
+            SNMPMapping snmpMapping = new SNMPMapping(getContext());
+            SNMPAccess.WalkResult systemWalkResult = snmpAccess.walkSystem();
+            Map<String, String> systemResult = systemWalkResult.result() != null ? systemWalkResult.result() : Collections.emptyMap();
+            long currentSysUpTime = snmpMapping.getSysUpTime(systemResult);
+            boolean rebooted = wasRebooted(currentSysUpTime);
+            if (!systemWalkResult.success()) {
+                long end = timeService.getCurrentTimestamp();
+                return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+            }
+            if (interfaces.isEmpty()) {
+                long end = timeService.getCurrentTimestamp();
+                return new SNMPCommandResult(true, systemResult, prepareEmptyInterfaceResult(), rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+            }
+            List<SNMPItem> existingDescrItems = snmpMapping.filterDescrItems(interfaces);
+            Map<String, SNMPInterfaceInfo> existingInterfaceInfos = snmpMapping.extractSNMPInterfaceInfos(interfaces);
+            SNMPAccess.WalkResult ifDescrResult = snmpAccess.walkInterfacesDescr();
+            if (!ifDescrResult.success()) {
+                long end = timeService.getCurrentTimestamp();
+                return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifDescrResult.exception(), ifDescrResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+            }
+            List<SNMPItem> scannedSnmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networkTaskId);
+            Collections.sort(scannedSnmpItems, new SNMPMapping.SNMPItemNameComparator());
+            SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(scannedSnmpItems);
+            List<SNMPItem> uniqueScanned = dedupResult.uniqueItems();
+            if (uniqueScanned.isEmpty()) {
+                return prepareEmptyDescrResult(existingDescrItems, systemResult, rebooted, systemWalkResult, start);
+            }
+            SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
+            if (!ifTypeResult.success()) {
+                long end = timeService.getCurrentTimestamp();
+                return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifTypeResult.exception(), ifTypeResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+            }
+            SNMPAccess.WalkResult ifOperStatusResult = snmpAccess.walkInterfacesOperStatus();
+            if (!ifOperStatusResult.success()) {
+                long end = timeService.getCurrentTimestamp();
+                return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifOperStatusResult.exception(), ifOperStatusResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+            }
+            SNMPAccess.WalkResult ifAliasResult = snmpAccess.walkInterfacesAlias();
+            Map<String, String> combinedInfo = new HashMap<>(ifTypeResult.result().size() + ifOperStatusResult.result().size() + ifAliasResult.result().size());
+            combinedInfo.putAll(ifTypeResult.result());
+            combinedInfo.putAll(ifOperStatusResult.result());
+            if (ifAliasResult.success()) {
+                combinedInfo.putAll(ifAliasResult.result());
+            }
+            Map<String, SNMPInterfaceInfo> scannedInterfaceInfos = snmpMapping.toSNMPInterfaceInfo(scannedSnmpItems, combinedInfo);
+            snmpMapping.overrideTypesForDuplicates(scannedInterfaceInfos, dedupResult);
+            SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(existingDescrItems, uniqueScanned);
+            Map<String, SNMPInterfaceInfo> mergedInterfaceInfos = snmpMapping.mergeSNMPInterfaceInfos(existingInterfaceInfos, scannedInterfaceInfos);
+            Map<String, String> downStatusForMonitored = getDownStatusForMonitored(mergeResult.mergedItems(), mergedInterfaceInfos);
+            List<SNMPItem> finalMerged = snmpMapping.mergeAllSNMPItems(interfaces, mergeResult.mergedItems(), mergedInterfaceInfos, networkTaskId);
+            finalMerged.addAll(snmpMapping.preserveRemovedMonitoredItems(mergeResult.removedMonitoredItems(), interfaces));
+            List<String> monitoredNotFound = getMonitoredNotFound(mergeResult.removedMonitoredItems());
+            SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, finalMerged, uniqueScanned.size(), monitoredNotFound, downStatusForMonitored, dedupResult.duplicateNames());
+            boolean finalSuccess = monitoredNotFound.isEmpty() && downStatusForMonitored.isEmpty();
             long end = timeService.getCurrentTimestamp();
-            return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
+            return new SNMPCommandResult(finalSuccess, systemResult, interfaceResult, rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
         }
-        if (interfaces.isEmpty()) {
-            long end = timeService.getCurrentTimestamp();
-            return new SNMPCommandResult(true, systemResult, prepareEmptyInterfaceResult(), rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
-        }
-        List<SNMPItem> existingDescrItems = snmpMapping.filterDescrItems(interfaces);
-        Map<String, SNMPInterfaceInfo> existingInterfaceInfos = snmpMapping.extractSNMPInterfaceInfos(interfaces);
-        SNMPAccess.WalkResult ifDescrResult = snmpAccess.walkInterfacesDescr();
-        if (!ifDescrResult.success()) {
-            long end = timeService.getCurrentTimestamp();
-            return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifDescrResult.exception(), ifDescrResult.errorMessages(), NumberUtil.ensurePositive(end - start));
-        }
-        List<SNMPItem> scannedSnmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networkTaskId);
-        Collections.sort(scannedSnmpItems, new SNMPMapping.SNMPItemNameComparator());
-        SNMPDedupResult dedupResult = snmpMapping.deduplicateByName(scannedSnmpItems);
-        List<SNMPItem> uniqueScanned = dedupResult.uniqueItems();
-        if (uniqueScanned.isEmpty()) {
-            return prepareEmptyDescrResult(existingDescrItems, systemResult, rebooted, systemWalkResult, start);
-        }
-        SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
-        if (!ifTypeResult.success()) {
-            long end = timeService.getCurrentTimestamp();
-            return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifTypeResult.exception(), ifTypeResult.errorMessages(), NumberUtil.ensurePositive(end - start));
-        }
-        SNMPAccess.WalkResult ifOperStatusResult = snmpAccess.walkInterfacesOperStatus();
-        if (!ifOperStatusResult.success()) {
-            long end = timeService.getCurrentTimestamp();
-            return new SNMPCommandResult(false, systemResult, prepareEmptyInterfaceResult(), rebooted, ifOperStatusResult.exception(), ifOperStatusResult.errorMessages(), NumberUtil.ensurePositive(end - start));
-        }
-        SNMPAccess.WalkResult ifAliasResult = snmpAccess.walkInterfacesAlias();
-        Map<String, String> combinedInfo = new HashMap<>(ifTypeResult.result().size() + ifOperStatusResult.result().size() + ifAliasResult.result().size());
-        combinedInfo.putAll(ifTypeResult.result());
-        combinedInfo.putAll(ifOperStatusResult.result());
-        if (ifAliasResult.success()) {
-            combinedInfo.putAll(ifAliasResult.result());
-        }
-        Map<String, SNMPInterfaceInfo> scannedInterfaceInfos = snmpMapping.toSNMPInterfaceInfo(scannedSnmpItems, combinedInfo);
-        snmpMapping.overrideTypesForDuplicates(scannedInterfaceInfos, dedupResult);
-        SNMPItemMergeResult mergeResult = snmpMapping.mergeDescrItems(existingDescrItems, uniqueScanned);
-        Map<String, SNMPInterfaceInfo> mergedInterfaceInfos = snmpMapping.mergeSNMPInterfaceInfos(existingInterfaceInfos, scannedInterfaceInfos);
-        Map<String, String> downStatusForMonitored = getDownStatusForMonitored(mergeResult.mergedItems(), mergedInterfaceInfos);
-        List<SNMPItem> finalMerged = snmpMapping.mergeAllSNMPItems(interfaces, mergeResult.mergedItems(), mergedInterfaceInfos, networkTaskId);
-        finalMerged.addAll(snmpMapping.preserveRemovedMonitoredItems(mergeResult.removedMonitoredItems(), interfaces));
-        List<String> monitoredNotFound = getMonitoredNotFound(mergeResult.removedMonitoredItems());
-        SNMPInterfaceResult interfaceResult = new SNMPInterfaceResult(true, finalMerged, uniqueScanned.size(), monitoredNotFound, downStatusForMonitored, dedupResult.duplicateNames());
-        boolean finalSuccess = monitoredNotFound.isEmpty() && downStatusForMonitored.isEmpty();
-        long end = timeService.getCurrentTimestamp();
-        return new SNMPCommandResult(finalSuccess, systemResult, interfaceResult, rebooted, systemWalkResult.exception(), systemWalkResult.errorMessages(), NumberUtil.ensurePositive(end - start));
     }
 
     private List<String> getMonitoredNotFound(List<SNMPItem> removedMonitored) {
@@ -199,6 +204,6 @@ public class SNMPCommand implements Callable<SNMPCommandResult> {
     }
 
     protected SNMPAccess getSNMPAccess() {
-        return new SNMPAccess(getContext(), address, port, snmpVersion, community, ip6);
+        return new SNMPAccess(getContext(), address, port, snmpVersion, snmpTransport, authInfo, ip6);
     }
 }
