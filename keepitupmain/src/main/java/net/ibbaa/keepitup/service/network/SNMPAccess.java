@@ -38,13 +38,22 @@ import org.snmp4j.TransportMapping;
 import org.snmp4j.UserTarget;
 import org.snmp4j.mp.MessageProcessingModel;
 import org.snmp4j.mp.SnmpConstants;
+import org.snmp4j.security.AuthHMAC128SHA224;
+import org.snmp4j.security.AuthHMAC192SHA256;
+import org.snmp4j.security.AuthHMAC256SHA384;
+import org.snmp4j.security.AuthHMAC384SHA512;
 import org.snmp4j.security.AuthMD5;
 import org.snmp4j.security.AuthSHA;
+import org.snmp4j.security.PrivAES128;
+import org.snmp4j.security.PrivAES192;
+import org.snmp4j.security.PrivAES256;
+import org.snmp4j.security.PrivDES;
 import org.snmp4j.security.SecurityLevel;
 import org.snmp4j.security.SecurityModels;
 import org.snmp4j.security.SecurityProtocols;
 import org.snmp4j.security.USM;
 import org.snmp4j.security.UsmUser;
+import org.snmp4j.security.nonstandard.PrivAES256With3DESKeyExtension;
 import org.snmp4j.smi.Address;
 import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.OID;
@@ -72,6 +81,15 @@ public class SNMPAccess implements AutoCloseable {
     static {
         SecurityProtocols.getInstance().addAuthenticationProtocol(new AuthMD5());
         SecurityProtocols.getInstance().addAuthenticationProtocol(new AuthSHA());
+        SecurityProtocols.getInstance().addAuthenticationProtocol(new AuthHMAC128SHA224());
+        SecurityProtocols.getInstance().addAuthenticationProtocol(new AuthHMAC192SHA256());
+        SecurityProtocols.getInstance().addAuthenticationProtocol(new AuthHMAC256SHA384());
+        SecurityProtocols.getInstance().addAuthenticationProtocol(new AuthHMAC384SHA512());
+        SecurityProtocols.getInstance().addPrivacyProtocol(new PrivDES());
+        SecurityProtocols.getInstance().addPrivacyProtocol(new PrivAES128());
+        SecurityProtocols.getInstance().addPrivacyProtocol(new PrivAES192());
+        SecurityProtocols.getInstance().addPrivacyProtocol(new PrivAES256());
+        SecurityProtocols.getInstance().addPrivacyProtocol(new PrivAES256With3DESKeyExtension());
     }
 
     private final Context context;
