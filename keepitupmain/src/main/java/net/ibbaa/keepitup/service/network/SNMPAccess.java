@@ -244,6 +244,10 @@ public class SNMPAccess implements AutoCloseable {
         return mpv3 != null && mpv3.getEngineID(target.getAddress()) != null;
     }
 
+    public String getTargetAddressString() {
+        return target != null ? target.getAddress().toString() : null;
+    }
+
     @SuppressWarnings("unused")
     protected static void resetSharedUSMState() {
         synchronized (USM_LOCK) {
@@ -441,7 +445,7 @@ public class SNMPAccess implements AutoCloseable {
     }
 
     private String formatAddress() {
-        String hostAddress = URLUtil.getHostAddressWithoutScope(address);
+        String hostAddress = URLUtil.getHostAddress(address);
         String prefix = (snmpTransport != null && snmpTransport.isTCP()) ? "tcp:" : "udp:";
         String address = ip6 ? prefix + "[" + hostAddress + "]" : prefix + hostAddress;
         if (port >= 0) {

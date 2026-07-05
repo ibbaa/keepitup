@@ -156,15 +156,6 @@ public class URLUtil {
         return hostAddress == null ? "" : hostAddress;
     }
 
-    public static String getHostAddressWithoutScope(InetAddress address) {
-        String hostAddress = getHostAddress(address);
-        int scopeIndex = hostAddress.indexOf('%');
-        if (scopeIndex >= 0) {
-            hostAddress = hostAddress.substring(0, scopeIndex);
-        }
-        return hostAddress;
-    }
-
     public static String getSourceAddress(Resolve resolve, URL url) {
         if (StringUtil.isEmpty(resolve.getSourceAddress())) {
             return url.getHost();

@@ -40,12 +40,14 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TimeTicks;
 import org.snmp4j.smi.Variable;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 @MediumTest
@@ -495,6 +497,37 @@ public class SNMPAccessTest {
         assertNotNull(result.exception());
         assertEquals("Test exception", result.exception().getMessage());
         assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testFormatAddressPreservesScopeV2C() throws UnknownHostException {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        TestSNMPAccess scopedAccess = new TestSNMPAccess(TestRegistry.getContext(), scopedAddress, 161, SNMPVersion.V2C, SNMPTransport.UDP, authInfo, true);
+        scopedAccess.setSubtreeEmpty(true);
+        scopedAccess.walkInterfacesDescr();
+        assertTrue(scopedAccess.getTargetAddressString().contains(getScopeSuffix(scopedAddress)));
+        scopedAccess.close();
+    }
+
+    @Test
+    public void testFormatAddressPreservesScopeV3() throws UnknownHostException {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 5);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setUserName("scopeTestUser");
+        TestSNMPAccess scopedAccess = new TestSNMPAccess(TestRegistry.getContext(), scopedAddress, 161, SNMPVersion.V3, SNMPTransport.UDP, authInfo, true);
+        scopedAccess.setSubtreeEmpty(true);
+        scopedAccess.walkInterfacesDescr();
+        assertTrue(scopedAccess.getTargetAddressString().contains(getScopeSuffix(scopedAddress)));
+        scopedAccess.close();
+    }
+
+    private String getScopeSuffix(Inet6Address scopedAddress) {
+        String hostAddress = scopedAddress.getHostAddress();
+        int scopeIndex = Objects.requireNonNull(hostAddress).indexOf('%');
+        assertTrue("Test fixture must actually carry a scope", scopeIndex >= 0);
+        return hostAddress.substring(scopeIndex);
     }
 
     @Test
