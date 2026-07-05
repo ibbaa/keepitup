@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -133,6 +134,11 @@ public class URLUtilTest {
         assertFalse(URLUtil.isSameHostAndPort("example.com", 443, "", 443));
         assertFalse(URLUtil.isSameHostAndPort("example.com", -1, "example.com", 443));
         assertFalse(URLUtil.isSameHostAndPort("example.com", 443, "example.com", -1));
+        assertTrue(URLUtil.isSameHostAndPort("fe80::1%2", -1, "fe80::1%2", -1));
+        assertTrue(URLUtil.isSameHostAndPort("fe80::1%2", -1, "fe80:0:0:0:0:0:0:1%2", -1));
+        assertTrue(URLUtil.isSameHostAndPort("[fe80::1%2]", -1, "fe80::1%2", -1));
+        assertFalse(URLUtil.isSameHostAndPort("fe80::1%2", -1, "fe80::1%3", -1));
+        assertFalse(URLUtil.isSameHostAndPort("fe80::1%2", -1, "fe80::1", -1));
     }
 
     @Test
@@ -167,6 +173,10 @@ public class URLUtilTest {
         assertEquals(URLUtil.normalizeHost("::1"), URLUtil.normalizeHost("0:0:0:0:0:0:0:1"));
         assertEquals(URLUtil.normalizeHost("::1"), URLUtil.normalizeHost("[::1]"));
         assertEquals(InetAddress.getByName("3ffe:1900:4545:3:200:f8ff:fe21:67cf").getHostAddress(), URLUtil.normalizeHost("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
+        assertEquals(InetAddress.getByName("fe80::1%2").getHostAddress(), URLUtil.normalizeHost("fe80::1%2"));
+        assertEquals(URLUtil.normalizeHost("fe80::1%2"), URLUtil.normalizeHost("[fe80::1%2]"));
+        assertNotEquals(URLUtil.normalizeHost("fe80::1%2"), URLUtil.normalizeHost("fe80::1%3"));
+        assertEquals("fe80::1%doesnotexist99", URLUtil.normalizeHost("fe80::1%doesnotexist99"));
     }
 
     @Test

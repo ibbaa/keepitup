@@ -102,7 +102,7 @@ public class URLUtil {
                 try {
                     InetAddress address1 = InetAddress.getByName(normalizedHost1);
                     InetAddress address2 = InetAddress.getByName(normalizedHost2);
-                    sameHost = address1.equals(address2);
+                    sameHost = getHostAddress(address1).equals(getHostAddress(address2));
                 } catch (Exception exc) {
                     sameHost = false;
                 }
@@ -143,7 +143,7 @@ public class URLUtil {
         }
         if (isValidIPAddress(stripped)) {
             try {
-                return getHostAddressWithoutScope(InetAddress.getByName(stripped));
+                return getHostAddress(InetAddress.getByName(stripped));
             } catch (Exception exc) {
                 Log.d(URLUtil.class.getName(), "Exception normalizing IP address " + host, exc);
             }

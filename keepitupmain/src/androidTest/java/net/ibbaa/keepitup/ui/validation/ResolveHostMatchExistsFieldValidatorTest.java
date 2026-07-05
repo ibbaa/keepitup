@@ -125,6 +125,28 @@ public class ResolveHostMatchExistsFieldValidatorTest {
     }
 
     @Test
+    public void testValidateIPv6WithScope() {
+        Resolve resolve1 = new Resolve();
+        resolve1.setSourceAddress("fe80::1%2");
+        resolve1.setSourcePort(443);
+        List<Resolve> resolves = List.of(resolve1);
+        ResolveHostMatchExistsFieldValidator validator = new ResolveHostMatchExistsFieldValidator("testfield", resolves, null, TestRegistry.getContext());
+        ValidationResult result = validator.validate("fe80::1%2:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testfield", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validate("[fe80::1%2]:443");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validate("fe80::1%3:443");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validate("fe80::1:443");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Validation successful", result.getMessage());
+    }
+
+    @Test
     public void testValidateIPv6() {
         Resolve resolve1 = new Resolve();
         resolve1.setSourceAddress("::1");

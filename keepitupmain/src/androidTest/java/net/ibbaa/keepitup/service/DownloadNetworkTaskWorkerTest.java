@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -59,6 +61,7 @@ import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestDownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -289,6 +292,47 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals("10.0.0.1", downloadCommand.getConnectToAddresses().get(1).resolve().getTargetAddress());
         assertEquals(8080, downloadCommand.getConnectToAddresses().get(1).resolve().getTargetPort());
         assertEquals("192.168.1.1", downloadCommand.getConnectToAddresses().get(1).resolvedAddress().getHostAddress());
+    }
+
+    @Test
+    public void testMultipleResolvesIPv6WithDifferentScope() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        String targetAddress1 = "fe80::1%2";
+        String targetAddress2 = "fe80::1%3";
+        String normalizedHost1 = URLUtil.normalizeHost(targetAddress1);
+        String normalizedHost2 = URLUtil.normalizeHost(targetAddress2);
+        assertNotEquals("Scope must still distinguish the two hosts on this runtime", normalizedHost1, normalizedHost2);
+        DNSLookupResult dnsLookupResult1 = new DNSLookupResult(List.of(InetAddress.getByName("192.168.1.1")), null, null);
+        DNSLookupResult dnsLookupResult2 = new DNSLookupResult(List.of(InetAddress.getByName("192.168.1.2")), null, null);
+        downloadNetworkTaskWorker.setMockDNSLookup(normalizedHost1, new MockDNSLookup(normalizedHost1, dnsLookupResult1));
+        downloadNetworkTaskWorker.setMockDNSLookup(normalizedHost2, new MockDNSLookup(normalizedHost2, dnsLookupResult2));
+        MockDownloadCommand mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, (DownloadCommandResult) null);
+        downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
+        downloadNetworkTaskWorker.setMockFileManager(fileManager);
+        MockTimeService timeService = (MockTimeService) downloadNetworkTaskWorker.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com");
+        networkTask = networkTaskDAO.insertNetworkTask(networkTask);
+        Resolve resolve1 = getResolve(networkTask.getId(), 0);
+        resolve1.setTargetAddress(targetAddress1);
+        resolveDAO.insertResolve(resolve1);
+        Resolve resolve2 = getResolve(networkTask.getId(), 1);
+        resolve2.setSourceAddress("");
+        resolve2.setSourcePort(-1);
+        resolve2.setTargetAddress(targetAddress2);
+        resolveDAO.insertResolve(resolve2);
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertEquals(2, downloadCommand.getConnectToAddresses().size());
+        assertEquals(targetAddress1, downloadCommand.getConnectToAddresses().get(0).resolve().getTargetAddress());
+        assertNotNull(downloadCommand.getConnectToAddresses().get(0).resolvedAddress());
+        assertEquals("192.168.1.1", downloadCommand.getConnectToAddresses().get(0).resolvedAddress().getHostAddress());
+        assertEquals(targetAddress2, downloadCommand.getConnectToAddresses().get(1).resolve().getTargetAddress());
+        assertNotNull(downloadCommand.getConnectToAddresses().get(1).resolvedAddress());
+        assertEquals("192.168.1.2", downloadCommand.getConnectToAddresses().get(1).resolvedAddress().getHostAddress());
     }
 
     @Test

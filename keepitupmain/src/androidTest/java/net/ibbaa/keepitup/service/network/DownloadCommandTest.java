@@ -171,6 +171,32 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testConnectionFailedWithConnectToIPv6ScopeMatch() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://[fe80::1%2]"), null, true, getConnectToAddressList("fe80::1%2", 443, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
+        setCurrentTime(downloadCommand);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertEquals("fe80::1%2", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
+        assertEquals("192.168.179.1", result.connectResults().get(0).connectAddress().getHostAddress());
+        assertEquals(33, result.connectResults().get(0).connectPort());
+    }
+
+    @Test
+    public void testConnectionFailedWithConnectToIPv6ScopeMismatch() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://[fe80::1%2]"), null, true, getConnectToAddressList("fe80::1%3", 443, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
+        setCurrentTime(downloadCommand);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertEquals("fe80::1%2", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
+        assertNull(result.connectResults().get(0).connectAddress());
+        assertEquals(-1, result.connectResults().get(0).connectPort());
+    }
+
+    @Test
     public void testConnectionFailedWithRedirectAndConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddressList("test.com", 80, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
