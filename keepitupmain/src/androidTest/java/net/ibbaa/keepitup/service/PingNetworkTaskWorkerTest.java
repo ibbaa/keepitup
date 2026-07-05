@@ -44,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -114,6 +115,18 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(10, pingNetworkTaskWorker.getPingCount());
         assertTrue(logEntry.isSuccess());
         assertEquals("Pinged ::1 successfully. 64 bytes received per packet. 3 packets transmitted. 3 packets received. 0% packet loss. 0.08 msec average time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallIPv6WithScope() throws Exception {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(scopedAddress, "fe80::1%2", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP4Ping(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Pinged fe80::1%2 successfully. 64 bytes received per packet. 3 packets transmitted. 3 packets received. 0% packet loss. 0.08 msec average time.", logEntry.getMessage());
     }
 
     @Test

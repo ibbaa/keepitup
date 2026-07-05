@@ -16,4 +16,5 @@
 
 <resources>
     <integer name="download_valid_poll_interval">1</integer>
+    <integer name="snmp_usm_user_cache_size">5</integer>
 </resources>

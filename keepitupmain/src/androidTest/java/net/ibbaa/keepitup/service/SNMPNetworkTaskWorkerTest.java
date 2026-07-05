@@ -49,6 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -111,6 +112,18 @@ public class SNMPNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("SNMP request to 127.0.0.1:161 successful. Request time: 0 msec.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessIPv6WithScope() throws Exception {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(scopedAddress, "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertTrue(logEntry.isSuccess());
+        assertEquals("SNMP request to [fe80::1%2]:161 successful. Request time: 0 msec.", logEntry.getMessage());
     }
 
     @Test

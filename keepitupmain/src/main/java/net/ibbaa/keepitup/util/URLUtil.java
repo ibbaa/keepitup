@@ -143,7 +143,7 @@ public class URLUtil {
         }
         if (isValidIPAddress(stripped)) {
             try {
-                return getHostAddress(InetAddress.getByName(stripped));
+                return getHostAddressWithoutScope(InetAddress.getByName(stripped));
             } catch (Exception exc) {
                 Log.d(URLUtil.class.getName(), "Exception normalizing IP address " + host, exc);
             }
@@ -153,9 +153,11 @@ public class URLUtil {
 
     public static String getHostAddress(InetAddress address) {
         String hostAddress = address.getHostAddress();
-        if (hostAddress == null) {
-            return "";
-        }
+        return hostAddress == null ? "" : hostAddress;
+    }
+
+    public static String getHostAddressWithoutScope(InetAddress address) {
+        String hostAddress = getHostAddress(address);
         int scopeIndex = hostAddress.indexOf('%');
         if (scopeIndex >= 0) {
             hostAddress = hostAddress.substring(0, scopeIndex);

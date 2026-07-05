@@ -56,6 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1047,6 +1048,18 @@ public class NetworkTaskWorkerTest {
         assertEquals(InetAddress.getByName("::1"), address);
         assertTrue(logEntry.isSuccess());
         assertEquals("DNS lookup for abc.com successful. Resolved address is ::1.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupIPv6WithScope() throws Exception {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(scopedAddress, "abc.com", null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        NetworkTaskWorker.DNSExecutionResult dnsExecutionResult = testNetworkTaskWorker.executeDNSLookup("host.com", false);
+        LogEntry logEntry = dnsExecutionResult.getLogEntry();
+        assertTrue(logEntry.isSuccess());
+        assertEquals("DNS lookup for abc.com successful. Resolved address is fe80::1%2.", logEntry.getMessage());
     }
 
     @Test

@@ -478,6 +478,16 @@ public class URLUtilTest {
         Inet6Address ipv6WithScope = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
         String withScope = Objects.requireNonNull(ipv6WithScope.getHostAddress());
         assertTrue(withScope.contains("%"));
-        assertEquals(withScope.substring(0, withScope.indexOf('%')), URLUtil.getHostAddress(ipv6WithScope));
+        assertEquals(withScope, URLUtil.getHostAddress(ipv6WithScope));
+    }
+
+    @Test
+    public void testGetHostAddressWithoutScope() throws Exception {
+        assertEquals("127.0.0.1", URLUtil.getHostAddressWithoutScope(InetAddress.getByName("127.0.0.1")));
+        assertEquals(InetAddress.getByName("::1").getHostAddress(), URLUtil.getHostAddressWithoutScope(InetAddress.getByName("::1")));
+        Inet6Address ipv6WithScope = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        String withScope = Objects.requireNonNull(ipv6WithScope.getHostAddress());
+        assertTrue(withScope.contains("%"));
+        assertEquals(withScope.substring(0, withScope.indexOf('%')), URLUtil.getHostAddressWithoutScope(ipv6WithScope));
     }
 }

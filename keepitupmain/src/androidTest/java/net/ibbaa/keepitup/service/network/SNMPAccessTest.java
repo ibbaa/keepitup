@@ -560,12 +560,12 @@ public class SNMPAccessTest {
 
     @Test
     public void testWalkV3EngineIDCacheHitAvoidsRediscovery() throws UnknownHostException {
+        int cacheSize = TestRegistry.getContext().getResources().getInteger(R.integer.snmp_usm_user_cache_size);
         TestSNMPAccess firstContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
         firstContact.setSubtreeEmpty(true);
         firstContact.walkInterfacesDescr();
         assertEquals(1, firstContact.getDiscoverEngineIDCallCount());
         firstContact.close();
-        int cacheSize = TestRegistry.getContext().getResources().getInteger(R.integer.snmp_usm_user_cache_size);
         fillEngineIDCacheWithDistinctTargets(cacheSize - 1);
         TestSNMPAccess secondContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
         secondContact.setSubtreeEmpty(true);
@@ -576,12 +576,12 @@ public class SNMPAccessTest {
 
     @Test
     public void testWalkV3EngineIDCacheEvictionForcesRediscovery() throws UnknownHostException {
+        int cacheSize = TestRegistry.getContext().getResources().getInteger(R.integer.snmp_usm_user_cache_size);
         TestSNMPAccess firstContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
         firstContact.setSubtreeEmpty(true);
         firstContact.walkInterfacesDescr();
         assertEquals(1, firstContact.getDiscoverEngineIDCallCount());
         firstContact.close();
-        int cacheSize = TestRegistry.getContext().getResources().getInteger(R.integer.snmp_usm_user_cache_size);
         fillEngineIDCacheWithDistinctTargets(cacheSize + 1);
         TestSNMPAccess secondContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
         secondContact.setSubtreeEmpty(true);

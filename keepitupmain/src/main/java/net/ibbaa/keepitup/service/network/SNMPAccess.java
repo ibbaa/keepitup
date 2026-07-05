@@ -441,7 +441,7 @@ public class SNMPAccess implements AutoCloseable {
     }
 
     private String formatAddress() {
-        String hostAddress = URLUtil.getHostAddress(address);
+        String hostAddress = URLUtil.getHostAddressWithoutScope(address);
         String prefix = (snmpTransport != null && snmpTransport.isTCP()) ? "tcp:" : "udp:";
         String address = ip6 ? prefix + "[" + hostAddress + "]" : prefix + hostAddress;
         if (port >= 0) {

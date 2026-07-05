@@ -67,6 +67,7 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.Arrays;
@@ -877,6 +878,19 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Request to 192.192.192.192:22 was successful. Server returned redirect 301. Request to [fd00::3eec:efff:feb5:d5c]:22 was successful. Server returned redirect 301. Request to 127.0.0.1:443 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadStoppedFileDoesNotExistWithRedirectIPv6WithScope() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(scopedAddress, 22, true), getDownloadConnectResult(true)), false, false, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to [fe80::1%2]:22 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
     }
 
     @Test

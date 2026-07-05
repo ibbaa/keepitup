@@ -43,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -82,6 +83,18 @@ public class ConnectNetworkTaskWorkerTest {
         assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
         assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec connect time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallIPv6WithScope() throws Exception {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(scopedAddress, "127.0.0.1", null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 1, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Connected to [fe80::1%2]:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec connect time.", logEntry.getMessage());
     }
 
     @Test
