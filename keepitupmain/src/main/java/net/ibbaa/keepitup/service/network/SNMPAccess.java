@@ -36,6 +36,7 @@ import org.snmp4j.Snmp;
 import org.snmp4j.Target;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.UserTarget;
+import org.snmp4j.mp.MPv3;
 import org.snmp4j.mp.MessageProcessingModel;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.security.AuthHMAC128SHA224;
@@ -72,6 +73,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -91,6 +93,10 @@ public class SNMPAccess implements AutoCloseable {
         SecurityProtocols.getInstance().addPrivacyProtocol(new PrivAES256());
         SecurityProtocols.getInstance().addPrivacyProtocol(new PrivAES256With3DESKeyExtension());
     }
+
+    private static final Object USM_LOCK = new Object();
+    private static USM sharedUSM;
+    private static Map<UsmTargetKey, OctetString> engineIDCache;
 
     private final Context context;
     private final InetAddress address;
@@ -125,7 +131,9 @@ public class SNMPAccess implements AutoCloseable {
     public WalkResult walk(String oid, WalkFilter filter, boolean emptyIsValid) {
         Log.d(SNMPAccess.class.getName(), "walk, oid is " + oid);
         try {
-            ensureSession();
+            if (!ensureSession()) {
+                return new WalkResult(false, Collections.emptyMap(), null, List.of(getResources().getString(R.string.text_snmp_engine_id_discovery_failed)));
+            }
             Map<String, Variable> results = new HashMap<>();
             List<String> errors = new ArrayList<>();
             if (!fetchAndProcessSubtree(snmp, target, oid, results, errors, emptyIsValid)) {
@@ -139,25 +147,108 @@ public class SNMPAccess implements AutoCloseable {
         }
     }
 
-    private void ensureSession() throws IOException {
+    private boolean ensureSession() throws IOException {
         Log.d(SNMPAccess.class.getName(), "ensureSession");
         if (snmp != null) {
-            return;
+            return true;
         }
         transport = getTransportMapping();
         snmp = new Snmp(transport);
         transport.listen();
         if (version() == SnmpConstants.version3) {
-            OctetString localEngineID = new OctetString(snmp.getLocalEngineID());
-            USM usm = new USM(SecurityProtocols.getInstance(), localEngineID, 0);
-            SecurityModels.getInstance().addSecurityModel(usm);
+            USM usm = ensureSharedUSM(getResources());
+            UserTarget<Address> userTarget = configureUserTarget();
+            OctetString engineID = getOrDiscoverEngineID(userTarget.getAddress());
+            if (engineID == null) {
+                Log.e(SNMPAccess.class.getName(), "Engine ID discovery failed for " + userTarget.getAddress());
+                close();
+                return false;
+            }
+            registerEngineIDWithSession(userTarget.getAddress(), engineID);
             UsmUser usmUser = getUsmUser();
             if (usmUser != null) {
-                snmp.getUSM().addUser(usmUser);
+                usm.addUser(usmUser, engineID);
             }
-            target = configureUserTarget();
+            target = userTarget;
         } else {
             target = configureCommunityTarget();
+        }
+        return true;
+    }
+
+    private static USM ensureSharedUSM(Resources resources) {
+        synchronized (USM_LOCK) {
+            if (sharedUSM == null) {
+                USM usm = new USM(SecurityProtocols.getInstance(), new OctetString(MPv3.createLocalEngineID()), 0);
+                SecurityModels.getInstance().addSecurityModel(usm);
+                int cacheSize = resources.getInteger(R.integer.snmp_usm_user_cache_size);
+                engineIDCache = new LinkedHashMap<>(16, 0.75f, true) {
+                    @Override
+                    protected boolean removeEldestEntry(Map.Entry<UsmTargetKey, OctetString> eldest) {
+                        if (size() > cacheSize) {
+                            usm.removeAllUsers(eldest.getKey().userName(), eldest.getValue());
+                            return true;
+                        }
+                        return false;
+                    }
+                };
+                sharedUSM = usm;
+            }
+            return sharedUSM;
+        }
+    }
+
+    private OctetString getOrDiscoverEngineID(Address targetAddress) {
+        Log.d(SNMPAccess.class.getName(), "getOrDiscoverEngineID for " + targetAddress);
+        UsmTargetKey key = buildUsmTargetKey();
+        synchronized (USM_LOCK) {
+            OctetString cached = engineIDCache.get(key);
+            if (cached != null) {
+                return cached;
+            }
+        }
+        byte[] discovered = discoverEngineID(targetAddress);
+        if (discovered == null || discovered.length == 0) {
+            return null;
+        }
+        OctetString engineID = new OctetString(discovered);
+        synchronized (USM_LOCK) {
+            engineIDCache.put(key, engineID);
+        }
+        return engineID;
+    }
+
+    private void registerEngineIDWithSession(Address targetAddress, OctetString engineID) {
+        Log.d(SNMPAccess.class.getName(), "registerEngineIDWithSession for " + targetAddress);
+        MPv3 mpv3 = (MPv3) snmp.getMessageProcessingModel(MPv3.ID);
+        if (mpv3 != null) {
+            mpv3.addEngineID(targetAddress, engineID);
+        }
+    }
+
+    protected byte[] discoverEngineID(Address targetAddress) {
+        Log.d(SNMPAccess.class.getName(), "discoverEngineID for " + targetAddress);
+        return snmp.discoverAuthoritativeEngineID(targetAddress, timeoutSec * 1000L);
+    }
+
+    private UsmTargetKey buildUsmTargetKey() {
+        String userName = authInfo != null ? StringUtil.notNull(authInfo.getUserName()) : "";
+        return new UsmTargetKey(address.getHostAddress(), port, new OctetString(userName));
+    }
+
+    public boolean isEngineIDKnownToSession() {
+        if (snmp == null || target == null) {
+            return false;
+        }
+        MPv3 mpv3 = (MPv3) snmp.getMessageProcessingModel(MPv3.ID);
+        return mpv3 != null && mpv3.getEngineID(target.getAddress()) != null;
+    }
+
+    @SuppressWarnings("unused")
+    protected static void resetSharedUSMState() {
+        synchronized (USM_LOCK) {
+            sharedUSM = null;
+            engineIDCache = null;
         }
     }
 
@@ -377,6 +468,9 @@ public class SNMPAccess implements AutoCloseable {
 
     private Resources getResources() {
         return getContext().getResources();
+    }
+
+    private record UsmTargetKey(String hostAddress, int port, OctetString userName) {
     }
 
     private static class ScopedPDUFactory implements PDUFactory {

@@ -40,6 +40,8 @@ public class TestSNMPAccess extends SNMPAccess {
     private List<String> subtreeErrors;
     private boolean subtreeEmpty;
     private RuntimeException subtreeException;
+    private byte[] discoveredEngineID;
+    private int discoverEngineIDCallCount;
 
     public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, boolean ip6) {
         super(context, address, port, snmpVersion, snmpTransport, authInfo, ip6);
@@ -51,6 +53,22 @@ public class TestSNMPAccess extends SNMPAccess {
         subtreeErrors = new ArrayList<>();
         subtreeEmpty = false;
         subtreeException = null;
+        discoveredEngineID = new byte[]{1, 2, 3, 4, 5};
+        discoverEngineIDCallCount = 0;
+    }
+
+    public void setDiscoveredEngineID(byte[] discoveredEngineID) {
+        this.discoveredEngineID = discoveredEngineID;
+    }
+
+    public int getDiscoverEngineIDCallCount() {
+        return discoverEngineIDCallCount;
+    }
+
+    @Override
+    protected byte[] discoverEngineID(Address targetAddress) {
+        discoverEngineIDCallCount++;
+        return discoveredEngineID;
     }
 
     public void setSubtreeResults(Map<String, Variable> subtreeResults) {

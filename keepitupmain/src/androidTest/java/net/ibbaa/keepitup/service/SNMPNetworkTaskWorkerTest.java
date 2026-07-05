@@ -215,6 +215,19 @@ public class SNMPNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testFailureWithEngineIDDiscoveryFailed() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, List.of("SNMP engine ID discovery failed."), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. Error: SNMP engine ID discovery failed. Request time: 0 msec.", logEntry.getMessage());
+    }
+
+    @Test
     public void testFailureWithMultipleErrors() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
         SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, List.of("Error 1", "Error 2"), 0);

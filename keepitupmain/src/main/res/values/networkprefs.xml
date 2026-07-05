@@ -31,6 +31,7 @@
     <integer name="download_max_redirect">10</integer>
     <integer name="snmp_request_timeout">10</integer>
     <integer name="snmp_request_retries">1</integer>
+    <integer name="snmp_usm_user_cache_size">1000</integer>
     <integer name="dns_lookup_timeout">60</integer>
     <integer name="dns_max_parallel_lookups">10</integer>
     <string name="http_header_content_disposition">Content-Disposition</string>
