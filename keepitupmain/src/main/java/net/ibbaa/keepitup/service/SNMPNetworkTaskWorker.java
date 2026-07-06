@@ -133,7 +133,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
                 new SNMPItemSyncHandler(getContext()).synchronizeSNMPItems(snmpResult.interfaceResult().result(), snmpItems);
             }
             SNMPMapping snmpMapping = new SNMPMapping(getContext());
-            long currentSysUpTime = snmpMapping.getSysUpTime(snmpResult.systemResult());
+            long currentSysUpTime = snmpMapping.getOverallSysUpTime(snmpResult.systemResult());
             if (currentSysUpTime >= 0) {
                 updateNetworkTaskLastSysUpTime(currentSysUpTime);
             }
@@ -306,7 +306,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
     private String getSysUpTime(Map<String, String> result) {
         Log.d(SNMPNetworkTaskWorker.class.getName(), "getSysUpTime");
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        long sysUpTime = snmpMapping.getSysUpTime(result);
+        long sysUpTime = snmpMapping.getOverallSysUpTime(result);
         if (sysUpTime > 0) {
             String sysUpTimeFormatted = StringUtil.formatUpTime(sysUpTime);
             String oid = snmpMapping.getSysUpTimeOID();

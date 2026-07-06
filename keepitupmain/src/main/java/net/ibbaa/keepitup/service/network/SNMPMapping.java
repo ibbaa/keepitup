@@ -129,6 +129,10 @@ public class SNMPMapping {
         return getResources().getString(R.string.sys_uptime_oid);
     }
 
+    public String getHrSysUpTimeOID() {
+        return getResources().getString(R.string.sys_hr_uptime_oid);
+    }
+
     public String getInterfaceDescrOID() {
         return getResources().getString(R.string.interface_descr_oid);
     }
@@ -263,7 +267,7 @@ public class SNMPMapping {
         if (StringUtil.isEmpty(oid) || variable == null) {
             return null;
         }
-        if (isSysUpTimeOID(oid)) {
+        if (isSysUpTimeOID(oid) || isHrSysUpTimeOID(oid)) {
             try {
                 return String.valueOf(variable.toLong());
             } catch (Exception exc) {
@@ -280,9 +284,31 @@ public class SNMPMapping {
         return getSysUpTimeOID().equals(oid);
     }
 
+    public boolean isHrSysUpTimeOID(String oid) {
+        if (StringUtil.isEmpty(oid)) {
+            return false;
+        }
+        return getHrSysUpTimeOID().equals(oid);
+    }
+
     public long getSysUpTime(Map<String, String> values) {
         if (values == null) {
             return -1;
+        }
+        String sysUpString = values.get(getResources().getString(R.string.sys_uptime_oid));
+        if (sysUpString != null) {
+            return NumberUtil.getLongValue(sysUpString, -1);
+        }
+        return -1;
+    }
+
+    public long getOverallSysUpTime(Map<String, String> values) {
+        if (values == null) {
+            return -1;
+        }
+        String hrSysUpString = values.get(getResources().getString(R.string.sys_hr_uptime_oid));
+        if (NumberUtil.isValidLongValue(hrSysUpString)) {
+            return NumberUtil.getLongValue(hrSysUpString, -1);
         }
         String sysUpString = values.get(getResources().getString(R.string.sys_uptime_oid));
         if (sysUpString != null) {

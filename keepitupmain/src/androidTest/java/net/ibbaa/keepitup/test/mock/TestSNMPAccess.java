@@ -42,6 +42,8 @@ public class TestSNMPAccess extends SNMPAccess {
     private RuntimeException subtreeException;
     private byte[] discoveredEngineID;
     private int discoverEngineIDCallCount;
+    private SingleOIDResult singleOIDResult;
+    private int getSingleOIDCallCount;
 
     public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, boolean ip6) {
         super(context, address, port, snmpVersion, snmpTransport, authInfo, ip6);
@@ -55,6 +57,22 @@ public class TestSNMPAccess extends SNMPAccess {
         subtreeException = null;
         discoveredEngineID = new byte[]{1, 2, 3, 4, 5};
         discoverEngineIDCallCount = 0;
+        singleOIDResult = new SingleOIDResult(false, null);
+        getSingleOIDCallCount = 0;
+    }
+
+    public void setSingleOIDResult(SingleOIDResult singleOIDResult) {
+        this.singleOIDResult = singleOIDResult;
+    }
+
+    public int getGetSingleOIDCallCount() {
+        return getSingleOIDCallCount;
+    }
+
+    @Override
+    protected SingleOIDResult getSingleOID(String oid) {
+        getSingleOIDCallCount++;
+        return singleOIDResult;
     }
 
     public void setDiscoveredEngineID(byte[] discoveredEngineID) {

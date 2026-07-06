@@ -51,6 +51,7 @@ import java.util.TreeMap;
 public class SNMPCommandTest {
 
     private String sysUpTimeOid;
+    private String hrSysUpTimeOid;
     private String sysDescrOid;
     private String descrOidBase;
     private String typeOidBase;
@@ -60,6 +61,7 @@ public class SNMPCommandTest {
     @Before
     public void beforeEachTestMethod() {
         sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
         sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
         descrOidBase = TestRegistry.getContext().getString(R.string.interface_descr_oid);
         typeOidBase = TestRegistry.getContext().getString(R.string.interface_type_oid);
@@ -208,6 +210,31 @@ public class SNMPCommandTest {
         TestSNMPCommand command = createCommand(belowThreshold);
         TreeMap<String, String> systemMap = new TreeMap<>();
         systemMap.put(sysUpTimeOid, "1000");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertTrue(commandResult.reboot());
+    }
+
+    @Test
+    public void testCallNoRebootHrSysUpTimeIncreasedDespiteClassicSysUpTimeReset() {
+        TestSNMPCommand command = createCommand(500000);
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "100");
+        systemMap.put(hrSysUpTimeOid, "600000");
+        command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
+        SNMPCommandResult commandResult = command.call();
+        assertTrue(commandResult.success());
+        assertFalse(commandResult.reboot());
+        assertEquals("600000", commandResult.systemResult().get(hrSysUpTimeOid));
+    }
+
+    @Test
+    public void testCallRebootDetectedUsingHrSysUpTimeDespiteUnrelatedClassicValue() {
+        TestSNMPCommand command = createCommand(500000);
+        TreeMap<String, String> systemMap = new TreeMap<>();
+        systemMap.put(sysUpTimeOid, "999999999");
+        systemMap.put(hrSysUpTimeOid, "100");
         command.getMockSNMPAccess().setWalkResult(successResult(systemMap));
         SNMPCommandResult commandResult = command.call();
         assertTrue(commandResult.success());

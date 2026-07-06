@@ -135,6 +135,74 @@ public class SNMPAccessTest {
     }
 
     @Test
+    public void testWalkSystemAddsHrSysUpTimeWhenAvailable() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(100));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        snmpAccess.setSingleOIDResult(new SNMPAccess.SingleOIDResult(false, new TimeTicks(999999)));
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertTrue(result.success());
+        assertEquals(2, result.result().size());
+        assertEquals(String.valueOf(100L), result.result().get(sysUpTimeOid));
+        assertEquals(String.valueOf(999999L), result.result().get(hrSysUpTimeOid));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+        assertEquals(1, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
+    public void testWalkSystemNoHrSysUpTimeWhenNotSupportedByDevice() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(100));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        snmpAccess.setSingleOIDResult(new SNMPAccess.SingleOIDResult(false, null));
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertTrue(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals(String.valueOf(100L), result.result().get(sysUpTimeOid));
+        assertNull(result.result().get(hrSysUpTimeOid));
+        assertTrue(result.errorMessages().isEmpty());
+        assertEquals(1, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
+    public void testWalkSystemFailsOnHrSysUpTimeNetworkProblem() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(100));
+        subtreeResults.put(sysDescrOid, new OctetString("Test system"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        snmpAccess.setSingleOIDResult(new SNMPAccess.SingleOIDResult(true, null));
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertFalse(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals("Test system", result.result().get(sysDescrOid));
+        assertNull(result.result().get(sysUpTimeOid));
+        assertNull(result.result().get(hrSysUpTimeOid));
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_uptime_no_response), result.errorMessages().get(0));
+        assertEquals(1, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
+    public void testWalkSystemSkipsHrSysUpTimeFetchWhenMandatorySysUpTimeMissing() {
+        String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysDescrOid, new OctetString("Test system"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertFalse(result.success());
+        assertEquals(0, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
     public void testWalkSystemSuccessWithMultipleOIDs() {
         String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
         String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);

@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
+import net.ibbaa.keepitup.util.CollectionUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
@@ -36,6 +37,7 @@ import org.snmp4j.Snmp;
 import org.snmp4j.Target;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.UserTarget;
+import org.snmp4j.event.ResponseEvent;
 import org.snmp4j.mp.MPv3;
 import org.snmp4j.mp.MessageProcessingModel;
 import org.snmp4j.mp.SnmpConstants;
@@ -303,13 +305,32 @@ public class SNMPAccess implements AutoCloseable {
         if (!walkResult.success()) {
             return walkResult;
         }
-        long currentSysUpTime = snmpMapping.getSysUpTime(walkResult.result());
-        if (currentSysUpTime >= 0) {
-            return walkResult;
+        long sysUpTime = snmpMapping.getSysUpTime(walkResult.result());
+        if (sysUpTime < 0) {
+            String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
+            String sysUpTimeError = getResources().getString(R.string.text_snmp_mandatory_oid_missing, sysUpTimeOIDValue);
+            return new WalkResult(false, walkResult.result(), walkResult.exception(), List.of(sysUpTimeError));
         }
-        String sysUpTimeOIDValue = getResources().getString(R.string.sys_uptime_label_short) + " (" + snmpMapping.getSysUpTimeOID() + ")";
-        String sysUpTimeError = getResources().getString(R.string.text_snmp_mandatory_oid_missing, sysUpTimeOIDValue);
-        return new WalkResult(false, walkResult.result(), walkResult.exception(), List.of(sysUpTimeError));
+        SingleOIDResult hrSysUpTimeResult = getSingleOID(snmpMapping.getHrSysUpTimeOID());
+        if (hrSysUpTimeResult.networkProblem()) {
+            Map<String, String> resultWithoutSysUpTime = new TreeMap<>(walkResult.result());
+            resultWithoutSysUpTime.remove(snmpMapping.getSysUpTimeOID());
+            return new WalkResult(false, resultWithoutSysUpTime, walkResult.exception(), List.of(getResources().getString(R.string.text_snmp_uptime_no_response)));
+        }
+        String hrSysUpTime = snmpMapping.getValueForOID(snmpMapping.getHrSysUpTimeOID(), hrSysUpTimeResult.variable());
+        Map<String, String> systemResult = addHrSysUpTime(walkResult.result(), hrSysUpTime);
+        return new WalkResult(true, systemResult, walkResult.exception(), walkResult.errorMessages);
+    }
+
+    private Map<String, String> addHrSysUpTime(Map<String, String> result, String hrSysUpTime) {
+        if (StringUtil.isEmpty(hrSysUpTime)) {
+            return result;
+        }
+        Map<String, String> newResults = new TreeMap<>();
+        CollectionUtil.copyMap(result, newResults, null);
+        SNMPMapping snmpMapping = new SNMPMapping(getContext());
+        newResults.put(snmpMapping.getHrSysUpTimeOID(), hrSysUpTime);
+        return newResults;
     }
 
     private Map<String, String> prefixFilter(String baseOID, Map<String, Variable> results) {
@@ -354,6 +375,27 @@ public class SNMPAccess implements AutoCloseable {
             }
         }
         return filteredResults;
+    }
+
+    protected SingleOIDResult getSingleOID(String oid) {
+        try {
+            PDU pdu = getPDUFactory().createPDU(target);
+            pdu.setType(PDU.GET);
+            pdu.add(new VariableBinding(new OID(oid)));
+            ResponseEvent<?> response = snmp.get(pdu, target);
+            if (response == null || response.getResponse() == null) {
+                return new SingleOIDResult(true, null);
+            }
+            PDU responsePDU = response.getResponse();
+            VariableBinding binding = responsePDU.get(0);
+            if (responsePDU.getErrorStatus() != PDU.noError || binding == null || binding.isException()) {
+                return new SingleOIDResult(false, null);
+            }
+            return new SingleOIDResult(false, binding.getVariable());
+        } catch (Exception exc) {
+            Log.e(SNMPAccess.class.getName(), "Error on SNMP GET", exc);
+            return new SingleOIDResult(true, null);
+        }
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -494,5 +536,8 @@ public class SNMPAccess implements AutoCloseable {
     }
 
     public record WalkResult(boolean success, Map<String, String> result, Throwable exception, List<String> errorMessages) {
+    }
+
+    public record SingleOIDResult(boolean networkProblem, Variable variable) {
     }
 }
