@@ -127,15 +127,30 @@ are used and the per-task header list is hidden.
 Queries a network device via SNMP at each poll interval.
 
 - **Host** — hostname or IP address of the SNMP agent
-- **Port** — UDP port, default is 161
-- **Version** — SNMPv1 or SNMPv2c (SNMPv3 is planned)
-- **Community** — the SNMP community string, stored encrypted
+- **Port** — the SNMP agent port, default is 161
+- **Version** — SNMPv1, SNMPv2c or SNMPv3
+- **Transport** — UDP (default) or TCP
+- **Community** — the SNMP community string, stored encrypted; shown for
+  SNMPv1 and SNMPv2c
+- **Authentication** — opens the SNMPv3 authentication dialog (see below);
+  shown instead of Community for SNMPv3
 - **Interfaces** — opens the interface configuration (see below)
 
 At each execution the system group is queried, providing device information
 such as description, name and uptime. A device reboot is detected
 automatically when the uptime resets. The execution is considered successful
 if the device responds and returns a valid uptime value.
+
+#### SNMPv3 Authentication
+
+- **Auth username**
+- **Auth passphrase** — stored encrypted
+- **Auth algorithm** — None, MD5, SHA-1, SHA-224, SHA-256, SHA-384 or SHA-512
+- **Privacy passphrase** — stored encrypted
+- **Privacy algorithm** — None, DES, AES-128, AES-192, AES-256 or AES-256C
+
+Privacy passphrase and Privacy algorithm are disabled while Auth algorithm
+is set to None, since SNMPv3 does not support privacy without authentication.
 
 #### Interface Monitoring
 
@@ -195,6 +210,9 @@ In addition, Defaults provides:
   **Use default headers** enabled
 - **Resolve rule defaults** — default values that pre-fill the resolve rule
   dialog when a new rule is added to any download task
+- **SNMP settings** — default values for version, port, transport, and auth
+  and privacy algorithm that pre-fill new SNMP tasks; per-task fields such as
+  Auth username and the passphrases are not covered by defaults
 
 ---
 
