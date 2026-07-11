@@ -277,7 +277,7 @@ public class DBSetupTest {
     public void testAddSnmpColumnsToAccessTypeDataTable() {
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPColumns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSnmpVersionAndCommunityColumns());
         setup.addSnmpVersionColumnToAccessTypeDataTable();
         setup.addSnmpCommunityColumnToAccessTypeDataTable();
         setup.addSnmpCommunityIVColumnToAccessTypeDataTable();
@@ -289,7 +289,7 @@ public class DBSetupTest {
     public void testAddSNMPV3ColumnsToAccessTypeDataTable() {
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPV3Columns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns());
         setup.addFailureOnCertificateExpiryColumnToAccessTypeDataTable();
         setup.addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable();
         setup.addSnmpTransportColumnToAccessTypeDataTable();

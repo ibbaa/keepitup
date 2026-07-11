@@ -301,7 +301,7 @@ public class DBMigrateTest {
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutLastSysUpTime());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPColumns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSnmpVersionAndCommunityColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 7, 8);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         resolveDAO.insertResolve(new Resolve());
@@ -468,7 +468,7 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPV3Columns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns());
         migrate.doUpgrade(TestRegistry.getContext(), 8, 9);
         accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
         assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
@@ -479,7 +479,7 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPV3Columns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns());
         NetworkTask task = networkTaskDAO.insertNetworkTask(new NetworkTask());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL("INSERT INTO " + accessTypeDataDBConstants.getTableName() + " (" + accessTypeDataDBConstants.getNetworkTaskIdColumnName() + ") VALUES (" + task.getId() + ")");
         migrate.doUpgrade(TestRegistry.getContext(), 8, 9);

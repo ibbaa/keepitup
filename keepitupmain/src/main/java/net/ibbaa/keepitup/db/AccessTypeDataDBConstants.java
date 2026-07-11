@@ -185,7 +185,7 @@ public class AccessTypeDataDBConstants {
                 getSnmpPrivPassphraseIVColumnName() + " TEXT);";
     }
 
-    public String getCreateTableStatementWithoutSNMPV3Columns() {
+    public String getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
@@ -272,7 +272,7 @@ public class AccessTypeDataDBConstants {
                 getSnmpPrivPassphraseIVColumnName() + " TEXT);";
     }
 
-    public String getCreateTableStatementWithoutSNMPColumns() {
+    public String getCreateTableStatementWithoutSnmpVersionAndCommunityColumns() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
@@ -300,17 +300,7 @@ public class AccessTypeDataDBConstants {
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
                 getPingCountColumnName() + " INTEGER, " +
                 getPingPackageSizeColumnName() + " INTEGER, " +
-                getConnectCountColumnName() + " INTEGER, " +
-                getFailureOnCertificateExpiryColumnName() + " INTEGER, " +
-                getFailureOnCertificateExpiryDaysColumnName() + " INTEGER, " +
-                getSnmpTransportColumnName() + " INTEGER, " +
-                getSnmpAuthAlgorithmColumnName() + " INTEGER, " +
-                getSnmpUserNameColumnName() + " TEXT, " +
-                getSnmpAuthPassphraseColumnName() + " TEXT, " +
-                getSnmpAuthPassphraseIVColumnName() + " TEXT, " +
-                getSnmpPrivAlgorithmColumnName() + " INTEGER, " +
-                getSnmpPrivPassphraseColumnName() + " TEXT, " +
-                getSnmpPrivPassphraseIVColumnName() + " TEXT);";
+                getConnectCountColumnName() + " INTEGER);";
     }
 
     public String getDropTableStatement() {
