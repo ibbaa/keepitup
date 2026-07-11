@@ -289,7 +289,8 @@ public class DBSetupTest {
     public void testAddSNMPV3ColumnsToAccessTypeDataTable() {
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAllowLegacyTLSCertificateExpiryAndSnmpV3Columns());
+        setup.addAllowLegacyTLSColumnToAccessTypeDataTable();
         setup.addFailureOnCertificateExpiryColumnToAccessTypeDataTable();
         setup.addFailureOnCertificateExpiryDaysColumnToAccessTypeDataTable();
         setup.addSnmpTransportColumnToAccessTypeDataTable();
@@ -1852,6 +1853,7 @@ public class DBSetupTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);

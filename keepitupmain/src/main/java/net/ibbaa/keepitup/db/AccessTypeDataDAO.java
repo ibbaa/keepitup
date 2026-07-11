@@ -162,6 +162,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getAllowLegacyTLSColumnName(), accessTypeData.isAllowLegacyTLS() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
@@ -192,6 +193,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getAllowLegacyTLSColumnName(), accessTypeData.isAllowLegacyTLS() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
@@ -305,6 +307,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexConnectCountColumn = cursor.getColumnIndex(dbConstants.getConnectCountColumnName());
         int indexStopOnSuccessColumn = cursor.getColumnIndex(dbConstants.getStopOnSuccessColumnName());
         int indexIgnoreSSLErrorColumn = cursor.getColumnIndex(dbConstants.getIgnoreSSLErrorColumnName());
+        int indexAllowLegacyTLSColumn = cursor.getColumnIndex(dbConstants.getAllowLegacyTLSColumnName());
         int indexFailureOnCertificateExpiryColumn = cursor.getColumnIndex(dbConstants.getFailureOnCertificateExpiryColumnName());
         int indexFailureOnCertificateExpiryDaysColumn = cursor.getColumnIndex(dbConstants.getFailureOnCertificateExpiryDaysColumnName());
         int indexUseDefaultHeadersColumn = cursor.getColumnIndex(dbConstants.getUseDefaultHeadersColumnName());
@@ -343,6 +346,11 @@ public class AccessTypeDataDAO extends BaseDAO {
             accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
         } else {
             accessTypeData.setIgnoreSSLError(preferenceManager.getPreferenceIgnoreSSLError());
+        }
+        if (!cursor.isNull(indexAllowLegacyTLSColumn)) {
+            accessTypeData.setAllowLegacyTLS(cursor.getInt(indexAllowLegacyTLSColumn) >= 1);
+        } else {
+            accessTypeData.setAllowLegacyTLS(preferenceManager.getPreferenceAllowLegacyTLS());
         }
         if (!cursor.isNull(indexFailureOnCertificateExpiryColumn)) {
             accessTypeData.setFailureOnCertificateExpiry(cursor.getInt(indexFailureOnCertificateExpiryColumn) >= 1);

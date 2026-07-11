@@ -7351,6 +7351,7 @@ public class SystemActivityTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);

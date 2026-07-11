@@ -196,6 +196,7 @@ public class DBSetup {
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
         values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
+        values.put(dbConstants.getAllowLegacyTLSColumnName(), accessTypeData.isAllowLegacyTLS() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getUseDefaultHeadersColumnName(), accessTypeData.isUseDefaultHeaders() ? 1 : 0);
@@ -211,6 +212,7 @@ public class DBSetup {
         AccessTypeData accessTypeData = new AccessTypeData(getContext());
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
         ContentValues values = new ContentValues();
+        values.put(dbConstants.getAllowLegacyTLSColumnName(), accessTypeData.isAllowLegacyTLS() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryColumnName(), accessTypeData.isFailureOnCertificateExpiry() ? 1 : 0);
         values.put(dbConstants.getFailureOnCertificateExpiryDaysColumnName(), accessTypeData.getFailureOnCertificateExpiryDays());
         values.put(dbConstants.getSnmpTransportColumnName(), accessTypeData.getSnmpTransport() == null ? null : accessTypeData.getSnmpTransport().getCode());
@@ -227,6 +229,11 @@ public class DBSetup {
     public void addIgnoreSSLErrorColumnToAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "addIgnoreSSLErrorColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddIgnoreSSLErrorColumnStatement());
+    }
+
+    public void addAllowLegacyTLSColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "addAllowLegacyTLSColumnToAccessTypeDataTable, adding column " + accessTypeDataDBConstants.getAllowLegacyTLSColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddAllowLegacyTLSColumnStatement());
     }
 
     public void addUseDefaultHeadersColumnToAccessTypeDataTable(SQLiteDatabase db) {
@@ -484,6 +491,11 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getDropIgnoreSSLErrorColumnStatement());
     }
 
+    public void dropAllowLegacyTLSColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "dropAllowLegacyTLSColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getAllowLegacyTLSColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropAllowLegacyTLSColumnStatement());
+    }
+
     public void dropUseDefaultHeadersColumnFromAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropUseDefaultHeadersColumnFromAccessTypeDataTable, dropping column " + accessTypeDataDBConstants.getUseDefaultHeadersColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropUseDefaultHeadersColumnStatement());
@@ -704,6 +716,10 @@ public class DBSetup {
         addIgnoreSSLErrorColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addAllowLegacyTLSColumnToAccessTypeDataTable() {
+        addAllowLegacyTLSColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void addUseDefaultHeadersColumnToAccessTypeDataTable() {
         addUseDefaultHeadersColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -847,6 +863,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropIgnoreSSLErrorColumnFromAccessTypeDataTable() {
         dropIgnoreSSLErrorColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropAllowLegacyTLSColumnFromAccessTypeDataTable() {
+        dropAllowLegacyTLSColumnFromAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     @SuppressWarnings({"unused"})

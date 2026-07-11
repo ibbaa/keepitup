@@ -62,6 +62,7 @@
     <string name="accesstypedata_connect_count_column_name">CONNECTCOUNT</string>
     <string name="accesstypedata_stop_on_success_column_name">STOPONSUCCESS</string>
     <string name="accesstypedata_ignore_ssl_error_column_name">IGNORESSLERROR</string>
+    <string name="accesstypedata_allow_legacy_tls_column_name">ALLOWLEGACYTLS</string>
     <string name="accesstypedata_failure_on_certificate_expiry_column_name">FAILUREONCERTIFICATEEXPIRY</string>
     <string name="accesstypedata_failure_on_certificate_expiry_days_column_name">FAILUREONCERTIFICATEEXPIRYDAYS</string>
     <string name="accesstypedata_use_default_headers_column_name">USEDEFAULTHEADERS</string>

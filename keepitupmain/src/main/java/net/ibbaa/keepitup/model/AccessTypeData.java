@@ -39,6 +39,7 @@ public class AccessTypeData {
     private int connectCount;
     private boolean stopOnSuccess;
     private boolean ignoreSSLError;
+    private boolean allowLegacyTLS;
     private boolean failureOnCertificateExpiry;
     private int failureOnCertificateExpiryDays;
     private boolean useDefaultHeaders;
@@ -62,6 +63,7 @@ public class AccessTypeData {
         this.connectCount = 1;
         this.stopOnSuccess = false;
         this.ignoreSSLError = false;
+        this.allowLegacyTLS = false;
         this.failureOnCertificateExpiry = false;
         this.failureOnCertificateExpiryDays = 30;
         this.useDefaultHeaders = true;
@@ -85,6 +87,7 @@ public class AccessTypeData {
         this.connectCount = otherData.getConnectCount();
         this.stopOnSuccess = otherData.isStopOnSuccess();
         this.ignoreSSLError = otherData.isIgnoreSSLError();
+        this.allowLegacyTLS = otherData.isAllowLegacyTLS();
         this.failureOnCertificateExpiry = otherData.isFailureOnCertificateExpiry();
         this.failureOnCertificateExpiryDays = otherData.getFailureOnCertificateExpiryDays();
         this.useDefaultHeaders = otherData.isUseDefaultHeaders();
@@ -106,6 +109,7 @@ public class AccessTypeData {
         this.connectCount = preferenceManager.getPreferenceConnectCount();
         this.stopOnSuccess = preferenceManager.getPreferenceStopOnSuccess();
         this.ignoreSSLError = preferenceManager.getPreferenceIgnoreSSLError();
+        this.allowLegacyTLS = preferenceManager.getPreferenceAllowLegacyTLS();
         this.failureOnCertificateExpiry = preferenceManager.getPreferenceFailureOnCertificateExpiry();
         this.failureOnCertificateExpiryDays = preferenceManager.getPreferenceFailureOnCertificateExpiryDays();
         this.useDefaultHeaders = preferenceManager.getPreferenceUseDefaultHeaders();
@@ -128,6 +132,7 @@ public class AccessTypeData {
         this.connectCount = bundle.getInt("connectCount");
         this.stopOnSuccess = bundle.getInt("stopOnSuccess") >= 1;
         this.ignoreSSLError = bundle.getInt("ignoreSSLError") >= 1;
+        this.allowLegacyTLS = bundle.getInt("allowLegacyTLS") >= 1;
         this.failureOnCertificateExpiry = bundle.getInt("failureOnCertificateExpiry") >= 1;
         this.failureOnCertificateExpiryDays = bundle.getInt("failureOnCertificateExpiryDays");
         this.useDefaultHeaders = bundle.getInt("useDefaultHeaders") >= 1;
@@ -174,6 +179,9 @@ public class AccessTypeData {
         }
         if (map.get("ignoreSSLError") != null) {
             this.ignoreSSLError = Boolean.parseBoolean(Objects.requireNonNull(map.get("ignoreSSLError")).toString());
+        }
+        if (map.get("allowLegacyTLS") != null) {
+            this.allowLegacyTLS = Boolean.parseBoolean(Objects.requireNonNull(map.get("allowLegacyTLS")).toString());
         }
         if (map.get("failureOnCertificateExpiry") != null) {
             this.failureOnCertificateExpiry = Boolean.parseBoolean(Objects.requireNonNull(map.get("failureOnCertificateExpiry")).toString());
@@ -273,6 +281,14 @@ public class AccessTypeData {
 
     public void setIgnoreSSLError(boolean ignoreSSLError) {
         this.ignoreSSLError = ignoreSSLError;
+    }
+
+    public boolean isAllowLegacyTLS() {
+        return allowLegacyTLS;
+    }
+
+    public void setAllowLegacyTLS(boolean allowLegacyTLS) {
+        this.allowLegacyTLS = allowLegacyTLS;
     }
 
     public boolean isFailureOnCertificateExpiry() {
@@ -396,6 +412,7 @@ public class AccessTypeData {
         bundle.putInt("connectCount", connectCount);
         bundle.putInt("stopOnSuccess", stopOnSuccess ? 1 : 0);
         bundle.putInt("ignoreSSLError", ignoreSSLError ? 1 : 0);
+        bundle.putInt("allowLegacyTLS", allowLegacyTLS ? 1 : 0);
         bundle.putInt("failureOnCertificateExpiry", failureOnCertificateExpiry ? 1 : 0);
         bundle.putInt("failureOnCertificateExpiryDays", failureOnCertificateExpiryDays);
         bundle.putInt("useDefaultHeaders", useDefaultHeaders ? 1 : 0);
@@ -442,6 +459,7 @@ public class AccessTypeData {
         map.put("connectCount", connectCount);
         map.put("stopOnSuccess", stopOnSuccess);
         map.put("ignoreSSLError", ignoreSSLError);
+        map.put("allowLegacyTLS", allowLegacyTLS);
         map.put("failureOnCertificateExpiry", failureOnCertificateExpiry);
         map.put("failureOnCertificateExpiryDays", failureOnCertificateExpiryDays);
         map.put("useDefaultHeaders", useDefaultHeaders);
@@ -501,6 +519,9 @@ public class AccessTypeData {
             return false;
         }
         if (!Objects.equals(ignoreSSLError, other.ignoreSSLError)) {
+            return false;
+        }
+        if (!Objects.equals(allowLegacyTLS, other.allowLegacyTLS)) {
             return false;
         }
         if (!Objects.equals(failureOnCertificateExpiry, other.failureOnCertificateExpiry)) {
@@ -567,6 +588,9 @@ public class AccessTypeData {
         if (!Objects.equals(ignoreSSLError, other.ignoreSSLError)) {
             return false;
         }
+        if (!Objects.equals(allowLegacyTLS, other.allowLegacyTLS)) {
+            return false;
+        }
         if (!Objects.equals(failureOnCertificateExpiry, other.failureOnCertificateExpiry)) {
             return false;
         }
@@ -617,6 +641,7 @@ public class AccessTypeData {
                 ", connectCount=" + connectCount +
                 ", stopOnSuccess=" + stopOnSuccess +
                 ", ignoreSSLError=" + ignoreSSLError +
+                ", allowLegacyTLS=" + allowLegacyTLS +
                 ", failureOnCertificateExpiry=" + failureOnCertificateExpiry +
                 ", failureOnCertificateExpiryDays=" + failureOnCertificateExpiryDays +
                 ", useDefaultHeaders=" + useDefaultHeaders +

@@ -42,6 +42,7 @@ public class AccessTypeDataDBConstantsTest {
         assertEquals(getResourceString(R.string.accesstypedata_connect_count_column_name), dbConstants.getConnectCountColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_stop_on_success_column_name), dbConstants.getStopOnSuccessColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_ignore_ssl_error_column_name), dbConstants.getIgnoreSSLErrorColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_allow_legacy_tls_column_name), dbConstants.getAllowLegacyTLSColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_failure_on_certificate_expiry_column_name), dbConstants.getFailureOnCertificateExpiryColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_failure_on_certificate_expiry_days_column_name), dbConstants.getFailureOnCertificateExpiryDaysColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_use_default_headers_column_name), dbConstants.getUseDefaultHeadersColumnName());

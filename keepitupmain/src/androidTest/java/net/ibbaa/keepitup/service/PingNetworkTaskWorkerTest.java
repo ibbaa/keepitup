@@ -425,6 +425,7 @@ public class PingNetworkTaskWorkerTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(stopOnSuccess);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity(null);

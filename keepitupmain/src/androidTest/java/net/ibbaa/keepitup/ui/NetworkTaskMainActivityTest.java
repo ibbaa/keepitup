@@ -3817,6 +3817,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(true);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity("community");

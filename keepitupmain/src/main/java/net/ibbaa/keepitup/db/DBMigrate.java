@@ -293,6 +293,11 @@ public class DBMigrate {
     private void version9UpgradeFrom8(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version9UpgradeFrom8");
         try {
+            setup.addAllowLegacyTLSColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addAllowLegacyTLSColumnToAccessTypeDataTable failed ", exc);
+        }
+        try {
             setup.addFailureOnCertificateExpiryColumnToAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "addFailureOnCertificateExpiryColumnToAccessTypeDataTable failed ", exc);
@@ -351,6 +356,11 @@ public class DBMigrate {
 
     private void version9DowngradeTo8(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version9DowngradeTo8");
+        try {
+            setup.dropAllowLegacyTLSColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "dropAllowLegacyTLSColumnFromAccessTypeDataTable failed ", exc);
+        }
         try {
             setup.dropFailureOnCertificateExpiryColumnFromAccessTypeDataTable(db);
         } catch (Exception exc) {

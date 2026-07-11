@@ -66,6 +66,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -90,6 +91,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -114,6 +116,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -138,6 +141,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -164,6 +168,7 @@ public class AccessTypeDataTest {
         data.setConnectCount(789);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
@@ -186,6 +191,7 @@ public class AccessTypeDataTest {
         assertEquals(789, copyData.getConnectCount());
         assertTrue(copyData.isStopOnSuccess());
         assertTrue(copyData.isIgnoreSSLError());
+        assertTrue(copyData.isAllowLegacyTLS());
         assertTrue(copyData.isFailureOnCertificateExpiry());
         assertEquals(14, copyData.getFailureOnCertificateExpiryDays());
         assertFalse(copyData.isUseDefaultHeaders());
@@ -212,6 +218,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -238,6 +245,7 @@ public class AccessTypeDataTest {
         map.put("connectCount", "connectCount");
         map.put("stopOnSuccess", "stopOnSuccess");
         map.put("ignoreSSLError", "isIgnoreSSLError");
+        map.put("allowLegacyTLS", "isAllowLegacyTLS");
         map.put("failureOnCertificateExpiry", "failureOnCertificateExpiry");
         map.put("failureOnCertificateExpiryDays", "failureOnCertificateExpiryDays");
         map.put("useDefaultHeaders", "zyx");
@@ -256,6 +264,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -282,6 +291,7 @@ public class AccessTypeDataTest {
         map.put("connectCount", "789");
         map.put("stopOnSuccess", "true");
         map.put("ignoreSSLError", "true");
+        map.put("allowLegacyTLS", "true");
         map.put("failureOnCertificateExpiry", "true");
         map.put("failureOnCertificateExpiryDays", "14");
         map.put("useDefaultHeaders", "false");
@@ -304,6 +314,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(14, data.getFailureOnCertificateExpiryDays());
         assertFalse(data.isUseDefaultHeaders());
@@ -328,6 +339,7 @@ public class AccessTypeDataTest {
         preferenceManager.setPreferenceConnectCount(789);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceUseDefaultHeaders(false);
@@ -343,6 +355,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(14, data.getFailureOnCertificateExpiryDays());
         assertFalse(data.isUseDefaultHeaders());
@@ -366,6 +379,7 @@ public class AccessTypeDataTest {
         assertEquals(1, data.getConnectCount());
         assertFalse(data.isStopOnSuccess());
         assertFalse(data.isIgnoreSSLError());
+        assertFalse(data.isAllowLegacyTLS());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
         assertTrue(data.isUseDefaultHeaders());
@@ -392,6 +406,7 @@ public class AccessTypeDataTest {
         data.setConnectCount(789);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
@@ -413,6 +428,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(14, data.getFailureOnCertificateExpiryDays());
         assertFalse(data.isUseDefaultHeaders());
@@ -437,6 +453,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(14, data.getFailureOnCertificateExpiryDays());
         assertFalse(data.isUseDefaultHeaders());
@@ -461,6 +478,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(14, data.getFailureOnCertificateExpiryDays());
         assertFalse(data.isUseDefaultHeaders());
@@ -487,6 +505,7 @@ public class AccessTypeDataTest {
         data.setConnectCount(789);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
@@ -511,6 +530,7 @@ public class AccessTypeDataTest {
         assertEquals(789, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         assertTrue(data.isIgnoreSSLError());
+        assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(14, data.getFailureOnCertificateExpiryDays());
         assertFalse(data.isUseDefaultHeaders());
@@ -559,6 +579,10 @@ public class AccessTypeDataTest {
         data1.setIgnoreSSLError(true);
         assertFalse(data1.isEqual(data2));
         data2.setIgnoreSSLError(true);
+        assertTrue(data1.isEqual(data2));
+        data1.setAllowLegacyTLS(true);
+        assertFalse(data1.isEqual(data2));
+        data2.setAllowLegacyTLS(true);
         assertTrue(data1.isEqual(data2));
         data1.setFailureOnCertificateExpiry(true);
         assertFalse(data1.isEqual(data2));
@@ -650,6 +674,10 @@ public class AccessTypeDataTest {
         data1.setIgnoreSSLError(true);
         assertFalse(data1.isEqual(data2));
         data2.setIgnoreSSLError(true);
+        assertTrue(data1.isEqual(data2));
+        data1.setAllowLegacyTLS(true);
+        assertFalse(data1.isEqual(data2));
+        data2.setAllowLegacyTLS(true);
         assertTrue(data1.isEqual(data2));
         data1.setFailureOnCertificateExpiry(true);
         assertFalse(data1.isTechnicallyEqual(data2));

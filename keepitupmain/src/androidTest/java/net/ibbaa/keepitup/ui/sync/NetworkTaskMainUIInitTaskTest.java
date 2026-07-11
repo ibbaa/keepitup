@@ -351,6 +351,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
@@ -377,6 +378,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         data.setConnectCount(6);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(false);
         data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);
@@ -400,6 +402,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         data.setConnectCount(1);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setAllowLegacyTLS(false);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(7);
         data.setUseDefaultHeaders(true);

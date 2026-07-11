@@ -773,6 +773,13 @@ public class SNMPNetworkTaskWorkerTest {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);
         data.setNetworkTaskId(0);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
+        data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity("community");
         data.setSnmpCommunityValid(true);

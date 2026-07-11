@@ -3875,6 +3875,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         data.setNetworkTaskId(networkTaskId);
         data.setUseDefaultHeaders(false);
         data.setIgnoreSSLError(false);
+        data.setAllowLegacyTLS(false);
         data.setStopOnSuccess(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("community");

@@ -856,6 +856,7 @@ public class ExportTaskTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(true);
@@ -882,6 +883,7 @@ public class ExportTaskTest extends BaseUITest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setAllowLegacyTLS(false);
         data.setFailureOnCertificateExpiry(false);
         data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);

@@ -186,16 +186,19 @@ public class AccessTypeDataDAOTest {
         readData2.setPingCount(9);
         readData2.setStopOnSuccess(false);
         readData2.setIgnoreSSLError(false);
+        readData2.setAllowLegacyTLS(false);
         readData2.setUseDefaultHeaders(true);
         accessTypeDataDAO.updateAccessTypeData(readData2);
         readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         assertEquals(9, readData2.getPingCount());
         assertFalse(readData2.isStopOnSuccess());
         assertFalse(readData2.isIgnoreSSLError());
+        assertFalse(readData2.isAllowLegacyTLS());
         assertTrue(readData2.isUseDefaultHeaders());
         readData2.setPingCount(data2.getPingCount());
         readData2.setStopOnSuccess(data2.isStopOnSuccess());
         readData2.setIgnoreSSLError(data2.isIgnoreSSLError());
+        readData2.setAllowLegacyTLS(data2.isAllowLegacyTLS());
         readData2.setUseDefaultHeaders(data2.isUseDefaultHeaders());
         assertTrue(data2.isEqual(readData2));
         readData1.setPingPackageSize(12);
@@ -315,6 +318,7 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
@@ -341,6 +345,7 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(2);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(false);
         data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);
@@ -364,6 +369,7 @@ public class AccessTypeDataDAOTest {
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
+        data.setAllowLegacyTLS(false);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(7);
         data.setUseDefaultHeaders(true);

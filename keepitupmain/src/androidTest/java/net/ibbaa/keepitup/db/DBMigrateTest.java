@@ -468,7 +468,7 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAllowLegacyTLSCertificateExpiryAndSnmpV3Columns());
         migrate.doUpgrade(TestRegistry.getContext(), 8, 9);
         accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
         assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
@@ -479,12 +479,13 @@ public class DBMigrateTest {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAllowLegacyTLSCertificateExpiryAndSnmpV3Columns());
         NetworkTask task = networkTaskDAO.insertNetworkTask(new NetworkTask());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL("INSERT INTO " + accessTypeDataDBConstants.getTableName() + " (" + accessTypeDataDBConstants.getNetworkTaskIdColumnName() + ") VALUES (" + task.getId() + ")");
         migrate.doUpgrade(TestRegistry.getContext(), 8, 9);
         AccessTypeData readData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         AccessTypeData expectedData = new AccessTypeData(TestRegistry.getContext());
+        assertEquals(expectedData.isAllowLegacyTLS(), readData.isAllowLegacyTLS());
         assertEquals(expectedData.isFailureOnCertificateExpiry(), readData.isFailureOnCertificateExpiry());
         assertEquals(expectedData.getFailureOnCertificateExpiryDays(), readData.getFailureOnCertificateExpiryDays());
         assertEquals(expectedData.getSnmpTransport(), readData.getSnmpTransport());

@@ -1976,6 +1976,7 @@ public class JSONSystemSetupTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(true);
         data.setFailureOnCertificateExpiryDays(14);
         data.setUseDefaultHeaders(false);
@@ -2002,6 +2003,7 @@ public class JSONSystemSetupTest {
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setFailureOnCertificateExpiry(false);
         data.setFailureOnCertificateExpiryDays(30);
         data.setUseDefaultHeaders(false);

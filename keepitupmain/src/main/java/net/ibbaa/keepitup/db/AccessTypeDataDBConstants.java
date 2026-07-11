@@ -31,6 +31,7 @@ public class AccessTypeDataDBConstants {
     private final String connectCountColumnName;
     private final String stopOnSuccessColumnName;
     private final String ignoreSSLErrorColumnName;
+    private final String allowLegacyTLSColumnName;
     private final String failureOnCertificateExpiryColumnName;
     private final String failureOnCertificateExpiryDaysColumnName;
     private final String useDefaultHeadersColumnName;
@@ -56,6 +57,7 @@ public class AccessTypeDataDBConstants {
         connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connect_count_column_name);
         stopOnSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stop_on_success_column_name);
         ignoreSSLErrorColumnName = context.getResources().getString(R.string.accesstypedata_ignore_ssl_error_column_name);
+        allowLegacyTLSColumnName = context.getResources().getString(R.string.accesstypedata_allow_legacy_tls_column_name);
         failureOnCertificateExpiryColumnName = context.getResources().getString(R.string.accesstypedata_failure_on_certificate_expiry_column_name);
         failureOnCertificateExpiryDaysColumnName = context.getResources().getString(R.string.accesstypedata_failure_on_certificate_expiry_days_column_name);
         useDefaultHeadersColumnName = context.getResources().getString(R.string.accesstypedata_use_default_headers_column_name);
@@ -102,6 +104,10 @@ public class AccessTypeDataDBConstants {
 
     public String getIgnoreSSLErrorColumnName() {
         return ignoreSSLErrorColumnName;
+    }
+
+    public String getAllowLegacyTLSColumnName() {
+        return allowLegacyTLSColumnName;
     }
 
     public String getFailureOnCertificateExpiryColumnName() {
@@ -169,6 +175,7 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
                 getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getAllowLegacyTLSColumnName() + " INTEGER, " +
                 getFailureOnCertificateExpiryColumnName() + " INTEGER, " +
                 getFailureOnCertificateExpiryDaysColumnName() + " INTEGER, " +
                 getUseDefaultHeadersColumnName() + " INTEGER, " +
@@ -185,7 +192,7 @@ public class AccessTypeDataDBConstants {
                 getSnmpPrivPassphraseIVColumnName() + " TEXT);";
     }
 
-    public String getCreateTableStatementWithoutCertificateExpiryAndSnmpV3Columns() {
+    public String getCreateTableStatementWithoutAllowLegacyTLSCertificateExpiryAndSnmpV3Columns() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
@@ -208,6 +215,7 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
                 getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getAllowLegacyTLSColumnName() + " INTEGER, " +
                 getUseDefaultHeadersColumnName() + " INTEGER, " +
                 getSnmpVersionColumnName() + " INTEGER, " +
                 getSnmpCommunityColumnName() + " TEXT, " +
@@ -232,6 +240,7 @@ public class AccessTypeDataDBConstants {
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
+                getAllowLegacyTLSColumnName() + " INTEGER, " +
                 getUseDefaultHeadersColumnName() + " INTEGER, " +
                 getSnmpVersionColumnName() + " INTEGER, " +
                 getSnmpCommunityColumnName() + " TEXT, " +
@@ -257,6 +266,7 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
                 getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getAllowLegacyTLSColumnName() + " INTEGER, " +
                 getSnmpVersionColumnName() + " INTEGER, " +
                 getSnmpCommunityColumnName() + " TEXT, " +
                 getSnmpCommunityIVColumnName() + " TEXT, " +
@@ -281,6 +291,7 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + " INTEGER, " +
                 getStopOnSuccessColumnName() + " INTEGER, " +
                 getIgnoreSSLErrorColumnName() + " INTEGER, " +
+                getAllowLegacyTLSColumnName() + " INTEGER, " +
                 getUseDefaultHeadersColumnName() + " INTEGER, " +
                 getFailureOnCertificateExpiryColumnName() + " INTEGER, " +
                 getFailureOnCertificateExpiryDaysColumnName() + " INTEGER, " +
@@ -316,6 +327,7 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + ", " +
                 getStopOnSuccessColumnName() + ", " +
                 getIgnoreSSLErrorColumnName() + ", " +
+                getAllowLegacyTLSColumnName() + ", " +
                 getUseDefaultHeadersColumnName() + ", " +
                 getSnmpVersionColumnName() + ", " +
                 getSnmpCommunityColumnName() + ", " +
@@ -343,6 +355,7 @@ public class AccessTypeDataDBConstants {
                 getConnectCountColumnName() + ", " +
                 getStopOnSuccessColumnName() + ", " +
                 getIgnoreSSLErrorColumnName() + ", " +
+                getAllowLegacyTLSColumnName() + ", " +
                 getUseDefaultHeadersColumnName() + ", " +
                 getSnmpVersionColumnName() + ", " +
                 getSnmpCommunityColumnName() + ", " +
@@ -403,6 +416,10 @@ public class AccessTypeDataDBConstants {
         return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getIgnoreSSLErrorColumnName() + " INTEGER;";
     }
 
+    public String getAddAllowLegacyTLSColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getAllowLegacyTLSColumnName() + " INTEGER;";
+    }
+
     public String getAddFailureOnCertificateExpiryColumnStatement() {
         return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getFailureOnCertificateExpiryColumnName() + " INTEGER;";
     }
@@ -417,6 +434,10 @@ public class AccessTypeDataDBConstants {
 
     public String getDropIgnoreSSLErrorColumnStatement() {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getIgnoreSSLErrorColumnName() + ";";
+    }
+
+    public String getDropAllowLegacyTLSColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getAllowLegacyTLSColumnName() + ";";
     }
 
     public String getDropFailureOnCertificateExpiryColumnStatement() {
