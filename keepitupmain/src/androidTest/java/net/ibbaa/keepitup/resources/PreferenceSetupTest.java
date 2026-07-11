@@ -211,6 +211,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -237,6 +238,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
@@ -266,6 +268,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceConnectCount", 10);
         defaults.put("preferenceStopOnSuccess", true);
         defaults.put("preferenceIgnoreSSLError", true);
+        defaults.put("preferenceAllowLegacyTLS", true);
         defaults.put("preferenceFailureOnCertificateExpiry", true);
         defaults.put("preferenceFailureOnCertificateExpiryDays", 14);
         defaults.put("preferenceOnlyWifi", true);
@@ -291,6 +294,7 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
@@ -320,6 +324,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceConnectCount", "10");
         defaults.put("preferenceStopOnSuccess", "true");
         defaults.put("preferenceIgnoreSSLError", "true");
+        defaults.put("preferenceAllowLegacyTLS", "true");
         defaults.put("preferenceFailureOnCertificateExpiry", "true");
         defaults.put("preferenceFailureOnCertificateExpiryDays", "14");
         defaults.put("preferenceOnlyWifi", "true");
@@ -345,6 +350,7 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
@@ -374,6 +380,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceConnectCount", 55);
         defaults.put("preferenceStopOnSuccess", 1);
         defaults.put("preferenceIgnoreSSLError", 1);
+        defaults.put("preferenceAllowLegacyTLS", 1);
         defaults.put("preferenceFailureOnCertificateExpiry", 1);
         defaults.put("preferenceFailureOnCertificateExpiryDays", 0);
         defaults.put("preferenceOnlyWifi", 1);
@@ -399,6 +406,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
@@ -613,6 +621,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(defaults.get("preferenceAllowLegacyTLS"), preferenceManager.getPreferenceAllowLegacyTLS());
         assertEquals(defaults.get("preferenceFailureOnCertificateExpiry"), preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(defaults.get("preferenceFailureOnCertificateExpiryDays"), preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
@@ -641,6 +650,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -666,6 +676,7 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
@@ -690,6 +701,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(defaults.get("preferenceAllowLegacyTLS"), preferenceManager.getPreferenceAllowLegacyTLS());
         assertEquals(defaults.get("preferenceFailureOnCertificateExpiry"), preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(defaults.get("preferenceFailureOnCertificateExpiryDays"), preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
@@ -819,6 +831,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingPackageSize(123);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -840,6 +853,7 @@ public class PreferenceSetupTest {
         assertEquals(123, preferenceManager.getPreferencePingPackageSize());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -859,6 +873,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
+        assertEquals(defaults.get("preferenceAllowLegacyTLS"), preferenceManager.getPreferenceAllowLegacyTLS());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
@@ -982,6 +997,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -1007,6 +1023,7 @@ public class PreferenceSetupTest {
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
@@ -1087,6 +1104,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -1137,6 +1155,7 @@ public class PreferenceSetupTest {
         assertEquals(SNMPPrivAlgorithm.AES128, preferenceManager.getPreferenceSNMPPrivAlgorithm());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());

@@ -31,6 +31,8 @@
     <bool name="stop_on_success_default">false</bool>
     <string name="ignore_ssl_error_key">ignore_ssl_error_key</string>
     <bool name="ignore_ssl_error_default">false</bool>
+    <string name="allow_legacy_tls_key">allow_legacy_tls_key</string>
+    <bool name="allow_legacy_tls_default">false</bool>
     <string name="failure_on_certificate_expiry_key">failure_on_certificate_expiry_key</string>
     <bool name="failure_on_certificate_expiry_default">false</bool>
     <string name="failure_on_certificate_expiry_days_key">failure_on_certificate_expiry_days_key</string>

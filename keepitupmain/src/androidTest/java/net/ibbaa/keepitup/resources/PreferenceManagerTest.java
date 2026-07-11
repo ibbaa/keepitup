@@ -378,6 +378,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceAllowLegacyTLS() {
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
+        preferenceManager.removePreferenceAllowLegacyTLS();
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceFailureOnCertificateExpiry() {
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);

@@ -76,6 +76,7 @@ public class PreferenceSetup {
         defaults.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         defaults.put("preferenceStopOnSuccess", preferenceManager.getPreferenceStopOnSuccess());
         defaults.put("preferenceIgnoreSSLError", preferenceManager.getPreferenceIgnoreSSLError());
+        defaults.put("preferenceAllowLegacyTLS", preferenceManager.getPreferenceAllowLegacyTLS());
         defaults.put("preferenceFailureOnCertificateExpiry", preferenceManager.getPreferenceFailureOnCertificateExpiry());
         defaults.put("preferenceFailureOnCertificateExpiryDays", preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
@@ -242,6 +243,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceIgnoreSSLError(Boolean.parseBoolean(ignoreSSLError.toString()));
         } else {
             preferenceManager.removePreferenceIgnoreSSLError();
+        }
+        Object allowLegacyTLS = defaults.get("preferenceAllowLegacyTLS");
+        if (isValidBoolean(allowLegacyTLS)) {
+            preferenceManager.setPreferenceAllowLegacyTLS(Boolean.parseBoolean(allowLegacyTLS.toString()));
+        } else {
+            preferenceManager.removePreferenceAllowLegacyTLS();
         }
         Object failureOnCertificateExpiry = defaults.get("preferenceFailureOnCertificateExpiry");
         if (isValidBoolean(failureOnCertificateExpiry)) {
@@ -551,6 +558,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceStopOnSuccess();
         preferenceManager.removePreferenceIgnoreSSLError();
+        preferenceManager.removePreferenceAllowLegacyTLS();
         preferenceManager.removePreferenceFailureOnCertificateExpiry();
         preferenceManager.removePreferenceFailureOnCertificateExpiryDays();
         preferenceManager.removePreferencePingPackageSize();

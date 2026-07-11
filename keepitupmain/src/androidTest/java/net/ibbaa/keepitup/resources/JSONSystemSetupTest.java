@@ -446,6 +446,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -498,6 +499,7 @@ public class JSONSystemSetupTest {
         assertEquals(10, defaultsData.getInt("preferenceConnectCount"));
         assertTrue(defaultsData.getBoolean("preferenceStopOnSuccess"));
         assertTrue(defaultsData.getBoolean("preferenceIgnoreSSLError"));
+        assertTrue(defaultsData.getBoolean("preferenceAllowLegacyTLS"));
         assertTrue(defaultsData.getBoolean("preferenceFailureOnCertificateExpiry"));
         assertEquals(14, defaultsData.getInt("preferenceFailureOnCertificateExpiryDays"));
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
@@ -1617,6 +1619,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
         preferenceManager.setPreferenceOnlyWifi(true);
@@ -1668,6 +1671,7 @@ public class JSONSystemSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());

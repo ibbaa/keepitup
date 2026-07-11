@@ -138,6 +138,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
+        getPreferenceManager().setPreferenceAllowLegacyTLS(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiry(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiryDays(14);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -277,6 +278,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
+        assertTrue(getPreferenceManager().getPreferenceAllowLegacyTLS());
         assertTrue(getPreferenceManager().getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, getPreferenceManager().getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -349,6 +351,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
+        getPreferenceManager().setPreferenceAllowLegacyTLS(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiry(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiryDays(14);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -484,6 +487,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
+        assertTrue(getPreferenceManager().getPreferenceAllowLegacyTLS());
         assertTrue(getPreferenceManager().getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, getPreferenceManager().getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -556,6 +560,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
+        getPreferenceManager().setPreferenceAllowLegacyTLS(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiry(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiryDays(14);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -696,6 +701,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
+        assertTrue(getPreferenceManager().getPreferenceAllowLegacyTLS());
         assertTrue(getPreferenceManager().getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, getPreferenceManager().getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -783,6 +789,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceSNMPPrivAlgorithm(SNMPPrivAlgorithm.AES256);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
+        getPreferenceManager().setPreferenceAllowLegacyTLS(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiry(true);
         getPreferenceManager().setPreferenceFailureOnCertificateExpiryDays(14);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -844,6 +851,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES256, getPreferenceManager().getPreferenceSNMPPrivAlgorithm());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
+        assertTrue(getPreferenceManager().getPreferenceAllowLegacyTLS());
         assertTrue(getPreferenceManager().getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, getPreferenceManager().getPreferenceFailureOnCertificateExpiryDays());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());

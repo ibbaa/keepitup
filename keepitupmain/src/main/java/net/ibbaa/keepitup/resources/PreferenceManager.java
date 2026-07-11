@@ -445,6 +445,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.ignore_ssl_error_key));
     }
 
+    public boolean getPreferenceAllowLegacyTLS() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceAllowLegacyTLS");
+        return getPreferenceBoolean(getResources().getString(R.string.allow_legacy_tls_key), getResources().getBoolean(R.bool.allow_legacy_tls_default));
+    }
+
+    public void setPreferenceAllowLegacyTLS(boolean allowLegacyTLS) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceAllowLegacyTLS, allowLegacyTLS is " + allowLegacyTLS);
+        setPreferenceBoolean(getResources().getString(R.string.allow_legacy_tls_key), allowLegacyTLS);
+    }
+
+    public void removePreferenceAllowLegacyTLS() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceAllowLegacyTLS");
+        removePreferenceValue(getResources().getString(R.string.allow_legacy_tls_key));
+    }
+
     public boolean getPreferenceFailureOnCertificateExpiry() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceFailureOnCertificateExpiry");
         return getPreferenceBoolean(getResources().getString(R.string.failure_on_certificate_expiry_key), getResources().getBoolean(R.bool.failure_on_certificate_expiry_default));
