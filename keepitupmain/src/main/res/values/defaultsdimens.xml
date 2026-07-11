@@ -52,10 +52,10 @@
     <dimen name="cardview_activity_defaults_stop_on_success_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_stop_on_success_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_defaults_stop_on_success_margin">4dp</dimen>
-    <dimen name="cardview_activity_defaults_ignore_ssl_error_margin">4dp</dimen>
-    <dimen name="cardview_activity_defaults_ignore_ssl_error_corner_radius">4dp</dimen>
-    <dimen name="cardview_activity_defaults_ignore_ssl_error_card_elevation">4dp</dimen>
-    <dimen name="linearlayout_activity_defaults_ignore_ssl_error_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_certificate_settings_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_certificate_settings_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_certificate_settings_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_certificate_settings_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_global_headers_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_global_headers_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_global_headers_card_elevation">4dp</dimen>

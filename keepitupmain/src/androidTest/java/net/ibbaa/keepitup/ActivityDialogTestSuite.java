@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.ui.SystemActivityTest;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialogTest;
 import net.ibbaa.keepitup.ui.dialog.BasicAuthDialogTest;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialogTest;
+import net.ibbaa.keepitup.ui.dialog.CertificateSettingsDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialogTest;
@@ -79,6 +80,7 @@ import org.junit.runners.Suite;
         AlarmPermissionDialogTest.class,
         BasicAuthDialogTest.class,
         BatteryOptimizationDialogTest.class,
+        CertificateSettingsDialogTest.class,
         ConfirmDialogTest.class,
         ContextOptionsDialogTest.class,
         ContextOptionTest.class,

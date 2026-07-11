@@ -47,12 +47,14 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
+import net.ibbaa.keepitup.ui.dialog.CertificateSettingsDialog;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.ui.support.CertificateSettingsSupport;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.ResolveEditSupport;
 import net.ibbaa.keepitup.ui.support.SNMPDefaultsSupport;
@@ -76,7 +78,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport, SNMPDefaultsSupport {
+public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport, SNMPDefaultsSupport, CertificateSettingsSupport {
 
     private GridLayout accessTypeGroup;
     private TextView addressText;
@@ -88,8 +90,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     private TextView connectCountText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
-    private SwitchMaterial ignoreSSLErrorSwitch;
-    private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
     private SwitchMaterial notificationSwitch;
@@ -116,7 +116,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         prepareConnectCountField();
         prepareStopOnSuccessSwitch();
         prepareResolveRulesField();
-        prepareIgnoreSSLErrorSwitch();
+        prepareCertificateSettingsField();
         prepareGlobalHeadersField();
         prepareSNMPSettingsField();
         prepareOnlyWifiSwitch();
@@ -293,26 +293,10 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         matchHostCardView.setOnClickListener(this::showResolveEditDialog);
     }
 
-    private void prepareIgnoreSSLErrorSwitch() {
-        Log.d(DefaultsActivity.class.getName(), "prepareIgnoreSSLErrorSwitch");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        ignoreSSLErrorSwitch = findViewById(R.id.switch_activity_defaults_ignore_ssl_error);
-        ignoreSSLErrorOnOffText = findViewById(R.id.textview_activity_defaults_ignore_ssl_error_on_off);
-        ignoreSSLErrorSwitch.setOnCheckedChangeListener(null);
-        ignoreSSLErrorSwitch.setChecked(preferenceManager.getPreferenceIgnoreSSLError());
-        ignoreSSLErrorSwitch.setOnCheckedChangeListener(this::onIgnoreSSLErrorCheckedChanged);
-        prepareIgnoreSSLErrorOnOffText();
-    }
-
-    private void prepareIgnoreSSLErrorOnOffText() {
-        ignoreSSLErrorOnOffText.setText(ignoreSSLErrorSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
-
-    private void onIgnoreSSLErrorCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(DefaultsActivity.class.getName(), "onIgnoreSSLErrorCheckedChanged, new value is " + isChecked);
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        preferenceManager.setPreferenceIgnoreSSLError(isChecked);
-        prepareIgnoreSSLErrorOnOffText();
+    private void prepareCertificateSettingsField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareCertificateSettingsField");
+        CardView certificateSettingsCardView = findViewById(R.id.cardview_activity_defaults_certificate_settings);
+        certificateSettingsCardView.setOnClickListener(this::showCertificateSettingsDialog);
     }
 
     private void prepareGlobalHeadersField() {
@@ -677,6 +661,17 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         new SNMPDefaultsDialog().show(getSupportFragmentManager(), SNMPDefaultsDialog.class.getName());
     }
 
+    private void showCertificateSettingsDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showCertificateSettingsDialog");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        CertificateSettingsDialog certificateSettingsDialog = new CertificateSettingsDialog();
+        Bundle bundle = BundleUtil.booleanToBundle(certificateSettingsDialog.getIgnoreSSLErrorKey(), preferenceManager.getPreferenceIgnoreSSLError());
+        BundleUtil.booleanToBundle(certificateSettingsDialog.getFailureOnCertificateExpiryKey(), preferenceManager.getPreferenceFailureOnCertificateExpiry(), bundle);
+        BundleUtil.integerToBundle(certificateSettingsDialog.getFailureOnCertificateExpiryDaysKey(), preferenceManager.getPreferenceFailureOnCertificateExpiryDays(), bundle);
+        certificateSettingsDialog.setArguments(bundle);
+        certificateSettingsDialog.show(getSupportFragmentManager(), CertificateSettingsDialog.class.getName());
+    }
+
     @Override
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type) {
         Log.d(DefaultsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
@@ -783,6 +778,22 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     public void onSNMPDefaultsDialogCancelClicked(SNMPDefaultsDialog snmpDefaultsDialog) {
         Log.d(DefaultsActivity.class.getName(), "onSNMPDefaultsDialogCancelClicked");
         snmpDefaultsDialog.dismiss();
+    }
+
+    @Override
+    public void onCertificateSettingsDialogOkClicked(CertificateSettingsDialog certificateSettingsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onCertificateSettingsDialogOkClicked");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceIgnoreSSLError(certificateSettingsDialog.isIgnoreSSLError());
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(certificateSettingsDialog.isFailureOnCertificateExpiry());
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(certificateSettingsDialog.getFailureOnCertificateExpiryDays());
+        certificateSettingsDialog.dismiss();
+    }
+
+    @Override
+    public void onCertificateSettingsDialogCancelClicked(CertificateSettingsDialog certificateSettingsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onCertificateSettingsDialogCancelClicked");
+        certificateSettingsDialog.dismiss();
     }
 
     @Override

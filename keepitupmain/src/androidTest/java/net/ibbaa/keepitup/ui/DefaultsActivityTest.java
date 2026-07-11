@@ -64,6 +64,7 @@ import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.dialog.CertificateSettingsDialog;
 import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
@@ -135,9 +136,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("no")));
         onView(withId(R.id.textview_activity_defaults_snmp_settings_label)).check(matches(withText("SNMP settings")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
@@ -171,6 +169,23 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testDisplayDefaultValuesCertificateSettings() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        onView(withId(R.id.textview_activity_defaults_certificate_settings_label)).perform(scrollTo()).check(matches(withText("HTTP certificate settings")));
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isNotChecked()));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("30")));
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testDisplayDefaultValuesChanged() {
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
@@ -181,7 +196,6 @@ public class DefaultsActivityTest extends BaseUITest {
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceConnectCount(9);
         preferenceManager.setPreferenceStopOnSuccess(true);
-        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
         preferenceManager.setPreferenceSNMPPort(162);
         preferenceManager.setPreferenceOnlyWifi(false);
@@ -207,9 +221,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_defaults_snmp_settings_label)).perform(scrollTo()).check(matches(withText("SNMP settings")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
@@ -245,6 +256,23 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testDisplayDefaultValuesChangedCertificateSettings() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_certificate_settings_label)).perform(scrollTo()).check(matches(withText("HTTP certificate settings")));
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isChecked()));
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("14")));
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testDisplayValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withText("Download")).perform(click());
@@ -268,8 +296,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(click());
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v1)).perform(click());
@@ -298,9 +324,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_defaults_snmp_settings_label)).perform(scrollTo()).check(matches(withText("SNMP settings")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
@@ -346,10 +369,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isChecked()));
@@ -366,10 +385,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
@@ -409,8 +424,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(click());
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v1)).perform(click());
@@ -436,7 +449,6 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(123, preferenceManager.getPreferencePingPackageSize());
         assertEquals(9, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
-        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertEquals(SNMPVersion.V1, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         assertEquals(SNMPTransport.TCP, preferenceManager.getPreferenceSNMPTransport());
@@ -557,6 +569,74 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(-1, preferenceManager.getPreferenceResolveMatchPort());
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesCertificateSettingsOk() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesCertificateSettingsOkScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesCertificateSettingsCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetPreferencesCertificateSettingsCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         activityScenario.close();
     }
 
@@ -2587,6 +2667,90 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testCertificateSettingsExpiryDaysInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("3651"));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        onView(allOf(withText("Expiry days"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 3650"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        onView(allOf(withText("Expiry days"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testCertificateSettingsCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        CertificateSettingsDialog certificateSettingsDialog = getCertificateSettingsDialog(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(certificateSettingsDialog);
+        clipboardManager.putData("14");
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("45"));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(longClick());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("45")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("45", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(45, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testCertificateSettingsCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("45"));
+        rotateScreen(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getCertificateSettingsDialog(activityScenario));
+        clipboardManager.putData("14");
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(longClick());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getCertificateSettingsDialog(activityScenario));
+        clipboardManager.putData("14");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("45")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("45", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(45, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
+        activityScenario.close();
+    }
+
+    @Test
     public void testIntervalInput() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
@@ -2970,8 +3134,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).perform(replaceText("resolve.host"));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).perform(replaceText("25"));
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(click());
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v1)).perform(click());
@@ -3015,9 +3183,13 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_host)).check(matches(withText("not set")));
         onView(withId(R.id.edittext_dialog_resolve_edit_connect_to_port)).check(matches(withText("not set")));
         onView(withId(R.id.imageview_dialog_resolve_edit_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_label)).check(matches(withText("Ignore SSL errors")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_certificate_settings_label)).check(matches(withText("HTTP certificate settings")));
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isNotChecked()));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("30")));
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_snmp_settings_label)).perform(scrollTo()).check(matches(withText("SNMP settings")));
         onView(withId(R.id.textview_activity_defaults_only_wifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).check(matches(isNotChecked()));
@@ -3043,6 +3215,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
+        assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         assertEquals(SNMPVersion.V2C, preferenceManager.getPreferenceSNMPVersion());
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         assertEquals(SNMPTransport.UDP, preferenceManager.getPreferenceSNMPTransport());
@@ -3078,8 +3252,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(click());
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v1)).perform(click());
@@ -3102,8 +3280,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isChecked()));
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("14")));
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_snmp_settings_label)).perform(scrollTo()).check(matches(withText("SNMP settings")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
@@ -3123,8 +3305,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_ignore_ssl_error_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isChecked()));
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("14")));
+        onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_snmp_settings_label)).perform(scrollTo()).check(matches(withText("SNMP settings")));
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo()).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_only_wifi_on_off)).check(matches(withText("yes")));
@@ -3539,6 +3725,10 @@ public class DefaultsActivityTest extends BaseUITest {
         return (SNMPDefaultsDialog) getDialog(activityScenario, SNMPDefaultsDialog.class);
     }
 
+    private CertificateSettingsDialog getCertificateSettingsDialog(ActivityScenario<?> activityScenario) {
+        return (CertificateSettingsDialog) getDialog(activityScenario, CertificateSettingsDialog.class);
+    }
+
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();
@@ -3550,6 +3740,13 @@ public class DefaultsActivityTest extends BaseUITest {
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();
         snmpDefaultsDialog.injectClipboardManager(clipboardManager);
+        return clipboardManager;
+    }
+
+    private MockClipboardManager prepareMockClipboardManager(CertificateSettingsDialog certificateSettingsDialog) {
+        MockClipboardManager clipboardManager = new MockClipboardManager();
+        clipboardManager.clearData();
+        certificateSettingsDialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
     }
 

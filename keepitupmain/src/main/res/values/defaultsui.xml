@@ -26,7 +26,7 @@
     <string name="label_activity_defaults_connect_count">Connect count</string>
     <string name="label_activity_defaults_resolve_rules">HTTP resolve rules</string>
     <string name="label_activity_defaults_stop_on_success">Stop on success</string>
-    <string name="label_activity_defaults_ignore_ssl_error">Ignore SSL errors</string>
+    <string name="label_activity_defaults_certificate_settings">HTTP certificate settings</string>
     <string name="label_activity_defaults_global_headers">HTTP Headers</string>
     <string name="text_activity_defaults_global_headers_none">None</string>
     <string name="text_activity_defaults_global_headers_more" tools:ignore="PluralsCandidate">%d more…</string>
