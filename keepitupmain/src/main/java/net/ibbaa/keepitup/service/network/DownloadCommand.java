@@ -70,6 +70,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -336,6 +337,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         sslContext.init(null, trustAllCerts, new SecureRandom());
         builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
+        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS).allEnabledTlsVersions().allEnabledCipherSuites().build();
+        builder.connectionSpecs(Collections.singletonList(spec));
     }
 
     private X509TrustManager getDefaultTrustManager() {

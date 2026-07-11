@@ -114,8 +114,8 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         preparePingCountField();
         preparePingPackageSizeField();
         prepareConnectCountField();
-        prepareResolveRulesField();
         prepareStopOnSuccessSwitch();
+        prepareResolveRulesField();
         prepareIgnoreSSLErrorSwitch();
         prepareGlobalHeadersField();
         prepareSNMPSettingsField();
@@ -265,12 +265,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
-    private void prepareResolveRulesField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareResolveRulesField");
-        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_resolve_rules);
-        matchHostCardView.setOnClickListener(this::showResolveEditDialog);
-    }
-
     private void prepareStopOnSuccessSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareStopOnSuccessSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -291,6 +285,12 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceStopOnSuccess(isChecked);
         prepareStopOnSuccessOnOffText();
+    }
+
+    private void prepareResolveRulesField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareResolveRulesField");
+        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_resolve_rules);
+        matchHostCardView.setOnClickListener(this::showResolveEditDialog);
     }
 
     private void prepareIgnoreSSLErrorSwitch() {
