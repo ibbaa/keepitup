@@ -114,7 +114,7 @@ import java.util.List;
 @MediumTest
 @SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
-public class JSONSystemSetupTest extends BaseUITest {
+public class SystemActivityTest extends BaseUITest {
 
     private MockAlarmManager alarmManager;
     private MockThemeManager themeManager;
