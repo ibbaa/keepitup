@@ -54,6 +54,8 @@ import java.util.List;
 public class CertificateSettingsDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
     private View dialogView;
+    private SwitchMaterial allowLegacyTLSSwitch;
+    private TextView allowLegacyTLSOnOffText;
     private SwitchMaterial ignoreSSLErrorSwitch;
     private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial failureOnCertificateExpirySwitch;
@@ -86,6 +88,7 @@ public class CertificateSettingsDialog extends DialogFragmentBase implements Con
         Log.d(CertificateSettingsDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_certificate_settings, container);
         initEdgeToEdgeInsets(dialogView);
+        prepareAllowLegacyTLSSwitch(savedInstanceState);
         prepareIgnoreSSLErrorSwitch(savedInstanceState);
         prepareFailureOnCertificateExpirySwitch(savedInstanceState);
         prepareFailureOnCertificateExpiryDaysTextField(savedInstanceState);
@@ -99,12 +102,35 @@ public class CertificateSettingsDialog extends DialogFragmentBase implements Con
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Log.d(CertificateSettingsDialog.class.getName(), "onSaveInstanceState");
         super.onSaveInstanceState(outState);
+        if (allowLegacyTLSSwitch != null) {
+            outState.putBoolean(getAllowLegacyTLSCheckedKey(), allowLegacyTLSSwitch.isChecked());
+        }
         if (ignoreSSLErrorSwitch != null) {
             outState.putBoolean(getIgnoreSSLErrorCheckedKey(), ignoreSSLErrorSwitch.isChecked());
         }
         if (failureOnCertificateExpirySwitch != null) {
             outState.putBoolean(getFailureOnCertificateExpiryCheckedKey(), failureOnCertificateExpirySwitch.isChecked());
         }
+    }
+
+    private void prepareAllowLegacyTLSSwitch(Bundle savedInstanceState) {
+        Log.d(CertificateSettingsDialog.class.getName(), "prepareAllowLegacyTLSSwitch");
+        allowLegacyTLSSwitch = dialogView.findViewById(R.id.switch_dialog_certificate_settings_allow_legacy_tls);
+        allowLegacyTLSOnOffText = dialogView.findViewById(R.id.textview_dialog_certificate_settings_allow_legacy_tls_on_off);
+        allowLegacyTLSSwitch.setOnCheckedChangeListener(null);
+        boolean allowLegacyTLS = savedInstanceState != null && savedInstanceState.containsKey(getAllowLegacyTLSCheckedKey()) ? savedInstanceState.getBoolean(getAllowLegacyTLSCheckedKey()) : getInitialAllowLegacyTLS();
+        allowLegacyTLSSwitch.setChecked(allowLegacyTLS);
+        allowLegacyTLSSwitch.setOnCheckedChangeListener(this::onAllowLegacyTLSCheckedChanged);
+        prepareAllowLegacyTLSOnOffText();
+    }
+
+    private void onAllowLegacyTLSCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(CertificateSettingsDialog.class.getName(), "onAllowLegacyTLSCheckedChanged, new value is " + isChecked);
+        prepareAllowLegacyTLSOnOffText();
+    }
+
+    private void prepareAllowLegacyTLSOnOffText() {
+        allowLegacyTLSOnOffText.setText(allowLegacyTLSSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareIgnoreSSLErrorSwitch(Bundle savedInstanceState) {
@@ -204,6 +230,10 @@ public class CertificateSettingsDialog extends DialogFragmentBase implements Con
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
+    public String getAllowLegacyTLSKey() {
+        return CertificateSettingsDialog.class.getName() + ".AllowLegacyTLS";
+    }
+
     public String getIgnoreSSLErrorKey() {
         return CertificateSettingsDialog.class.getName() + ".IgnoreSSLError";
     }
@@ -220,12 +250,20 @@ public class CertificateSettingsDialog extends DialogFragmentBase implements Con
         return CertificateSettingsDialog.class.getName() + ".FieldDependenciesEnabled";
     }
 
+    private String getAllowLegacyTLSCheckedKey() {
+        return CertificateSettingsDialog.class.getName() + ".AllowLegacyTLSChecked";
+    }
+
     private String getIgnoreSSLErrorCheckedKey() {
         return CertificateSettingsDialog.class.getName() + ".IgnoreSSLErrorChecked";
     }
 
     private String getFailureOnCertificateExpiryCheckedKey() {
         return CertificateSettingsDialog.class.getName() + ".FailureOnCertificateExpiryChecked";
+    }
+
+    private boolean getInitialAllowLegacyTLS() {
+        return BundleUtil.booleanFromBundle(getAllowLegacyTLSKey(), requireArguments());
     }
 
     private boolean getInitialIgnoreSSLError() {
@@ -247,6 +285,10 @@ public class CertificateSettingsDialog extends DialogFragmentBase implements Con
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isFieldDependenciesEnabled() {
         return BundleUtil.booleanFromBundle(getFieldDependenciesEnabledKey(), requireArguments());
+    }
+
+    public boolean isAllowLegacyTLS() {
+        return allowLegacyTLSSwitch.isChecked();
     }
 
     public boolean isIgnoreSSLError() {

@@ -50,6 +50,52 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearlayout_dialog_certificate_settings_allow_legacy_tls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/linearlayout_dialog_certificate_settings_allow_legacy_tls_margin_left"
+            android:layout_marginEnd="@dimen/linearlayout_dialog_certificate_settings_allow_legacy_tls_margin_end"
+            android:layout_marginTop="@dimen/linearlayout_dialog_certificate_settings_allow_legacy_tls_margin_top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_dialog_certificate_settings_allow_legacy_tls_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/label_dialog_certificate_settings_allow_legacy_tls" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_certificate_settings_allow_legacy_tls_onoff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/linearlayout_dialog_certificate_settings_allow_legacy_tls_onoff_margin_top"
+                android:orientation="horizontal">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_dialog_certificate_settings_allow_legacy_tls"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/switch_dialog_certificate_settings_padding_top"
+                    android:paddingBottom="@dimen/switch_dialog_certificate_settings_padding_bottom"
+                    android:minHeight="@dimen/switch_dialog_certificate_settings_min_height"
+                    app:trackTint="@drawable/switchtrack_selector"
+                    app:thumbTint="@drawable/switchthumb_selector"
+                    android:showText="false" />
+
+                <TextView
+                    android:id="@+id/textview_dialog_certificate_settings_allow_legacy_tls_on_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:text="" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearlayout_dialog_certificate_settings_ignore_ssl_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

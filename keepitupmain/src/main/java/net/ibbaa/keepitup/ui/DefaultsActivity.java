@@ -665,7 +665,8 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         Log.d(DefaultsActivity.class.getName(), "showCertificateSettingsDialog");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         CertificateSettingsDialog certificateSettingsDialog = new CertificateSettingsDialog();
-        Bundle bundle = BundleUtil.booleanToBundle(certificateSettingsDialog.getIgnoreSSLErrorKey(), preferenceManager.getPreferenceIgnoreSSLError());
+        Bundle bundle = BundleUtil.booleanToBundle(certificateSettingsDialog.getAllowLegacyTLSKey(), preferenceManager.getPreferenceAllowLegacyTLS());
+        BundleUtil.booleanToBundle(certificateSettingsDialog.getIgnoreSSLErrorKey(), preferenceManager.getPreferenceIgnoreSSLError(), bundle);
         BundleUtil.booleanToBundle(certificateSettingsDialog.getFailureOnCertificateExpiryKey(), preferenceManager.getPreferenceFailureOnCertificateExpiry(), bundle);
         BundleUtil.integerToBundle(certificateSettingsDialog.getFailureOnCertificateExpiryDaysKey(), preferenceManager.getPreferenceFailureOnCertificateExpiryDays(), bundle);
         certificateSettingsDialog.setArguments(bundle);
@@ -784,6 +785,7 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     public void onCertificateSettingsDialogOkClicked(CertificateSettingsDialog certificateSettingsDialog) {
         Log.d(DefaultsActivity.class.getName(), "onCertificateSettingsDialogOkClicked");
         PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceAllowLegacyTLS(certificateSettingsDialog.isAllowLegacyTLS());
         preferenceManager.setPreferenceIgnoreSSLError(certificateSettingsDialog.isIgnoreSSLError());
         preferenceManager.setPreferenceFailureOnCertificateExpiry(certificateSettingsDialog.isFailureOnCertificateExpiry());
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(certificateSettingsDialog.getFailureOnCertificateExpiryDays());

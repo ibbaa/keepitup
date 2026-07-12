@@ -18,7 +18,8 @@
     <string name="label_dialog_certificate_settings_ok">@android:string/ok</string>
     <string name="label_dialog_certificate_settings_cancel">@android:string/cancel</string>
     <string name="label_dialog_certificate_settings_title">Certificate settings</string>
-    <string name="label_dialog_certificate_settings_ignore_ssl_error">Ignore SSL errors</string>
+    <string name="label_dialog_certificate_settings_allow_legacy_tls">Allow legacy TLS</string>
+    <string name="label_dialog_certificate_settings_ignore_ssl_error">Ignore certificate errors</string>
     <string name="label_dialog_certificate_settings_failure_on_certificate_expiry">Failure on expiry</string>
     <string name="label_dialog_certificate_settings_expiry_days">Expiry days</string>
     <integer name="edittext_dialog_certificate_settings_expiry_days_max_length">4</integer>

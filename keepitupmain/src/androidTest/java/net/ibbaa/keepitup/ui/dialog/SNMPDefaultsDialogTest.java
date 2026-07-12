@@ -65,13 +65,18 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SNMPDefaultsDialog dialog = openSNMPDefaultsDialog();
         onView(withId(R.id.textview_dialog_snmp_defaults_title)).check(matches(withText("SNMP settings")));
+        onView(withId(R.id.textview_dialog_snmp_defaults_snmp_version_label)).check(matches(withText("SNMP version")));
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v1)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v2c)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_version_v3)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_snmp_defaults_snmp_port_label)).check(matches(withText("SNMP port")));
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).check(matches(withText("161")));
+        onView(withId(R.id.textview_dialog_snmp_defaults_snmp_transport_label)).check(matches(withText("Transport protocol")));
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_transport_udp)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_dialog_snmp_defaults_snmp_transport_tcp)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_snmp_defaults_snmp_auth_algorithm_label)).check(matches(withText("Auth algorithm")));
         onView(withId(R.id.spinner_dialog_snmp_defaults_snmp_auth_algorithm)).check(matches(withSpinnerText("MD5")));
+        onView(withId(R.id.textview_dialog_snmp_defaults_snmp_priv_algorithm_label)).check(matches(withText("Privacy algorithm")));
         onView(withId(R.id.spinner_dialog_snmp_defaults_snmp_priv_algorithm)).check(matches(withSpinnerText("AES-128")));
         assertEquals(SNMPVersion.V2C, dialog.getSNMPVersion());
         assertEquals(161, dialog.getSNMPPort());

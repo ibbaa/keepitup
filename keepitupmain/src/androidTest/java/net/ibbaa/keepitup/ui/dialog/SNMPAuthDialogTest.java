@@ -68,10 +68,15 @@ public class SNMPAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SNMPAuthDialog dialog = openSNMPAuthDialog();
         onView(withId(R.id.textview_dialog_snmp_auth_title)).check(matches(withText("SNMP authentication")));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_user_name_label)).check(matches(withText("Auth username")));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_user_name)).check(matches(withText("")));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label)).check(matches(withText("Auth passphrase")));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(withText("")));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_auth_algorithm_label)).check(matches(withText("Auth algorithm")));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).check(matches(withSpinnerText("None")));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label)).check(matches(withText("Privacy passphrase")));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_dialog_snmp_auth_snmp_priv_algorithm_label)).check(matches(withText("Privacy algorithm")));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(not(isEnabled())));
         assertEquals("", dialog.getSNMPUserName());
         assertEquals("", dialog.getSNMPAuthPassphrase());

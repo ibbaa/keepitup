@@ -172,12 +172,14 @@ public class DefaultsActivityTest extends BaseUITest {
     public void testDisplayDefaultValuesCertificateSettings() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
         onView(withId(R.id.textview_activity_defaults_certificate_settings_label)).perform(scrollTo()).check(matches(withText("HTTP certificate settings")));
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isNotChecked()));
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("30")));
@@ -258,6 +260,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testDisplayDefaultValuesChangedCertificateSettings() {
         PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceAllowLegacyTLS(true);
         preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiry(true);
         preferenceManager.setPreferenceFailureOnCertificateExpiryDays(14);
@@ -265,6 +268,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_certificate_settings_label)).perform(scrollTo()).check(matches(withText("HTTP certificate settings")));
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).check(matches(isChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("14")));
@@ -577,11 +581,13 @@ public class DefaultsActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
         onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
@@ -594,12 +600,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
         rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertTrue(preferenceManager.getPreferenceAllowLegacyTLS());
         assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(14, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
@@ -611,11 +619,13 @@ public class DefaultsActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
         onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
@@ -628,12 +638,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
         rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
@@ -3136,6 +3148,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
@@ -3186,6 +3199,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_certificate_settings_label)).check(matches(withText("HTTP certificate settings")));
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isNotChecked()));
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("30")));
@@ -3214,6 +3228,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        assertFalse(preferenceManager.getPreferenceAllowLegacyTLS());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceFailureOnCertificateExpiry());
         assertEquals(30, preferenceManager.getPreferenceFailureOnCertificateExpiryDays());
@@ -3254,6 +3269,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("14"));
@@ -3282,6 +3298,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).check(matches(isChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("14")));
@@ -3307,6 +3324,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_certificate_settings)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).check(matches(isChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).check(matches(isChecked()));
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("14")));

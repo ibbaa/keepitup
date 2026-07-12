@@ -19,7 +19,11 @@
     <dimen name="linearlayout_dialog_certificate_settings_title_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_certificate_settings_title_margin_bottom">10dp</dimen>
     <dimen name="linearlayout_dialog_certificate_settings_title_margin_left">10dp</dimen>
-    <dimen name="linearlayout_dialog_certificate_settings_ignore_ssl_error_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_certificate_settings_allow_legacy_tls_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_certificate_settings_allow_legacy_tls_margin_left">10dp</dimen>
+    <dimen name="linearlayout_dialog_certificate_settings_allow_legacy_tls_margin_end">10dp</dimen>
+    <dimen name="linearlayout_dialog_certificate_settings_allow_legacy_tls_onoff_margin_top">4dp</dimen>
+    <dimen name="linearlayout_dialog_certificate_settings_ignore_ssl_error_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_certificate_settings_ignore_ssl_error_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_certificate_settings_ignore_ssl_error_margin_end">10dp</dimen>
     <dimen name="linearlayout_dialog_certificate_settings_ignore_ssl_error_onoff_margin_top">4dp</dimen>
