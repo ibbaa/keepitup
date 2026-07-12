@@ -44,7 +44,8 @@
         <item quantity="one">Click here (%d header)</item>
         <item quantity="other">Click here (%d headers)</item>
     </plurals>
-    <string name="label_dialog_network_task_edit_ignore_ssl_error">Ignore SSL errors:</string>
+    <string name="label_dialog_network_task_edit_certificate_settings">Certificate settings:</string>
+    <string name="text_dialog_network_task_edit_certificate_settings_value">Click here</string>
     <string name="label_dialog_network_task_edit_only_wifi">Only on WiFi:</string>
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>
     <string name="label_dialog_network_task_edit_high_prio">High priority:</string>

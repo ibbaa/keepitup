@@ -58,6 +58,7 @@ import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
+import net.ibbaa.keepitup.ui.support.CertificateSettingsSupport;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.ResolvesSupport;
@@ -80,7 +81,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport, ResolvesSupport, SNMPInterfacesSupport, SNMPAuthSupport {
+public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport, HeadersSupport, ResolvesSupport, SNMPInterfacesSupport, SNMPAuthSupport, CertificateSettingsSupport {
 
     private View dialogView;
     private NetworkTask task;
@@ -120,8 +121,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextView useDefaultHeadersOnOffText;
     private TextView headersText;
     private TextView snmpInterfacesText;
-    private SwitchMaterial ignoreSSLErrorSwitch;
-    private TextView ignoreSSLErrorOnOffText;
+    private TextView certificateSettingsText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
     private SwitchMaterial onlyWifiSwitch;
@@ -188,7 +188,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareUseDefaultHeadersSwitch();
         prepareHeadersField();
         prepareHeadersFieldVisibility();
-        prepareIgnoreSSLErrorSwitch();
+        prepareCertificateSettingsField();
         prepareStopOnSuccessSwitch();
         prepareAccessTypeDataFields(savedInstanceState);
         prepareAccessTypeDataFieldsVisibility();
@@ -408,8 +408,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return headersText.getVisibility() == View.VISIBLE;
     }
 
-    private boolean isIgnoreSSLErrorVisible() {
-        return ignoreSSLErrorSwitch.getVisibility() == View.VISIBLE;
+    private boolean isCertificateSettingsVisible() {
+        return certificateSettingsText.getVisibility() == View.VISIBLE;
     }
 
     private boolean isSNMPVersionVisible() {
@@ -1001,7 +1001,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         LinearLayout stopOnSuccessLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_stop_on_success);
         LinearLayout useDefaultHeadersLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_use_default_headers);
         LinearLayout headersLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_headers);
-        LinearLayout ignoreSSLErrorLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error);
+        LinearLayout certificateSettingsLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_certificate_settings);
         TextView pingCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_count_label);
         TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
         TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
@@ -1013,7 +1013,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         TextView useDefaultHeadersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_use_default_headers_label);
         TextView headersTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_label);
         TextView headersTextValueView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_headers_value);
-        TextView ignoreSSLErrorTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_label);
+        TextView certificateSettingsTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_certificate_settings_label);
         if (accessType.isPing()) {
             PreferenceManager preferenceManager = new PreferenceManager(requireContext());
             pingCountTextView.setVisibility(View.VISIBLE);
@@ -1072,9 +1072,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             useDefaultHeadersSwitch.setVisibility(View.VISIBLE);
             useDefaultHeadersLinearLayout.setVisibility(View.VISIBLE);
             prepareHeadersFieldVisibility();
-            ignoreSSLErrorTextView.setVisibility(View.VISIBLE);
-            ignoreSSLErrorSwitch.setVisibility(View.VISIBLE);
-            ignoreSSLErrorLinearLayout.setVisibility(View.VISIBLE);
+            certificateSettingsTextView.setVisibility(View.VISIBLE);
+            certificateSettingsText.setVisibility(View.VISIBLE);
+            certificateSettingsLinearLayout.setVisibility(View.VISIBLE);
         } else {
             useDefaultHeadersTextView.setVisibility(View.GONE);
             useDefaultHeadersSwitch.setVisibility(View.GONE);
@@ -1082,9 +1082,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             headersTextView.setVisibility(View.GONE);
             headersTextValueView.setVisibility(View.GONE);
             headersLinearLayout.setVisibility(View.GONE);
-            ignoreSSLErrorTextView.setVisibility(View.GONE);
-            ignoreSSLErrorSwitch.setVisibility(View.GONE);
-            ignoreSSLErrorLinearLayout.setVisibility(View.GONE);
+            certificateSettingsTextView.setVisibility(View.GONE);
+            certificateSettingsText.setVisibility(View.GONE);
+            certificateSettingsLinearLayout.setVisibility(View.GONE);
         }
         if (accessType.isPing() || accessType.isConnect()) {
             stopOnSuccessTextView.setVisibility(View.VISIBLE);
@@ -1157,13 +1157,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         headersText.setTextColor(color);
     }
 
-    private void prepareIgnoreSSLErrorSwitch() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareIgnoreSSLErrorSwitch with ignore ssl error setting of " + accessTypeData.isIgnoreSSLError());
-        ignoreSSLErrorSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_ignore_ssl_error);
-        ignoreSSLErrorOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_on_off);
-        ignoreSSLErrorSwitch.setChecked(accessTypeData.isIgnoreSSLError());
-        ignoreSSLErrorSwitch.setOnCheckedChangeListener(this::onIgnoreSSLErrorCheckedChanged);
-        prepareIgnoreSSLErrorOnOffText();
+    private void prepareCertificateSettingsField() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareCertificateSettingsField");
+        certificateSettingsText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_certificate_settings_value);
+        LinearLayout certificateSettingsLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_certificate_settings);
+        certificateSettingsLinearLayout.setOnClickListener(this::showCertificateSettingsDialog);
     }
 
     private void prepareStopOnSuccessSwitch() {
@@ -1240,10 +1238,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareUseDefaultHeadersOnOffText() {
         useDefaultHeadersOnOffText.setText(useDefaultHeadersSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
-
-    private void prepareIgnoreSSLErrorOnOffText() {
-        ignoreSSLErrorOnOffText.setText(ignoreSSLErrorSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareStopOnSuccessOnOffText() {
@@ -1336,8 +1330,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         if (isUseDefaultHeadersVisible()) {
             accessTypeData.setUseDefaultHeaders(useDefaultHeadersSwitch.isChecked());
         }
-        if (isIgnoreSSLErrorVisible()) {
-            accessTypeData.setIgnoreSSLError(ignoreSSLErrorSwitch.isChecked());
+        if (isCertificateSettingsVisible() && currentAccessTypeData != null) {
+            accessTypeData.setAllowLegacyTLS(currentAccessTypeData.isAllowLegacyTLS());
+            accessTypeData.setIgnoreSSLError(currentAccessTypeData.isIgnoreSSLError());
+            accessTypeData.setFailureOnCertificateExpiry(currentAccessTypeData.isFailureOnCertificateExpiry());
+            accessTypeData.setFailureOnCertificateExpiryDays(currentAccessTypeData.getFailureOnCertificateExpiryDays());
         }
         if (isStopOnSuccessVisible()) {
             accessTypeData.setStopOnSuccess(stopOnSuccessSwitch.isChecked());
@@ -1416,11 +1413,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareUseDefaultHeadersOnOffText();
         prepareHeadersField();
         prepareHeadersFieldVisibility();
-    }
-
-    private void onIgnoreSSLErrorCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onIgnoreSSLErrorCheckedChanged, new value is " + isChecked);
-        prepareIgnoreSSLErrorOnOffText();
     }
 
     private void onStopOnSuccessCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -1796,6 +1788,36 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     public void onSNMPAuthDialogCancelClicked(SNMPAuthDialog snmpAuthDialog) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPAuthDialogCancelClicked");
         snmpAuthDialog.dismiss();
+    }
+
+    private void showCertificateSettingsDialog(View view) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "showCertificateSettingsDialog");
+        CertificateSettingsDialog dialog = new CertificateSettingsDialog();
+        Bundle bundle = BundleUtil.booleanToBundle(dialog.getAllowLegacyTLSKey(), currentAccessTypeData.isAllowLegacyTLS());
+        BundleUtil.booleanToBundle(dialog.getIgnoreSSLErrorKey(), currentAccessTypeData.isIgnoreSSLError(), bundle);
+        BundleUtil.booleanToBundle(dialog.getFailureOnCertificateExpiryKey(), currentAccessTypeData.isFailureOnCertificateExpiry(), bundle);
+        BundleUtil.integerToBundle(dialog.getFailureOnCertificateExpiryDaysKey(), currentAccessTypeData.getFailureOnCertificateExpiryDays(), bundle);
+        BundleUtil.booleanToBundle(dialog.getFieldDependenciesEnabledKey(), true, bundle);
+        dialog.setArguments(bundle);
+        dialog.show(getParentFragmentManager(), CertificateSettingsDialog.class.getName());
+    }
+
+    @Override
+    public void onCertificateSettingsDialogOkClicked(CertificateSettingsDialog certificateSettingsDialog) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onCertificateSettingsDialogOkClicked");
+        currentAccessTypeData.setAllowLegacyTLS(certificateSettingsDialog.isAllowLegacyTLS());
+        currentAccessTypeData.setIgnoreSSLError(certificateSettingsDialog.isIgnoreSSLError());
+        currentAccessTypeData.setFailureOnCertificateExpiry(certificateSettingsDialog.isFailureOnCertificateExpiry());
+        if (certificateSettingsDialog.isFailureOnCertificateExpiry() && certificateSettingsDialog.isFailureOnCertificateExpiryDaysValid()) {
+            currentAccessTypeData.setFailureOnCertificateExpiryDays(certificateSettingsDialog.getFailureOnCertificateExpiryDays());
+        }
+        certificateSettingsDialog.dismiss();
+    }
+
+    @Override
+    public void onCertificateSettingsDialogCancelClicked(CertificateSettingsDialog certificateSettingsDialog) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onCertificateSettingsDialogCancelClicked");
+        certificateSettingsDialog.dismiss();
     }
 
     private int getColor(int colorid) {

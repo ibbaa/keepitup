@@ -473,7 +473,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
-        onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_certificate_settings)).perform(performClickIgnoringVisibility());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("45"));
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
@@ -491,6 +498,12 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Notifications (high priority): yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Last execution: not executed")));
+        NetworkTask downloadTask = getNetworkTaskDAO().readAllNetworkTasks().get(2);
+        AccessTypeData downloadData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(downloadTask.getId());
+        assertTrue(downloadData.isAllowLegacyTLS());
+        assertTrue(downloadData.isIgnoreSSLError());
+        assertTrue(downloadData.isFailureOnCertificateExpiry());
+        assertEquals(45, downloadData.getFailureOnCertificateExpiryDays());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.1"));
@@ -850,7 +863,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
-        onView(withId(R.id.switch_dialog_network_task_edit_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_certificate_settings)).perform(performClickIgnoringVisibility());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
@@ -858,8 +878,52 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertFalse(taskBefore.isEqual(taskAfter));
         assertFalse(taskBefore.isTechnicallyEqual(taskAfter));
         assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
+        assertFalse(dataBefore.isAllowLegacyTLS());
+        assertTrue(dataAfter.isAllowLegacyTLS());
+        assertFalse(dataBefore.isIgnoreSSLError());
+        assertTrue(dataAfter.isIgnoreSSLError());
+        assertFalse(dataBefore.isFailureOnCertificateExpiry());
+        assertTrue(dataAfter.isFailureOnCertificateExpiry());
+        assertEquals(30, dataBefore.getFailureOnCertificateExpiryDays());
+        assertEquals(60, dataAfter.getFailureOnCertificateExpiryDays());
         assertTrue(resolvesBefore.isEmpty());
         assertTrue(resolvesAfter.isEmpty());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEditAccessTypeDataCertificateSettingsValueChanged() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_certificate_settings)).perform(performClickIgnoringVisibility());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.switch_dialog_certificate_settings_allow_legacy_tls)).perform(click());
+        onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).perform(click());
+        onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).perform(replaceText("45"));
+        onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        AccessTypeData dataAfter = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskAfter.getId());
+        assertTrue(taskBefore.isTechnicallyEqual(taskAfter));
+        assertFalse(dataBefore.isTechnicallyEqual(dataAfter));
+        assertFalse(dataBefore.isAllowLegacyTLS());
+        assertTrue(dataAfter.isAllowLegacyTLS());
+        assertFalse(dataBefore.isIgnoreSSLError());
+        assertTrue(dataAfter.isIgnoreSSLError());
+        assertFalse(dataBefore.isFailureOnCertificateExpiry());
+        assertTrue(dataAfter.isFailureOnCertificateExpiry());
+        assertEquals(30, dataBefore.getFailureOnCertificateExpiryDays());
+        assertEquals(45, dataAfter.getFailureOnCertificateExpiryDays());
         activityScenario.close();
     }
 

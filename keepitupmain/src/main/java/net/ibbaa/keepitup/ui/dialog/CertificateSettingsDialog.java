@@ -305,6 +305,10 @@ public class CertificateSettingsDialog extends DialogFragmentBase implements Con
         return NumberUtil.getIntValue(daysText, defaultDays);
     }
 
+    public boolean isFailureOnCertificateExpiryDaysValid() {
+        return validateFailureOnCertificateExpiryDays(failureOnCertificateExpiryDaysEditText);
+    }
+
     private void onOkClicked(View view) {
         Log.d(CertificateSettingsDialog.class.getName(), "onOkClicked");
         List<ValidationResult> validationResultList = new ArrayList<>();

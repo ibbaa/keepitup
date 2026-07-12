@@ -644,10 +644,10 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textview_dialog_network_task_edit_ignore_ssl_error_label"
+                android:id="@+id/textview_dialog_network_task_edit_certificate_settings_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_ignore_ssl_error_label_margin_top"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_certificate_settings_margin_top"
                 android:textStyle="bold"
                 android:layout_row="14"
                 android:layout_column="0"
@@ -655,37 +655,27 @@
                 android:singleLine="false"
                 android:breakStrategy="simple"
                 android:maxWidth="@dimen/textview_dialog_network_task_edit_label_max_width"
-                android:text="@string/label_dialog_network_task_edit_ignore_ssl_error" />
+                android:labelFor="@id/textview_dialog_network_task_edit_certificate_settings_value"
+                android:text="@string/label_dialog_network_task_edit_certificate_settings" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_network_task_edit_ignore_ssl_error"
+                android:id="@+id/linearlayout_dialog_network_task_edit_certificate_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_top"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_certificate_settings_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_certificate_settings_margin_top"
                 android:layout_row="14"
                 android:layout_column="1">
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_dialog_network_task_edit_ignore_ssl_error"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/switch_dialog_network_task_edit_ignore_ssl_error_padding_top"
-                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_ignore_ssl_error_padding_bottom"
-                    android:minHeight="@dimen/switch_dialog_network_task_edit_ignore_ssl_error_min_height"
-                    app:trackTint="@drawable/switchtrack_selector"
-                    app:thumbTint="@drawable/switchthumb_selector"
-                    android:showText="false" />
-
                 <TextView
-                    android:id="@+id/textview_dialog_network_task_edit_ignore_ssl_error_on_off"
+                    android:id="@+id/textview_dialog_network_task_edit_certificate_settings_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="" />
+                    android:maxWidth="@dimen/textview_dialog_network_task_edit_value_max_width"
+                    android:text="@string/text_dialog_network_task_edit_certificate_settings_value" />
 
             </LinearLayout>
 
