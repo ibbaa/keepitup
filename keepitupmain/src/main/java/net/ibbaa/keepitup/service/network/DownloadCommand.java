@@ -70,6 +70,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.ConnectionSpec;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -141,16 +142,17 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 overrideAddress = findConnectToAddress(downloadUrl);
                 if (overrideAddress != null && overrideAddress.resolvedAddress() == null) {
                     long end = timeService.getCurrentTimestamp();
-                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, false));
+                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, Collections.emptyList(), false));
                     return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
-                response = openResponse(downloadUrl, overrideAddress);
+                ResponseResult responseResult = openResponse(downloadUrl, overrideAddress);
+                response = responseResult.response();
                 if (response == null) {
                     long end = timeService.getCurrentTimestamp();
-                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, false));
+                    connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, responseResult.expiryInfo(), false));
                     return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
-                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, true));
+                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, responseResult.expiryInfo(), true));
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");
                 int httpCode = response.code();
@@ -225,7 +227,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             }
             long end = timeService.getCurrentTimestamp();
             if (!connectSuccess) {
-                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, false));
+                connectResults.add(createDownloadConnectResult(downloadUrl, invalidHeaders, overrideAddress, Collections.emptyList(), false));
             }
             return createDownloadCommandResult(downloadUrl, connectResults, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
@@ -242,11 +244,11 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return URLUtil.getURL(downloadURL, location);
     }
 
-    protected Response openResponse(URL url, ConnectToAddress connectToAddress) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+    protected ResponseResult openResponse(URL url, ConnectToAddress connectToAddress) throws IOException, KeyManagementException, NoSuchAlgorithmException {
         Log.d(DownloadCommand.class.getName(), "openResponse to " + url + " with connectToAddress of " + connectToAddress);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
-            return null;
+            return new ResponseResult(null, Collections.emptyList());
         }
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(getResources().getInteger(R.integer.download_connect_timeout), TimeUnit.SECONDS).readTimeout(getResources().getInteger(R.integer.download_read_timeout), TimeUnit.SECONDS).followRedirects(false);
         if (connectToAddress != null) {
@@ -255,10 +257,23 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (isIgnoreSSLError()) {
             disableSSLCheck(clientBuilder);
         }
+        if (isAllowLegacyTLS()) {
+            enableLegacyTLS(clientBuilder);
+        }
+        CertificateExpiryInterceptor certExpiryInterceptor = null;
+        if (!isIgnoreSSLError() && isFailureOnCertificateExpiry()) {
+            int failureOnCertificateExpiryDays = getFailureOnCertificateExpiryDays();
+            if (failureOnCertificateExpiryDays > 0) {
+                certExpiryInterceptor = new CertificateExpiryInterceptor(failureOnCertificateExpiryDays, timeService);
+                clientBuilder.addNetworkInterceptor(certExpiryInterceptor);
+            }
+        }
         OkHttpClient client = clientBuilder.build();
         Request.Builder requestBuilder = buildRequest(url);
         Request request = requestBuilder.build();
-        return client.newCall(request).execute();
+        Response response = client.newCall(request).execute();
+        List<CertificateExpiryInfo> expiryInfo = certExpiryInterceptor != null ? certExpiryInterceptor.getExpiryInfo() : Collections.emptyList();
+        return new ResponseResult(response, expiryInfo);
     }
 
     protected Request.Builder buildRequest(URL url) {
@@ -338,6 +353,12 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         builder.hostnameVerifier((hostname, session) -> true);
     }
 
+    private void enableLegacyTLS(OkHttpClient.Builder builder) {
+        Log.d(DownloadCommand.class.getName(), "enableLegacyTLS");
+        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS).allEnabledTlsVersions().allEnabledCipherSuites().build();
+        builder.connectionSpecs(Collections.singletonList(spec));
+    }
+
     private X509TrustManager getDefaultTrustManager() {
         try {
             TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -356,6 +377,18 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private boolean isIgnoreSSLError() {
         return accessTypeData != null && accessTypeData.isIgnoreSSLError();
+    }
+
+    private boolean isAllowLegacyTLS() {
+        return accessTypeData != null && accessTypeData.isAllowLegacyTLS();
+    }
+
+    private boolean isFailureOnCertificateExpiry() {
+        return accessTypeData != null && accessTypeData.isFailureOnCertificateExpiry();
+    }
+
+    private int getFailureOnCertificateExpiryDays() {
+        return accessTypeData != null ? accessTypeData.getFailureOnCertificateExpiryDays() : -1;
     }
 
     private DocumentFile getDownloadDocumentFile(String fileName) {
@@ -507,9 +540,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, List<Header> invalidHeaders, ConnectToAddress overrideAddress, boolean success) {
+    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, List<Header> invalidHeaders, ConnectToAddress overrideAddress, List<CertificateExpiryInfo> expiryInfo, boolean success) {
         if (overrideAddress == null) {
-            return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, null, invalidHeaders, success);
+            return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, null, invalidHeaders, expiryInfo, success);
         }
         InetAddress connectToAddress = overrideAddress.resolvedAddress();
         int connectToPort = overrideAddress.resolve().getTargetPort();
@@ -517,7 +550,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (!StringUtil.isEmpty(connectMessage)) {
             connectMessage = getResources().getString(R.string.text_connect_connect_to_error) + " " + connectMessage;
         }
-        return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, connectMessage, invalidHeaders, success);
+        return new DownloadConnectResult(URLUtil.removeIPv6Brackets(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), connectToAddress, connectToPort, connectMessage, invalidHeaders, expiryInfo, success);
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {
@@ -628,6 +661,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     public record ConnectToAddress(Resolve resolve, InetAddress resolvedAddress, String resolveMessage) {
+
+    }
+
+    public record ResponseResult(Response response, List<CertificateExpiryInfo> expiryInfo) {
 
     }
 }

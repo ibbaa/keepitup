@@ -2430,11 +2430,11 @@ public class DownloadNetworkTaskWorkerTest {
 
     @SuppressWarnings("SameParameterValue")
     private DownloadConnectResult getDownloadConnectResult(String connectMessage, boolean success) {
-        return new DownloadConnectResult("host", 123, null, -1, connectMessage, Collections.emptyList(), success);
+        return new DownloadConnectResult("host", 123, null, -1, connectMessage, Collections.emptyList(), Collections.emptyList(), success);
     }
 
     private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
-        return new DownloadConnectResult(host, port, connectAddress, connectPort, "", invalidHeader, success);
+        return new DownloadConnectResult(host, port, connectAddress, connectPort, "", invalidHeader, Collections.emptyList(), success);
     }
 
     private NetworkTask getNetworkTask() {

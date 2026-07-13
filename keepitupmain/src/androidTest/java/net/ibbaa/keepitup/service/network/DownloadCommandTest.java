@@ -339,6 +339,35 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testCertificateExpiryInfoPassedThroughOnSuccess() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null, null);
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("https://test.com", HttpURLConnection.HTTP_OK, "ok", null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(new CertificateExpiryInfo("CN=test.com", 123456789L));
+        downloadCommand.addResponse("https://test.com", testResponse, expiryInfo);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals(expiryInfo, result.connectResults().get(0).expiryInfo());
+        testResponse.close();
+    }
+
+    @Test
+    public void testCertificateExpiryInfoEmptyByDefault() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null, null);
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("https://test.com", HttpURLConnection.HTTP_OK, "ok", null);
+        downloadCommand.addResponse("https://test.com", testResponse);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertTrue(result.connectResults().get(0).expiryInfo().isEmpty());
+        testResponse.close();
+    }
+
+    @Test
     public void testHTTPResponseCodeNotOkRedirectInvalidLocationHeader() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null, null);

@@ -16,10 +16,5 @@
 
 package net.ibbaa.keepitup.service.network;
 
-import net.ibbaa.keepitup.model.Header;
-
-import java.net.InetAddress;
-import java.util.List;
-
-public record DownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, String connectMessage, List<Header> invalidHeader, List<CertificateExpiryInfo> expiryInfo, boolean success) {
+public record CertificateExpiryInfo(String subject, long notAfterMillis) {
 }
