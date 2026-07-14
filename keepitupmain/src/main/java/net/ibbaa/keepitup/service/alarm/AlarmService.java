@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 
 import androidx.annotation.Nullable;
 
@@ -125,7 +126,7 @@ public class AlarmService extends Service {
         Runnable localCallback;
         synchronized (LOCK) {
             stopPlayTimer();
-            handler = new Handler();
+            handler = new Handler(Looper.getMainLooper());
             timeoutCallback = this::stopSelf;
             localHandler = handler;
             localCallback = timeoutCallback;

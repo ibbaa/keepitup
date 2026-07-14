@@ -413,7 +413,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "SAF is enabled. Not showing dialog.");
             return;
         }
-        //Set default to true in systemprefs.xml, remove initializeSAFFlag in StartupService, SystemActivity.onImportDone, SystemActivity.onPurgeDone
         if (!preferenceManager.getPreferenceSAFNoticeShown()) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             String tag = GeneralMessageDialog.class.getName();

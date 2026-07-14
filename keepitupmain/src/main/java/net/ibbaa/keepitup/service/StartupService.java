@@ -84,8 +84,6 @@ public class StartupService extends BroadcastReceiver {
         cleanupHeaders(context);
         cleanupSNMPItems(context);
         cleanupLogs(context);
-        Log.d(StartupService.class.getName(), "Initialize SAF flag.");
-        initializeSAFFlag(context);
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
         Log.d(StartupService.class.getName(), "Initialize theme.");
@@ -153,13 +151,6 @@ public class StartupService extends BroadcastReceiver {
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error initializing theme.", exc);
         }
-    }
-
-    private void initializeSAFFlag(Context context) {
-        Log.d(StartupService.class.getName(), "initializeSAFFlag");
-        PreferenceManager preferenceManager = new PreferenceManager(context);
-        boolean safFlag = preferenceManager.getPreferenceAllowArbitraryFileLocation();
-        preferenceManager.setPreferenceAllowArbitraryFileLocation(safFlag);
     }
 
     private void resetInstances(Context context) {

@@ -77,9 +77,18 @@ Downloads a file or page via HTTP or HTTPS.
 - **Use default headers** — if enabled (default), sends the HTTP headers
   configured under [Defaults](#defaults); if disabled, a per-task header
   list appears instead (see [HTTP Headers](#http-headers))
-- **Ignore SSL errors** — disables certificate validation; use with caution
+- **Certificate settings** — opens a dialog with TLS and certificate options:
+  - **Allow legacy TLS** — permits older TLS versions and cipher suites for
+    compatibility with legacy servers; use with caution
+  - **Ignore certificate errors** — disables certificate validation; use with
+    caution (formerly **Ignore SSL errors**)
+  - **Failure on expiry** — fails the task if the server certificate is due
+    to expire within the number of days set in **Expiry days**; disabled
+    while **Ignore certificate errors** is on
 
-An execution is successful if the download completes without error. Redirects
+An execution is successful if the download completes without error and, if
+**Failure on expiry** is enabled, no certificate encountered during the
+download is due to expire within the configured number of days. Redirects
 are followed by default and logged in detail. This can be disabled in
 [Settings](#download-settings).
 

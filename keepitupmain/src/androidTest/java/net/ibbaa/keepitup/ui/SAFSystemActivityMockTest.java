@@ -499,6 +499,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         FileOutputStream stream = new FileOutputStream(file);

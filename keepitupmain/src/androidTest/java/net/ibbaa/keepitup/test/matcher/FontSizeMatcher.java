@@ -33,6 +33,7 @@ public class FontSizeMatcher extends BoundedMatcher<View, View> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean matchesSafely(View target) {
         if (!(target instanceof TextView targetEditText)) {
             return false;

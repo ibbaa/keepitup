@@ -1,4 +1,5 @@
 * Added SNMPv3 support, in addition to the existing SNMPv1 and SNMPv2c support
 * SNMP now also supports TCP as an alternative to UDP as the transport protocol
 * SNMP reboot detection now also takes the device's actual system uptime into account when available, avoiding a false reboot detection when only the SNMP service itself was restarted
-* Improved handling of IPv6 link-local addresses with a scope/zone identifier
+* Added an option to fail an HTTPS download task when a certificate is about to expire within X days
+* SAF (Storage Access Framework) based storage is the new default for fresh installations (system setting 'allow arbitrary file location')

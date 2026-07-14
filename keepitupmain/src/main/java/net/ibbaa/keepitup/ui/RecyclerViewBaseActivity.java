@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui;
 
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -68,11 +67,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
     }
 
     protected void initEdgeToEdgeInsets(int mainLayoutId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().setDecorFitsSystemWindows(false);
-        } else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        }
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         View mainLayout = findViewById(mainLayoutId);
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (view, insets) -> {
             Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());

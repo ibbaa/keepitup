@@ -562,7 +562,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(56, getPreferenceManager().getPreferencePingPackageSize());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
@@ -724,7 +724,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
         assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
@@ -8033,11 +8033,11 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isChecked()));
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
-        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         activityScenario.close();

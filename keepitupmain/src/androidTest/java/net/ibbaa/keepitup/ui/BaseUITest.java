@@ -146,6 +146,7 @@ public abstract class BaseUITest {
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(false);
         noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
         noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());

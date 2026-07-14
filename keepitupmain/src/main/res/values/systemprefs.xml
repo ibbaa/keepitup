@@ -27,7 +27,7 @@
     <string name="theme_key">theme_key</string>
     <integer name="theme_default">-1</integer>
     <string name="allow_arbitrary_file_location_key">allow_arbitrary_file_location_key</string>
-    <bool name="allow_arbitrary_file_location_default">false</bool>
+    <bool name="allow_arbitrary_file_location_default">true</bool>
     <string name="alarm_on_highprio_key">alarm_on_highprio_key</string>
     <bool name="alarm_on_highprio_default">false</bool>
     <string name="file_dump_enabled_key">file_dump_enabled_key</string>

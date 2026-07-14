@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.service.network.CertificateExpiryInfo;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 import net.ibbaa.keepitup.service.network.DownloadConnectResult;
@@ -41,9 +42,11 @@ import net.ibbaa.keepitup.util.URLUtil;
 
 import java.io.File;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -356,7 +359,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     private void prepareSuccess(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareSuccess");
-        logEntry.setSuccess(true);
+        logEntry.setSuccess(!hasCertificateExpiryWarning(downloadResult));
         String successMessage = getRedirectMessage(downloadResult);
         String connectMessage = getConnectionMessage(getActualConnectResult(downloadResult));
         if (!StringUtil.isEmpty(connectMessage)) {
@@ -487,17 +490,50 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         if (connectResult == null) {
             return "";
         }
+        String message;
         if (connectResult.success()) {
-            return getResources().getString(R.string.text_download_connect_success, getHostAndPortMessage(connectResult));
+            message = getResources().getString(R.string.text_download_connect_success, getHostAndPortMessage(connectResult));
+        } else {
+            String connectMessage = "";
+            if (!StringUtil.isEmpty(connectResult.connectMessage())) {
+                connectMessage = " " + connectResult.connectMessage();
+                if (!connectMessage.endsWith(".")) {
+                    connectMessage += ".";
+                }
+            }
+            message = getResources().getString(R.string.text_download_connect_error, getHostAndPortMessage(connectResult)) + connectMessage;
         }
-        String connectMessage = "";
-        if (!StringUtil.isEmpty(connectResult.connectMessage())) {
-            connectMessage = " " + connectResult.connectMessage();
-            if (!connectMessage.endsWith(".")) {
-                connectMessage += ".";
+        String certificateExpiryMessage = getCertificateExpiryMessage(connectResult.expiryInfo());
+        if (!StringUtil.isEmpty(certificateExpiryMessage)) {
+            message += " " + certificateExpiryMessage;
+        }
+        return message;
+    }
+
+    private boolean hasCertificateExpiryWarning(DownloadCommandResult downloadResult) {
+        List<DownloadConnectResult> connectResults = downloadResult.connectResults();
+        if (connectResults == null) {
+            return false;
+        }
+        for (DownloadConnectResult connectResult : connectResults) {
+            List<CertificateExpiryInfo> expiryInfo = connectResult.expiryInfo();
+            if (expiryInfo != null && !expiryInfo.isEmpty()) {
+                return true;
             }
         }
-        return getResources().getString(R.string.text_download_connect_error, getHostAndPortMessage(connectResult)) + connectMessage;
+        return false;
+    }
+
+    private String getCertificateExpiryMessage(List<CertificateExpiryInfo> expiryInfo) {
+        if (expiryInfo == null || expiryInfo.isEmpty()) {
+            return "";
+        }
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+        List<String> entries = new ArrayList<>();
+        for (CertificateExpiryInfo info : expiryInfo) {
+            entries.add(getResources().getString(R.string.text_download_certificate_expiry_entry, info.subject(), dateFormat.format(new Date(info.notAfterMillis()))));
+        }
+        return getResources().getQuantityString(R.plurals.text_download_certificate_expiry, expiryInfo.size(), TextUtils.join(", ", entries));
     }
 
     private String getInvalidHeaderMessage(DownloadConnectResult connectResult) {

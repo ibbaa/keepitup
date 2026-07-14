@@ -49,6 +49,7 @@ import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.service.network.CertificateExpiryInfo;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 import net.ibbaa.keepitup.service.network.DownloadConnectResult;
@@ -2248,6 +2249,51 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessWithCertificateExpiryWarning() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(getCertificateExpiryInfo("CN=test.com", 123));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResultWithExpiryInfo(InetAddress.getByName("1.1.1.1"), 999, true, expiryInfo)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 1.1.1.1:999 was successful. The following certificate is about to expire: CN=test.com on Jan 1, 1970 1:00:00 AM. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessWithMultipleCertificateExpiryWarnings() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(getCertificateExpiryInfo("CN=test.com", 123), getCertificateExpiryInfo("CN=Lets Encrypt", 123));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResultWithExpiryInfo(InetAddress.getByName("1.1.1.1"), 999, true, expiryInfo)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 1.1.1.1:999 was successful. The following certificates are about to expire: CN=test.com on Jan 1, 1970 1:00:00 AM, CN=Lets Encrypt on Jan 1, 1970 1:00:00 AM. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessWithCertificateExpiryWarningOnRedirectHop() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(getCertificateExpiryInfo("CN=test.com", 123));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResultWithExpiryInfo(InetAddress.getByName("1.1.1.1"), 999, true, expiryInfo), getDownloadConnectResult(true)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("301"), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 1.1.1.1:999 was successful. The following certificate is about to expire: CN=test.com on Jan 1, 1970 1:00:00 AM. Server returned redirect 301 301. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileExistDeleteFailedInternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
@@ -2435,6 +2481,16 @@ public class DownloadNetworkTaskWorkerTest {
 
     private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
         return new DownloadConnectResult(host, port, connectAddress, connectPort, "", invalidHeader, Collections.emptyList(), success);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private DownloadConnectResult getDownloadConnectResultWithExpiryInfo(InetAddress connectAddress, int connectPort, boolean success, List<CertificateExpiryInfo> expiryInfo) {
+        return new DownloadConnectResult("host", 123, connectAddress, connectPort, "", Collections.emptyList(), expiryInfo, success);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private CertificateExpiryInfo getCertificateExpiryInfo(String subject, long notAfterMillis) {
+        return new CertificateExpiryInfo(subject, notAfterMillis);
     }
 
     private NetworkTask getNetworkTask() {

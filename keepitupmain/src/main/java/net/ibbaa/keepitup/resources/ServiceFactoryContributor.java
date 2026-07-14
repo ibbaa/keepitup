@@ -42,7 +42,7 @@ public class ServiceFactoryContributor {
             }
             Class<?> factoryClass = Objects.requireNonNull(classloader).loadClass(factoryClassName);
             Log.d(ServiceFactoryContributor.class.getName(), "Loaded service factory class is " + factoryClass.getName());
-            return (ServiceFactory) factoryClass.newInstance();
+            return (ServiceFactory) factoryClass.getDeclaredConstructor().newInstance();
         } catch (Exception exc) {
             Log.e(ServiceFactoryContributor.class.getName(), "Error creating service factory", exc);
             throw new RuntimeException(exc);

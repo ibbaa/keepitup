@@ -87,6 +87,7 @@ public class RawTextDialog extends DialogFragmentBase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private String doReplacements(Bundle arguments, String text) {
         for (String key : arguments.keySet()) {
             String replacement = "@" + key + "@";

@@ -26,6 +26,7 @@ import androidx.fragment.app.DialogFragment;
 
 public abstract class DialogFragmentBase extends DialogFragment {
 
+    @SuppressWarnings("deprecation")
     protected void initEdgeToEdgeInsets(View dialogView) {
         ViewCompat.setOnApplyWindowInsetsListener(dialogView, (view, insets) -> {
             Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
