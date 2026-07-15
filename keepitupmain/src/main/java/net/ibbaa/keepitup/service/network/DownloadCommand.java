@@ -251,15 +251,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             return new ResponseResult(null, Collections.emptyList());
         }
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(getResources().getInteger(R.integer.download_connect_timeout), TimeUnit.SECONDS).readTimeout(getResources().getInteger(R.integer.download_read_timeout), TimeUnit.SECONDS).followRedirects(false);
-        if (connectToAddress != null) {
-            overrideConnectHost(clientBuilder, isIgnoreSSLError(), connectToAddress);
-        }
-        if (isIgnoreSSLError()) {
-            disableSSLCheck(clientBuilder);
-        }
-        if (isAllowLegacyTLS()) {
-            enableLegacyTLS(clientBuilder);
-        }
+        configureSSL(clientBuilder, connectToAddress);
         CertificateExpiryInterceptor certExpiryInterceptor = null;
         if (!isIgnoreSSLError() && isFailureOnCertificateExpiry()) {
             int failureOnCertificateExpiryDays = getFailureOnCertificateExpiryDays();
@@ -314,14 +306,40 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return headers;
     }
 
-    private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError, ConnectToAddress connectToAddress) {
-        Log.d(DownloadCommand.class.getName(), "overrideConnectHost");
-        String overrideHost = URLUtil.getHostAddress(connectToAddress.resolvedAddress());
-        int overridePort = connectToAddress.resolve().getTargetPort();
-        clientBuilder.socketFactory(new ConnectToSocketFactory(overrideHost, overridePort));
-        if (!isIgnoreSSLError) {
-            SSLSocketFactory defaultSSL = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            clientBuilder.sslSocketFactory(new ConnectToSSLSocketFactory(defaultSSL, overrideHost, overridePort), getDefaultTrustManager());
+    private void configureSSL(OkHttpClient.Builder clientBuilder, ConnectToAddress connectToAddress) throws NoSuchAlgorithmException, KeyManagementException {
+        Log.d(DownloadCommand.class.getName(), "configureSSL");
+        SSLSocketFactory sslSocketFactory = null;
+        X509TrustManager trustManager = null;
+        if (connectToAddress != null) {
+            String overrideHost = URLUtil.getHostAddress(connectToAddress.resolvedAddress());
+            int overridePort = connectToAddress.resolve().getTargetPort();
+            clientBuilder.socketFactory(new ConnectToSocketFactory(overrideHost, overridePort));
+            if (!isIgnoreSSLError()) {
+                trustManager = getDefaultTrustManager();
+                sslSocketFactory = new ConnectToSSLSocketFactory((SSLSocketFactory) SSLSocketFactory.getDefault(), overrideHost, overridePort);
+            }
+        }
+        if (isIgnoreSSLError()) {
+            Log.d(DownloadCommand.class.getName(), "ignoreSSLError");
+            TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllX509TrustManager()};
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
+            trustManager = (X509TrustManager) trustAllCerts[0];
+            sslSocketFactory = sslContext.getSocketFactory();
+            clientBuilder.hostnameVerifier((hostname, session) -> true);
+        }
+        if (isAllowLegacyTLS()) {
+            Log.d(DownloadCommand.class.getName(), "enableLegacyTLS");
+            if (sslSocketFactory == null) {
+                trustManager = getDefaultTrustManager();
+                sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            }
+            sslSocketFactory = new LegacyTLSSSLSocketFactory(sslSocketFactory);
+            ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS).allEnabledTlsVersions().allEnabledCipherSuites().build();
+            clientBuilder.connectionSpecs(Collections.singletonList(spec));
+        }
+        if (sslSocketFactory != null) {
+            clientBuilder.sslSocketFactory(sslSocketFactory, trustManager);
         }
     }
 
@@ -342,21 +360,6 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             }
         }
         return null;
-    }
-
-    private void disableSSLCheck(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
-        Log.d(DownloadCommand.class.getName(), "disableSSLCheck");
-        TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllX509TrustManager()};
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(null, trustAllCerts, new SecureRandom());
-        builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0]);
-        builder.hostnameVerifier((hostname, session) -> true);
-    }
-
-    private void enableLegacyTLS(OkHttpClient.Builder builder) {
-        Log.d(DownloadCommand.class.getName(), "enableLegacyTLS");
-        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS).allEnabledTlsVersions().allEnabledCipherSuites().build();
-        builder.connectionSpecs(Collections.singletonList(spec));
     }
 
     private X509TrustManager getDefaultTrustManager() {

@@ -79,7 +79,11 @@ Downloads a file or page via HTTP or HTTPS.
   list appears instead (see [HTTP Headers](#http-headers))
 - **Certificate settings** — opens a dialog with TLS and certificate options:
   - **Allow legacy TLS** — permits older TLS versions and cipher suites for
-    compatibility with legacy servers; use with caution
+    compatibility with legacy servers; use with caution. Only takes effect if
+    the Android version on the device still supports the older TLS version or
+    cipher suite at all; recent Android versions have removed TLS 1.0/1.1 and
+    several older cipher suites entirely, in which case this setting has no
+    effect
   - **Ignore certificate errors** — disables certificate validation; use with
     caution (formerly **Ignore SSL errors**)
   - **Failure on expiry** — fails the task if the server certificate is due

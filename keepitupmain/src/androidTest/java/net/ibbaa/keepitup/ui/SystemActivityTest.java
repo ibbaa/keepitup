@@ -562,7 +562,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(56, getPreferenceManager().getPreferencePingPackageSize());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
@@ -580,7 +580,6 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         assertNotNull(mainKey1.key());
         assertNotNull(mainKey2.key());
@@ -724,7 +723,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
         assertEquals(-1, getPreferenceManager().getPreferenceResolveMatchPort());
         assertEquals("", getPreferenceManager().getPreferenceResolveAddress());
@@ -738,7 +737,6 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
-        assertTrue(getPreferenceManager().isPreferenceValueConfigured(TestRegistry.getContext().getResources().getString(R.string.allow_arbitrary_file_location_key)));
         MainKeyAccess.MainKey mainKey2 = mainKeyAccess.getMainKey();
         assertNotNull(mainKey1.key());
         assertNotNull(mainKey2.key());
@@ -8022,8 +8020,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isEnabled())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
         onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
@@ -8037,7 +8035,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
-        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         activityScenario.close();
