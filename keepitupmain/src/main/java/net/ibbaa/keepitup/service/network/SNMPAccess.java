@@ -504,8 +504,8 @@ public class SNMPAccess implements AutoCloseable {
         SNMPAuthAlgorithm authAlgorithm = authInfo.getAuthAlgorithm();
         SNMPPrivAlgorithm privAlgorithm = authInfo.getPrivAlgorithm();
         OID authOID = snmpMapping.getAuthAlgorithmOID(authAlgorithm);
-        OID privOID = snmpMapping.getPrivAlgorithmOID(privAlgorithm);
-        return new UsmUser(new OctetString(StringUtil.notNull(authInfo.getUserName())), authOID, authOID != null ? new OctetString(authInfo.getAuthPassphrase()) : null, privOID, privOID != null ? new OctetString(authInfo.getPrivPassphrase()) : null);
+        OID privOID = authOID != null ? snmpMapping.getPrivAlgorithmOID(privAlgorithm) : null;
+        return new UsmUser(new OctetString(StringUtil.notNull(authInfo.getUserName())), authOID, authOID != null ? new OctetString(StringUtil.notNull(authInfo.getAuthPassphrase())) : null, privOID, privOID != null ? new OctetString(StringUtil.notNull(authInfo.getPrivPassphrase())) : null);
     }
 
     private Context getContext() {

@@ -254,23 +254,32 @@ public class SNMPAuthDialogTest extends BaseUITest {
     public void testPrivFieldsDisabledWhenAuthNone() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SNMPAuthDialog dialog = openSNMPAuthDialog();
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(not(isEnabled())));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(not(isEnabled())));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("SHA-256"))).inRoot(isPlatformPopup()).perform(click());
-        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
         assertEquals(SNMPAuthAlgorithm.SHA256, dialog.getSNMPAuthAlgorithm());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("AES-192"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        assertEquals(SNMPPrivAlgorithm.AES192, dialog.getSNMPPrivAlgorithm());
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(not(isEnabled())));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(not(isEnabled())));
         assertEquals(SNMPAuthAlgorithm.NONE, dialog.getSNMPAuthAlgorithm());
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("MD5"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(isEnabled()));
         assertEquals(SNMPAuthAlgorithm.MD5, dialog.getSNMPAuthAlgorithm());
+        assertEquals(SNMPPrivAlgorithm.AES192, dialog.getSNMPPrivAlgorithm());
         onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
         activityScenario.close();
     }
@@ -281,24 +290,164 @@ public class SNMPAuthDialogTest extends BaseUITest {
         openSNMPAuthDialog();
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("SHA-256"))).inRoot(isPlatformPopup()).perform(click());
-        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("AES-192"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
         rotateScreen(activityScenario);
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).check(matches(withSpinnerText("SHA-256")));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(isEnabled()));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).check(matches(withSpinnerText("None")));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(not(isEnabled())));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(not(isEnabled())));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("MD5"))).inRoot(isPlatformPopup()).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).check(matches(withSpinnerText("MD5")));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
         onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(isEnabled()));
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPrivPassphraseDisabledWhenPrivNone() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        SNMPAuthDialog dialog = openSNMPAuthDialog(data);
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        assertEquals(SNMPPrivAlgorithm.NONE, dialog.getSNMPPrivAlgorithm());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("AES-192"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        assertEquals(SNMPPrivAlgorithm.AES192, dialog.getSNMPPrivAlgorithm());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        assertEquals(SNMPPrivAlgorithm.NONE, dialog.getSNMPPrivAlgorithm());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("DES"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        assertEquals(SNMPPrivAlgorithm.DES, dialog.getSNMPPrivAlgorithm());
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPrivPassphraseDisabledWhenPrivNoneScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        openSNMPAuthDialog(data);
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("AES-192"))).inRoot(isPlatformPopup()).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(withSpinnerText("AES-192")));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).check(matches(withSpinnerText("None")));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        SNMPAuthDialog dialog = getDialog();
+        assertEquals(SNMPPrivAlgorithm.NONE, dialog.getSNMPPrivAlgorithm());
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthPassphraseRetainedWhenAuthSetToNone() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        SNMPAuthDialog dialog = openSNMPAuthDialog();
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("SHA-256"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(replaceText("myauthpass"));
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(not(isEnabled())));
+        assertEquals("myauthpass", dialog.getSNMPAuthPassphrase());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("SHA-256"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(withText("myauthpass")));
+        assertEquals("myauthpass", dialog.getSNMPAuthPassphrase());
+        onView(withId(R.id.imageview_dialog_snmp_auth_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEditedInitialAuthPassphraseRetainedWhenAuthSetToNone() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        SNMPAuthDialog dialog = openSNMPAuthDialog(data);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(typeText("newauth"));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(closeSoftKeyboard());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(not(isEnabled())));
+        assertEquals("newauth", dialog.getSNMPAuthPassphrase());
+        onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPrivPassphraseRetainedWhenPrivSetToNone() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
+        SNMPAuthDialog dialog = openSNMPAuthDialog(data);
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(replaceText("myprivpass"));
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        assertEquals("myprivpass", dialog.getSNMPPrivPassphrase());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("AES-192"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(isEnabled()));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(withText("myprivpass")));
+        assertEquals("myprivpass", dialog.getSNMPPrivPassphrase());
+        onView(withId(R.id.imageview_dialog_snmp_auth_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEditedInitialPrivPassphraseRetainedWhenPrivSetToNone() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
+        SNMPAuthDialog dialog = openSNMPAuthDialog(data);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(typeText("newpriv"));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(closeSoftKeyboard());
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(not(isEnabled())));
+        assertEquals("newpriv", dialog.getSNMPPrivPassphrase());
         onView(withId(R.id.imageview_dialog_snmp_auth_cancel)).perform(click());
         activityScenario.close();
     }
@@ -417,7 +566,9 @@ public class SNMPAuthDialogTest extends BaseUITest {
     @Test
     public void testAuthPassphraseToggle() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openSNMPAuthDialog();
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        openSNMPAuthDialog(data);
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(togglePassword());
@@ -431,7 +582,9 @@ public class SNMPAuthDialogTest extends BaseUITest {
     @Test
     public void testAuthPassphraseToggleScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        openSNMPAuthDialog();
+        AccessTypeData data = new AccessTypeData();
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        openSNMPAuthDialog(data);
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase)).perform(togglePassword());
@@ -451,6 +604,7 @@ public class SNMPAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         AccessTypeData data = new AccessTypeData();
         data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
         openSNMPAuthDialog(data);
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(withPasswordVisibility(true)));
@@ -467,6 +621,7 @@ public class SNMPAuthDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         AccessTypeData data = new AccessTypeData();
         data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
         openSNMPAuthDialog(data);
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(withPasswordVisibility(true)));
@@ -589,6 +744,7 @@ public class SNMPAuthDialogTest extends BaseUITest {
         data.setSnmpAuthPassphrase("authpass");
         data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
         data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
         SNMPAuthDialog dialog = openSNMPAuthDialog(data);
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         assertEquals("privpass", dialog.getSNMPPrivPassphrase());
@@ -612,6 +768,7 @@ public class SNMPAuthDialogTest extends BaseUITest {
         AccessTypeData data = new AccessTypeData();
         data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
         data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
         openSNMPAuthDialog(data);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase)).perform(click());

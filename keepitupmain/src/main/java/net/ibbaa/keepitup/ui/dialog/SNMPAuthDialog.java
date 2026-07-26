@@ -104,6 +104,7 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
         preparePrivPassphraseTextField(accessTypeData, savedInstanceState);
         prepareSNMPPrivAlgorithmSpinner(accessTypeData, savedInstanceState);
         prepareAuthAlgorithmSpinnerListener();
+        preparePrivAlgorithmSpinnerListener();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -308,6 +309,23 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
         snmpAuthAlgorithmSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updateAuthPassphraseEnabledState();
+                updatePrivFieldsEnabledState();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        updateAuthPassphraseEnabledState();
+        updatePrivFieldsEnabledState();
+    }
+
+    private void preparePrivAlgorithmSpinnerListener() {
+        Log.d(SNMPAuthDialog.class.getName(), "preparePrivAlgorithmSpinnerListener");
+        snmpPrivAlgorithmSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 updatePrivFieldsEnabledState();
             }
 
@@ -318,11 +336,18 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
         updatePrivFieldsEnabledState();
     }
 
+    private void updateAuthPassphraseEnabledState() {
+        Log.d(SNMPAuthDialog.class.getName(), "updateAuthPassphraseEnabledState");
+        boolean enabled = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
+        snmpAuthPassphraseEditText.setEnabled(enabled);
+    }
+
     private void updatePrivFieldsEnabledState() {
         Log.d(SNMPAuthDialog.class.getName(), "updatePrivFieldsEnabledState");
-        boolean enabled = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
-        snmpPrivPassphraseEditText.setEnabled(enabled);
-        snmpPrivAlgorithmSpinner.setEnabled(enabled);
+        boolean authEnabled = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
+        snmpPrivAlgorithmSpinner.setEnabled(authEnabled);
+        boolean privPassphraseEnabled = authEnabled && getSNMPPrivAlgorithm() != SNMPPrivAlgorithm.NONE;
+        snmpPrivPassphraseEditText.setEnabled(privPassphraseEnabled);
     }
 
     private void prepareOkCancelImageButtons() {

@@ -352,6 +352,98 @@ public class SNMPNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testFailureCommunityInvalid() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        prepareWorker(dnsLookupResult, null);
+        AccessTypeData data = new AccessTypeData(getAccessTypeData());
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunityValid(false);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), data);
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. SNMP authentication data is invalid.", logEntry.getMessage());
+        assertEquals(Long.MIN_VALUE, worker.getCapturedLastSysUpTime());
+    }
+
+    @Test
+    public void testFailureAuthPassphraseInvalid() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        prepareWorker(dnsLookupResult, null);
+        AccessTypeData data = new AccessTypeData(getAccessTypeData());
+        data.setSnmpVersion(SNMPVersion.V3);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpAuthPassphraseValid(false);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), data);
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. SNMP authentication data is invalid.", logEntry.getMessage());
+        assertEquals(Long.MIN_VALUE, worker.getCapturedLastSysUpTime());
+    }
+
+    @Test
+    public void testFailurePrivPassphraseInvalid() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        prepareWorker(dnsLookupResult, null);
+        AccessTypeData data = new AccessTypeData(getAccessTypeData());
+        data.setSnmpVersion(SNMPVersion.V3);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphraseValid(false);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), data);
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. SNMP authentication data is invalid.", logEntry.getMessage());
+        assertEquals(Long.MIN_VALUE, worker.getCapturedLastSysUpTime());
+    }
+
+    @Test
+    public void testSuccessAuthPassphraseInvalidButAuthAlgorithmNone() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        AccessTypeData data = new AccessTypeData(getAccessTypeData());
+        data.setSnmpVersion(SNMPVersion.V3);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.NONE);
+        data.setSnmpAuthPassphraseValid(false);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.NONE);
+        data.setSnmpPrivPassphraseValid(false);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), data);
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 successful. Request time: 0 msec.", logEntry.getMessage());
+        assertEquals(-1, worker.getCapturedLastSysUpTime());
+    }
+
+    @Test
+    public void testSuccessPrivPassphraseInvalidButPrivAlgorithmNone() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        AccessTypeData data = new AccessTypeData(getAccessTypeData());
+        data.setSnmpVersion(SNMPVersion.V3);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.NONE);
+        data.setSnmpPrivPassphraseValid(false);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), data);
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("SNMP request to 127.0.0.1:161 successful. Request time: 0 msec.", logEntry.getMessage());
+        assertEquals(-1, worker.getCapturedLastSysUpTime());
+    }
+
+    @Test
     public void testLastSysUpTimeUpdatedOnSuccess() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         worker = new TestSNMPNetworkTaskWorker(TestRegistry.getContext(), task, null);

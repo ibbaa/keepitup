@@ -25,9 +25,11 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPCommand;
@@ -81,6 +83,16 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(SNMPNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
+            if (!isSNMPCredentialsValid(data)) {
+                Log.e(SNMPNetworkTaskWorker.class.getName(), "SNMP authentication data is invalid. Not attempting SNMP request.");
+                LogEntry logEntry = new LogEntry();
+                logEntry.setSuccess(false);
+                logEntry.setMessage(getResources().getString(R.string.text_snmp_failure, getAddressWithPort(URLUtil.getHostAddress(address), networkTask.getPort(), ip6)) + ". " + getResources().getString(R.string.text_snmp_auth_data_invalid));
+                completeLogEntry(networkTask, logEntry);
+                ExecutionResult invalidCredentialsResult = new ExecutionResult(false, logEntry);
+                Log.d(SNMPNetworkTaskWorker.class.getName(), "Returning " + invalidCredentialsResult);
+                return invalidCredentialsResult;
+            }
             SNMPAuthInfo authInfo = buildSNMPAuthInfo(data);
             ExecutionResult snmpExecutionResult = executeSNMPCommand(networkTask.getId(), address, networkTask.getPort(), data.getSnmpVersion(), data.getSnmpTransport(), authInfo, networkTask.getLastSysUpTime(), ip6);
             LogEntry logEntry = snmpExecutionResult.getLogEntry();
@@ -95,15 +107,31 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
         return dnsExecutionResult;
     }
 
+    private boolean isSNMPCredentialsValid(AccessTypeData data) {
+        Log.d(SNMPNetworkTaskWorker.class.getName(), "isSNMPCredentialsValid");
+        SNMPVersion snmpVersion = data.getSnmpVersion();
+        if (snmpVersion != null && snmpVersion.isV3()) {
+            SNMPAuthAlgorithm authAlgorithm = data.getSnmpAuthAlgorithm();
+            boolean authUsed = authAlgorithm != null && !authAlgorithm.isNone();
+            if (authUsed && !data.isSnmpAuthPassphraseValid()) {
+                return false;
+            }
+            SNMPPrivAlgorithm privAlgorithm = data.getSnmpPrivAlgorithm();
+            boolean privUsed = authUsed && privAlgorithm != null && !privAlgorithm.isNone();
+            return !privUsed || data.isSnmpPrivPassphraseValid();
+        }
+        return data.isSnmpCommunityValid();
+    }
+
     private SNMPAuthInfo buildSNMPAuthInfo(AccessTypeData data) {
         Log.d(SNMPNetworkTaskWorker.class.getName(), "buildSNMPAuthInfo");
         SNMPAuthInfo authInfo = new SNMPAuthInfo();
-        authInfo.setCommunity(data.getSnmpCommunity());
+        authInfo.setCommunity(StringUtil.notNull(data.getSnmpCommunity()));
         authInfo.setAuthAlgorithm(data.getSnmpAuthAlgorithm());
         authInfo.setUserName(data.getSnmpUserName());
-        authInfo.setAuthPassphrase(data.getSnmpAuthPassphrase());
+        authInfo.setAuthPassphrase(StringUtil.notNull(data.getSnmpAuthPassphrase()));
         authInfo.setPrivAlgorithm(data.getSnmpPrivAlgorithm());
-        authInfo.setPrivPassphrase(data.getSnmpPrivPassphrase());
+        authInfo.setPrivPassphrase(StringUtil.notNull(data.getSnmpPrivPassphrase()));
         return authInfo;
     }
 

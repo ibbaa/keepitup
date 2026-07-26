@@ -98,6 +98,7 @@
     <string name="text_snmp_time">Request time: %s</string>
     <string name="text_snmp_reboot">Device reboot detected</string>
     <string name="text_snmp_failure">SNMP request to %s failed</string>
+    <string name="text_snmp_auth_data_invalid">SNMP authentication data is invalid.</string>
     <string name="text_snmp_no_response">No response from host.</string>
     <string name="text_snmp_engine_id_discovery_failed">SNMP engine ID discovery failed.</string>
     <string name="text_snmp_mandatory_oid_missing">Mandatory OID %s not present in response</string>
