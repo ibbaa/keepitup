@@ -65,6 +65,9 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
     private EditText snmpPrivPassphraseEditText;
     private Spinner snmpAuthAlgorithmSpinner;
     private Spinner snmpPrivAlgorithmSpinner;
+    private View snmpAuthPassphraseContainer;
+    private View snmpPrivAlgorithmContainer;
+    private View snmpPrivPassphraseContainer;
     private TextColorValidatingWatcher snmpUserNameEditTextWatcher;
     private PasswordToggleTouchListener snmpAuthPassphraseToggleTouchListener;
     private PasswordToggleTouchListener snmpPrivPassphraseToggleTouchListener;
@@ -167,6 +170,7 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
     @SuppressLint("ClickableViewAccessibility")
     private void prepareAuthPassphraseTextField(AccessTypeData accessTypeData, Bundle savedInstanceState) {
         Log.d(SNMPAuthDialog.class.getName(), "prepareAuthPassphraseTextField");
+        snmpAuthPassphraseContainer = dialogView.findViewById(R.id.linearlayout_dialog_snmp_auth_snmp_auth_passphrase);
         TextView snmpAuthPassphraseLabel = dialogView.findViewById(R.id.textview_dialog_snmp_auth_snmp_auth_passphrase_label);
         snmpAuthPassphraseLabel.setTextColor(accessTypeData.isSnmpAuthPassphraseValid() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor));
         snmpAuthPassphraseEditText = dialogView.findViewById(R.id.edittext_dialog_snmp_auth_snmp_auth_passphrase);
@@ -215,6 +219,7 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
     @SuppressLint("ClickableViewAccessibility")
     private void preparePrivPassphraseTextField(AccessTypeData accessTypeData, Bundle savedInstanceState) {
         Log.d(SNMPAuthDialog.class.getName(), "preparePrivPassphraseTextField");
+        snmpPrivPassphraseContainer = dialogView.findViewById(R.id.linearlayout_dialog_snmp_auth_snmp_priv_passphrase);
         TextView snmpPrivPassphraseLabel = dialogView.findViewById(R.id.textview_dialog_snmp_auth_snmp_priv_passphrase_label);
         snmpPrivPassphraseLabel.setTextColor(accessTypeData.isSnmpPrivPassphraseValid() ? getColor(R.color.textColor) : getColor(R.color.textErrorColor));
         snmpPrivPassphraseEditText = dialogView.findViewById(R.id.edittext_dialog_snmp_auth_snmp_priv_passphrase);
@@ -284,6 +289,7 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
 
     private void prepareSNMPPrivAlgorithmSpinner(AccessTypeData accessTypeData, Bundle savedInstanceState) {
         Log.d(SNMPAuthDialog.class.getName(), "prepareSNMPPrivAlgorithmSpinner");
+        snmpPrivAlgorithmContainer = dialogView.findViewById(R.id.linearlayout_dialog_snmp_auth_snmp_priv_algorithm);
         snmpPrivAlgorithmSpinner = dialogView.findViewById(R.id.spinner_dialog_snmp_auth_snmp_priv_algorithm);
         EnumMapping mapping = new EnumMapping(requireContext());
         SNMPPrivAlgorithm[] values = SNMPPrivAlgorithm.values();
@@ -309,16 +315,16 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
         snmpAuthAlgorithmSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updateAuthPassphraseEnabledState();
-                updatePrivFieldsEnabledState();
+                updateAuthPassphraseVisibility();
+                updatePrivFieldsVisibility();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        updateAuthPassphraseEnabledState();
-        updatePrivFieldsEnabledState();
+        updateAuthPassphraseVisibility();
+        updatePrivFieldsVisibility();
     }
 
     private void preparePrivAlgorithmSpinnerListener() {
@@ -326,28 +332,28 @@ public class SNMPAuthDialog extends DialogFragmentBase implements ContextOptions
         snmpPrivAlgorithmSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updatePrivFieldsEnabledState();
+                updatePrivFieldsVisibility();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        updatePrivFieldsEnabledState();
+        updatePrivFieldsVisibility();
     }
 
-    private void updateAuthPassphraseEnabledState() {
-        Log.d(SNMPAuthDialog.class.getName(), "updateAuthPassphraseEnabledState");
-        boolean enabled = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
-        snmpAuthPassphraseEditText.setEnabled(enabled);
+    private void updateAuthPassphraseVisibility() {
+        Log.d(SNMPAuthDialog.class.getName(), "updateAuthPassphraseVisibility");
+        boolean visible = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
+        snmpAuthPassphraseContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private void updatePrivFieldsEnabledState() {
-        Log.d(SNMPAuthDialog.class.getName(), "updatePrivFieldsEnabledState");
-        boolean authEnabled = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
-        snmpPrivAlgorithmSpinner.setEnabled(authEnabled);
-        boolean privPassphraseEnabled = authEnabled && getSNMPPrivAlgorithm() != SNMPPrivAlgorithm.NONE;
-        snmpPrivPassphraseEditText.setEnabled(privPassphraseEnabled);
+    private void updatePrivFieldsVisibility() {
+        Log.d(SNMPAuthDialog.class.getName(), "updatePrivFieldsVisibility");
+        boolean authVisible = getSNMPAuthAlgorithm() != SNMPAuthAlgorithm.NONE;
+        snmpPrivAlgorithmContainer.setVisibility(authVisible ? View.VISIBLE : View.GONE);
+        boolean privPassphraseVisible = authVisible && getSNMPPrivAlgorithm() != SNMPPrivAlgorithm.NONE;
+        snmpPrivPassphraseContainer.setVisibility(privPassphraseVisible ? View.VISIBLE : View.GONE);
     }
 
     private void prepareOkCancelImageButtons() {

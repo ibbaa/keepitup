@@ -2753,6 +2753,38 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testAuthenticationInvalidNotShownWhenAuthAlgorithmNone() {
+        NetworkTask task = getNetworkTask4();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        data.setSnmpVersion(SNMPVersion.V3);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.NONE);
+        data.setSnmpAuthPassphraseValid(false);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.NONE);
+        data.setSnmpPrivPassphraseValid(false);
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAuthenticationInvalidNotShownWhenPrivAlgorithmNone() {
+        NetworkTask task = getNetworkTask4();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        data.setSnmpVersion(SNMPVersion.V3);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.NONE);
+        data.setSnmpPrivPassphraseValid(false);
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
+        activityScenario.close();
+    }
+
+    @Test
     public void testInvalidAuthorizationHeaderBasicAuthValidation() {
         addDefaultHeader();
         resetGlobalHeaderHandler();
@@ -3229,6 +3261,57 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         AccessTypeData data = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
         assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
         assertTrue(data.isSnmpAuthPassphraseValid());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSNMPAuthenticationValidationExportNotEncryptedAuthAlgorithmNone() throws Exception {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("SNMP")).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_snmp_auth_snmp_user_name)).perform(replaceText("testuser"));
+        onView(withId(R.id.spinner_dialog_snmp_auth_snmp_auth_algorithm)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("None"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_auth_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
+        onView(withText("Credentials not exported")).check(doesNotExist());
+        onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        waitUntilAllDialogsClosed(activityScenario);
+        File folder = getFileManager().getExternalDirectory("config", 0);
+        assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
+        getIntervalDAO().deleteAllIntervals();
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        getPreferenceManager().removeAllPreferences();
+        getNoBackupPreferenceManager().removeAllPreferences();
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
+        inputStream.close();
+        JSONSystemSetup systemSetup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = systemSetup.importData(jsonData);
+        assertTrue(result.success());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask task = tasks.get(0);
+        AccessTypeData data = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
+        assertEquals(SNMPVersion.V3, data.getSnmpVersion());
+        assertEquals(SNMPAuthAlgorithm.NONE, data.getSnmpAuthAlgorithm());
+        assertEquals("testuser", data.getSnmpUserName());
         activityScenario.close();
     }
 

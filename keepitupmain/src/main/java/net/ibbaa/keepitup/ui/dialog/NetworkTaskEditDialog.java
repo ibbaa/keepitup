@@ -44,9 +44,11 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -1774,10 +1776,14 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     public void onSNMPAuthDialogOkClicked(SNMPAuthDialog snmpAuthDialog) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onSNMPAuthDialogOkClicked");
         currentAccessTypeData.setSnmpUserName(snmpAuthDialog.getSNMPUserName());
-        currentAccessTypeData.setSnmpAuthPassphrase(snmpAuthDialog.getSNMPAuthPassphrase());
         currentAccessTypeData.setSnmpAuthAlgorithm(snmpAuthDialog.getSNMPAuthAlgorithm());
-        currentAccessTypeData.setSnmpPrivPassphrase(snmpAuthDialog.getSNMPPrivPassphrase());
-        currentAccessTypeData.setSnmpPrivAlgorithm(snmpAuthDialog.getSNMPPrivAlgorithm());
+        if (!SNMPAuthAlgorithm.NONE.equals(snmpAuthDialog.getSNMPAuthAlgorithm())) {
+            currentAccessTypeData.setSnmpAuthPassphrase(snmpAuthDialog.getSNMPAuthPassphrase());
+            currentAccessTypeData.setSnmpPrivAlgorithm(snmpAuthDialog.getSNMPPrivAlgorithm());
+            if (!SNMPPrivAlgorithm.NONE.equals(snmpAuthDialog.getSNMPPrivAlgorithm())) {
+                currentAccessTypeData.setSnmpPrivPassphrase(snmpAuthDialog.getSNMPPrivPassphrase());
+            }
+        }
         currentAccessTypeData.setSnmpAuthPassphraseValid(true);
         currentAccessTypeData.setSnmpPrivPassphraseValid(true);
         snmpAuthDialog.dismiss();

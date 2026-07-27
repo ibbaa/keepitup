@@ -34,8 +34,10 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
@@ -557,7 +559,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         for (NetworkTaskUIWrapper currentWrapper : allItems) {
             if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
                 AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
-                if (accessTypeData != null && isSNMPAuthVersion(accessTypeData) && (!accessTypeData.isSnmpAuthPassphraseValid() || !accessTypeData.isSnmpPrivPassphraseValid())) {
+                if (accessTypeData != null && isSNMPAuthVersion(accessTypeData) && isSNMPAuthenticationInvalid(accessTypeData)) {
                     invalidSNMPAuthentications.add(currentWrapper.getNetworkTask());
                 }
             }
@@ -572,7 +574,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         for (NetworkTaskUIWrapper currentWrapper : allItems) {
             if (SNMPUtil.isSNMPTask(currentWrapper.getNetworkTask())) {
                 AccessTypeData accessTypeData = currentWrapper.getAccessTypeData();
-                if (accessTypeData != null && isSNMPAuthVersion(accessTypeData) && accessTypeData.isSnmpAuthPassphraseValid() && accessTypeData.isSnmpPrivPassphraseValid()) {
+                if (accessTypeData != null && isSNMPAuthVersion(accessTypeData) && isSNMPAuthenticationValid(accessTypeData)) {
                     validSNMPAuthentications.add(currentWrapper.getNetworkTask());
                 }
             }
@@ -583,6 +585,36 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private boolean isSNMPAuthVersion(AccessTypeData accessTypeData) {
         SNMPVersion version = accessTypeData.getSnmpVersion();
         return version != null && version.isV3();
+    }
+
+    private boolean isSNMPAuthenticationInvalid(AccessTypeData accessTypeData) {
+        boolean authUsed = isSNMPAuthUsed(accessTypeData);
+        if (authUsed && !accessTypeData.isSnmpAuthPassphraseValid()) {
+            return true;
+        }
+        return isSNMPPrivUsed(accessTypeData) && !accessTypeData.isSnmpPrivPassphraseValid();
+    }
+
+    private boolean isSNMPAuthenticationValid(AccessTypeData accessTypeData) {
+        boolean authUsed = isSNMPAuthUsed(accessTypeData);
+        boolean privUsed = isSNMPPrivUsed(accessTypeData);
+        if (!authUsed && !privUsed) {
+            return false;
+        }
+        if (authUsed && !accessTypeData.isSnmpAuthPassphraseValid()) {
+            return false;
+        }
+        return !privUsed || accessTypeData.isSnmpPrivPassphraseValid();
+    }
+
+    private boolean isSNMPAuthUsed(AccessTypeData accessTypeData) {
+        SNMPAuthAlgorithm authAlgorithm = accessTypeData.getSnmpAuthAlgorithm();
+        return authAlgorithm != null && !authAlgorithm.isNone();
+    }
+
+    private boolean isSNMPPrivUsed(AccessTypeData accessTypeData) {
+        SNMPPrivAlgorithm privAlgorithm = accessTypeData.getSnmpPrivAlgorithm();
+        return isSNMPAuthUsed(accessTypeData) && privAlgorithm != null && !privAlgorithm.isNone();
     }
 
     public Map<Long, List<Header>> getInvalidHeaders() {
