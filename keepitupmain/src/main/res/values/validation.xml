@@ -47,6 +47,7 @@
     <string name="invalid_host_format">No valid host or IP address</string>
     <string name="invalid_url_format">No valid URL</string>
     <string name="invalid_file_name">No valid filename</string>
+    <string name="invalid_folder_name">No valid folder path</string>
     <string name="invalid_characters">Value contains invalid characters</string>
     <string name="invalid_exists">Value already exists</string>
     <string name="invalid_must_exist">At least one value must be specified</string>

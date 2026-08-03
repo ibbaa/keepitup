@@ -51,6 +51,10 @@ public class FilenameFieldValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("testfilename", result.getFieldName());
         assertEquals("No valid filename", result.getMessage());
+        result = validator.validate("..");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testfilename", result.getFieldName());
+        assertEquals("No valid filename", result.getMessage());
     }
 
     @Test
@@ -69,6 +73,10 @@ public class FilenameFieldValidatorTest {
         assertEquals("testfilename", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validate("fil/e");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testfilename", result.getFieldName());
+        assertEquals("No valid filename", result.getMessage());
+        result = validator.validate("..");
         assertFalse(result.isValidationSuccessful());
         assertEquals("testfilename", result.getFieldName());
         assertEquals("No valid filename", result.getMessage());

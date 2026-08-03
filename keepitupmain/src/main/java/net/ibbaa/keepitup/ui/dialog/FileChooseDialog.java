@@ -50,11 +50,13 @@ import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.FileChooseSupport;
 import net.ibbaa.keepitup.ui.validation.FieldValidator;
 import net.ibbaa.keepitup.ui.validation.FilenameFieldValidator;
+import net.ibbaa.keepitup.ui.validation.FolderNameFieldValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -366,15 +368,25 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
+    @SuppressWarnings("ExtractMethodRecommender")
     private void onOkClicked(View view) {
         Log.d(FileChooseDialog.class.getName(), "onOkClicked");
+        List<ValidationResult> validationResults = new ArrayList<>();
+        FieldValidator folderValidator = getFolderValidator();
+        ValidationResult folderResult = folderValidator.validate(getFolder());
+        if (!folderResult.isValidationSuccessful()) {
+            validationResults.add(folderResult);
+        }
         if (isFileMode()) {
             FieldValidator validator = getFilenameValidator();
             ValidationResult result = validator.validate(getFile());
             if (!result.isValidationSuccessful()) {
-                showValidatorErrorDialog(Collections.singletonList(result));
-                return;
+                validationResults.add(result);
             }
+        }
+        if (!validationResults.isEmpty()) {
+            showValidatorErrorDialog(validationResults);
+            return;
         }
         FileChooseSupport fileChooseSupport = getFileChooseSupport();
         if (fileChooseSupport != null) {
@@ -742,6 +754,10 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
 
     private FieldValidator getFilenameValidator() {
         return new FilenameFieldValidator(getResources().getString(R.string.label_dialog_file_choose_file), isEmptyFilenameAllowed(), getContext());
+    }
+
+    private FieldValidator getFolderValidator() {
+        return new FolderNameFieldValidator(getResources().getString(R.string.label_dialog_file_choose_folder), getContext());
     }
 
     private void showMessageDialog(String errorMessage) {

@@ -4086,6 +4086,42 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
     }
 
+    @Test
+    public void testInvalidFolderPathTraversal() {
+        openFileChooseDialog("", "file1");
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText(".."));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(allOf(withText("Folder"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid folder path"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("download"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
+    }
+
+    @Test
+    public void testInvalidFolderPathTraversalNested() {
+        openFileChooseDialog("", "file1");
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("download/../../.."));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(allOf(withText("Folder"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid folder path"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+    }
+
+    @Test
+    public void testInvalidFolderAndFilenameBothInvalid() {
+        openFileChooseDialog("", "file1");
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText(".."));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test/"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(allOf(withText("Folder"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid folder path"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Filename"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid filename"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+    }
+
     private FileChooseDialog openFileChooseDialog(String folder, String file) {
         return openFileChooseDialog(folder, file, FileChooseDialog.Mode.FILE);
     }

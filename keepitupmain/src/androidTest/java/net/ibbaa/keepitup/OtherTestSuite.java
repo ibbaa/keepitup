@@ -128,6 +128,7 @@ import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.CredentialInfoTest;
 import net.ibbaa.keepitup.ui.validation.FailureOnCertificateExpiryDaysFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.FilenameFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.FolderNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameExistsFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidatorTest;
@@ -314,6 +315,7 @@ import org.junit.runners.Suite;
         CredentialInfoTest.class,
         FailureOnCertificateExpiryDaysFieldValidatorTest.class,
         FilenameFieldValidatorTest.class,
+        FolderNameFieldValidatorTest.class,
         HeaderNameExistsFieldValidatorTest.class,
         HeaderNameFieldValidatorTest.class,
         HeaderValueFieldValidatorTest.class,

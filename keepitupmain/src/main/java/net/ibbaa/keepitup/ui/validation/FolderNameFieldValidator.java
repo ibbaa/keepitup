@@ -23,35 +23,30 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StringUtil;
 
-public class FilenameFieldValidator implements FieldValidator {
+public class FolderNameFieldValidator implements FieldValidator {
 
     private final String field;
     private final Context context;
-    private final boolean allowEmpty;
 
-    public FilenameFieldValidator(String field, boolean allowEmpty, Context context) {
+    public FolderNameFieldValidator(String field, Context context) {
         this.field = field;
-        this.allowEmpty = allowEmpty;
         this.context = context;
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(FilenameFieldValidator.class.getName(), "validate, value is " + value);
-        String emptyMessage = getResources().getString(R.string.invalid_no_value);
-        String failedMessage = getResources().getString(R.string.invalid_file_name);
+        Log.d(FolderNameFieldValidator.class.getName(), "validate, value is " + value);
+        String failedMessage = getResources().getString(R.string.invalid_folder_name);
         String successMessage = getResources().getString(R.string.validation_successful);
         if (StringUtil.isEmpty(value)) {
-            Log.d(FilenameFieldValidator.class.getName(), "No value specified.");
-            if (allowEmpty) {
-                return new ValidationResult(true, field, successMessage);
-            } else {
-                return new ValidationResult(false, field, emptyMessage);
-            }
+            Log.d(FolderNameFieldValidator.class.getName(), "No value specified.");
+            return new ValidationResult(true, field, successMessage);
         }
-        if (value.contains("/") || "..".equals(value)) {
-            Log.d(FilenameFieldValidator.class.getName(), "Filename invalid. Validation failed.");
-            return new ValidationResult(false, field, failedMessage);
+        for (String segment : value.split("/")) {
+            if ("..".equals(segment)) {
+                Log.d(FolderNameFieldValidator.class.getName(), "Folder path invalid. Validation failed.");
+                return new ValidationResult(false, field, failedMessage);
+            }
         }
         return new ValidationResult(true, field, successMessage);
     }

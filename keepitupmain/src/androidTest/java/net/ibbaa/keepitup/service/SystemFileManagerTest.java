@@ -142,6 +142,18 @@ public class SystemFileManagerTest {
     }
 
     @Test
+    public void testGetExternalDirectoryPathTraversal() {
+        assertNull(fileManager.getExternalDirectory("..", 0));
+        assertNull(fileManager.getExternalDirectory("test/../..", 0));
+        assertNull(fileManager.getExternalDirectory("../test", 0));
+    }
+
+    @Test
+    public void testGetExternalDirectoryPathTraversalWithinRoot() {
+        assertNull(fileManager.getExternalDirectory("test/download/..", 0));
+    }
+
+    @Test
     public void testGetDifferentExternalDirectories() {
         File externalRootDir1 = fileManager.getExternalRootDirectory(0);
         File externalRootDir2 = fileManager.getExternalRootDirectory(1);
@@ -345,6 +357,13 @@ public class SystemFileManagerTest {
         assertFalse(fileManager.doesFileExist(externalDir, file.getName()));
         assertTrue(file.createNewFile());
         assertTrue(fileManager.doesFileExist(externalDir, file.getName()));
+    }
+
+    @Test
+    public void testDoesFileExistPathTraversal() throws Exception {
+        File externalDir = fileManager.getExternalDirectory("test/config", 0);
+        assertFalse(fileManager.doesFileExist(externalDir, ".."));
+        assertFalse(fileManager.doesFileExist(externalDir, "../test"));
     }
 
     @Test

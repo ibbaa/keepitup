@@ -3,3 +3,4 @@
 * SNMP reboot detection now also takes the device's actual system uptime into account when available, avoiding a false reboot detection when only the SNMP service itself was restarted
 * Added an option to fail an HTTPS download task when a certificate is about to expire within X days
 * SAF (Storage Access Framework) based storage is the new default for fresh installations (system setting 'allow arbitrary file location')
+* Minor security fix: The legacy (non-SAF) directory picker now rejects invalid path patterns (e.g. ..) instead of causing a write failure. Only affects paths set via the old manual entry mechanism. Previously saved paths using such patterns may need to be reselected.
