@@ -224,7 +224,7 @@ public class SNMPAccess implements AutoCloseable {
         Log.d(SNMPAccess.class.getName(), "registerEngineIDWithSession for " + targetAddress);
         MPv3 mpv3 = (MPv3) snmp.getMessageProcessingModel(MPv3.ID);
         if (mpv3 != null) {
-            mpv3.addEngineID(targetAddress, engineID);
+            mpv3.addEngineID(targetAddress, engineID, false);
         }
     }
 
