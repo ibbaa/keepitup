@@ -29,6 +29,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
+        coreLibraryDesugaringEnabled true
     }
     buildFeatures {
         buildConfig = true
@@ -86,7 +87,7 @@ dependencies {
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.4.10'))
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
-    implementation 'androidx.tracing:tracing:2.0.0'
+    implementation 'androidx.tracing:tracing:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.annotation:annotation:1.10.0'
     implementation 'androidx.preference:preference:1.2.1'
@@ -100,6 +101,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:5.5.0'
     implementation 'org.bouncycastle:bcprov-lts8on:2.73.12.1'
     implementation 'org.snmp4j:snmp4j:3.13.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     testImplementation 'androidx.annotation:annotation:1.10.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.23.0'
