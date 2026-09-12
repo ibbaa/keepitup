@@ -84,10 +84,10 @@ configurations.configureEach {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.4.10'))
+    implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.4.20'))
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
-    implementation 'androidx.tracing:tracing:2.0.1'
+    implementation 'androidx.tracing:tracing:2.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.annotation:annotation:1.10.0'
     implementation 'androidx.preference:preference:1.2.1'
