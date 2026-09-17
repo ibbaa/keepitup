@@ -77,9 +77,22 @@ Downloads a file or page via HTTP or HTTPS.
 - **Use default headers** — if enabled (default), sends the HTTP headers
   configured under [Defaults](#defaults); if disabled, a per-task header
   list appears instead (see [HTTP Headers](#http-headers))
-- **Ignore SSL errors** — disables certificate validation; use with caution
+- **Certificate settings** — opens a dialog with TLS and certificate options:
+  - **Allow legacy TLS** — permits older TLS versions and cipher suites for
+    compatibility with legacy servers; use with caution. Only takes effect if
+    the Android version on the device still supports the older TLS version or
+    cipher suite at all; recent Android versions have removed TLS 1.0/1.1 and
+    several older cipher suites entirely, in which case this setting has no
+    effect
+  - **Ignore certificate errors** — disables certificate validation; use with
+    caution (formerly **Ignore SSL errors**)
+  - **Failure on expiry** — fails the task if the server certificate is due
+    to expire within the number of days set in **Expiry days**; disabled
+    while **Ignore certificate errors** is on
 
-An execution is successful if the download completes without error. Redirects
+An execution is successful if the download completes without error and, if
+**Failure on expiry** is enabled, no certificate encountered during the
+download is due to expire within the configured number of days. Redirects
 are followed by default and logged in detail. This can be disabled in
 [Settings](#download-settings).
 
@@ -127,15 +140,30 @@ are used and the per-task header list is hidden.
 Queries a network device via SNMP at each poll interval.
 
 - **Host** — hostname or IP address of the SNMP agent
-- **Port** — UDP port, default is 161
-- **Version** — SNMPv1 or SNMPv2c (SNMPv3 is planned)
-- **Community** — the SNMP community string, stored encrypted
+- **Port** — the SNMP agent port, default is 161
+- **Version** — SNMPv1, SNMPv2c or SNMPv3
+- **Transport** — UDP (default) or TCP
+- **Community** — the SNMP community string, stored encrypted; shown for
+  SNMPv1 and SNMPv2c
+- **Authentication** — opens the SNMPv3 authentication dialog (see below);
+  shown instead of Community for SNMPv3
 - **Interfaces** — opens the interface configuration (see below)
 
 At each execution the system group is queried, providing device information
 such as description, name and uptime. A device reboot is detected
 automatically when the uptime resets. The execution is considered successful
 if the device responds and returns a valid uptime value.
+
+#### SNMPv3 Authentication
+
+- **Auth username**
+- **Auth passphrase** — stored encrypted
+- **Auth algorithm** — None, MD5, SHA-1, SHA-224, SHA-256, SHA-384 or SHA-512
+- **Privacy passphrase** — stored encrypted
+- **Privacy algorithm** — None, DES, AES-128, AES-192, AES-256 or AES-256C
+
+Privacy passphrase and Privacy algorithm are disabled while Auth algorithm
+is set to None, since SNMPv3 does not support privacy without authentication.
 
 #### Interface Monitoring
 
@@ -195,6 +223,9 @@ In addition, Defaults provides:
   **Use default headers** enabled
 - **Resolve rule defaults** — default values that pre-fill the resolve rule
   dialog when a new rule is added to any download task
+- **SNMP settings** — default values for version, port, transport, and auth
+  and privacy algorithm that pre-fill new SNMP tasks; per-task fields such as
+  Auth username and the passphrases are not covered by defaults
 
 ---
 

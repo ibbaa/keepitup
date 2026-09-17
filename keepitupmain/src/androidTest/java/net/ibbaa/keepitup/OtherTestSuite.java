@@ -20,6 +20,7 @@ import net.ibbaa.keepitup.db.AccessTypeDataDAOTest;
 import net.ibbaa.keepitup.db.AccessTypeDataDBConstantsTest;
 import net.ibbaa.keepitup.db.DBMigrateTest;
 import net.ibbaa.keepitup.db.DBSetupTest;
+import net.ibbaa.keepitup.db.HeaderDAOTest;
 import net.ibbaa.keepitup.db.HeaderDBConstantsTest;
 import net.ibbaa.keepitup.db.IntervalDAOTest;
 import net.ibbaa.keepitup.db.IntervalDBConstantsTest;
@@ -48,9 +49,13 @@ import net.ibbaa.keepitup.model.IntervalTest;
 import net.ibbaa.keepitup.model.LogEntryTest;
 import net.ibbaa.keepitup.model.NetworkTaskTest;
 import net.ibbaa.keepitup.model.ResolveTest;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithmTest;
+import net.ibbaa.keepitup.model.SNMPAuthInfoTest;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfoTest;
 import net.ibbaa.keepitup.model.SNMPItemTest;
 import net.ibbaa.keepitup.model.SNMPItemTypeTest;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithmTest;
+import net.ibbaa.keepitup.model.SNMPTransportTest;
 import net.ibbaa.keepitup.model.SNMPVersionTest;
 import net.ibbaa.keepitup.model.SchedulerIdTest;
 import net.ibbaa.keepitup.model.TimeTest;
@@ -121,12 +126,15 @@ import net.ibbaa.keepitup.ui.validation.BasicAuthPasswordFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.BasicAuthUsernameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.CredentialInfoTest;
+import net.ibbaa.keepitup.ui.validation.FailureOnCertificateExpiryDaysFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.FilenameFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.FolderNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameExistsFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HostFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.IntervalFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.NetworkTaskNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidatorTest;
@@ -143,7 +151,10 @@ import net.ibbaa.keepitup.ui.validation.ResolveHostMatchExistsFieldValidatorTest
 import net.ibbaa.keepitup.ui.validation.ResolveHostMatchFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.ResolvePortMatchFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPAuthPassphraseFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.SNMPCommunityFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPPrivPassphraseFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.SNMPUserNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHeaderValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
@@ -176,11 +187,13 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         LoggingConsistencyTest.class,
+        TestSuiteCompletenessTest.class,
         //net.ibbaa.keepitup.db
         AccessTypeDataDAOTest.class,
         AccessTypeDataDBConstantsTest.class,
         DBMigrateTest.class,
         DBSetupTest.class,
+        HeaderDAOTest.class,
         HeaderDBConstantsTest.class,
         IntervalDAOTest.class,
         IntervalDBConstantsTest.class,
@@ -212,9 +225,13 @@ import org.junit.runners.Suite;
         NetworkTaskTest.class,
         ResolveTest.class,
         SchedulerIdTest.class,
+        SNMPAuthAlgorithmTest.class,
+        SNMPAuthInfoTest.class,
         SNMPInterfaceInfoTest.class,
         SNMPItemTest.class,
         SNMPItemTypeTest.class,
+        SNMPPrivAlgorithmTest.class,
+        SNMPTransportTest.class,
         SNMPVersionTest.class,
         TimeTest.class,
         //net.ibbaa.keepitup.model.validator
@@ -296,12 +313,15 @@ import org.junit.runners.Suite;
         BasicAuthUsernameFieldValidatorTest.class,
         ConnectCountFieldValidatorTest.class,
         CredentialInfoTest.class,
+        FailureOnCertificateExpiryDaysFieldValidatorTest.class,
         FilenameFieldValidatorTest.class,
+        FolderNameFieldValidatorTest.class,
         HeaderNameExistsFieldValidatorTest.class,
         HeaderNameFieldValidatorTest.class,
         HeaderValueFieldValidatorTest.class,
         HostFieldValidatorTest.class,
         IntervalFieldValidatorTest.class,
+        NetworkTaskNameFieldValidatorTest.class,
         NotificationAfterFailuresFieldValidatorTest.class,
         NullAccessTypeDataValidatorTest.class,
         NullNetworkTaskValidatorTest.class,
@@ -318,7 +338,10 @@ import org.junit.runners.Suite;
         ResolveHostMatchFieldValidatorTest.class,
         ResolvePortFieldValidatorTest.class,
         ResolvePortMatchFieldValidatorTest.class,
+        SNMPAuthPassphraseFieldValidatorTest.class,
         SNMPCommunityFieldValidatorTest.class,
+        SNMPPrivPassphraseFieldValidatorTest.class,
+        SNMPUserNameFieldValidatorTest.class,
         StandardAccessTypeDataValidatorTest.class,
         StandardHeaderValidatorTest.class,
         StandardHostPortValidatorTest.class,

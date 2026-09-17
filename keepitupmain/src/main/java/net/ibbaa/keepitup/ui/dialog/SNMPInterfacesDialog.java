@@ -37,10 +37,12 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPMapping;
 import net.ibbaa.keepitup.ui.adapter.SNMPInterfacesAdapter;
@@ -185,8 +187,12 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         return SNMPInterfacesDialog.class.getSimpleName() + ".SNMPVersion";
     }
 
-    public String getCommunityKey() {
-        return SNMPInterfacesDialog.class.getSimpleName() + ".Community";
+    public String getSNMPTransportKey() {
+        return SNMPInterfacesDialog.class.getSimpleName() + ".SNMPTransport";
+    }
+
+    public String getAuthInfoKey() {
+        return SNMPInterfacesDialog.class.getSimpleName() + ".AuthInfo";
     }
 
     public String getInitialSNMPItemsKey() {
@@ -353,9 +359,11 @@ public class SNMPInterfacesDialog extends DialogFragmentBase {
         String address = BundleUtil.stringFromBundle(getAddressKey(), requireArguments());
         int port = BundleUtil.integerFromBundle(getPortKey(), requireArguments());
         SNMPVersion snmpVersion = SNMPVersion.valueOf(BundleUtil.stringFromBundle(getSNMPVersionKey(), requireArguments()));
-        String community = BundleUtil.stringFromBundle(getCommunityKey(), requireArguments());
+        SNMPTransport snmpTransport = SNMPTransport.valueOf(BundleUtil.stringFromBundle(getSNMPTransportKey(), requireArguments()));
+        Bundle authInfoBundle = BundleUtil.bundleFromBundle(getAuthInfoKey(), requireArguments());
+        SNMPAuthInfo authInfo = authInfoBundle != null ? new SNMPAuthInfo(authInfoBundle) : new SNMPAuthInfo();
         long networkTaskId = BundleUtil.longFromBundle(getNetworkTaskIdKey(), requireArguments());
-        return new SNMPScanTask(scanViewModel.getScanDispatcher(), requireContext(), networkTaskId, address, port, snmpVersion, community);
+        return new SNMPScanTask(scanViewModel.getScanDispatcher(), requireContext(), networkTaskId, address, port, snmpVersion, snmpTransport, authInfo);
     }
 
     protected void showProgressDialog() {

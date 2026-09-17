@@ -102,7 +102,7 @@ public class URLUtil {
                 try {
                     InetAddress address1 = InetAddress.getByName(normalizedHost1);
                     InetAddress address2 = InetAddress.getByName(normalizedHost2);
-                    sameHost = address1.equals(address2);
+                    sameHost = getHostAddress(address1).equals(getHostAddress(address2));
                 } catch (Exception exc) {
                     sameHost = false;
                 }
@@ -153,14 +153,7 @@ public class URLUtil {
 
     public static String getHostAddress(InetAddress address) {
         String hostAddress = address.getHostAddress();
-        if (hostAddress == null) {
-            return "";
-        }
-        int scopeIndex = hostAddress.indexOf('%');
-        if (scopeIndex >= 0) {
-            hostAddress = hostAddress.substring(0, scopeIndex);
-        }
-        return hostAddress;
+        return hostAddress == null ? "" : hostAddress;
     }
 
     public static String getSourceAddress(Resolve resolve, URL url) {

@@ -131,7 +131,7 @@ public class MockDownloadCommand extends DownloadCommand {
                     if (!StringUtil.isEmpty(connectMessage)) {
                         connectMessage = context.getResources().getString(R.string.text_connect_connect_to_error) + " " + connectMessage;
                     }
-                    DownloadConnectResult connectResult = new DownloadConnectResult(URLUtil.removeIPv6Brackets(url.getHost()), URLUtil.getPort(url), null, connectToAddress.resolve().getTargetPort(), connectMessage, Collections.emptyList(), false);
+                    DownloadConnectResult connectResult = new DownloadConnectResult(URLUtil.removeIPv6Brackets(url.getHost()), URLUtil.getPort(url), null, connectToAddress.resolve().getTargetPort(), connectMessage, Collections.emptyList(), Collections.emptyList(), false);
                     return new DownloadCommandResult(url, List.of(connectResult), false, false, false, true, false, Collections.emptyList(), Collections.emptyList(), null, 0, null);
                 }
             }

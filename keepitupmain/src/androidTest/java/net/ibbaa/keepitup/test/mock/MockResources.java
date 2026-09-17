@@ -54,7 +54,7 @@ public class MockResources extends Resources {
     private final Map<String, Integer> testBooleanResources;
     private final Map<Integer, String> targetBooleanResources;
 
-    @SuppressWarnings({"Convert2MethodRef"})
+    @SuppressWarnings({"Convert2MethodRef", "deprecation"})
     public MockResources(AssetManager assetManager, Resources testResources, Resources targetResources) {
         super(assetManager, null, null);
         this.testResources = testResources;
@@ -211,6 +211,7 @@ public class MockResources extends Resources {
         return targetResources.getDrawableForDensity(id, density, theme);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Movie getMovie(int id) throws NotFoundException {
         return targetResources.getMovie(id);
@@ -315,6 +316,7 @@ public class MockResources extends Resources {
         return targetResources.obtainAttributes(set, attrs);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void updateConfiguration(Configuration config, DisplayMetrics metrics) {
         if (targetResources != null) {

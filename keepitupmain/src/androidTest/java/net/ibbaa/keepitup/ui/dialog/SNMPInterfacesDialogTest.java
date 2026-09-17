@@ -37,9 +37,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestSNMPInterfacesDialog;
 import net.ibbaa.keepitup.ui.BaseUITest;
@@ -663,7 +665,10 @@ public class SNMPInterfacesDialogTest extends BaseUITest {
         BundleUtil.stringToBundle(dialog.getAddressKey(), "test.host", bundle);
         BundleUtil.integerToBundle(dialog.getPortKey(), 161, bundle);
         BundleUtil.stringToBundle(dialog.getSNMPVersionKey(), SNMPVersion.V2C.name(), bundle);
-        BundleUtil.stringToBundle(dialog.getCommunityKey(), "public", bundle);
+        BundleUtil.stringToBundle(dialog.getSNMPTransportKey(), SNMPTransport.UDP.name(), bundle);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        BundleUtil.bundleToBundle(dialog.getAuthInfoKey(), authInfo.toBundle(), bundle);
         return bundle;
     }
 

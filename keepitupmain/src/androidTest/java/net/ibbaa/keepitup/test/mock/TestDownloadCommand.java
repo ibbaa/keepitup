@@ -26,10 +26,12 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.keepitup.service.network.CertificateExpiryInfo;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,7 @@ import okhttp3.Response;
 public class TestDownloadCommand extends DownloadCommand {
 
     private final Map<String, Response> responses;
+    private final Map<String, List<CertificateExpiryInfo>> expiryInfos;
     private final Map<String, Request> requests;
     private FileOutputStream outputStream;
     private IFileManager fileManager;
@@ -48,18 +51,25 @@ public class TestDownloadCommand extends DownloadCommand {
     public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, List<ConnectToAddress> connectToAddresses, List<Header> headers) {
         super(context, networkTask, data, url, folder, delete, connectToAddresses, headers);
         responses = new HashMap<>();
+        expiryInfos = new HashMap<>();
         requests = new HashMap<>();
         reset();
     }
 
     public void reset() {
         responses.clear();
+        expiryInfos.clear();
         requests.clear();
         fileManager = null;
     }
 
     public void addResponse(String url, Response response) {
         responses.put(url, response);
+    }
+
+    public void addResponse(String url, Response response, List<CertificateExpiryInfo> expiryInfo) {
+        responses.put(url, response);
+        expiryInfos.put(url, expiryInfo);
     }
 
     public void setOutputStream(FileOutputStream outputStream) {
@@ -79,14 +89,15 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected Response openResponse(URL url, ConnectToAddress connectToAddress) {
+    protected ResponseResult openResponse(URL url, ConnectToAddress connectToAddress) {
         if (url == null) {
             return null;
         }
         Request.Builder requestBuilder = buildRequest(url);
         Request request = requestBuilder.build();
         requests.put(url.toString(), request);
-        return responses.get(url.toString());
+        List<CertificateExpiryInfo> expiryInfo = expiryInfos.getOrDefault(url.toString(), Collections.emptyList());
+        return new ResponseResult(responses.get(url.toString()), expiryInfo);
     }
 
     @Override

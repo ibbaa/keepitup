@@ -41,7 +41,7 @@ public class WorkerFactoryContributor {
             }
             Class<?> factoryClass = Objects.requireNonNull(classloader).loadClass(factoryClassName);
             Log.d(WorkerFactoryContributor.class.getName(), "Loaded worker factory class is " + factoryClass.getName());
-            return (WorkerFactory) factoryClass.newInstance();
+            return (WorkerFactory) factoryClass.getDeclaredConstructor().newInstance();
         } catch (Exception exc) {
             Log.e(WorkerFactoryContributor.class.getName(), "Error creating worker factory", exc);
             throw new RuntimeException(exc);

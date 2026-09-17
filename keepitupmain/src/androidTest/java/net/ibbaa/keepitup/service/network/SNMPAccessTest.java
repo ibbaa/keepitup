@@ -26,10 +26,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestSNMPAccess;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +40,14 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TimeTicks;
 import org.snmp4j.smi.Variable;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 @MediumTest
@@ -53,7 +59,16 @@ public class SNMPAccessTest {
 
     @Before
     public void beforeEachTestMethod() {
-        snmpAccess = new TestSNMPAccess(TestRegistry.getContext(), InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, "public", false);
+        SNMPAccess.resetSharedUSMState();
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        snmpAccess = new TestSNMPAccess(TestRegistry.getContext(), InetAddress.getLoopbackAddress(), 161, SNMPVersion.V2C, SNMPTransport.UDP, authInfo, false);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        snmpAccess.close();
+        SNMPAccess.resetSharedUSMState();
     }
 
     @Test
@@ -117,6 +132,74 @@ public class SNMPAccessTest {
         assertEquals(String.valueOf(12345L), result.result().get(sysUpTimeOid));
         assertNull(result.exception());
         assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testWalkSystemAddsHrSysUpTimeWhenAvailable() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(100));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        snmpAccess.setSingleOIDResult(new SNMPAccess.SingleOIDResult(false, new TimeTicks(999999)));
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertTrue(result.success());
+        assertEquals(2, result.result().size());
+        assertEquals(String.valueOf(100L), result.result().get(sysUpTimeOid));
+        assertEquals(String.valueOf(999999L), result.result().get(hrSysUpTimeOid));
+        assertNull(result.exception());
+        assertTrue(result.errorMessages().isEmpty());
+        assertEquals(1, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
+    public void testWalkSystemNoHrSysUpTimeWhenNotSupportedByDevice() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(100));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        snmpAccess.setSingleOIDResult(new SNMPAccess.SingleOIDResult(false, null));
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertTrue(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals(String.valueOf(100L), result.result().get(sysUpTimeOid));
+        assertNull(result.result().get(hrSysUpTimeOid));
+        assertTrue(result.errorMessages().isEmpty());
+        assertEquals(1, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
+    public void testWalkSystemFailsOnHrSysUpTimeNetworkProblem() {
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysUpTimeOid, new TimeTicks(100));
+        subtreeResults.put(sysDescrOid, new OctetString("Test system"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        snmpAccess.setSingleOIDResult(new SNMPAccess.SingleOIDResult(true, null));
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertFalse(result.success());
+        assertEquals(1, result.result().size());
+        assertEquals("Test system", result.result().get(sysDescrOid));
+        assertNull(result.result().get(sysUpTimeOid));
+        assertNull(result.result().get(hrSysUpTimeOid));
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_uptime_no_response), result.errorMessages().get(0));
+        assertEquals(1, snmpAccess.getGetSingleOIDCallCount());
+    }
+
+    @Test
+    public void testWalkSystemSkipsHrSysUpTimeFetchWhenMandatorySysUpTimeMissing() {
+        String sysDescrOid = TestRegistry.getContext().getString(R.string.sys_descr_oid);
+        Map<String, Variable> subtreeResults = new HashMap<>();
+        subtreeResults.put(sysDescrOid, new OctetString("Test system"));
+        snmpAccess.setSubtreeResults(subtreeResults);
+        SNMPAccess.WalkResult result = snmpAccess.walkSystem();
+        assertFalse(result.success());
+        assertEquals(0, snmpAccess.getGetSingleOIDCallCount());
     }
 
     @Test
@@ -482,6 +565,150 @@ public class SNMPAccessTest {
         assertNotNull(result.exception());
         assertEquals("Test exception", result.exception().getMessage());
         assertTrue(result.errorMessages().isEmpty());
+    }
+
+    @Test
+    public void testFormatAddressPreservesScopeV2C() throws UnknownHostException {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        TestSNMPAccess scopedAccess = new TestSNMPAccess(TestRegistry.getContext(), scopedAddress, 161, SNMPVersion.V2C, SNMPTransport.UDP, authInfo, true);
+        scopedAccess.setSubtreeEmpty(true);
+        scopedAccess.walkInterfacesDescr();
+        assertTrue(scopedAccess.getTargetAddressString().contains(getScopeSuffix(scopedAddress)));
+        scopedAccess.close();
+    }
+
+    @Test
+    public void testFormatAddressPreservesScopeV3() throws UnknownHostException {
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 5);
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setUserName("scopeTestUser");
+        TestSNMPAccess scopedAccess = new TestSNMPAccess(TestRegistry.getContext(), scopedAddress, 161, SNMPVersion.V3, SNMPTransport.UDP, authInfo, true);
+        scopedAccess.setSubtreeEmpty(true);
+        scopedAccess.walkInterfacesDescr();
+        assertTrue(scopedAccess.getTargetAddressString().contains(getScopeSuffix(scopedAddress)));
+        scopedAccess.close();
+    }
+
+    private String getScopeSuffix(Inet6Address scopedAddress) {
+        String hostAddress = scopedAddress.getHostAddress();
+        int scopeIndex = Objects.requireNonNull(hostAddress).indexOf('%');
+        assertTrue("Test fixture must actually carry a scope", scopeIndex >= 0);
+        return hostAddress.substring(scopeIndex);
+    }
+
+    @Test
+    public void testWalkV3DiscoversEngineIDOnce() throws UnknownHostException {
+        TestSNMPAccess v3Access = buildV3SNMPAccess(loopbackVariant(1), 161, "user1");
+        v3Access.setSubtreeEmpty(true);
+        v3Access.walkInterfacesDescr();
+        v3Access.walkInterfacesType();
+        assertEquals(1, v3Access.getDiscoverEngineIDCallCount());
+        v3Access.close();
+    }
+
+    @Test
+    public void testWalkV3EngineIDKnownToSessionOnFreshDiscovery() throws UnknownHostException {
+        TestSNMPAccess v3Access = buildV3SNMPAccess(loopbackVariant(4), 161, "user4");
+        v3Access.setSubtreeEmpty(true);
+        v3Access.walkInterfacesDescr();
+        assertTrue(v3Access.isEngineIDKnownToSession());
+        v3Access.close();
+    }
+
+    @Test
+    public void testWalkV3EngineIDKnownToSessionOnCacheHit() throws UnknownHostException {
+        TestSNMPAccess firstContact = buildV3SNMPAccess(loopbackVariant(5), 161, "user5");
+        firstContact.setSubtreeEmpty(true);
+        firstContact.walkInterfacesDescr();
+        firstContact.close();
+        TestSNMPAccess secondContact = buildV3SNMPAccess(loopbackVariant(5), 161, "user5");
+        secondContact.setSubtreeEmpty(true);
+        secondContact.walkInterfacesDescr();
+        assertEquals(0, secondContact.getDiscoverEngineIDCallCount());
+        assertTrue(secondContact.isEngineIDKnownToSession());
+        secondContact.close();
+    }
+
+    @Test
+    public void testWalkV3EngineIDDiscoveryFailure() throws UnknownHostException {
+        TestSNMPAccess v3Access = buildV3SNMPAccess(loopbackVariant(2), 161, "user2");
+        v3Access.setDiscoveredEngineID(null);
+        v3Access.setSubtreeEmpty(true);
+        SNMPAccess.WalkResult result = v3Access.walkInterfacesDescr();
+        assertFalse(result.success());
+        assertTrue(result.result().isEmpty());
+        assertNull(result.exception());
+        assertEquals(1, result.errorMessages().size());
+        assertEquals(TestRegistry.getContext().getString(R.string.text_snmp_engine_id_discovery_failed), result.errorMessages().get(0));
+        v3Access.close();
+    }
+
+    @Test
+    public void testWalkV3EngineIDDiscoveryFailureRetriesOnNextWalk() throws UnknownHostException {
+        TestSNMPAccess v3Access = buildV3SNMPAccess(loopbackVariant(2), 161, "user2");
+        v3Access.setDiscoveredEngineID(null);
+        v3Access.setSubtreeEmpty(true);
+        v3Access.walkInterfacesDescr();
+        assertEquals(1, v3Access.getDiscoverEngineIDCallCount());
+        v3Access.setDiscoveredEngineID(new byte[]{1, 2, 3, 4, 5});
+        SNMPAccess.WalkResult result = v3Access.walkInterfacesType();
+        assertEquals(2, v3Access.getDiscoverEngineIDCallCount());
+        assertTrue(result.success());
+        v3Access.close();
+    }
+
+    @Test
+    public void testWalkV3EngineIDCacheHitAvoidsRediscovery() throws UnknownHostException {
+        int cacheSize = TestRegistry.getContext().getResources().getInteger(R.integer.snmp_usm_user_cache_size);
+        TestSNMPAccess firstContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
+        firstContact.setSubtreeEmpty(true);
+        firstContact.walkInterfacesDescr();
+        assertEquals(1, firstContact.getDiscoverEngineIDCallCount());
+        firstContact.close();
+        fillEngineIDCacheWithDistinctTargets(cacheSize - 1);
+        TestSNMPAccess secondContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
+        secondContact.setSubtreeEmpty(true);
+        secondContact.walkInterfacesDescr();
+        assertEquals(0, secondContact.getDiscoverEngineIDCallCount());
+        secondContact.close();
+    }
+
+    @Test
+    public void testWalkV3EngineIDCacheEvictionForcesRediscovery() throws UnknownHostException {
+        int cacheSize = TestRegistry.getContext().getResources().getInteger(R.integer.snmp_usm_user_cache_size);
+        TestSNMPAccess firstContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
+        firstContact.setSubtreeEmpty(true);
+        firstContact.walkInterfacesDescr();
+        assertEquals(1, firstContact.getDiscoverEngineIDCallCount());
+        firstContact.close();
+        fillEngineIDCacheWithDistinctTargets(cacheSize + 1);
+        TestSNMPAccess secondContact = buildV3SNMPAccess(loopbackVariant(3), 161, "user3");
+        secondContact.setSubtreeEmpty(true);
+        secondContact.walkInterfacesDescr();
+        assertEquals(1, secondContact.getDiscoverEngineIDCallCount());
+        secondContact.close();
+    }
+
+    private void fillEngineIDCacheWithDistinctTargets(int count) throws UnknownHostException {
+        for (int index = 0; index < count; index++) {
+            TestSNMPAccess filler = buildV3SNMPAccess(loopbackVariant(1000 + index), 161, "filler");
+            filler.setSubtreeEmpty(true);
+            filler.walkInterfacesDescr();
+            filler.close();
+        }
+    }
+
+    private InetAddress loopbackVariant(int variant) throws UnknownHostException {
+        return InetAddress.getByAddress(new byte[]{10, (byte) (variant >> 16), (byte) (variant >> 8), (byte) variant});
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private TestSNMPAccess buildV3SNMPAccess(InetAddress address, int port, String userName) {
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setUserName(userName);
+        return new TestSNMPAccess(TestRegistry.getContext(), address, port, SNMPVersion.V3, SNMPTransport.UDP, authInfo, false);
     }
 
     private String buildSysUpTimeErrorMessage() {

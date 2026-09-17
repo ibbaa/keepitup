@@ -26,9 +26,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
@@ -78,7 +80,7 @@ public class SNMPScanTaskTest {
     public void testRunInBackgroundValidationFailureInvalidAddressNonEmpty() {
         String address = "invalid!host";
         String expectedError = TestRegistry.getContext().getResources().getString(R.string.task_host_field_name) + " " + address + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
-        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, 161, SNMPVersion.V2C, "public");
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, 161, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo("public"));
         task.setMockDNSLookup(createSuccessfulDNSLookup(address));
         task.setMockSNMPAccess(mockSNMPAccess);
         SNMPScanResult result = task.runInBackground();
@@ -94,7 +96,7 @@ public class SNMPScanTaskTest {
     public void testRunInBackgroundValidationFailureInvalidPort() {
         int port = -1;
         String expectedError = TestRegistry.getContext().getResources().getString(R.string.task_port_field_name) + " " + port + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
-        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, "192.168.1.1", port, SNMPVersion.V2C, "public");
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, "192.168.1.1", port, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo("public"));
         task.setMockDNSLookup(createSuccessfulDNSLookup("192.168.1.1"));
         task.setMockSNMPAccess(mockSNMPAccess);
         SNMPScanResult result = task.runInBackground();
@@ -109,7 +111,7 @@ public class SNMPScanTaskTest {
     @Test
     public void testRunInBackgroundValidationFailureInvalidCommunity() {
         String expectedError = TestRegistry.getContext().getResources().getString(R.string.accesstypedata_snmp_community_field_name) + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
-        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, "192.168.1.1", 161, SNMPVersion.V2C, "public community");
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, "192.168.1.1", 161, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo("public community"));
         task.setMockDNSLookup(createSuccessfulDNSLookup("192.168.1.1"));
         task.setMockSNMPAccess(mockSNMPAccess);
         SNMPScanResult result = task.runInBackground();
@@ -127,7 +129,7 @@ public class SNMPScanTaskTest {
         int port = -1;
         String expectedAddressError = TestRegistry.getContext().getResources().getString(R.string.task_host_field_name) + " " + address + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
         String expectedPortError = TestRegistry.getContext().getResources().getString(R.string.task_port_field_name) + " " + port + " " + TestRegistry.getContext().getResources().getString(R.string.string_invalid);
-        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, port, SNMPVersion.V2C, "public");
+        TestSNMPScanTask task = new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, port, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo("public"));
         task.setMockDNSLookup(createSuccessfulDNSLookup(address));
         task.setMockSNMPAccess(mockSNMPAccess);
         SNMPScanResult result = task.runInBackground();
@@ -316,7 +318,13 @@ public class SNMPScanTaskTest {
     }
 
     private TestSNMPScanTask createTask(String address) {
-        return new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, 161, SNMPVersion.V2C, "public");
+        return new TestSNMPScanTask(TestRegistry.getContext(), 1L, address, 161, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo("public"));
+    }
+
+    private SNMPAuthInfo createAuthInfo(String community) {
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity(community);
+        return authInfo;
     }
 
     private MockDNSLookup createSuccessfulDNSLookup(String address) {

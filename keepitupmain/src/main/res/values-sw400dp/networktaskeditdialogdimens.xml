@@ -15,6 +15,8 @@
   -->
 
 <resources>
+    <dimen name="linearlayout_dialog_network_task_edit_padding">40dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_min_width">0dp</dimen>
     <dimen name="textview_dialog_network_task_edit_label_max_width">200dp</dimen>
     <dimen name="textview_dialog_network_task_edit_value_max_width">200dp</dimen>
 </resources>

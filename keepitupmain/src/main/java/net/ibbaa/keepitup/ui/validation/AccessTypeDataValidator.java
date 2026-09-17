@@ -25,4 +25,10 @@ public interface AccessTypeDataValidator {
     ValidationResult validateConnectCount(String connectCount);
 
     ValidationResult validateSNMPCommunity(String snmpCommunity);
+
+    ValidationResult validateSNMPUserName(String snmpUserName);
+
+    ValidationResult validateSNMPAuthPassphrase(String snmpAuthPassphrase);
+
+    ValidationResult validateSNMPPrivPassphrase(String snmpPrivPassphrase);
 }

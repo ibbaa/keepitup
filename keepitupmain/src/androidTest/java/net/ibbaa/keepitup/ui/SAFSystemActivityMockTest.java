@@ -42,6 +42,9 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
@@ -417,6 +420,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertTrue(networkTaskEntry.isTechnicallyEqual(readEntry));
         assertEquals(readTask.getId(), readEntry.getNetworkTaskId());
         AccessTypeData readAccessData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask.getId());
+        accessTypeData.setSnmpAuthPassphrase(null);
+        accessTypeData.setSnmpPrivPassphrase(null);
         assertTrue(accessTypeData.isTechnicallyEqual(readAccessData));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
@@ -494,6 +499,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getPreferenceManager().removeAllPreferences();
         getNoBackupPreferenceManager().removeAllPreferences();
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         FileOutputStream stream = new FileOutputStream(file);
@@ -529,6 +535,8 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertTrue(taskEntry.isTechnicallyEqual(readEntry));
         assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         AccessTypeData readAccessData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask.getId());
+        accessData.setSnmpAuthPassphrase(null);
+        accessData.setSnmpPrivPassphrase(null);
         assertTrue(accessData.isTechnicallyEqual(readAccessData));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
@@ -613,10 +621,21 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity(null);
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA512);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES128);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         return data;
     }
 

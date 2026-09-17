@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -40,10 +42,14 @@ import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.service.network.CertificateExpiryInfo;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 import net.ibbaa.keepitup.service.network.DownloadConnectResult;
@@ -56,6 +62,7 @@ import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestDownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -64,6 +71,7 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.Arrays;
@@ -285,6 +293,47 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals("10.0.0.1", downloadCommand.getConnectToAddresses().get(1).resolve().getTargetAddress());
         assertEquals(8080, downloadCommand.getConnectToAddresses().get(1).resolve().getTargetPort());
         assertEquals("192.168.1.1", downloadCommand.getConnectToAddresses().get(1).resolvedAddress().getHostAddress());
+    }
+
+    @Test
+    public void testMultipleResolvesIPv6WithDifferentScope() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        String targetAddress1 = "fe80::1%2";
+        String targetAddress2 = "fe80::1%3";
+        String normalizedHost1 = URLUtil.normalizeHost(targetAddress1);
+        String normalizedHost2 = URLUtil.normalizeHost(targetAddress2);
+        assertNotEquals("Scope must still distinguish the two hosts on this runtime", normalizedHost1, normalizedHost2);
+        DNSLookupResult dnsLookupResult1 = new DNSLookupResult(List.of(InetAddress.getByName("192.168.1.1")), null, null);
+        DNSLookupResult dnsLookupResult2 = new DNSLookupResult(List.of(InetAddress.getByName("192.168.1.2")), null, null);
+        downloadNetworkTaskWorker.setMockDNSLookup(normalizedHost1, new MockDNSLookup(normalizedHost1, dnsLookupResult1));
+        downloadNetworkTaskWorker.setMockDNSLookup(normalizedHost2, new MockDNSLookup(normalizedHost2, dnsLookupResult2));
+        MockDownloadCommand mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, (DownloadCommandResult) null);
+        downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
+        downloadNetworkTaskWorker.setMockFileManager(fileManager);
+        MockTimeService timeService = (MockTimeService) downloadNetworkTaskWorker.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com");
+        networkTask = networkTaskDAO.insertNetworkTask(networkTask);
+        Resolve resolve1 = getResolve(networkTask.getId(), 0);
+        resolve1.setTargetAddress(targetAddress1);
+        resolveDAO.insertResolve(resolve1);
+        Resolve resolve2 = getResolve(networkTask.getId(), 1);
+        resolve2.setSourceAddress("");
+        resolve2.setSourcePort(-1);
+        resolve2.setTargetAddress(targetAddress2);
+        resolveDAO.insertResolve(resolve2);
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertEquals(2, downloadCommand.getConnectToAddresses().size());
+        assertEquals(targetAddress1, downloadCommand.getConnectToAddresses().get(0).resolve().getTargetAddress());
+        assertNotNull(downloadCommand.getConnectToAddresses().get(0).resolvedAddress());
+        assertEquals("192.168.1.1", downloadCommand.getConnectToAddresses().get(0).resolvedAddress().getHostAddress());
+        assertEquals(targetAddress2, downloadCommand.getConnectToAddresses().get(1).resolve().getTargetAddress());
+        assertNotNull(downloadCommand.getConnectToAddresses().get(1).resolvedAddress());
+        assertEquals("192.168.1.2", downloadCommand.getConnectToAddresses().get(1).resolvedAddress().getHostAddress());
     }
 
     @Test
@@ -874,6 +923,19 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Request to 192.192.192.192:22 was successful. Server returned redirect 301. Request to [fd00::3eec:efff:feb5:d5c]:22 was successful. Server returned redirect 301. Request to 127.0.0.1:443 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadStoppedFileDoesNotExistWithRedirectIPv6WithScope() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(scopedAddress, 22, true), getDownloadConnectResult(true)), false, false, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to [fe80::1%2]:22 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
     }
 
     @Test
@@ -2187,6 +2249,51 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessWithCertificateExpiryWarning() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(getCertificateExpiryInfo("CN=test.com", 123));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResultWithExpiryInfo(InetAddress.getByName("1.1.1.1"), 999, true, expiryInfo)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 1.1.1.1:999 was successful. The following certificate is about to expire: CN=test.com on Jan 1, 1970 1:00:00 AM. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessWithMultipleCertificateExpiryWarnings() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(getCertificateExpiryInfo("CN=test.com", 123), getCertificateExpiryInfo("CN=Lets Encrypt", 123));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResultWithExpiryInfo(InetAddress.getByName("1.1.1.1"), 999, true, expiryInfo)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 1.1.1.1:999 was successful. The following certificates are about to expire: CN=test.com on Jan 1, 1970 1:00:00 AM, CN=Lets Encrypt on Jan 1, 1970 1:00:00 AM. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessWithCertificateExpiryWarningOnRedirectHop() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(getCertificateExpiryInfo("CN=test.com", 123));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResultWithExpiryInfo(InetAddress.getByName("1.1.1.1"), 999, true, expiryInfo), getDownloadConnectResult(true)), true, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("301"), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Request to 1.1.1.1:999 was successful. The following certificate is about to expire: CN=test.com on Jan 1, 1970 1:00:00 AM. Server returned redirect 301 301. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileExistDeleteFailedInternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
@@ -2369,11 +2476,21 @@ public class DownloadNetworkTaskWorkerTest {
 
     @SuppressWarnings("SameParameterValue")
     private DownloadConnectResult getDownloadConnectResult(String connectMessage, boolean success) {
-        return new DownloadConnectResult("host", 123, null, -1, connectMessage, Collections.emptyList(), success);
+        return new DownloadConnectResult("host", 123, null, -1, connectMessage, Collections.emptyList(), Collections.emptyList(), success);
     }
 
     private DownloadConnectResult getDownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, List<Header> invalidHeader, boolean success) {
-        return new DownloadConnectResult(host, port, connectAddress, connectPort, "", invalidHeader, success);
+        return new DownloadConnectResult(host, port, connectAddress, connectPort, "", invalidHeader, Collections.emptyList(), success);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private DownloadConnectResult getDownloadConnectResultWithExpiryInfo(InetAddress connectAddress, int connectPort, boolean success, List<CertificateExpiryInfo> expiryInfo) {
+        return new DownloadConnectResult("host", 123, connectAddress, connectPort, "", Collections.emptyList(), expiryInfo, success);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private CertificateExpiryInfo getCertificateExpiryInfo(String subject, long notAfterMillis) {
+        return new CertificateExpiryInfo(subject, notAfterMillis);
     }
 
     private NetworkTask getNetworkTask() {
@@ -2406,10 +2523,21 @@ public class DownloadNetworkTaskWorkerTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("public");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA512);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES128);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         return data;
     }
 

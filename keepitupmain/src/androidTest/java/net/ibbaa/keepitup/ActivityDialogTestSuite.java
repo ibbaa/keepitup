@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.ui.SystemActivityTest;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialogTest;
 import net.ibbaa.keepitup.ui.dialog.BasicAuthDialogTest;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialogTest;
+import net.ibbaa.keepitup.ui.dialog.CertificateSettingsDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionTest;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialogTest;
@@ -49,6 +50,8 @@ import net.ibbaa.keepitup.ui.dialog.ProgressDialogTest;
 import net.ibbaa.keepitup.ui.dialog.RawTextDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ResolveEditDialogTest;
 import net.ibbaa.keepitup.ui.dialog.ResolvesDialogTest;
+import net.ibbaa.keepitup.ui.dialog.SNMPAuthDialogTest;
+import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SNMPInterfacesDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialogTest;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputTest;
@@ -77,6 +80,7 @@ import org.junit.runners.Suite;
         AlarmPermissionDialogTest.class,
         BasicAuthDialogTest.class,
         BatteryOptimizationDialogTest.class,
+        CertificateSettingsDialogTest.class,
         ConfirmDialogTest.class,
         ContextOptionsDialogTest.class,
         ContextOptionTest.class,
@@ -99,6 +103,8 @@ import org.junit.runners.Suite;
         ResolvesDialogTest.class,
         SettingsInputDialogTest.class,
         SettingsInputTest.class,
+        SNMPAuthDialogTest.class,
+        SNMPDefaultsDialogTest.class,
         SNMPInterfacesDialogTest.class,
         SuspensionIntervalsDialogTest.class,
         SuspensionIntervalSelectDialogTest.class,

@@ -124,6 +124,7 @@ public class DBSyncHandlerTest {
         assertEquals("data4", Objects.requireNonNull(getById(4, result)).object().data());
     }
 
+    @SuppressWarnings("unused")
     private DBSyncHandler.ActionWrapper<SyncTest> getById(long id, List<DBSyncHandler.ActionWrapper<SyncTest>> objects) {
         for (DBSyncHandler.ActionWrapper<SyncTest> object : objects) {
             if (id == object.object().id()) {

@@ -36,6 +36,7 @@ public class SystemAlarmMediaPlayer implements IAlarmMediaPlayer {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void playAlarm() {
         Log.d(SystemAlarmMediaPlayer.class.getName(), "playAlarm");
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);

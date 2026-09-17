@@ -25,12 +25,12 @@ import net.ibbaa.keepitup.util.SNMPUtil;
 public class SNMPCommunityFieldValidator extends BaseStringValidator implements FieldValidator {
 
     public SNMPCommunityFieldValidator(String field, Context context) {
-        super(field, context);
+        super(field, context, true);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(SNMPCommunityFieldValidator.class.getName(), "validate, value is " + value);
+        Log.d(SNMPCommunityFieldValidator.class.getName(), "validate");
         int maximum = getResources().getInteger(R.integer.snmp_community_max_length);
         ValidationResult result = validateString(value, -1, maximum, true, true);
         if (!result.isValidationSuccessful()) {

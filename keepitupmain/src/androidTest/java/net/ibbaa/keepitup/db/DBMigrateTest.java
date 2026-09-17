@@ -224,7 +224,7 @@ public class DBMigrateTest {
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
         setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        AccessTypeData data = new AccessTypeData();
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         intervalDAO.insertInterval(new Interval());
@@ -248,7 +248,7 @@ public class DBMigrateTest {
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
         setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        AccessTypeData data = new AccessTypeData();
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         intervalDAO.insertInterval(new Interval());
@@ -301,7 +301,7 @@ public class DBMigrateTest {
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutLastSysUpTime());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSNMPColumns());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutSnmpVersionAndCommunityColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 7, 8);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         resolveDAO.insertResolve(new Resolve());
@@ -339,7 +339,7 @@ public class DBMigrateTest {
         migrate.doUpgrade(TestRegistry.getContext(), 0, 6);
         setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        AccessTypeData data = new AccessTypeData();
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         Resolve resolve = new Resolve();
@@ -378,7 +378,7 @@ public class DBMigrateTest {
         migrate.doUpgrade(TestRegistry.getContext(), 0, 7);
         setup.addLastSysUpTimeColumnToNetworkTaskTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        AccessTypeData data = new AccessTypeData();
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         Resolve resolve = new Resolve();
@@ -419,7 +419,7 @@ public class DBMigrateTest {
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 8);
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        AccessTypeData data = new AccessTypeData();
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         Resolve resolve = new Resolve();
@@ -461,6 +461,90 @@ public class DBMigrateTest {
         setup.createTables();
         migrate.doDowngrade(TestRegistry.getContext(), 8, 7);
         snmpItemDAO.readAllSNMPItems();
+    }
+
+    @Test
+    public void testUpgradeFrom8To9() {
+        setup.createTables();
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAllowLegacyTLSCertificateExpiryAndSnmpV3Columns());
+        migrate.doUpgrade(TestRegistry.getContext(), 8, 9);
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+    }
+
+    @Test
+    public void testUpgradeFrom8To9WithExistingData() {
+        setup.createTables();
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAllowLegacyTLSCertificateExpiryAndSnmpV3Columns());
+        NetworkTask task = networkTaskDAO.insertNetworkTask(new NetworkTask());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL("INSERT INTO " + accessTypeDataDBConstants.getTableName() + " (" + accessTypeDataDBConstants.getNetworkTaskIdColumnName() + ") VALUES (" + task.getId() + ")");
+        migrate.doUpgrade(TestRegistry.getContext(), 8, 9);
+        AccessTypeData readData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
+        AccessTypeData expectedData = new AccessTypeData(TestRegistry.getContext());
+        assertEquals(expectedData.isAllowLegacyTLS(), readData.isAllowLegacyTLS());
+        assertEquals(expectedData.isFailureOnCertificateExpiry(), readData.isFailureOnCertificateExpiry());
+        assertEquals(expectedData.getFailureOnCertificateExpiryDays(), readData.getFailureOnCertificateExpiryDays());
+        assertEquals(expectedData.getSnmpTransport(), readData.getSnmpTransport());
+        assertEquals(expectedData.getSnmpAuthAlgorithm(), readData.getSnmpAuthAlgorithm());
+        assertEquals(expectedData.getSnmpPrivAlgorithm(), readData.getSnmpPrivAlgorithm());
+    }
+
+    @Test
+    public void testDowngradeFrom9To8() {
+        setup.createTables();
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        migrate.doDowngrade(TestRegistry.getContext(), 9, 8);
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+    }
+
+    @Test
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
+    public void testUpgradeFrom0To9() {
+        setup.createTables();
+        setup.dropIntervalTable();
+        setup.dropNetworkTaskTable();
+        setup.dropAccessTypeDataTable();
+        setup.dropResolveTable();
+        setup.dropHeaderTable();
+        setup.dropSNMPItemTable();
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutAddedColumns());
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
+        HeaderDBConstants headerDBConstants = new HeaderDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(headerDBConstants.getCreateTableStatementWithoutHeaderTypeAndValueIV());
+        ResolveDBConstants resolveDBConstants = new ResolveDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(resolveDBConstants.getCreateTableStatementWithoutIndex());
+        migrate.doUpgrade(TestRegistry.getContext(), 0, 9);
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
+        data.setNetworkTaskId(task1.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        Resolve resolve = new Resolve();
+        resolve.setNetworkTaskId(task1.getId());
+        resolveDAO.insertResolve(resolve);
+        Header header = new Header();
+        header.setNetworkTaskId(task1.getId());
+        headerDAO.insertHeader(header);
+        SNMPItem snmpItem = new SNMPItem();
+        snmpItem.setNetworkTaskId(task1.getId());
+        snmpItemDAO.insertSNMPItem(snmpItem);
+        intervalDAO.insertInterval(new Interval());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(data.isTechnicallyEqual(data1));
+        Resolve resolve1 = resolveDAO.readAllResolvesForNetworkTask(task1.getId()).get(0);
+        assertTrue(resolve.isTechnicallyEqual(resolve1));
+        Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
+        assertTrue(header.isTechnicallyEqual(header1));
+        SNMPItem snmpItem1 = snmpItemDAO.readAllSNMPItemsForNetworkTask(task1.getId()).get(0);
+        assertTrue(snmpItem.isTechnicallyEqual(snmpItem1));
     }
 
     private NetworkTask getNetworkTask1() {

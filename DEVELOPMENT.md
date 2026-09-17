@@ -115,6 +115,7 @@ following values are considered credentials and stored encrypted:
 
 - HTTP headers of type `Authorization`, including Basic Authentication
 - SNMP community strings
+- SNMPv3 passphrases
 
 The encryption key is generated at runtime and stored in the device keystore.
 The key is non-transferable and cannot be read by any other means. It is

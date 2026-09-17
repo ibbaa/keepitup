@@ -100,6 +100,10 @@ public class SystemFileManager implements IFileManager {
     public File getExternalDirectory(String directoryName, int externalStorage) {
         Log.d(SystemFileManager.class.getName(), "getExternalDirectory, directoryName is " + directoryName + ", externalStorage is " + externalStorage);
         try {
+            if (containsPathTraversal(directoryName)) {
+                Log.e(SystemFileManager.class.getName(), "Directory name " + directoryName + " contains path traversal segments.");
+                return null;
+            }
             File externalRootDir = getExternalRootDirectory(externalStorage);
             if (externalRootDir == null) {
                 Log.d(SystemFileManager.class.getName(), "Cannot access external files root directory.");
@@ -419,11 +423,27 @@ public class SystemFileManager implements IFileManager {
         return fileName.replace("/", "").replaceAll("\\.", "").isEmpty();
     }
 
+    private boolean containsPathTraversal(String path) {
+        if (StringUtil.isEmpty(path)) {
+            return false;
+        }
+        for (String segment : path.split("/")) {
+            if ("..".equals(segment)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public boolean doesFileExist(File folder, String file) {
         Log.d(SystemFileManager.class.getName(), "doesFileExist, folder is " + folder + ", file is " + file);
         try {
+            if (containsPathTraversal(file)) {
+                Log.e(SystemFileManager.class.getName(), "File name " + file + " contains path traversal segments.");
+                return false;
+            }
             File resultingFile = new File(folder, file);
             return resultingFile.exists();
         } catch (Exception exc) {

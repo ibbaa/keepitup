@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.ui.sync.SNMPScanResult;
 import net.ibbaa.keepitup.ui.sync.SNMPScanTask;
@@ -28,8 +30,14 @@ public class MockSNMPScanTask extends SNMPScanTask {
     private final SNMPScanResult mockResult;
 
     public MockSNMPScanTask(UITaskResultDispatcher<SNMPScanResult> dispatcher, Context context, SNMPScanResult mockResult) {
-        super(dispatcher, context, -1, "test", 161, SNMPVersion.V2C, "public");
+        super(dispatcher, context, -1, "test", 161, SNMPVersion.V2C, SNMPTransport.UDP, createAuthInfo());
         this.mockResult = mockResult;
+    }
+
+    private static SNMPAuthInfo createAuthInfo() {
+        SNMPAuthInfo authInfo = new SNMPAuthInfo();
+        authInfo.setCommunity("public");
+        return authInfo;
     }
 
     @Override

@@ -664,7 +664,7 @@ public class NetworkTaskDAOTest {
         task.setInstances(2);
         task.setAddress("host.com");
         task.setPort(21);
-        task.setAccessType(null);
+        task.setAccessType(AccessType.CONNECT);
         task.setInterval(1);
         task.setOnlyWifi(true);
         task.setNotification(false);

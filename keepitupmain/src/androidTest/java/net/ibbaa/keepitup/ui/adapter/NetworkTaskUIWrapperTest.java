@@ -29,8 +29,11 @@ import net.ibbaa.keepitup.model.HeaderType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 
 import org.junit.Test;
@@ -139,10 +142,21 @@ public class NetworkTaskUIWrapperTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V2C);
         data.setSnmpCommunity("public");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA256);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES256);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(14);
         return data;
     }
 

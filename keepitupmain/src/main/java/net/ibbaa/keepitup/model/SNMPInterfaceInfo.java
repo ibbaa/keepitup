@@ -19,6 +19,8 @@ package net.ibbaa.keepitup.model;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class SNMPInterfaceInfo {
@@ -106,5 +108,16 @@ public class SNMPInterfaceInfo {
             return false;
         }
         return type == other.type;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "SNMPInterfaceInfo{" +
+                "descr='" + descr + '\'' +
+                ", type=" + type +
+                ", status=" + status +
+                ", alias='" + alias + '\'' +
+                '}';
     }
 }

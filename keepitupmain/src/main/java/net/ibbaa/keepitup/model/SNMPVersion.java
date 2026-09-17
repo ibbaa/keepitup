@@ -19,7 +19,8 @@ package net.ibbaa.keepitup.model;
 public enum SNMPVersion {
 
     V1(1),
-    V2C(2);
+    V2C(2),
+    V3(3);
 
     private final int code;
 
@@ -37,6 +38,10 @@ public enum SNMPVersion {
 
     public boolean isV2C() {
         return V2C.equals(this);
+    }
+
+    public boolean isV3() {
+        return V3.equals(this);
     }
 
     public static SNMPVersion forCode(int code) {

@@ -36,15 +36,22 @@ public class SNMPVersionTest {
         SNMPVersion version = SNMPVersion.V1;
         assertTrue(version.isV1());
         assertFalse(version.isV2C());
+        assertFalse(version.isV3());
         version = SNMPVersion.V2C;
         assertFalse(version.isV1());
         assertTrue(version.isV2C());
+        assertFalse(version.isV3());
+        version = SNMPVersion.V3;
+        assertFalse(version.isV1());
+        assertFalse(version.isV2C());
+        assertTrue(version.isV3());
     }
 
     @Test
     public void testForCode() {
         assertEquals(SNMPVersion.V1, SNMPVersion.forCode(SNMPVersion.V1.getCode()));
         assertEquals(SNMPVersion.V2C, SNMPVersion.forCode(SNMPVersion.V2C.getCode()));
-        assertNull(SNMPVersion.forCode(SNMPVersion.V2C.getCode() + 1));
+        assertEquals(SNMPVersion.V3, SNMPVersion.forCode(SNMPVersion.V3.getCode()));
+        assertNull(SNMPVersion.forCode(SNMPVersion.V3.getCode() + 1));
     }
 }

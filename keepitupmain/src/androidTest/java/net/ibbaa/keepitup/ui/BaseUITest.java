@@ -146,6 +146,7 @@ public abstract class BaseUITest {
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(false);
         noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
         noBackupPreferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
@@ -467,6 +468,26 @@ public abstract class BaseUITest {
             @Override
             public void perform(UiController uiController, View view) {
                 view.performClick();
+            }
+        };
+    }
+
+    public static ViewAction performClickIgnoringVisibility() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isEnabled();
+            }
+
+            @Override
+            public String getDescription() {
+                return "perform click ignoring visibility constraints";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
+                uiController.loopMainThreadUntilIdle();
             }
         };
     }

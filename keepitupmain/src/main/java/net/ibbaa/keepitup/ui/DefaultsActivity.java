@@ -31,7 +31,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -46,16 +45,19 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Resolve;
-import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
+import net.ibbaa.keepitup.ui.dialog.CertificateSettingsDialog;
 import net.ibbaa.keepitup.ui.dialog.HeadersDialog;
 import net.ibbaa.keepitup.ui.dialog.ResolveEditDialog;
+import net.ibbaa.keepitup.ui.dialog.SNMPDefaultsDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.ui.support.CertificateSettingsSupport;
 import net.ibbaa.keepitup.ui.support.HeadersSupport;
 import net.ibbaa.keepitup.ui.support.ResolveEditSupport;
+import net.ibbaa.keepitup.ui.support.SNMPDefaultsSupport;
 import net.ibbaa.keepitup.ui.sync.DBSyncResult;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
@@ -76,10 +78,9 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport {
+public class DefaultsActivity extends SettingsInputActivity implements HeadersSupport, ResolveEditSupport, SNMPDefaultsSupport, CertificateSettingsSupport {
 
     private GridLayout accessTypeGroup;
-    private TextView snmpPortText;
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
@@ -89,8 +90,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     private TextView connectCountText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
-    private SwitchMaterial ignoreSSLErrorSwitch;
-    private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
     private SwitchMaterial notificationSwitch;
@@ -115,12 +114,11 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         preparePingCountField();
         preparePingPackageSizeField();
         prepareConnectCountField();
-        prepareResolveRulesField();
         prepareStopOnSuccessSwitch();
-        prepareIgnoreSSLErrorSwitch();
+        prepareResolveRulesField();
+        prepareCertificateSettingsField();
         prepareGlobalHeadersField();
-        prepareSNMPVersionRadioButtons();
-        prepareSNMPPortField();
+        prepareSNMPSettingsField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -267,12 +265,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
-    private void prepareResolveRulesField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareResolveRulesField");
-        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_resolve_rules);
-        matchHostCardView.setOnClickListener(this::showResolveEditDialog);
-    }
-
     private void prepareStopOnSuccessSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareStopOnSuccessSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -295,26 +287,16 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         prepareStopOnSuccessOnOffText();
     }
 
-    private void prepareIgnoreSSLErrorSwitch() {
-        Log.d(DefaultsActivity.class.getName(), "prepareIgnoreSSLErrorSwitch");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        ignoreSSLErrorSwitch = findViewById(R.id.switch_activity_defaults_ignore_ssl_error);
-        ignoreSSLErrorOnOffText = findViewById(R.id.textview_activity_defaults_ignore_ssl_error_on_off);
-        ignoreSSLErrorSwitch.setOnCheckedChangeListener(null);
-        ignoreSSLErrorSwitch.setChecked(preferenceManager.getPreferenceIgnoreSSLError());
-        ignoreSSLErrorSwitch.setOnCheckedChangeListener(this::onIgnoreSSLErrorCheckedChanged);
-        prepareIgnoreSSLErrorOnOffText();
+    private void prepareResolveRulesField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareResolveRulesField");
+        CardView matchHostCardView = findViewById(R.id.cardview_activity_defaults_resolve_rules);
+        matchHostCardView.setOnClickListener(this::showResolveEditDialog);
     }
 
-    private void prepareIgnoreSSLErrorOnOffText() {
-        ignoreSSLErrorOnOffText.setText(ignoreSSLErrorSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
-
-    private void onIgnoreSSLErrorCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(DefaultsActivity.class.getName(), "onIgnoreSSLErrorCheckedChanged, new value is " + isChecked);
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        preferenceManager.setPreferenceIgnoreSSLError(isChecked);
-        prepareIgnoreSSLErrorOnOffText();
+    private void prepareCertificateSettingsField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareCertificateSettingsField");
+        CardView certificateSettingsCardView = findViewById(R.id.cardview_activity_defaults_certificate_settings);
+        certificateSettingsCardView.setOnClickListener(this::showCertificateSettingsDialog);
     }
 
     private void prepareGlobalHeadersField() {
@@ -477,40 +459,10 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         }
     }
 
-    private void prepareSNMPVersionRadioButtons() {
-        Log.d(DefaultsActivity.class.getName(), "prepareSNMPVersionRadioButtons");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        RadioGroup snmpVersionGroup = findViewById(R.id.radiogroup_activity_defaults_snmp_version);
-        snmpVersionGroup.setOnCheckedChangeListener(null);
-        SNMPVersion version = preferenceManager.getPreferenceSNMPVersion();
-        RadioButton v1RadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v1);
-        RadioButton v2cRadioButton = snmpVersionGroup.findViewById(R.id.radiobutton_activity_defaults_snmp_version_v2c);
-        v1RadioButton.setTextColor(getColor(R.color.textColor));
-        v1RadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
-        v2cRadioButton.setTextColor(getColor(R.color.textColor));
-        v2cRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
-        v1RadioButton.setChecked(version == null || version.isV1());
-        v2cRadioButton.setChecked(version != null && version.isV2C());
-        snmpVersionGroup.setOnCheckedChangeListener(this::onSNMPVersionChanged);
-    }
-
-    private void onSNMPVersionChanged(RadioGroup group, int checkedId) {
-        Log.d(DefaultsActivity.class.getName(), "onSNMPVersionChanged");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v1) {
-            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V1);
-        } else if (checkedId == R.id.radiobutton_activity_defaults_snmp_version_v2c) {
-            preferenceManager.setPreferenceSNMPVersion(SNMPVersion.V2C);
-        }
-    }
-
-    private void prepareSNMPPortField() {
-        Log.d(DefaultsActivity.class.getName(), "prepareSNMPPortField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        snmpPortText = findViewById(R.id.textview_activity_defaults_snmp_port);
-        setSNMPPort(String.valueOf(preferenceManager.getPreferenceSNMPPort()));
-        CardView snmpPortCardView = findViewById(R.id.cardview_activity_defaults_snmp_port);
-        snmpPortCardView.setOnClickListener(this::showSNMPPortInputDialog);
+    private void prepareSNMPSettingsField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareSNMPSettingsField");
+        CardView snmpSettingsCardView = findViewById(R.id.cardview_activity_defaults_snmp_settings);
+        snmpSettingsCardView.setOnClickListener(this::showSNMPDefaultsDialog);
     }
 
     private void prepareOnlyWifiSwitch() {
@@ -631,15 +583,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
-    private String getSNMPPort() {
-        return StringUtil.notNull(snmpPortText.getText());
-    }
-
-    private void setSNMPPort(String port) {
-        snmpPortText.setText(StringUtil.notNull(port));
-    }
-
-
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
@@ -713,11 +656,21 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         headersDialog.show(getSupportFragmentManager(), HeadersDialog.class.getName());
     }
 
-    private void showSNMPPortInputDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showSNMPPortInputDialog");
-        List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.SNMPPORT, getSNMPPort(), getResources().getString(R.string.label_activity_defaults_snmp_port), validators);
-        showInputDialog(input.toBundle());
+    private void showSNMPDefaultsDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showSNMPDefaultsDialog");
+        new SNMPDefaultsDialog().show(getSupportFragmentManager(), SNMPDefaultsDialog.class.getName());
+    }
+
+    private void showCertificateSettingsDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showCertificateSettingsDialog");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        CertificateSettingsDialog certificateSettingsDialog = new CertificateSettingsDialog();
+        Bundle bundle = BundleUtil.booleanToBundle(certificateSettingsDialog.getAllowLegacyTLSKey(), preferenceManager.getPreferenceAllowLegacyTLS());
+        BundleUtil.booleanToBundle(certificateSettingsDialog.getIgnoreSSLErrorKey(), preferenceManager.getPreferenceIgnoreSSLError(), bundle);
+        BundleUtil.booleanToBundle(certificateSettingsDialog.getFailureOnCertificateExpiryKey(), preferenceManager.getPreferenceFailureOnCertificateExpiry(), bundle);
+        BundleUtil.integerToBundle(certificateSettingsDialog.getFailureOnCertificateExpiryDaysKey(), preferenceManager.getPreferenceFailureOnCertificateExpiryDays(), bundle);
+        certificateSettingsDialog.setArguments(bundle);
+        certificateSettingsDialog.show(getSupportFragmentManager(), CertificateSettingsDialog.class.getName());
     }
 
     @Override
@@ -743,9 +696,6 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
-        } else if (SettingsInput.Type.SNMPPORT.equals(type.getType())) {
-            setSNMPPort(inputDialog.getValue());
-            preferenceManager.setPreferenceSNMPPort(NumberUtil.getIntValue(getSNMPPort(), getResources().getInteger(R.integer.task_snmp_port_default)));
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }
@@ -811,6 +761,41 @@ public class DefaultsActivity extends SettingsInputActivity implements HeadersSu
     public void onResolveEditDialogCancelClicked(ResolveEditDialog resolveEditDialog) {
         Log.d(DefaultsActivity.class.getName(), "onResolveEditDialogCancelClicked");
         resolveEditDialog.dismiss();
+    }
+
+    @Override
+    public void onSNMPDefaultsDialogOkClicked(SNMPDefaultsDialog snmpDefaultsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onSNMPDefaultsDialogOkClicked");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceSNMPVersion(snmpDefaultsDialog.getSNMPVersion());
+        preferenceManager.setPreferenceSNMPPort(snmpDefaultsDialog.getSNMPPort());
+        preferenceManager.setPreferenceSNMPTransport(snmpDefaultsDialog.getSNMPTransport());
+        preferenceManager.setPreferenceSNMPAuthAlgorithm(snmpDefaultsDialog.getSNMPAuthAlgorithm());
+        preferenceManager.setPreferenceSNMPPrivAlgorithm(snmpDefaultsDialog.getSNMPPrivAlgorithm());
+        snmpDefaultsDialog.dismiss();
+    }
+
+    @Override
+    public void onSNMPDefaultsDialogCancelClicked(SNMPDefaultsDialog snmpDefaultsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onSNMPDefaultsDialogCancelClicked");
+        snmpDefaultsDialog.dismiss();
+    }
+
+    @Override
+    public void onCertificateSettingsDialogOkClicked(CertificateSettingsDialog certificateSettingsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onCertificateSettingsDialogOkClicked");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceAllowLegacyTLS(certificateSettingsDialog.isAllowLegacyTLS());
+        preferenceManager.setPreferenceIgnoreSSLError(certificateSettingsDialog.isIgnoreSSLError());
+        preferenceManager.setPreferenceFailureOnCertificateExpiry(certificateSettingsDialog.isFailureOnCertificateExpiry());
+        preferenceManager.setPreferenceFailureOnCertificateExpiryDays(certificateSettingsDialog.getFailureOnCertificateExpiryDays());
+        certificateSettingsDialog.dismiss();
+    }
+
+    @Override
+    public void onCertificateSettingsDialogCancelClicked(CertificateSettingsDialog certificateSettingsDialog) {
+        Log.d(DefaultsActivity.class.getName(), "onCertificateSettingsDialogCancelClicked");
+        certificateSettingsDialog.dismiss();
     }
 
     @Override

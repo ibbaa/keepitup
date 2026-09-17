@@ -171,6 +171,32 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testConnectionFailedWithConnectToIPv6ScopeMatch() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://[fe80::1%2]"), null, true, getConnectToAddressList("fe80::1%2", 443, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
+        setCurrentTime(downloadCommand);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertEquals("fe80::1%2", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
+        assertEquals("192.168.179.1", result.connectResults().get(0).connectAddress().getHostAddress());
+        assertEquals(33, result.connectResults().get(0).connectPort());
+    }
+
+    @Test
+    public void testConnectionFailedWithConnectToIPv6ScopeMismatch() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://[fe80::1%2]"), null, true, getConnectToAddressList("fe80::1%3", 443, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
+        setCurrentTime(downloadCommand);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertEquals("fe80::1%2", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
+        assertNull(result.connectResults().get(0).connectAddress());
+        assertEquals(-1, result.connectResults().get(0).connectPort());
+    }
+
+    @Test
     public void testConnectionFailedWithRedirectAndConnectTo() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, getConnectToAddressList("test.com", 80, "192.168.179.1", 33, InetAddress.getByName("192.168.179.1")), null);
@@ -309,6 +335,35 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
+        testResponse.close();
+    }
+
+    @Test
+    public void testCertificateExpiryInfoPassedThroughOnSuccess() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null, null);
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("https://test.com", HttpURLConnection.HTTP_OK, "ok", null);
+        List<CertificateExpiryInfo> expiryInfo = List.of(new CertificateExpiryInfo("CN=test.com", 123456789L));
+        downloadCommand.addResponse("https://test.com", testResponse, expiryInfo);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals(expiryInfo, result.connectResults().get(0).expiryInfo());
+        testResponse.close();
+    }
+
+    @Test
+    public void testCertificateExpiryInfoEmptyByDefault() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null, null);
+        setCurrentTime(downloadCommand);
+        Response testResponse = prepareResponse("https://test.com", HttpURLConnection.HTTP_OK, "ok", null);
+        downloadCommand.addResponse("https://test.com", testResponse);
+        DownloadCommandResult result = downloadCommand.call();
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertTrue(result.connectResults().get(0).expiryInfo().isEmpty());
         testResponse.close();
     }
 

@@ -50,6 +50,8 @@ public class LoggingConsistencyTest {
 
     private static final Set<String> KEYWORDS = new HashSet<>(Arrays.asList("if", "for", "while", "switch", "catch", "else", "return", "new", "throw", "class", "interface", "enum", "void", "int", "long", "boolean", "double", "float", "byte", "char", "short", "static", "final"));
 
+    private static final String ANDROID_TEST_SOURCE_DIR = "androidTestSrc";
+
     @Test
     public void testLoggingConsistency() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
@@ -74,6 +76,9 @@ public class LoggingConsistencyTest {
             return;
         }
         for (String entry : list) {
+            if (path.isEmpty() && entry.equals(ANDROID_TEST_SOURCE_DIR)) {
+                continue;
+            }
             String full = path.isEmpty() ? entry : path + "/" + entry;
             if (Objects.requireNonNull(context.getAssets().list(full)).length > 0) {
                 collectJavaAssets(context, full, out);

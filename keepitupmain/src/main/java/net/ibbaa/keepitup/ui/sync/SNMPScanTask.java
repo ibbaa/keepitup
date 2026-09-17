@@ -21,8 +21,10 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
@@ -56,17 +58,19 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
     private final String address;
     private final int port;
     private final SNMPVersion snmpVersion;
-    private final String community;
+    private final SNMPTransport snmpTransport;
+    private final SNMPAuthInfo authInfo;
     private InetAddress inetAddress;
 
-    public SNMPScanTask(UITaskResultDispatcher<SNMPScanResult> dispatcher, Context context, long networktaskId, String address, int port, SNMPVersion snmpVersion, String community) {
+    public SNMPScanTask(UITaskResultDispatcher<SNMPScanResult> dispatcher, Context context, long networktaskId, String address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo) {
         super(dispatcher);
         this.context = context;
         this.networktaskId = networktaskId;
         this.address = address;
         this.port = port;
         this.snmpVersion = snmpVersion == null ? SNMPVersion.V2C : snmpVersion;
-        this.community = StringUtil.notNull(community);
+        this.snmpTransport = snmpTransport == null ? SNMPTransport.UDP : snmpTransport;
+        this.authInfo = authInfo != null ? authInfo : new SNMPAuthInfo();
     }
 
     @Override
@@ -117,7 +121,6 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         List<String> errors = new ArrayList<>();
         ValidationResult addressResult = networkTaskValidator.validateAddress(address);
         ValidationResult portResult = networkTaskValidator.validatePort(String.valueOf(port));
-        ValidationResult communityResult = accessTypeDataValidator.validateSNMPCommunity(community);
         if (!addressResult.isValidationSuccessful()) {
             if (!StringUtil.isEmpty(address)) {
                 errors.add(addressResult.getFieldName() + " " + address + " " + getResources().getString(R.string.string_invalid));
@@ -128,8 +131,24 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
         if (!portResult.isValidationSuccessful()) {
             errors.add(portResult.getFieldName() + " " + port + " " + getResources().getString(R.string.string_invalid));
         }
-        if (!communityResult.isValidationSuccessful()) {
-            errors.add(communityResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+        if (snmpVersion.isV3()) {
+            ValidationResult userNameResult = accessTypeDataValidator.validateSNMPUserName(authInfo.getUserName());
+            if (!userNameResult.isValidationSuccessful()) {
+                errors.add(userNameResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            }
+            ValidationResult authPassphraseResult = accessTypeDataValidator.validateSNMPAuthPassphrase(authInfo.getAuthPassphrase());
+            if (!authPassphraseResult.isValidationSuccessful()) {
+                errors.add(authPassphraseResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            }
+            ValidationResult privPassphraseResult = accessTypeDataValidator.validateSNMPPrivPassphrase(authInfo.getPrivPassphrase());
+            if (!privPassphraseResult.isValidationSuccessful()) {
+                errors.add(privPassphraseResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            }
+        } else {
+            ValidationResult communityResult = accessTypeDataValidator.validateSNMPCommunity(authInfo.getCommunity());
+            if (!communityResult.isValidationSuccessful()) {
+                errors.add(communityResult.getFieldName() + " " + getResources().getString(R.string.string_invalid));
+            }
         }
         return errors;
     }
@@ -137,29 +156,30 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
     private SNMPScanResult walk() {
         Log.d(SNMPScanTask.class.getName(), "walk");
         SNMPMapping snmpMapping = new SNMPMapping(getContext());
-        SNMPAccess snmpAccess = getSNMPAccess();
-        SNMPAccess.WalkResult ifDescrResult = snmpAccess.walkInterfacesDescr();
-        if (!ifDescrResult.success()) {
-            return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), ifDescrResult.errorMessages(), ifDescrResult.exception());
+        try (SNMPAccess snmpAccess = getSNMPAccess()) {
+            SNMPAccess.WalkResult ifDescrResult = snmpAccess.walkInterfacesDescr();
+            if (!ifDescrResult.success()) {
+                return new SNMPScanResult(false, Collections.emptyList(), Collections.emptyMap(), ifDescrResult.errorMessages(), ifDescrResult.exception());
+            }
+            List<SNMPItem> snmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networktaskId);
+            if (snmpItems.isEmpty()) {
+                return new SNMPScanResult(true, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), null);
+            }
+            Collections.sort(snmpItems, new SNMPMapping.SNMPItemNameComparator());
+            SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
+            if (!ifTypeResult.success()) {
+                return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifTypeResult.errorMessages(), ifTypeResult.exception());
+            }
+            SNMPAccess.WalkResult ifOperStatusResult = snmpAccess.walkInterfacesOperStatus();
+            if (!ifOperStatusResult.success()) {
+                return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifOperStatusResult.errorMessages(), ifOperStatusResult.exception());
+            }
+            Map<String, String> combinedInfo = new HashMap<>(ifTypeResult.result().size() + ifOperStatusResult.result().size());
+            combinedInfo.putAll(ifTypeResult.result());
+            combinedInfo.putAll(ifOperStatusResult.result());
+            Map<String, SNMPInterfaceInfo> interfaceInfos = snmpMapping.toSNMPInterfaceInfo(snmpItems, combinedInfo);
+            return new SNMPScanResult(true, snmpItems, interfaceInfos, Collections.emptyList(), null);
         }
-        List<SNMPItem> snmpItems = snmpMapping.toSNMPItems(ifDescrResult.result(), networktaskId);
-        if (snmpItems.isEmpty()) {
-            return new SNMPScanResult(true, Collections.emptyList(), Collections.emptyMap(), Collections.emptyList(), null);
-        }
-        Collections.sort(snmpItems, new SNMPMapping.SNMPItemNameComparator());
-        SNMPAccess.WalkResult ifTypeResult = snmpAccess.walkInterfacesType();
-        if (!ifTypeResult.success()) {
-            return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifTypeResult.errorMessages(), ifTypeResult.exception());
-        }
-        SNMPAccess.WalkResult ifOperStatusResult = snmpAccess.walkInterfacesOperStatus();
-        if (!ifOperStatusResult.success()) {
-            return new SNMPScanResult(true, snmpItems, Collections.emptyMap(), ifOperStatusResult.errorMessages(), ifOperStatusResult.exception());
-        }
-        Map<String, String> combinedInfo = new HashMap<>(ifTypeResult.result().size() + ifOperStatusResult.result().size());
-        combinedInfo.putAll(ifTypeResult.result());
-        combinedInfo.putAll(ifOperStatusResult.result());
-        Map<String, SNMPInterfaceInfo> interfaceInfos = snmpMapping.toSNMPInterfaceInfo(snmpItems, combinedInfo);
-        return new SNMPScanResult(true, snmpItems, interfaceInfos, Collections.emptyList(), null);
     }
 
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
@@ -169,7 +189,7 @@ public class SNMPScanTask extends UIDispatchBackgroundTask<SNMPScanResult> {
     protected SNMPAccess getSNMPAccess() {
         int timeout = getResources().getInteger(R.integer.snmp_request_timeout_ui);
         int retries = getResources().getInteger(R.integer.snmp_request_retries_ui);
-        return new SNMPAccess(getContext(), inetAddress, port, snmpVersion, community, inetAddress instanceof Inet6Address, timeout, retries);
+        return new SNMPAccess(getContext(), inetAddress, port, snmpVersion, snmpTransport, authInfo, inetAddress instanceof Inet6Address, timeout, retries);
     }
 
     protected Resources getResources() {

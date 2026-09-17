@@ -33,6 +33,9 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.NoBackupPreferenceManager;
@@ -53,6 +56,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1047,6 +1051,18 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
+    public void testExecuteDNSLookupIPv6WithScope() throws Exception {
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        Inet6Address scopedAddress = Inet6Address.getByAddress(null, new byte[]{(byte) 0xfe, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 2);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(scopedAddress, "abc.com", null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        NetworkTaskWorker.DNSExecutionResult dnsExecutionResult = testNetworkTaskWorker.executeDNSLookup("host.com", false);
+        LogEntry logEntry = dnsExecutionResult.getLogEntry();
+        assertTrue(logEntry.isSuccess());
+        assertEquals("DNS lookup for abc.com successful. Resolved address is fe80::1%2.", logEntry.getMessage());
+    }
+
+    @Test
     public void testExecuteDNSLookupPreferIP6NoIP6AddressAvailable() throws Exception {
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("192.168.178.1")), "abc.com", null);
@@ -1198,10 +1214,21 @@ public class NetworkTaskWorkerTest {
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("public");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.TCP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.SHA384);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.AES192);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
+        data.setFailureOnCertificateExpiry(true);
+        data.setFailureOnCertificateExpiryDays(45);
         return data;
     }
 

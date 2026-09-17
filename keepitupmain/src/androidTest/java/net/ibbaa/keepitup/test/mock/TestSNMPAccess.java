@@ -18,11 +18,14 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.SNMPAuthInfo;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.SNMPAccess;
 
-import org.snmp4j.CommunityTarget;
 import org.snmp4j.Snmp;
+import org.snmp4j.Target;
+import org.snmp4j.smi.Address;
 import org.snmp4j.smi.Variable;
 
 import java.net.InetAddress;
@@ -37,9 +40,13 @@ public class TestSNMPAccess extends SNMPAccess {
     private List<String> subtreeErrors;
     private boolean subtreeEmpty;
     private RuntimeException subtreeException;
+    private byte[] discoveredEngineID;
+    private int discoverEngineIDCallCount;
+    private SingleOIDResult singleOIDResult;
+    private int getSingleOIDCallCount;
 
-    public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, String community, boolean ip6) {
-        super(context, address, port, snmpVersion, community, ip6);
+    public TestSNMPAccess(Context context, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, boolean ip6) {
+        super(context, address, port, snmpVersion, snmpTransport, authInfo, ip6);
         reset();
     }
 
@@ -48,6 +55,38 @@ public class TestSNMPAccess extends SNMPAccess {
         subtreeErrors = new ArrayList<>();
         subtreeEmpty = false;
         subtreeException = null;
+        discoveredEngineID = new byte[]{1, 2, 3, 4, 5};
+        discoverEngineIDCallCount = 0;
+        singleOIDResult = new SingleOIDResult(false, null);
+        getSingleOIDCallCount = 0;
+    }
+
+    public void setSingleOIDResult(SingleOIDResult singleOIDResult) {
+        this.singleOIDResult = singleOIDResult;
+    }
+
+    public int getGetSingleOIDCallCount() {
+        return getSingleOIDCallCount;
+    }
+
+    @Override
+    protected SingleOIDResult getSingleOID(String oid) {
+        getSingleOIDCallCount++;
+        return singleOIDResult;
+    }
+
+    public void setDiscoveredEngineID(byte[] discoveredEngineID) {
+        this.discoveredEngineID = discoveredEngineID;
+    }
+
+    public int getDiscoverEngineIDCallCount() {
+        return discoverEngineIDCallCount;
+    }
+
+    @Override
+    protected byte[] discoverEngineID(Address targetAddress) {
+        discoverEngineIDCallCount++;
+        return discoveredEngineID;
     }
 
     public void setSubtreeResults(Map<String, Variable> subtreeResults) {
@@ -67,7 +106,7 @@ public class TestSNMPAccess extends SNMPAccess {
     }
 
     @Override
-    protected boolean fetchAndProcessSubtree(Snmp snmp, CommunityTarget<?> target, String oid, Map<String, Variable> results, List<String> errors, boolean emptyIsValid) {
+    protected boolean fetchAndProcessSubtree(Snmp snmp, Target<Address> target, String oid, Map<String, Variable> results, List<String> errors, boolean emptyIsValid) {
         if (subtreeException != null) {
             throw subtreeException;
         }

@@ -16,7 +16,6 @@
 
 <resources>
     <dimen name="textview_dialog_network_task_edit_accesstype_label_margin_top">6dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_padding">40dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_address_width">120dp</dimen>
@@ -43,6 +42,14 @@
     <dimen name="radiobutton_dialog_network_task_edit_snmp_version_padding_top">0dp</dimen>
     <dimen name="radiobutton_dialog_network_task_edit_snmp_version_padding_bottom">0dp</dimen>
     <dimen name="radiobutton_dialog_network_task_edit_snmp_version_min_height">0dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_snmp_transport_label_margin_top">14dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_transport_margin_top">10dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_transport_margin_left">10dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_transport_padding_top">0dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_transport_padding_bottom">0dp</dimen>
+    <dimen name="radiobutton_dialog_network_task_edit_snmp_transport_min_height">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_auth_margin_top">10dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_snmp_auth_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_snmp_community_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_snmp_community_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_snmp_community_width">120dp</dimen>
@@ -63,12 +70,8 @@
     <dimen name="textview_dialog_network_task_edit_headers_label_margin_top">14dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_headers_margin_top">12dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_headers_margin_left">10dp</dimen>
-    <dimen name="textview_dialog_network_task_edit_ignore_ssl_error_label_margin_top">14dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_top">12dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_left">10dp</dimen>
-    <dimen name="switch_dialog_network_task_edit_ignore_ssl_error_padding_top">0dp</dimen>
-    <dimen name="switch_dialog_network_task_edit_ignore_ssl_error_padding_bottom">0dp</dimen>
-    <dimen name="switch_dialog_network_task_edit_ignore_ssl_error_min_height">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_certificate_settings_margin_top">12dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_certificate_settings_margin_left">10dp</dimen>
     <dimen name="textview_dialog_network_task_edit_only_wifi_label_margin_top">14dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_only_wifi_margin_top">12dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_only_wifi_margin_left">10dp</dimen>
@@ -90,6 +93,8 @@
     <dimen name="linearlayout_dialog_network_task_edit_ok_cancel_padding_top">10dp</dimen>
     <dimen name="edittext_network_task_edit_line_size">2dp</dimen>
     <dimen name="edittext_network_task_edit_line_height">4dp</dimen>
-    <dimen name="textview_dialog_network_task_edit_label_max_width">100dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_padding">10dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_min_width">280dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_label_max_width">110dp</dimen>
     <dimen name="textview_dialog_network_task_edit_value_max_width">100dp</dimen>
 </resources>

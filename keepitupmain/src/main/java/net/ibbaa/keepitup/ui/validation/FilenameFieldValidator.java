@@ -49,7 +49,7 @@ public class FilenameFieldValidator implements FieldValidator {
                 return new ValidationResult(false, field, emptyMessage);
             }
         }
-        if (value.contains("/")) {
+        if (value.contains("/") || "..".equals(value)) {
             Log.d(FilenameFieldValidator.class.getName(), "Filename invalid. Validation failed.");
             return new ValidationResult(false, field, failedMessage);
         }

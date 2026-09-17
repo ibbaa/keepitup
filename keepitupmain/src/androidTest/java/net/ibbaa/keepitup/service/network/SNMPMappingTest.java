@@ -26,16 +26,29 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPDedupResult;
 import net.ibbaa.keepitup.model.SNMPInterfaceInfo;
 import net.ibbaa.keepitup.model.SNMPItem;
 import net.ibbaa.keepitup.model.SNMPItemMergeResult;
 import net.ibbaa.keepitup.model.SNMPItemType;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.snmp4j.security.AuthHMAC128SHA224;
+import org.snmp4j.security.AuthHMAC192SHA256;
+import org.snmp4j.security.AuthHMAC256SHA384;
+import org.snmp4j.security.AuthHMAC384SHA512;
+import org.snmp4j.security.AuthMD5;
+import org.snmp4j.security.AuthSHA;
+import org.snmp4j.security.PrivAES128;
+import org.snmp4j.security.PrivAES192;
+import org.snmp4j.security.PrivAES256;
+import org.snmp4j.security.PrivDES;
+import org.snmp4j.security.nonstandard.PrivAES256With3DESKeyExtension;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.TimeTicks;
 
@@ -96,6 +109,10 @@ public class SNMPMappingTest {
         String sysDescrOid = TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid);
         OctetString descrValue = new OctetString("System description");
         assertEquals(descrValue.toString(), snmpMapping.getValueForOID(sysDescrOid, descrValue));
+        String hrSysUpTimeOid = TestRegistry.getContext().getResources().getString(R.string.sys_hr_uptime_oid);
+        TimeTicks hrTimeTicks = new TimeTicks(54321);
+        assertEquals(String.valueOf(hrTimeTicks.toLong()), snmpMapping.getValueForOID(hrSysUpTimeOid, hrTimeTicks));
+        assertEquals(octetString.toString(), snmpMapping.getValueForOID(hrSysUpTimeOid, octetString));
     }
 
     @Test
@@ -103,6 +120,7 @@ public class SNMPMappingTest {
         assertEquals(-1, snmpMapping.getSysUpTime(null));
         assertEquals(-1, snmpMapping.getSysUpTime(new HashMap<>()));
         String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
         Map<String, String> valuesWithoutSysUpTime = new HashMap<>();
         valuesWithoutSysUpTime.put(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid), "description");
         assertEquals(-1, snmpMapping.getSysUpTime(valuesWithoutSysUpTime));
@@ -112,6 +130,37 @@ public class SNMPMappingTest {
         Map<String, String> valuesWithInvalidSysUpTime = new HashMap<>();
         valuesWithInvalidSysUpTime.put(sysUpTimeOid, "invalid");
         assertEquals(-1, snmpMapping.getSysUpTime(valuesWithInvalidSysUpTime));
+        Map<String, String> valuesWithOnlyHrSysUpTime = new HashMap<>();
+        valuesWithOnlyHrSysUpTime.put(hrSysUpTimeOid, "99999");
+        assertEquals(-1, snmpMapping.getSysUpTime(valuesWithOnlyHrSysUpTime));
+    }
+
+    @Test
+    public void testGetOverallSysUpTime() {
+        assertEquals(-1, snmpMapping.getOverallSysUpTime(null));
+        assertEquals(-1, snmpMapping.getOverallSysUpTime(new HashMap<>()));
+        String sysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_uptime_oid);
+        String hrSysUpTimeOid = TestRegistry.getContext().getString(R.string.sys_hr_uptime_oid);
+        Map<String, String> valuesWithoutSysUpTime = new HashMap<>();
+        valuesWithoutSysUpTime.put(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid), "description");
+        assertEquals(-1, snmpMapping.getOverallSysUpTime(valuesWithoutSysUpTime));
+        Map<String, String> valuesWithSysUpTime = new HashMap<>();
+        valuesWithSysUpTime.put(sysUpTimeOid, "12345");
+        assertEquals(12345, snmpMapping.getOverallSysUpTime(valuesWithSysUpTime));
+        Map<String, String> valuesWithInvalidSysUpTime = new HashMap<>();
+        valuesWithInvalidSysUpTime.put(sysUpTimeOid, "invalid");
+        assertEquals(-1, snmpMapping.getOverallSysUpTime(valuesWithInvalidSysUpTime));
+        Map<String, String> valuesWithHrSysUpTime = new HashMap<>();
+        valuesWithHrSysUpTime.put(sysUpTimeOid, "100");
+        valuesWithHrSysUpTime.put(hrSysUpTimeOid, "99999");
+        assertEquals(99999, snmpMapping.getOverallSysUpTime(valuesWithHrSysUpTime));
+        Map<String, String> valuesWithOnlyHrSysUpTime = new HashMap<>();
+        valuesWithOnlyHrSysUpTime.put(hrSysUpTimeOid, "55555");
+        assertEquals(55555, snmpMapping.getOverallSysUpTime(valuesWithOnlyHrSysUpTime));
+        Map<String, String> valuesWithInvalidHrSysUpTime = new HashMap<>();
+        valuesWithInvalidHrSysUpTime.put(sysUpTimeOid, "100");
+        valuesWithInvalidHrSysUpTime.put(hrSysUpTimeOid, "invalid");
+        assertEquals(100, snmpMapping.getOverallSysUpTime(valuesWithInvalidHrSysUpTime));
     }
 
     @Test
@@ -145,6 +194,11 @@ public class SNMPMappingTest {
     }
 
     @Test
+    public void testGetHrSysUpTimeOID() {
+        assertEquals(TestRegistry.getContext().getResources().getString(R.string.sys_hr_uptime_oid), snmpMapping.getHrSysUpTimeOID());
+    }
+
+    @Test
     public void testIsSysUpTimeOID() {
         String sysUpTimeOid = TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid);
         assertFalse(snmpMapping.isSysUpTimeOID(null));
@@ -153,6 +207,18 @@ public class SNMPMappingTest {
         assertFalse(snmpMapping.isSysUpTimeOID("unknown"));
         assertFalse(snmpMapping.isSysUpTimeOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
         assertTrue(snmpMapping.isSysUpTimeOID(sysUpTimeOid));
+    }
+
+    @Test
+    public void testIsHrSysUpTimeOID() {
+        String hrSysUpTimeOid = TestRegistry.getContext().getResources().getString(R.string.sys_hr_uptime_oid);
+        assertFalse(snmpMapping.isHrSysUpTimeOID(null));
+        assertFalse(snmpMapping.isHrSysUpTimeOID(""));
+        assertFalse(snmpMapping.isHrSysUpTimeOID(" "));
+        assertFalse(snmpMapping.isHrSysUpTimeOID("unknown"));
+        assertFalse(snmpMapping.isHrSysUpTimeOID(TestRegistry.getContext().getResources().getString(R.string.sys_descr_oid)));
+        assertFalse(snmpMapping.isHrSysUpTimeOID(TestRegistry.getContext().getResources().getString(R.string.sys_uptime_oid)));
+        assertTrue(snmpMapping.isHrSysUpTimeOID(hrSysUpTimeOid));
     }
 
     @Test
@@ -167,6 +233,29 @@ public class SNMPMappingTest {
         assertEquals(TestRegistry.getContext().getResources().getString(R.string.interface_operstatus_lowerlayerdown_label), snmpMapping.getLabelForInterfaceOperStatus(TestRegistry.getContext().getResources().getInteger(R.integer.interface_operstatus_lowerlayerdown)));
         assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(99));
         assertEquals(unknownLabel, snmpMapping.getLabelForInterfaceOperStatus(0));
+    }
+
+    @Test
+    public void testGetAuthAlgorithmOID() {
+        assertNull(snmpMapping.getAuthAlgorithmOID(null));
+        assertNull(snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.NONE));
+        assertEquals(AuthMD5.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.MD5));
+        assertEquals(AuthSHA.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA1));
+        assertEquals(AuthHMAC128SHA224.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA224));
+        assertEquals(AuthHMAC192SHA256.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA256));
+        assertEquals(AuthHMAC256SHA384.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA384));
+        assertEquals(AuthHMAC384SHA512.ID, snmpMapping.getAuthAlgorithmOID(SNMPAuthAlgorithm.SHA512));
+    }
+
+    @Test
+    public void testGetPrivAlgorithmOID() {
+        assertNull(snmpMapping.getPrivAlgorithmOID(null));
+        assertNull(snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.NONE));
+        assertEquals(PrivDES.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.DES));
+        assertEquals(PrivAES128.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES128));
+        assertEquals(PrivAES192.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES192));
+        assertEquals(PrivAES256.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES256));
+        assertEquals(PrivAES256With3DESKeyExtension.ID, snmpMapping.getPrivAlgorithmOID(SNMPPrivAlgorithm.AES256C));
     }
 
     @Test

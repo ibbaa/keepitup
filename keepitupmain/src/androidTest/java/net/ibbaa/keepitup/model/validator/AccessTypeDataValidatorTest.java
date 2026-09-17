@@ -23,6 +23,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
+import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
+import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -94,6 +97,25 @@ public class AccessTypeDataValidatorTest {
     }
 
     @Test
+    public void testValidateFailureOnCertificateExpiryDays() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateFailureOnCertificateExpiryDays(data));
+        assertTrue(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(3651);
+        assertFalse(validator.validateFailureOnCertificateExpiryDays(data));
+        assertFalse(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(0);
+        assertFalse(validator.validateFailureOnCertificateExpiryDays(data));
+        assertFalse(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(1);
+        assertTrue(validator.validateFailureOnCertificateExpiryDays(data));
+        assertTrue(validator.validate(data));
+        data.setFailureOnCertificateExpiryDays(3650);
+        assertTrue(validator.validateFailureOnCertificateExpiryDays(data));
+        assertTrue(validator.validate(data));
+    }
+
+    @Test
     public void testValidateSNMPCommunity() {
         AccessTypeData data = getAccessTypeData();
         assertTrue(validator.validateSNMPCommunity(data));
@@ -121,6 +143,63 @@ public class AccessTypeDataValidatorTest {
         assertTrue(validator.validate(data));
     }
 
+    @Test
+    public void testValidateSNMPUserName() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpUserName(null);
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpUserName("");
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpUserName("x".repeat(256));
+        assertFalse(validator.validateSNMPUserName(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpUserName("x".repeat(255));
+        assertTrue(validator.validateSNMPUserName(data));
+        assertTrue(validator.validate(data));
+    }
+
+    @Test
+    public void testValidateSNMPAuthPassphrase() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpAuthPassphrase(null);
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpAuthPassphrase("");
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpAuthPassphrase("x".repeat(256));
+        assertFalse(validator.validateSNMPAuthPassphrase(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpAuthPassphrase("x".repeat(255));
+        assertTrue(validator.validateSNMPAuthPassphrase(data));
+        assertTrue(validator.validate(data));
+    }
+
+    @Test
+    public void testValidateSNMPPrivPassphrase() {
+        AccessTypeData data = getAccessTypeData();
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpPrivPassphrase(null);
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpPrivPassphrase("");
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+        data.setSnmpPrivPassphrase("x".repeat(256));
+        assertFalse(validator.validateSNMPPrivPassphrase(data));
+        assertFalse(validator.validate(data));
+        data.setSnmpPrivPassphrase("x".repeat(255));
+        assertTrue(validator.validateSNMPPrivPassphrase(data));
+        assertTrue(validator.validate(data));
+    }
+
     private AccessTypeData getAccessTypeData() {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);
@@ -130,10 +209,21 @@ public class AccessTypeDataValidatorTest {
         data.setConnectCount(1);
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
+        data.setAllowLegacyTLS(true);
         data.setUseDefaultHeaders(false);
         data.setSnmpVersion(SNMPVersion.V1);
         data.setSnmpCommunity("public");
         data.setSnmpCommunityValid(true);
+        data.setSnmpTransport(SNMPTransport.UDP);
+        data.setSnmpAuthAlgorithm(SNMPAuthAlgorithm.MD5);
+        data.setSnmpUserName("user");
+        data.setSnmpAuthPassphrase("authpass");
+        data.setSnmpAuthPassphraseValid(true);
+        data.setSnmpPrivAlgorithm(SNMPPrivAlgorithm.DES);
+        data.setSnmpPrivPassphrase("privpass");
+        data.setSnmpPrivPassphraseValid(true);
+        data.setFailureOnCertificateExpiry(false);
+        data.setFailureOnCertificateExpiryDays(30);
         return data;
     }
 }
