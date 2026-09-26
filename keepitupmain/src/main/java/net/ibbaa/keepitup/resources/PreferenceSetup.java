@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.util.HashMap;
@@ -106,7 +107,9 @@ public class PreferenceSetup {
         systemSettings.put("preferenceFileLoggerEnabled", preferenceManager.getPreferenceFileLoggerEnabled());
         systemSettings.put("preferenceFileDumpEnabled", preferenceManager.getPreferenceFileDumpEnabled());
         systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
-        systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        if (SystemUtil.supportsSAFFeature()) {
+            systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        }
         systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
         systemSettings.put("preferenceAskedNotificationPermission", noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         systemSettings.put("preferenceAlarmInfoShown", preferenceManager.getPreferenceAlarmInfoShown());

@@ -549,7 +549,6 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         } else {
             Log.d(SystemActivity.class.getName(), "API version is " + Build.VERSION.SDK_INT + ". Disable SAF feature.");
             arbitraryFileLocationCardView.setVisibility(View.GONE);
-            preferenceManager.setPreferenceAllowArbitraryFileLocation(false);
             arbitraryFileLocationSwitch.setChecked(false);
         }
     }

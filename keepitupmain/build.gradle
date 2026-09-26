@@ -23,7 +23,7 @@ android {
         //noinspection EditedTargetSdkVersion,OldTargetApi,ExpiredTargetSdkVersion
         targetSdkVersion 36
         versionCode 25
-        versionName "1.14.0"
+        versionName "1.13.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
