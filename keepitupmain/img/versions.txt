@@ -25,3 +25,4 @@ versionCode;dbVersion;version
 23;8;1.12.1
 24;9;1.13.0
 25;9;1.13.1
+26;9;1.14.0
