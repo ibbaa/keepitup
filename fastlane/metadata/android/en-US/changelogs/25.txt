@@ -1,0 +1,1 @@
+* Fixed an issue where the new SAF default broke log file and download storage on devices running Android 9 or older, where SAF is not supported (only fresh installations)

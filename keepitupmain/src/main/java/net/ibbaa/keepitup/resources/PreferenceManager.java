@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.model.SNMPAuthAlgorithm;
 import net.ibbaa.keepitup.model.SNMPPrivAlgorithm;
 import net.ibbaa.keepitup.model.SNMPTransport;
 import net.ibbaa.keepitup.model.SNMPVersion;
+import net.ibbaa.keepitup.util.SystemUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -762,6 +763,10 @@ public class PreferenceManager {
 
     public boolean getPreferenceAllowArbitraryFileLocation() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceAllowArbitraryFileLocation");
+        if (!SystemUtil.supportsSAFFeature()) {
+            Log.d(PreferenceManager.class.getName(), "getPreferenceAllowArbitraryFileLocation, SAF not supported. Returning false.");
+            return false;
+        }
         return getPreferenceBoolean(getResources().getString(R.string.allow_arbitrary_file_location_key), getResources().getBoolean(R.bool.allow_arbitrary_file_location_default));
     }
 
