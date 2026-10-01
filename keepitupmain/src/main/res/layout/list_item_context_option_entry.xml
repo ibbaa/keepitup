@@ -24,13 +24,13 @@
     android:padding="@dimen/layout_list_item_context_option_padding"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardview_list_item_context_option"
         android:layout_gravity="fill_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_list_item_context_option_margin"
-        card_view:cardCornerRadius="@dimen/cardview_list_item_context_option_corner_radius"
+        app:cardCornerRadius="@dimen/cardview_list_item_context_option_corner_radius"
         app:cardElevation="@dimen/cardview_list_item_context_option_card_elevation"
         app:cardBackgroundColor="@color/cardBackgroundColor">
 

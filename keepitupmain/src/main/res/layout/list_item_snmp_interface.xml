@@ -33,13 +33,13 @@
         android:textStyle="normal"
         android:text="" />
 
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardview_list_item_snmp_interface"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_list_item_snmp_interface_margin"
-        card_view:cardCornerRadius="@dimen/cardview_list_item_snmp_interface_corner_radius"
+        app:cardCornerRadius="@dimen/cardview_list_item_snmp_interface_corner_radius"
         app:cardElevation="@dimen/cardview_list_item_snmp_interface_card_elevation"
         app:cardBackgroundColor="@color/cardBackgroundColor">
 

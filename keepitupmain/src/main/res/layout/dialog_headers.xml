@@ -38,13 +38,13 @@
             android:textStyle="bold"
             android:text="@string/label_dialog_headers_global_headers" />
 
-        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardview_dialog_headers_restore"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/cardview_dialog_headers_restore_margin"
-            card_view:cardCornerRadius="@dimen/cardview_dialog_headers_restore_corner_radius"
+            app:cardCornerRadius="@dimen/cardview_dialog_headers_restore_corner_radius"
             app:cardElevation="@dimen/cardview_dialog_headers_restore_card_elevation"
             app:cardBackgroundColor="@color/cardBackgroundColor">
 

@@ -38,13 +38,13 @@
             android:textStyle="bold"
             android:text="@string/label_dialog_snmp_interfaces_snmp_interfaces" />
 
-        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardview_dialog_snmp_interfaces_scan"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/cardview_dialog_snmp_interfaces_scan_margin"
-            card_view:cardCornerRadius="@dimen/cardview_dialog_snmp_interfaces_scan_corner_radius"
+            app:cardCornerRadius="@dimen/cardview_dialog_snmp_interfaces_scan_corner_radius"
             app:cardElevation="@dimen/cardview_dialog_snmp_interfaces_scan_card_elevation"
             app:cardBackgroundColor="@color/cardBackgroundColor">
 
@@ -80,13 +80,13 @@
 
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <androidx.cardview.widget.CardView
             android:id="@+id/cardview_dialog_snmp_interfaces_show_all"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/cardview_dialog_snmp_interfaces_show_all_margin"
-            card_view:cardCornerRadius="@dimen/cardview_dialog_snmp_interfaces_show_all_corner_radius"
+            app:cardCornerRadius="@dimen/cardview_dialog_snmp_interfaces_show_all_corner_radius"
             app:cardElevation="@dimen/cardview_dialog_snmp_interfaces_show_all_card_elevation"
             app:cardBackgroundColor="@color/cardBackgroundColor">
 

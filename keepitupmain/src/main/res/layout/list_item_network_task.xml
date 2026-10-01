@@ -22,13 +22,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardview_list_item_network_task"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_list_item_network_task_margin"
-        card_view:cardCornerRadius="@dimen/cardview_list_item_network_task_corner_radius"
+        app:cardCornerRadius="@dimen/cardview_list_item_network_task_corner_radius"
         app:cardElevation="@dimen/cardview_list_item_network_task_card_elevation">
 
         <GridLayout

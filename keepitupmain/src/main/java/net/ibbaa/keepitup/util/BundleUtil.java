@@ -215,6 +215,7 @@ public class BundleUtil {
         return bundleMapToBundle(baseKey, map, new Bundle());
     }
 
+    @SuppressWarnings("unused")
     public static Bundle bundleMapToBundle(String baseKey, Map<String, Bundle> map, Bundle bundle) {
         if (baseKey == null || map == null) {
             return bundle;

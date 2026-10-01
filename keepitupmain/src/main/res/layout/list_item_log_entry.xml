@@ -29,13 +29,13 @@
         android:textStyle="normal"
         android:text="@string/list_item_log_entry_no_log" />
 
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardview_list_item_log_entry"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_list_item_log_entry_margin"
-        card_view:cardCornerRadius="@dimen/cardview_list_item_log_entry_corner_radius"
+        app:cardCornerRadius="@dimen/cardview_list_item_log_entry_corner_radius"
         app:cardElevation="@dimen/cardview_list_item_log_entry_card_elevation"
         app:cardBackgroundColor="@color/cardBackgroundColor">
 

@@ -39,12 +39,12 @@
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_config"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_config_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_config_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_config_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_config_card_elevation">
 
                 <TextView
@@ -57,12 +57,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_config_reset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_config_reset_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_config_reset_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_config_reset_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_config_reset_card_elevation">
 
                 <TextView
@@ -75,12 +75,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_config_export"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_config_export_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_config_export_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_config_export_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_config_export_card_elevation">
 
                 <LinearLayout
@@ -122,12 +122,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_config_import"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_config_import_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_config_import_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_config_import_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_config_import_card_elevation">
 
                 <LinearLayout
@@ -169,12 +169,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_external_storage_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_external_storage_type_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_external_storage_type_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_external_storage_type_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_external_storage_type_card_elevation">
 
                 <LinearLayout
@@ -217,12 +217,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_battery_optimization"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_battery_optimization_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_battery_optimization_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_battery_optimization_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_battery_optimization_card_elevation">
 
                 <LinearLayout
@@ -263,12 +263,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_notifications_enabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_battery_optimization_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_battery_optimization_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_battery_optimization_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_battery_optimization_card_elevation">
 
                 <LinearLayout
@@ -309,12 +309,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_theme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_theme_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_theme_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_theme_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_theme_card_elevation">
 
                 <LinearLayout
@@ -363,12 +363,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_allow_arbitrary_file_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_allow_arbitrary_file_location_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_allow_arbitrary_file_location_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_allow_arbitrary_file_location_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_allow_arbitrary_file_location_card_elevation">
 
                 <LinearLayout
@@ -417,12 +417,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_alarm_on_high_prio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_alarm_on_high_prio_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_alarm_on_high_prio_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_alarm_on_high_prio_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_alarm_on_high_prio_card_elevation">
 
                 <LinearLayout
@@ -471,12 +471,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_debug"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_debug_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_debug_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_debug_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_debug_card_elevation">
 
                 <TextView
@@ -489,12 +489,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_file_logger_enabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_file_logger_enabled_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_file_logger_enabled_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_file_logger_enabled_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_file_logger_enabled_card_elevation">
 
                 <LinearLayout
@@ -543,12 +543,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_file_dump_enabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_file_dump_enabled_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_file_dump_enabled_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_file_dump_enabled_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_file_dump_enabled_card_elevation">
 
                 <LinearLayout
@@ -597,12 +597,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardview_activity_system_log_folder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/cardview_activity_system_log_folder_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_system_log_folder_corner_radius"
+                app:cardCornerRadius="@dimen/cardview_activity_system_log_folder_corner_radius"
                 app:cardElevation="@dimen/cardview_activity_system_log_folder_card_elevation">
 
                 <LinearLayout
