@@ -453,8 +453,8 @@ public class SNMPMapping {
                 duplicateNames.add(name);
                 SNMPItem kept = group.get(0);
                 int keptIndex = getOidIndex(kept.getOid());
-                for (int i = 1; i < group.size(); i++) {
-                    SNMPItem candidate = group.get(i);
+                for (int ii = 1; ii < group.size(); ii++) {
+                    SNMPItem candidate = group.get(ii);
                     int candidateIndex = getOidIndex(candidate.getOid());
                     if (candidateIndex >= 0 && (keptIndex < 0 || candidateIndex < keptIndex)) {
                         kept = candidate;
