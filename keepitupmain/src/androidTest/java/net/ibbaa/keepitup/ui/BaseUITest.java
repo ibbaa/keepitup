@@ -20,6 +20,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static org.junit.Assert.fail;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -267,6 +268,20 @@ public abstract class BaseUITest {
             waits--;
             onView(isRoot()).perform(waitFor(500));
         }
+    }
+
+    public void waitUntilWindowFocused(ActivityScenario<?> scenario) {
+        int waits = 20;
+        while (waits > 0) {
+            final boolean[] hasFocus = {false};
+            scenario.onActivity(activity -> hasFocus[0] = activity.hasWindowFocus());
+            if (hasFocus[0]) {
+                return;
+            }
+            waits--;
+            onView(isRoot()).perform(waitFor(500));
+        }
+        fail("Activity has no window focus");
     }
 
     public DialogFragment getDialog(ActivityScenario<?> scenario, Class<? extends DialogFragment> clazz) {

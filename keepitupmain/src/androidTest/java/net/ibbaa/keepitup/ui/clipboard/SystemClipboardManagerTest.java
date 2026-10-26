@@ -16,9 +16,12 @@
 
 package net.ibbaa.keepitup.ui.clipboard;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -43,7 +46,10 @@ public class SystemClipboardManagerTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        waitUntilWindowFocused(activityScenario);
         clipboardManager = new SystemClipboardManager(TestRegistry.getContext());
     }
 
@@ -55,19 +61,32 @@ public class SystemClipboardManagerTest extends BaseUITest {
 
     @Test
     public void testHasNumericIntegerData() {
-        clipboardManager.putData("Test");
+        putDataAndWait("Test");
         assertFalse(clipboardManager.hasNumericIntegerData());
-        clipboardManager.putData("11");
+        putDataAndWait("11");
         assertTrue(clipboardManager.hasNumericIntegerData());
     }
 
     @Test
     public void testPutAndGetData() {
-        clipboardManager.putData("Test");
+        putDataAndWait("Test");
         assertTrue(clipboardManager.hasData());
         assertEquals("Test", clipboardManager.getData());
-        clipboardManager.putData("123");
+        putDataAndWait("123");
         assertTrue(clipboardManager.hasData());
         assertEquals("123", clipboardManager.getData());
+    }
+
+    private void putDataAndWait(String data) {
+        int waits = 10;
+        while (waits > 0) {
+            clipboardManager.putData(data);
+            onView(isRoot()).perform(waitFor(500));
+            if (data.equals(clipboardManager.getData())) {
+                return;
+            }
+            waits--;
+        }
+        fail("Clipboard data " + data + " was overwritten");
     }
 }

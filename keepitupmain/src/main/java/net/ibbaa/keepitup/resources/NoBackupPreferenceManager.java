@@ -74,6 +74,21 @@ public class NoBackupPreferenceManager {
         removePreferenceValue(getResources().getString(R.string.asked_notification_permission_key));
     }
 
+    public boolean getPreferenceAskedLocalNetworkPermission() {
+        Log.d(NoBackupPreferenceManager.class.getName(), "getPreferenceAskedLocalNetworkPermission");
+        return getPreferenceBoolean(getResources().getString(R.string.asked_local_network_permission_key), getResources().getBoolean(R.bool.asked_local_network_permission_default));
+    }
+
+    public void setPreferenceAskedLocalNetworkPermission(boolean askedLocalNetworkPermission) {
+        Log.d(NoBackupPreferenceManager.class.getName(), "setPreferenceAskedLocalNetworkPermission, askedLocalNetworkPermission is " + askedLocalNetworkPermission);
+        setPreferenceBoolean(getResources().getString(R.string.asked_local_network_permission_key), askedLocalNetworkPermission);
+    }
+
+    public void removePreferenceAskedLocalNetworkPermission() {
+        Log.d(NoBackupPreferenceManager.class.getName(), "removePreferenceAskedLocalNetworkPermission");
+        removePreferenceValue(getResources().getString(R.string.asked_local_network_permission_key));
+    }
+
     private SharedPreferences getNoBackupPreferences() {
         String no_backup_prefs_file = getResources().getString(R.string.no_backup_prefs_file);
         return context.getSharedPreferences(no_backup_prefs_file, Context.MODE_PRIVATE);

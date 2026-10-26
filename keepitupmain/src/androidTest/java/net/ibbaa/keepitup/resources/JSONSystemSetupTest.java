@@ -472,6 +472,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
         noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
         preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult result = setup.exportData();
@@ -526,6 +527,7 @@ public class JSONSystemSetupTest {
         assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmOnHighPrio"));
         assertTrue(systemSettingsData.getBoolean("preferenceAskedNotificationPermission"));
+        assertTrue(systemSettingsData.getBoolean("preferenceAskedLocalNetworkPermission"));
         assertTrue(systemSettingsData.getBoolean("preferenceSAFNoticeShown"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmInfoShown"));
     }
@@ -1645,6 +1647,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
         noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
         preferenceManager.setPreferenceSAFNoticeShown(true);
         preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult exportResult = setup.exportData();
@@ -1697,6 +1700,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
         assertTrue(preferenceManager.getPreferenceSAFNoticeShown());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }

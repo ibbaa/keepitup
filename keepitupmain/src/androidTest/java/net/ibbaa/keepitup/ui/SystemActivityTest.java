@@ -203,6 +203,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -269,6 +270,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -347,6 +349,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -417,6 +420,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -495,6 +499,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -565,6 +570,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertEquals("", getPreferenceManager().getPreferenceResolveMatchAddress());
@@ -648,6 +654,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -719,6 +726,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(56, getPreferenceManager().getPreferencePingPackageSize());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -806,6 +814,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -874,6 +883,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -953,6 +963,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -1024,6 +1035,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -1102,6 +1114,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -1166,6 +1179,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -1244,6 +1258,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -1311,6 +1326,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -1389,6 +1405,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -1458,6 +1475,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -1536,6 +1554,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -1612,6 +1631,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -1704,6 +1724,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -1772,6 +1793,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -1900,6 +1922,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2000,6 +2023,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -2075,6 +2099,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2203,6 +2228,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2329,6 +2355,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -2405,6 +2432,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2535,6 +2563,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2636,6 +2665,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -2719,6 +2749,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2849,6 +2880,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -2941,6 +2973,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -3011,6 +3044,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -3141,6 +3175,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -3242,6 +3277,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -3319,6 +3355,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -3452,6 +3489,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -3578,6 +3616,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -3650,6 +3689,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -3780,6 +3820,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -3881,6 +3922,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -3960,6 +4002,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -4093,6 +4136,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -4184,6 +4228,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -4262,6 +4307,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -4353,6 +4399,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -4437,6 +4484,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -4528,6 +4576,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -4602,6 +4651,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -4731,6 +4781,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -4822,6 +4873,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -4906,6 +4958,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -5032,6 +5085,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -5111,6 +5165,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -5180,6 +5235,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -5259,6 +5315,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -5332,6 +5389,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -5518,6 +5576,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -5603,6 +5662,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -5681,6 +5741,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -5766,6 +5827,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -5844,6 +5906,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -5931,6 +5994,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -6009,6 +6073,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -6098,6 +6163,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertFalse(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertFalse(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertFalse(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertFalse(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -6190,6 +6256,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -6330,6 +6397,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -6424,6 +6492,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -6566,6 +6635,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -6660,6 +6730,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -6804,6 +6875,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -6898,6 +6970,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -7045,6 +7118,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -7160,6 +7234,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -7230,6 +7305,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -7309,6 +7385,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -7379,6 +7456,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -7458,6 +7536,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceResolveMatchAddress("10.0.0.1");
@@ -7529,6 +7608,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
@@ -8013,6 +8093,7 @@ public class SystemActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         NoBackupPreferenceManager noBackupPreferenceManager = getNoBackupPreferenceManager();
         noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
@@ -8038,6 +8119,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
         activityScenario.close();
     }
 

@@ -935,7 +935,7 @@ public class DownloadNetworkTaskWorkerTest {
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertFalse(logEntry.isSuccess());
-        assertEquals("Request to [fe80::1%2]:22 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
+        assertEquals("Request to [" + scopedAddress.getHostAddress() + "]:22 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
     }
 
     @Test

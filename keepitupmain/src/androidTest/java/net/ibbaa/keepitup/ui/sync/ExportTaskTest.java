@@ -154,6 +154,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -297,6 +298,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
@@ -370,6 +372,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -509,6 +512,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
@@ -582,6 +586,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         getPreferenceManager().setPreferenceSAFNoticeShown(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
@@ -725,6 +730,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getNoBackupPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         assertTrue(getPreferenceManager().getPreferenceSAFNoticeShown());
         assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }

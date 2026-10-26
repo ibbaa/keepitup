@@ -94,7 +94,7 @@ public class ConnectNetworkTaskWorkerTest {
         NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to [fe80::1%2]:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec connect time.", logEntry.getMessage());
+        assertEquals("Connected to [" + scopedAddress.getHostAddress() + "]:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec connect time.", logEntry.getMessage());
     }
 
     @Test

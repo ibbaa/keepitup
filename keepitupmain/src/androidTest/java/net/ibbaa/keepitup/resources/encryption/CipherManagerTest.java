@@ -100,28 +100,28 @@ public class CipherManagerTest {
     public void testEncrypt() {
         argon2Param.put("salt", createTestArgon2Salt());
         aesParam.put("iv", createTestAESIV());
-        CipherManager.EncryptionResult result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext");
+        CipherManager.EncryptionResult result = cipherManager.encrypt(argon2Param, aesParam, "password", "aad", "plaintext", false);
         assertTrue(result.success());
         assertEquals("Encryption successful", result.message());
-        assertEquals("Vgc+SaNGsEwvRGKmbjEsHWN9YKHfPMHpgEwwNt6uyyruN7gzS4s0Cy0EqdUi", result.ciphertext());
+        assertEquals("OeBXIM0y1TRbw4BQGNxa2W5F6dpRHNa9Hw==", result.ciphertext());
     }
 
     @Test
     public void testEncryptWithKey() {
         aesParam.put("iv", createTestAESIV());
-        CipherManager.EncryptionResult result = cipherManager.encrypt(aesParam, createTestAESKey(), "aad", "plaintext");
+        CipherManager.EncryptionResult result = cipherManager.encrypt(aesParam, createTestAESKey(), "aad", "plaintext", false);
         assertTrue(result.success());
         assertEquals("Encryption successful", result.message());
-        assertEquals("plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lValWBNV3cLqQWshRpPclFo", result.ciphertext());
+        assertEquals("ybs+cWdXi6XFiu02hrvFpeli5uMNPI5ShA==", result.ciphertext());
     }
 
     @Test
     public void testEncryptWithKeyWithoutAAD() {
         aesParam.put("iv", createTestAESIV());
-        CipherManager.EncryptionResult result = cipherManager.encrypt(aesParam, createTestAESKey(), null, "plaintext");
+        CipherManager.EncryptionResult result = cipherManager.encrypt(aesParam, createTestAESKey(), null, "plaintext", false);
         assertTrue(result.success());
         assertEquals("Encryption successful", result.message());
-        assertEquals("plxXGAkj7t2x93p37hFvSetECXdo1k7LQeD18lUzGqjrdJ9Yhc5A3K15MIR1", result.ciphertext());
+        assertEquals("ybs+cWdXi6XFdstequ33SONwXsWD/6YQaA==", result.ciphertext());
     }
 
     @Test

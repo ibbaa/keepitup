@@ -112,6 +112,7 @@ public class PreferenceSetup {
         }
         systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
         systemSettings.put("preferenceAskedNotificationPermission", noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+        systemSettings.put("preferenceAskedLocalNetworkPermission", noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
         systemSettings.put("preferenceAlarmInfoShown", preferenceManager.getPreferenceAlarmInfoShown());
         systemSettings.put("preferenceSAFNoticeShown", preferenceManager.getPreferenceSAFNoticeShown());
         return systemSettings;
@@ -450,6 +451,12 @@ public class PreferenceSetup {
         } else {
             noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
         }
+        Object askedLocalNetworkPermission = systemSettings.get("preferenceAskedLocalNetworkPermission");
+        if (isValidBoolean(askedLocalNetworkPermission)) {
+            noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(Boolean.parseBoolean(askedLocalNetworkPermission.toString()));
+        } else {
+            noBackupPreferenceManager.removePreferenceAskedLocalNetworkPermission();
+        }
         Object alarmInfoShown = systemSettings.get("preferenceAlarmInfoShown");
         if (isValidBoolean(alarmInfoShown)) {
             preferenceManager.setPreferenceAlarmInfoShown(Boolean.parseBoolean(alarmInfoShown.toString()));
@@ -592,6 +599,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
         preferenceManager.removePreferenceAlarmOnHighPrio();
         noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
+        noBackupPreferenceManager.removePreferenceAskedLocalNetworkPermission();
         preferenceManager.removePreferenceAlarmInfoShown();
         preferenceManager.removePreferenceSAFNoticeShown();
     }

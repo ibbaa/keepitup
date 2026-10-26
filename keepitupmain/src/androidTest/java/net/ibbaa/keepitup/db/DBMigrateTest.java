@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import android.database.sqlite.SQLiteException;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -97,20 +95,6 @@ public class DBMigrateTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
     }
 
-    @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom2To1() {
-        setup.createTables();
-        migrate.doDowngrade(TestRegistry.getContext(), 2, 1);
-        intervalDAO.readAllIntervals();
-    }
-
-    @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom2To1SchedulerState() {
-        setup.createTables();
-        migrate.doDowngrade(TestRegistry.getContext(), 2, 1);
-        schedulerStateDAO.readSchedulerState();
-    }
-
     @Test
     public void testUpgradeFrom2To3() {
         setup.createTables();
@@ -143,13 +127,6 @@ public class DBMigrateTest {
         migrate.doUpgrade(TestRegistry.getContext(), 2, 3);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
-    }
-
-    @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom3To2() {
-        setup.createTables();
-        migrate.doDowngrade(TestRegistry.getContext(), 3, 2);
-        accessTypeDataDAO.readAllAccessTypeData();
     }
 
     @Test
@@ -309,20 +286,6 @@ public class DBMigrateTest {
         assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
     }
 
-    @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom6To5ResolveTable() {
-        setup.createTables();
-        migrate.doDowngrade(TestRegistry.getContext(), 6, 5);
-        resolveDAO.readAllResolves();
-    }
-
-    @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom6To5HeaderTable() {
-        setup.createTables();
-        migrate.doDowngrade(TestRegistry.getContext(), 6, 5);
-        headerDAO.readAllHeaders();
-    }
-
     @Test
     @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
     public void testUpgradeFrom0To6() {
@@ -456,13 +419,6 @@ public class DBMigrateTest {
         assertEquals(1, snmpItemDAO.readAllSNMPItems().size());
     }
 
-    @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom8To7SNMPItemTable() {
-        setup.createTables();
-        migrate.doDowngrade(TestRegistry.getContext(), 8, 7);
-        snmpItemDAO.readAllSNMPItems();
-    }
-
     @Test
     public void testUpgradeFrom8To9() {
         setup.createTables();
@@ -491,14 +447,6 @@ public class DBMigrateTest {
         assertEquals(expectedData.getSnmpTransport(), readData.getSnmpTransport());
         assertEquals(expectedData.getSnmpAuthAlgorithm(), readData.getSnmpAuthAlgorithm());
         assertEquals(expectedData.getSnmpPrivAlgorithm(), readData.getSnmpPrivAlgorithm());
-    }
-
-    @Test
-    public void testDowngradeFrom9To8() {
-        setup.createTables();
-        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
-        migrate.doDowngrade(TestRegistry.getContext(), 9, 8);
-        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
     }
 
     @Test

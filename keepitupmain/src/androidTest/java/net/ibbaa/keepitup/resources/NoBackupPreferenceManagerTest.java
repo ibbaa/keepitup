@@ -54,6 +54,19 @@ public class NoBackupPreferenceManagerTest {
         noBackupPreferenceManager.removeAllPreferences();
         assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
         noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
-        noBackupPreferenceManager.getPreferenceAskedNotificationPermission();
+        noBackupPreferenceManager.removePreferenceAskedNotificationPermission();
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedNotificationPermission());
+    }
+
+    @Test
+    public void testPreferenceAskedLocalNetworkPermission() {
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
+        noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
+        assertTrue(noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
+        noBackupPreferenceManager.removeAllPreferences();
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
+        noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
+        noBackupPreferenceManager.removePreferenceAskedLocalNetworkPermission();
+        assertFalse(noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission());
     }
 }

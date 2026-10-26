@@ -1059,7 +1059,7 @@ public class NetworkTaskWorkerTest {
         NetworkTaskWorker.DNSExecutionResult dnsExecutionResult = testNetworkTaskWorker.executeDNSLookup("host.com", false);
         LogEntry logEntry = dnsExecutionResult.getLogEntry();
         assertTrue(logEntry.isSuccess());
-        assertEquals("DNS lookup for abc.com successful. Resolved address is fe80::1%2.", logEntry.getMessage());
+        assertEquals("DNS lookup for abc.com successful. Resolved address is " + scopedAddress.getHostAddress() + ".", logEntry.getMessage());
     }
 
     @Test

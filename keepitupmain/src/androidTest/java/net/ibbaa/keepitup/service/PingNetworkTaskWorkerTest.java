@@ -126,7 +126,7 @@ public class PingNetworkTaskWorkerTest {
         NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged fe80::1%2 successfully. 64 bytes received per packet. 3 packets transmitted. 3 packets received. 0% packet loss. 0.08 msec average time.", logEntry.getMessage());
+        assertEquals("Pinged " + scopedAddress.getHostAddress() + " successfully. 64 bytes received per packet. 3 packets transmitted. 3 packets received. 0% packet loss. 0.08 msec average time.", logEntry.getMessage());
     }
 
     @Test

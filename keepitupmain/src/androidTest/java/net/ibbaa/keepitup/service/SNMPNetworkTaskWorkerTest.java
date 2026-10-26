@@ -124,7 +124,7 @@ public class SNMPNetworkTaskWorkerTest {
         NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertTrue(logEntry.isSuccess());
-        assertEquals("SNMP request to [fe80::1%2]:161 successful. Request time: 0 msec.", logEntry.getMessage());
+        assertEquals("SNMP request to [" + scopedAddress.getHostAddress() + "]:161 successful. Request time: 0 msec.", logEntry.getMessage());
     }
 
     @Test
