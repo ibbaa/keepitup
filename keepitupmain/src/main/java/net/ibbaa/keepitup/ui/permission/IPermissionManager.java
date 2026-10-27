@@ -30,6 +30,10 @@ public interface IPermissionManager {
 
     void requestPostNotificationsPermission(FragmentActivity activity);
 
+    boolean hasLocalNetworkPermission(Context context);
+
+    void requestLocalNetworkPermission(FragmentActivity activity);
+
     void requestPermission(FragmentActivity activity, String permissions, int code);
 
     boolean hasPermission(Context context, String permission);
@@ -37,4 +41,6 @@ public interface IPermissionManager {
     void onRequestPermissionsResult(FragmentActivity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 
     void onPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission);
+
+    void onPermissionExplainDialogCancelClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission);
 }

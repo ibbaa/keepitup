@@ -57,6 +57,7 @@ public class DBMigrate {
         doUpgrade(DBOpenHelper.getInstance(context).getWritableDatabase(), oldVersion, newVersion);
     }
 
+    @SuppressWarnings("unused")
     public void doDowngrade(Context context, int oldVersion, int newVersion) {
         doDowngrade(DBOpenHelper.getInstance(context).getWritableDatabase(), oldVersion, newVersion);
     }

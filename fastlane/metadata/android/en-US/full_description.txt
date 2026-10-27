@@ -24,3 +24,4 @@ Keep it up checks the availability and reachability of network services via Ping
 - <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications
+- <i>ACCESS_LOCAL_NETWORK</i> for accessing the local network (Android 17+)

@@ -61,6 +61,7 @@ import net.ibbaa.keepitup.ui.dialog.CredentialInfoDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
+import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -69,6 +70,7 @@ import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
 import net.ibbaa.keepitup.ui.support.MessageSupport;
+import net.ibbaa.keepitup.ui.support.PermissionRequestSupport;
 import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
 import net.ibbaa.keepitup.ui.sync.HeaderBulkDeleteTask;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
@@ -93,7 +95,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport, MessageSupport {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport, PermissionRequestSupport, MessageSupport {
 
     private enum Message {
         SAFNOTICE,
@@ -108,6 +110,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private ItemTouchHelper itemTouchHelper;
     private boolean credentialInfoDialogShown;
     private boolean folderPermissionNotificationSent;
+    private boolean notificationPermissionRequestPending;
 
     public static String getBypassSystemSAFKey() {
         return NetworkTaskMainActivity.class.getSimpleName() + ".BypassSystemSAF";
@@ -276,6 +279,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onSaveInstanceState(state);
         state.putBoolean(getCredentialInfoDialogShownKey(), credentialInfoDialogShown);
         state.putBoolean(getFolderPermissionNotificationSentKey(), folderPermissionNotificationSent);
+        state.putBoolean(getNotificationPermissionRequestPendingKey(), notificationPermissionRequestPending);
     }
 
     private void restoreInstanceState(Bundle state) {
@@ -288,6 +292,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (state.containsKey(getFolderPermissionNotificationSentKey())) {
             folderPermissionNotificationSent = state.getBoolean(getFolderPermissionNotificationSentKey());
         }
+        if (state.containsKey(getNotificationPermissionRequestPendingKey())) {
+            notificationPermissionRequestPending = state.getBoolean(getNotificationPermissionRequestPendingKey());
+        }
     }
 
     private String getCredentialInfoDialogShownKey() {
@@ -296,6 +303,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private String getFolderPermissionNotificationSentKey() {
         return NetworkTaskMainActivity.class.getSimpleName() + ".FolderPermissionNotificationSent";
+    }
+
+    private String getNotificationPermissionRequestPendingKey() {
+        return NetworkTaskMainActivity.class.getSimpleName() + ".NotificationPermissionRequestPending";
     }
 
     private void scrollToProvidedEntry() {
@@ -386,12 +397,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private void checkPermissions() {
         Log.d(NetworkTaskMainActivity.class.getName(), "checkPermissions");
-        NoBackupPreferenceManager noBackupPreferenceManager = new NoBackupPreferenceManager(this);
-        IPermissionManager permissionManager = getPermissionManager();
-        if (!permissionManager.hasPostNotificationsPermission(this) && !noBackupPreferenceManager.getPreferenceAskedNotificationPermission()) {
-            Log.d(NetworkTaskMainActivity.class.getName(), "Permission to post notifications is missing");
-            noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
-            permissionManager.requestPostNotificationsPermission(this);
+        if (!checkNotificationPermission() && !notificationPermissionRequestPending) {
+            checkLocalNetworkPermission();
         }
         if (!createAlarmManager().canScheduleAlarms()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to schedule alarms is missing");
@@ -433,6 +440,34 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "downloadExternalStorageEnabled is " + downloadExternalStorageEnabled);
         Log.d(NetworkTaskMainActivity.class.getName(), "logFileEnabled is " + logFileEnabled);
         return !allowArbitraryFileLocationKeyPresent && !downloadExternalStorageEnabled && !logFileEnabled;
+    }
+
+    private boolean checkNotificationPermission() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkNotificationPermission");
+        NoBackupPreferenceManager noBackupPreferenceManager = new NoBackupPreferenceManager(this);
+        IPermissionManager permissionManager = getPermissionManager();
+        if (!permissionManager.hasPostNotificationsPermission(this) && !noBackupPreferenceManager.getPreferenceAskedNotificationPermission()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Permission to post notifications is missing");
+            noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+            notificationPermissionRequestPending = true;
+            permissionManager.requestPostNotificationsPermission(this);
+            return true;
+        }
+        return false;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    private boolean checkLocalNetworkPermission() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkLocalNetworkPermission");
+        NoBackupPreferenceManager noBackupPreferenceManager = new NoBackupPreferenceManager(this);
+        IPermissionManager permissionManager = getPermissionManager();
+        if (!permissionManager.hasLocalNetworkPermission(this) && !noBackupPreferenceManager.getPreferenceAskedLocalNetworkPermission()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Permission to access the local network is missing");
+            noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
+            permissionManager.requestLocalNetworkPermission(this);
+            return true;
+        }
+        return false;
     }
 
     private void checkSAFPermissions() {
@@ -906,6 +941,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         BundleUtil.stringToBundle(infoDialog.getMessageKey(), message, bundle);
         infoDialog.setArguments(bundle);
         infoDialog.show(getSupportFragmentManager(), CredentialInfoDialog.class.getName());
+    }
+
+    @Override
+    public void onPermissionRequestFinished(PermissionExplainDialog.Permission permission) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onPermissionRequestFinished for permission " + permission);
+        if (PermissionExplainDialog.Permission.POST_NOTIFICATIONS.equals(permission)) {
+            notificationPermissionRequestPending = false;
+            checkLocalNetworkPermission();
+        }
     }
 
     @Override

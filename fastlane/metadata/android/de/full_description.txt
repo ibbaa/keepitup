@@ -24,3 +24,4 @@ Keep it up überprüft regelmäßig die Verfügbarkeit und Erreichbarkeit von Ne
 - <i>USE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (ab Android 13)
 - <i>SCHEDULE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (Android 11 und 12)
 - <i>POST_NOTIFICATIONS</i> um Benachrichtigungen zu senden
+- <i>ACCESS_LOCAL_NETWORK</i> um auf Geräte im LAN zuzugreifen (Android 17+)

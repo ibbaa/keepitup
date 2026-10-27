@@ -84,6 +84,7 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestUtil;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.ui.sync.HeaderSyncHandler;
 import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -537,6 +538,54 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkPermissionRequestedAfterNotificationPermission() {
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(false);
+        permissionManager.setHasLocalNetworkPermission(false);
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity(activityScenario);
+        activity.onPermissionRequestFinished(PermissionExplainDialog.Permission.POST_NOTIFICATIONS);
+        assertEquals(1, permissionManager.getRequestLocalNetworkPermissionCalls());
+        assertTrue(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
+        activity.onPermissionRequestFinished(PermissionExplainDialog.Permission.POST_NOTIFICATIONS);
+        assertEquals(1, permissionManager.getRequestLocalNetworkPermissionCalls());
+        assertEquals(0, permissionManager.getRequestPostNotificationsPermissionCalls());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkPermissionNotRequestedIfGranted() {
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(false);
+        permissionManager.setHasLocalNetworkPermission(true);
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity(activityScenario);
+        activity.onPermissionRequestFinished(PermissionExplainDialog.Permission.POST_NOTIFICATIONS);
+        assertEquals(0, permissionManager.getRequestLocalNetworkPermissionCalls());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkPermissionNotRequestedAfterLocalNetworkPermission() {
+        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
+        injectPermissionManager(activityScenario);
+        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(false);
+        permissionManager.setHasLocalNetworkPermission(false);
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity(activityScenario);
+        activity.onPermissionRequestFinished(PermissionExplainDialog.Permission.LOCAL_NETWORK);
+        assertEquals(0, permissionManager.getRequestLocalNetworkPermissionCalls());
+        assertFalse(getNoBackupPreferenceManager().getPreferenceAskedLocalNetworkPermission());
         activityScenario.close();
     }
 

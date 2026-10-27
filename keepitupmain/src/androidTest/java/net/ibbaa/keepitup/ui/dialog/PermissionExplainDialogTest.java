@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -58,12 +59,56 @@ public class PermissionExplainDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testExplainMessageWithValidPermission() {
+    public void testExplainMessageWithValidPostNotificationPermission() {
         openPermissionExplainDialog(PermissionExplainDialog.Permission.POST_NOTIFICATIONS);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_general_permission_explain_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_permission_explain_ok)).perform(click());
         assertEquals(PermissionExplainDialog.Permission.POST_NOTIFICATIONS, permissionManager.getLastPermission());
+        assertNull(permissionManager.getLastCancelledPermission());
+    }
+
+    @Test
+    public void testExplainMessageWithValidLocalNetworkPermission() {
+        openPermissionExplainDialog(PermissionExplainDialog.Permission.LOCAL_NETWORK);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_general_permission_explain_message)).check(matches(withText("Message")));
+        onView(withId(R.id.imageview_dialog_permission_explain_ok)).perform(click());
+        assertEquals(PermissionExplainDialog.Permission.LOCAL_NETWORK, permissionManager.getLastPermission());
+        assertNull(permissionManager.getLastCancelledPermission());
+    }
+
+    @Test
+    public void testCancelWithValidPostNotificationPermission() {
+        openPermissionExplainDialog(PermissionExplainDialog.Permission.POST_NOTIFICATIONS);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_general_permission_explain_message)).check(matches(withText("Message")));
+        pressBack();
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(PermissionExplainDialog.Permission.POST_NOTIFICATIONS, permissionManager.getLastCancelledPermission());
+        assertNull(permissionManager.getLastPermission());
+    }
+
+    @Test
+    public void testCancelWithValidLocalNetworkPermission() {
+        openPermissionExplainDialog(PermissionExplainDialog.Permission.LOCAL_NETWORK);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_general_permission_explain_message)).check(matches(withText("Message")));
+        pressBack();
+        onView(isRoot()).perform(waitFor(500));
+        assertEquals(PermissionExplainDialog.Permission.LOCAL_NETWORK, permissionManager.getLastCancelledPermission());
+        assertNull(permissionManager.getLastPermission());
+    }
+
+    @Test
+    public void testCancelWithoutValidPermission() {
+        openPermissionExplainDialog(null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.textview_dialog_general_permission_explain_message)).check(matches(withText("Message")));
+        pressBack();
+        onView(isRoot()).perform(waitFor(500));
+        assertNull(permissionManager.getLastCancelledPermission());
+        assertNull(permissionManager.getLastPermission());
     }
 
     @Test

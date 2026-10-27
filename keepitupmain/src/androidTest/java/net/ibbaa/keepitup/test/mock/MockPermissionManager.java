@@ -29,10 +29,13 @@ public class MockPermissionManager implements IPermissionManager {
 
     private boolean shouldAskForRuntimePermission;
     private boolean hasPostNotificationsPermission;
+    private boolean hasLocalNetworkPermission;
     private boolean hasPermission;
     private int requestPostNotificationsPermissionCalls;
+    private int requestLocalNetworkPermissionCalls;
     private int requestPermissionCalls;
     private PermissionExplainDialog.Permission lastPermission;
+    private PermissionExplainDialog.Permission lastCancelledPermission;
 
     public MockPermissionManager() {
         reset();
@@ -41,10 +44,13 @@ public class MockPermissionManager implements IPermissionManager {
     public void reset() {
         this.shouldAskForRuntimePermission = false;
         this.hasPostNotificationsPermission = true;
+        this.hasLocalNetworkPermission = true;
         this.hasPermission = true;
         this.requestPostNotificationsPermissionCalls = 0;
+        this.requestLocalNetworkPermissionCalls = 0;
         this.requestPermissionCalls = 0;
         lastPermission = null;
+        lastCancelledPermission = null;
     }
 
     public void setShouldAskForRuntimePermission(boolean shouldAskForRuntimePermission) {
@@ -55,12 +61,20 @@ public class MockPermissionManager implements IPermissionManager {
         this.hasPostNotificationsPermission = hasPostNotificationsPermission;
     }
 
+    public void setHasLocalNetworkPermission(boolean hasLocalNetworkPermission) {
+        this.hasLocalNetworkPermission = hasLocalNetworkPermission;
+    }
+
     public void setHasPermission(boolean hasPermission) {
         this.hasPermission = hasPermission;
     }
 
     public int getRequestPostNotificationsPermissionCalls() {
         return requestPostNotificationsPermissionCalls;
+    }
+
+    public int getRequestLocalNetworkPermissionCalls() {
+        return requestLocalNetworkPermissionCalls;
     }
 
     public int getRequestPermissionCalls() {
@@ -71,6 +85,10 @@ public class MockPermissionManager implements IPermissionManager {
         return lastPermission;
     }
 
+    public PermissionExplainDialog.Permission getLastCancelledPermission() {
+        return lastCancelledPermission;
+    }
+
     @Override
     public boolean hasPostNotificationsPermission(Context context) {
         return hasPostNotificationsPermission;
@@ -79,6 +97,16 @@ public class MockPermissionManager implements IPermissionManager {
     @Override
     public void requestPostNotificationsPermission(FragmentActivity activity) {
         requestPostNotificationsPermissionCalls++;
+    }
+
+    @Override
+    public boolean hasLocalNetworkPermission(Context context) {
+        return hasLocalNetworkPermission;
+    }
+
+    @Override
+    public void requestLocalNetworkPermission(FragmentActivity activity) {
+        requestLocalNetworkPermissionCalls++;
     }
 
     @Override
@@ -99,5 +127,10 @@ public class MockPermissionManager implements IPermissionManager {
     @Override
     public void onPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission) {
         lastPermission = permission;
+    }
+
+    @Override
+    public void onPermissionExplainDialogCancelClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission) {
+        lastCancelledPermission = permission;
     }
 }

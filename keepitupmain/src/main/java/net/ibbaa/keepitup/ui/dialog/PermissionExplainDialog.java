@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +37,8 @@ import net.ibbaa.keepitup.util.StringUtil;
 public class PermissionExplainDialog extends DialogFragmentBase {
 
     public enum Permission {
-        POST_NOTIFICATIONS
+        POST_NOTIFICATIONS,
+        LOCAL_NETWORK
     }
 
     private IPermissionManager permissionManager;
@@ -70,6 +72,13 @@ public class PermissionExplainDialog extends DialogFragmentBase {
         return view;
     }
 
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        Log.d(PermissionExplainDialog.class.getName(), "onCancel");
+        super.onCancel(dialog);
+        getPermissionManager().onPermissionExplainDialogCancelClicked(this, getPermission());
+    }
+
     public String getMessageKey() {
         return PermissionExplainDialog.class.getSimpleName() + ".Message";
     }
@@ -88,18 +97,20 @@ public class PermissionExplainDialog extends DialogFragmentBase {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(PermissionExplainDialog.class.getName(), "onOkClicked");
+        getPermissionManager().onPermissionExplainDialogOkClicked(this, getPermission());
+    }
+
+    private Permission getPermission() {
         String permissionString = BundleUtil.stringFromBundle(PermissionExplainDialog.Permission.class.getSimpleName(), requireArguments());
         if (StringUtil.isEmpty(permissionString)) {
             Log.e(PermissionExplainDialog.class.getName(), PermissionExplainDialog.Permission.class.getSimpleName() + " not specified.");
-            getPermissionManager().onPermissionExplainDialogOkClicked(this, null);
-            return;
+            return null;
         }
-        Permission permission = null;
         try {
-            permission = Permission.valueOf(permissionString);
+            return Permission.valueOf(permissionString);
         } catch (IllegalArgumentException exc) {
             Log.e(PermissionExplainDialog.class.getName(), PermissionExplainDialog.Permission.class.getSimpleName() + "." + permissionString + " does not exist");
         }
-        getPermissionManager().onPermissionExplainDialogOkClicked(this, permission);
+        return null;
     }
 }

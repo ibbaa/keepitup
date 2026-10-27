@@ -17,4 +17,6 @@
 <resources>
     <string name="permission_post_notifications">android.permission.POST_NOTIFICATIONS</string>
     <integer name="permission_post_notifications_code">1</integer>
+    <string name="permission_local_network">android.permission.ACCESS_LOCAL_NETWORK</string>
+    <integer name="permission_local_network_code">2</integer>
 </resources>
