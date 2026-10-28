@@ -25,10 +25,12 @@ import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
 
+    private MockPermissionManager permissionManager;
     private MockDNSLookup mockDNSLookup;
     private MockPingCommand mockPingCommand;
     private int pingCount;
@@ -60,8 +62,12 @@ public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
         return pingCount;
     }
 
+    public void setPermissionManager(MockPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
     @Override
     public IPermissionManager getPermissionManager() {
-        return new MockPermissionManager();
+        return Objects.requireNonNullElseGet(permissionManager, MockPermissionManager::new);
     }
 }

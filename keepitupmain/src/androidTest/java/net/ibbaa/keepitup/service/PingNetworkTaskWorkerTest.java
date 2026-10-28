@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -35,6 +36,8 @@ import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
+import net.ibbaa.keepitup.test.mock.MockNetworkManager;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockPingCommand;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestPingNetworkTaskWorker;
@@ -73,6 +76,13 @@ public class PingNetworkTaskWorkerTest {
         MockTimeService timeService = (MockTimeService) pingNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
+    }
+
+    private void prepareLocalNetwork(TestPingNetworkTaskWorker worker, boolean hasLocalNetworkPermission, boolean localAddress) {
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(hasLocalNetworkPermission);
+        worker.setPermissionManager(permissionManager);
+        ((MockNetworkManager) worker.getNetworkManager()).setLocalAddress(localAddress);
     }
 
     @Test
@@ -380,6 +390,90 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(10, pingNetworkTaskWorker.getPingCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Ping to 127.0.0.1 failed. Return code: 1", logEntry.getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("192.168.178.12"), "127.0.0.1", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, getTestIP4PingFailure(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        prepareLocalNetwork(pingNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("192.168.178.12"), executionResult.getTargetAddress());
+        pingNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("192.168.178.12"), ((MockNetworkManager) pingNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. Ping to 192.168.178.12 failed. 3 packets transmitted. 0 packets received. 100% packet loss.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingLocalAddressPingCommandExceptionThrown() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "host", null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, "testoutput", exception);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        prepareLocalNetwork(pingNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        pingNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("127.0.0.1"), ((MockNetworkManager) pingNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. Ping to 127.0.0.1 failed. IllegalArgumentException: TestException", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingNonLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("192.168.178.12"), "127.0.0.1", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, getTestIP4PingFailure(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        prepareLocalNetwork(pingNetworkTaskWorker, false, false);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("192.168.178.12"), executionResult.getTargetAddress());
+        pingNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("192.168.178.12"), ((MockNetworkManager) pingNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Ping to 192.168.178.12 failed. 3 packets transmitted. 0 packets received. 100% packet loss.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionGrantedLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("192.168.178.12"), "127.0.0.1", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, getTestIP4PingFailure(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        prepareLocalNetwork(pingNetworkTaskWorker, true, true);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("192.168.178.12"), executionResult.getTargetAddress());
+        pingNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) pingNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Ping to 192.168.178.12 failed. 3 packets transmitted. 0 packets received. 100% packet loss.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, "testoutput", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        prepareLocalNetwork(pingNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        pingNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) pingNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Pinged 127.0.0.1 successfully. testoutput", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingDNSLookupFailed() throws Exception {
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), "host", exception);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, null);
+        prepareLocalNetwork(pingNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        assertFalse(executionResult.isLocalNetworkPermissionRelevant());
+        pingNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) pingNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("DNS lookup for host failed. IllegalArgumentException: TestException", executionResult.getLogEntry().getMessage());
     }
 
     @Test

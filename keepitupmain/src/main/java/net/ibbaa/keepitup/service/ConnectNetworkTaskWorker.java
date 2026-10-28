@@ -121,7 +121,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
-        return new ExecutionResult(interrupted, logEntry);
+        return new ExecutionResult(interrupted, logEntry, address);
     }
 
     private String getConnectSuccessMessage(ConnectCommandResult connectResult, String address, int port, boolean ip6, int connectTimeout) {

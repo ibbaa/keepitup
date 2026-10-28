@@ -225,7 +225,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             if (returnedConnectFailure(downloadResult)) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
                 prepareConnectError(downloadResult, timeout, folder, delete, logEntry);
-                return new ExecutionResult(false, logEntry);
+                return new ExecutionResult(false, logEntry, null);
             }
             if (returnedHttpFailure(downloadResult)) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP download and HTTP return code is not HTTP_OK. Preparing error message.");
@@ -254,6 +254,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             }
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The download failed for an unknown reason.");
             prepareUnknownError(downloadResult, timeout, folder, delete, logEntry);
+            return new ExecutionResult(false, logEntry);
         } catch (Throwable exc) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
@@ -267,7 +268,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
-        return new ExecutionResult(interrupted, logEntry);
+        return new ExecutionResult(interrupted, logEntry, null);
     }
 
     private void prepareConnectError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {

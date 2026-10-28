@@ -18,6 +18,8 @@
     <string name="text_access_type_null">Type not specified.</string>
     <string name="text_no_network_connection">No active network connection.</string>
     <string name="text_no_wifi_connection">Skipped. No active wifi connection.</string>
+    <string name="text_local_network_permission_missing">Local network access is not allowed.</string>
+    <string name="text_local_network_permission_missing_unknown_address">Local network access is not allowed. This may be the cause if the target is in the local network.</string>
     <string name="text_timeout">No response within %d</string>
     <string name="text_interrupted">The task was stopped.</string>
     <string name="text_dns_lookup_successful">DNS lookup for %1$s successful. Resolved address is %2$s.</string>

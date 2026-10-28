@@ -26,10 +26,12 @@ import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.net.InetAddress;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
 
+    private MockPermissionManager permissionManager;
     private MockDNSLookup mockDNSLookup;
     private MockConnectCommand mockConnectCommand;
     private int connectCount;
@@ -61,8 +63,12 @@ public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
         return connectCount;
     }
 
+    public void setPermissionManager(MockPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
     @Override
     public IPermissionManager getPermissionManager() {
-        return new MockPermissionManager();
+        return Objects.requireNonNullElseGet(permissionManager, MockPermissionManager::new);
     }
 }

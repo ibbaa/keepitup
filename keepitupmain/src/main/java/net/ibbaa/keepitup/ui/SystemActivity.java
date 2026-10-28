@@ -122,6 +122,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
     private TextView logFolderText;
     private TextView batteryOptimizationText;
     private TextView notificationsEnabledText;
+    private TextView localNetworkEnabledText;
     private RadioGroup theme;
     private PermissionLauncher exportFileLauncher;
     private PermissionLauncher importFileLauncher;
@@ -196,6 +197,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         prepareExternalStorageTypeRadioGroup();
         prepareBatteryOptimizationField();
         prepareNotificationsEnabledField();
+        prepareLocalNetworkEnabledField();
         prepareThemeRadioGroup();
         prepareArbitraryFolderLauncher();
         prepareAllowArbitraryFileLocationSwitch();
@@ -221,6 +223,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
     protected void onResume() {
         super.onResume();
         prepareNotificationsEnabledField();
+        prepareLocalNetworkEnabledField();
     }
 
     @Override
@@ -415,7 +418,7 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             notificationsEnabledCardView.setOnClickListener(null);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                String disallowedText = getResources().getString(R.string.string_disallowed) + " " + getResources().getString(R.string.label_activity_system_notifications_click_to_enable);
+                String disallowedText = getResources().getString(R.string.string_disallowed) + " " + getResources().getString(R.string.label_activity_system_local_network_click_to_enable);
                 notificationsEnabledText.setText(disallowedText);
                 notificationsEnabledCardView.setOnClickListener(this::showNotificationsSettings);
             } else {
@@ -434,6 +437,36 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
             startActivity(intent);
         }
+    }
+
+    private void prepareLocalNetworkEnabledField() {
+        Log.d(SystemActivity.class.getName(), "prepareLocalNetworkEnabledField");
+        CardView localNetworkEnabledCardView = findViewById(R.id.cardview_activity_system_local_network_enabled);
+        localNetworkEnabledText = findViewById(R.id.textview_activity_system_local_network_enabled);
+        IPermissionManager permissionManager = getPermissionManager();
+        if (permissionManager.hasLocalNetworkPermission(this)) {
+            localNetworkEnabledText.setText(R.string.string_allowed);
+            localNetworkEnabledCardView.setOnClickListener(null);
+        } else {
+            String disallowedText = getResources().getString(R.string.string_disallowed) + " " + getResources().getString(R.string.label_activity_system_notifications_click_to_enable);
+            localNetworkEnabledText.setText(disallowedText);
+            localNetworkEnabledCardView.setOnClickListener(this::showLocalNetworkSettingsConfirmDialog);
+        }
+    }
+
+    private void showLocalNetworkSettingsConfirmDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showLocalNetworkSettingsConfirmDialog");
+        String message = getResources().getString(R.string.text_dialog_confirm_local_network_settings);
+        String description = getResources().getString(R.string.text_dialog_confirm_local_network_settings_description);
+        showConfirmDialog(message, description, ConfirmDialog.Type.LOCALNETWORKSETTINGS);
+    }
+
+    private void showLocalNetworkSettings() {
+        Log.d(SystemActivity.class.getName(), "showLocalNetworkSettings");
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
     }
 
     private void showBatteryOptimizationDialog(View view) {
@@ -1220,6 +1253,9 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
             } else {
                 prepareAndPerformImport(file, new EncryptionInfo());
             }
+        } else if (ConfirmDialog.Type.LOCALNETWORKSETTINGS.equals(type)) {
+            dismissConfirmDialog(confirmDialog);
+            showLocalNetworkSettings();
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
         }

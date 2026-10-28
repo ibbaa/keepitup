@@ -136,7 +136,7 @@ public class PermissionManager implements IPermissionManager {
 
     @Override
     public void onPermissionExplainDialogCancelClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission) {
-        Log.d(PermissionManager.class.getName(), "onPermissionExplainDialogCancelled for permission " + permission);
+        Log.d(PermissionManager.class.getName(), "onPermissionExplainDialogCancelClicked for permission " + permission);
         if (permission != null) {
             notifyPermissionRequestFinished(explainDialog.getActivity(), permission);
         }

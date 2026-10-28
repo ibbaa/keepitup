@@ -40,6 +40,7 @@ import java.util.concurrent.Callable;
 
 public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
+    private MockPermissionManager permissionManager;
     private MockDNSLookup mockDNSLookup;
     private final Map<String, MockDNSLookup> mockDNSLookupsByHost = new HashMap<>();
     private MockDownloadCommand mockDownloadCommand;
@@ -101,9 +102,13 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
         return mockFileManager;
     }
 
+    public void setPermissionManager(MockPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
     @Override
     public IPermissionManager getPermissionManager() {
-        return new MockPermissionManager();
+        return Objects.requireNonNullElseGet(permissionManager, MockPermissionManager::new);
     }
 
     @Override

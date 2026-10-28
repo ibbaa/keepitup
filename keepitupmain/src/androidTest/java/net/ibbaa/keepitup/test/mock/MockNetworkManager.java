@@ -18,10 +18,14 @@ package net.ibbaa.keepitup.test.mock;
 
 import net.ibbaa.keepitup.service.INetworkManager;
 
+import java.net.InetAddress;
+
 public class MockNetworkManager implements INetworkManager {
 
     private boolean connected;
     private boolean connectedWithWiFi;
+    private boolean localAddress;
+    private InetAddress lastLocalAddressCheck;
 
     public void setConnected(boolean connected) {
         this.connected = connected;
@@ -29,6 +33,14 @@ public class MockNetworkManager implements INetworkManager {
 
     public void setConnectedWithWiFi(boolean connectedWithWiFi) {
         this.connectedWithWiFi = connectedWithWiFi;
+    }
+
+    public void setLocalAddress(boolean localAddress) {
+        this.localAddress = localAddress;
+    }
+
+    public InetAddress getLastLocalAddressCheck() {
+        return lastLocalAddressCheck;
     }
 
     @Override
@@ -39,5 +51,11 @@ public class MockNetworkManager implements INetworkManager {
     @Override
     public boolean isConnectedWithWiFi() {
         return connectedWithWiFi;
+    }
+
+    @Override
+    public boolean isLocalAddress(InetAddress address) {
+        lastLocalAddressCheck = address;
+        return localAddress;
     }
 }

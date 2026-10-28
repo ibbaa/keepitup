@@ -1130,6 +1130,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_cancel)).perform(click());
@@ -1275,6 +1276,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
@@ -1421,6 +1423,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -1571,6 +1574,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -1740,6 +1744,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -2039,6 +2044,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -2260,6 +2266,7 @@ public class SystemActivityTest extends BaseUITest {
         getNetworkTaskDAO().updateNetworkTask(task2);
         getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resetGlobalHeaderHandler();
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -2372,6 +2379,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -2682,6 +2690,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -2990,6 +2999,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
@@ -3294,6 +3304,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Invalid credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following credentials"))));
@@ -3521,6 +3532,7 @@ public class SystemActivityTest extends BaseUITest {
         getNetworkTaskDAO().updateNetworkTask(task2);
         getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         resetGlobalHeaderHandler();
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Invalid credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following credentials"))));
@@ -3633,6 +3645,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
@@ -3939,6 +3952,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Invalid credentials")));
@@ -4244,6 +4258,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
@@ -4416,6 +4431,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -4592,6 +4608,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -4890,6 +4907,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_export_encrypt_password_confirm)).perform(typeText("12345678"), closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_export_encrypt_password)).perform(typeText("12345678"), closeSoftKeyboard());
@@ -5181,6 +5199,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -5332,6 +5351,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -5415,6 +5435,7 @@ public class SystemActivityTest extends BaseUITest {
         injectThemeManager(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -5432,6 +5453,7 @@ public class SystemActivityTest extends BaseUITest {
         injectScheduler(activityScenario);
         injectStorageManager(activityScenario);
         injectThemeManager(activityScenario);
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -5453,18 +5475,21 @@ public class SystemActivityTest extends BaseUITest {
         injectThemeManager(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         getPreferenceManager().setPreferenceExternalStorageType(1);
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -5612,6 +5637,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -5765,6 +5791,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -5942,6 +5969,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -6098,6 +6126,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -6291,6 +6320,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -6526,6 +6556,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -6767,6 +6798,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptionResult.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7007,6 +7039,7 @@ public class SystemActivityTest extends BaseUITest {
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream(encryptionResult.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7158,6 +7191,7 @@ public class SystemActivityTest extends BaseUITest {
         StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         assertTrue(getTimeBasedSuspensionScheduler().isRunning());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7251,6 +7285,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7402,6 +7437,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7553,6 +7589,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7648,6 +7685,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -7663,6 +7701,7 @@ public class SystemActivityTest extends BaseUITest {
         injectScheduler(activityScenario);
         injectStorageManager(activityScenario);
         injectThemeManager(activityScenario);
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
@@ -7681,14 +7720,17 @@ public class SystemActivityTest extends BaseUITest {
         injectThemeManager(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         getPreferenceManager().setPreferenceExternalStorageType(1);
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
@@ -7748,6 +7790,7 @@ public class SystemActivityTest extends BaseUITest {
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
@@ -7756,6 +7799,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Inactive")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
@@ -7777,6 +7821,7 @@ public class SystemActivityTest extends BaseUITest {
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
@@ -7799,6 +7844,7 @@ public class SystemActivityTest extends BaseUITest {
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager1));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -7870,6 +7916,107 @@ public class SystemActivityTest extends BaseUITest {
         activityScenario.moveToState(Lifecycle.State.RESUMED);
         onView(withId(R.id.textview_activity_system_notifications_enabled_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.textview_activity_system_notifications_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkAllowed() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(true);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_local_network_enabled_label)).check(matches(withText("Local network")));
+        onView(withId(R.id.textview_activity_system_local_network_enabled)).check(matches(withText("Allowed")));
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_local_network_enabled_label)).check(matches(withText("Local network")));
+        onView(withId(R.id.textview_activity_system_local_network_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkAllowedScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(true);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_local_network_enabled_label)).check(matches(withText("Local network")));
+        onView(withId(R.id.textview_activity_system_local_network_enabled)).check(matches(withText("Allowed")));
+        rotateScreen(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_local_network_enabled_label)).check(matches(withText("Local network")));
+        onView(withId(R.id.textview_activity_system_local_network_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        rotateScreen(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.textview_activity_system_local_network_enabled_label)).check(matches(withText("Local network")));
+        onView(withId(R.id.textview_activity_system_local_network_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkSettingsConfirmDialogCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(true);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.cardview_activity_system_local_network_enabled)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_system_local_network_enabled)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.cardview_activity_system_local_network_enabled)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_system_local_network_enabled)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Open app settings?")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("To allow local network access, open Permissions in the app settings, select Nearby devices and choose Allow.")));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_local_network_enabled)).check(matches(withText("Disallowed (click to allow)")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testLocalNetworkSettingsConfirmDialogCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        activityScenario.moveToState(Lifecycle.State.STARTED);
+        permissionManager.setHasLocalNetworkPermission(false);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPermissionManager(permissionManager));
+        activityScenario.moveToState(Lifecycle.State.RESUMED);
+        onView(withId(R.id.cardview_activity_system_local_network_enabled)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_system_local_network_enabled)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Open app settings?")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("To allow local network access, open Permissions in the app settings, select Nearby devices and choose Allow.")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Open app settings?")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("To allow local network access, open Permissions in the app settings, select Nearby devices and choose Allow.")));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
 
@@ -8262,6 +8409,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));

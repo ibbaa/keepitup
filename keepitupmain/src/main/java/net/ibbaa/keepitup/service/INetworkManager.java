@@ -16,9 +16,13 @@
 
 package net.ibbaa.keepitup.service;
 
+import java.net.InetAddress;
+
 public interface INetworkManager {
 
     boolean isConnected();
 
     boolean isConnectedWithWiFi();
+
+    boolean isLocalAddress(InetAddress address);
 }

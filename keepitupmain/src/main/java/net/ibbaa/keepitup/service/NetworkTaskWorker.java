@@ -48,6 +48,7 @@ import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.ExceptionUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.net.InetAddress;
@@ -138,6 +139,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
                 ExecutionResult executionResult = execute(databaseTask, databaseAccessTypeData);
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
+                addLocalNetworkPermissionHint(executionResult);
                 logEntry = executionResult.getLogEntry();
                 int oldFailureCount = networkTaskDAO.readNetworkTaskFailureCount(databaseTask.getId());
                 int newFailureCount = adaptFailureCount(databaseTask, oldFailureCount, logEntry, executionResult.isInterrupted(), networkTaskDAO, true, true);
@@ -155,6 +157,32 @@ public abstract class NetworkTaskWorker implements Runnable {
                 wakeLock.release();
             }
         }
+    }
+
+    protected void addLocalNetworkPermissionHint(ExecutionResult executionResult) {
+        Log.d(NetworkTaskWorker.class.getName(), "addLocalNetworkPermissionHint for execution result " + executionResult);
+        LogEntry logEntry = executionResult.getLogEntry();
+        if (logEntry == null || logEntry.isSuccess() || executionResult.isInterrupted() || !executionResult.isLocalNetworkPermissionRelevant()) {
+            Log.d(NetworkTaskWorker.class.getName(), "Failure is not relevant for local network permission. Not adding local network permission hint.");
+            return;
+        }
+        if (getPermissionManager().hasLocalNetworkPermission(getContext())) {
+            Log.d(NetworkTaskWorker.class.getName(), "Local network permission is granted. Not adding local network permission hint.");
+            return;
+        }
+        InetAddress targetAddress = executionResult.getTargetAddress();
+        String hint;
+        if (targetAddress == null) {
+            Log.d(NetworkTaskWorker.class.getName(), "Target address is unknown. Adding local network permission hint.");
+            hint = getResources().getString(R.string.text_local_network_permission_missing_unknown_address);
+        } else if (getNetworkManager().isLocalAddress(targetAddress)) {
+            Log.d(NetworkTaskWorker.class.getName(), "Target address " + targetAddress + " is a local address. Adding local network permission hint.");
+            hint = getResources().getString(R.string.text_local_network_permission_missing);
+        } else {
+            Log.d(NetworkTaskWorker.class.getName(), "Target address " + targetAddress + " is not a local address. Not adding local network permission hint.");
+            return;
+        }
+        logEntry.setMessage(StringUtil.isEmpty(logEntry.getMessage()) ? hint : hint + " " + logEntry.getMessage());
     }
 
     private void writeLogEntry(NetworkTask task, LogEntry logEntry, boolean sendNotification) {
@@ -521,10 +549,21 @@ public abstract class NetworkTaskWorker implements Runnable {
 
         private final boolean interrupted;
         private final LogEntry logEntry;
+        private final boolean localNetworkPermissionRelevant;
+        private final InetAddress targetAddress;
 
         public ExecutionResult(boolean interrupted, LogEntry logEntry) {
             this.interrupted = interrupted;
             this.logEntry = logEntry;
+            this.localNetworkPermissionRelevant = false;
+            this.targetAddress = null;
+        }
+
+        public ExecutionResult(boolean interrupted, LogEntry logEntry, InetAddress targetAddress) {
+            this.interrupted = interrupted;
+            this.logEntry = logEntry;
+            this.localNetworkPermissionRelevant = true;
+            this.targetAddress = targetAddress;
         }
 
         public boolean isInterrupted() {
@@ -535,12 +574,22 @@ public abstract class NetworkTaskWorker implements Runnable {
             return logEntry;
         }
 
+        public boolean isLocalNetworkPermissionRelevant() {
+            return localNetworkPermissionRelevant;
+        }
+
+        public InetAddress getTargetAddress() {
+            return targetAddress;
+        }
+
         @NonNull
         @Override
         public String toString() {
             return "ExecutionResult{" +
                     "interrupted=" + interrupted +
                     ", logEntry=" + logEntry +
+                    ", localNetworkPermissionRelevant=" + localNetworkPermissionRelevant +
+                    ", targetAddress=" + targetAddress +
                     '}';
         }
     }

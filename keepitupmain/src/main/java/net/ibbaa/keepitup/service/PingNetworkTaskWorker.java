@@ -72,7 +72,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             PreferenceManager preferenceManager = new PreferenceManager(getContext());
             boolean enforceDefaultPackageSize = preferenceManager.getPreferenceEnforceDefaultPingPackageSize();
             Log.d(PingNetworkTaskWorker.class.getName(), "enforceDefaultPackageSize is " + enforceDefaultPackageSize);
-            ExecutionResult pingExecutionResult = executePingCommand(URLUtil.getHostAddress(address), data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), data.isStopOnSuccess(), ip6);
+            ExecutionResult pingExecutionResult = executePingCommand(address, data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), data.isStopOnSuccess(), ip6);
             LogEntry logEntry = pingExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
@@ -91,7 +91,8 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @SuppressWarnings("resource")
-    private ExecutionResult executePingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
+    private ExecutionResult executePingCommand(InetAddress inetAddress, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
+        String address = URLUtil.getHostAddress(inetAddress);
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", defaultPackageSize is " + defaultPackageSize + ", packageSize is " + packageSize + ", stopOnSuccess is " + stopOnSuccess + ", ip6 is " + ip6);
         Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, defaultPackageSize, packageSize, stopOnSuccess, ip6);
         int timeout = getResources().getInteger(R.integer.ping_timeout) * pingCount * 2;
@@ -131,7 +132,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(PingNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
-        return new ExecutionResult(interrupted, logEntry);
+        return new ExecutionResult(interrupted, logEntry, inetAddress);
     }
 
     private String getPingSuccessMessage(String address, String output) {

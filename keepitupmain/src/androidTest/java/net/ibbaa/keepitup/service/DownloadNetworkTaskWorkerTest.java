@@ -57,7 +57,9 @@ import net.ibbaa.keepitup.test.mock.MockDNSLookup;
 import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockDownloadCommand;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.MockNetworkManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestDownloadNetworkTaskWorker;
@@ -175,6 +177,14 @@ public class DownloadNetworkTaskWorkerTest {
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
         return downloadNetworkTaskWorker;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private void prepareLocalNetwork(TestDownloadNetworkTaskWorker worker, boolean hasLocalNetworkPermission, boolean localAddress) {
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(hasLocalNetworkPermission);
+        worker.setPermissionManager(permissionManager);
+        ((MockNetworkManager) worker.getNetworkManager()).setLocalAddress(localAddress);
     }
 
     @Test
@@ -2443,6 +2453,79 @@ public class DownloadNetworkTaskWorkerTest {
         NotificationHandler notificationHandler = downloadNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingConnectionFailed() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(false, List.of(getInvalidHeader(1, 1)))), false, false, false, false, false, Collections.emptyList(), Collections.emptyList(), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        prepareLocalNetwork(downloadNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertNull(executionResult.getTargetAddress());
+        downloadNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) downloadNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. This may be the cause if the target is in the local network. Request to host:123 failed. The following headers were not submitted because they are invalid: name1. The download from http://127.0.0.1 failed.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionGrantedConnectionFailed() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(false, List.of(getInvalidHeader(1, 1)))), false, false, false, false, false, Collections.emptyList(), Collections.emptyList(), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        prepareLocalNetwork(downloadNetworkTaskWorker, true, true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertNull(executionResult.getTargetAddress());
+        downloadNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) downloadNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Request to host:123 failed. The following headers were not submitted because they are invalid: name1. The download from http://127.0.0.1 failed.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingExceptionOnCommandExecution() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        RuntimeException exception = new RuntimeException("Test");
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, exception);
+        prepareLocalNetwork(downloadNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertNull(executionResult.getTargetAddress());
+        downloadNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) downloadNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. This may be the cause if the target is in the local network. The download from http://127.0.0.1 failed. RuntimeException: Test", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingHTTPResponseCodeNotOk() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(true)), false, false, false, false, false, List.of(HttpURLConnection.HTTP_NOT_FOUND), List.of(""), null, 20, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        prepareLocalNetwork(downloadNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertFalse(executionResult.isLocalNetworkPermissionRelevant());
+        downloadNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) downloadNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. Server return code 404.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingUnknownError() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), List.of(getDownloadConnectResult(InetAddress.getByName("10.20.30.40"), 224, true)), false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        prepareLocalNetwork(downloadNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertFalse(executionResult.isLocalNetworkPermissionRelevant());
+        downloadNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) downloadNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Request to 10.20.30.40:224 was successful. The download from http://127.0.0.1 failed for an unknown reason.", executionResult.getLogEntry().getMessage());
     }
 
     @Test

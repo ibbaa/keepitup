@@ -181,7 +181,7 @@ public class SNMPNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(SNMPNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
-        return new ExecutionResult(interrupted, logEntry);
+        return new ExecutionResult(interrupted, logEntry, address);
     }
 
     private String getSNMPMessage(SNMPCommandResult snmpResult, String address, int port, boolean ip6, int snmpTimeout, boolean initiallyEmpty) {

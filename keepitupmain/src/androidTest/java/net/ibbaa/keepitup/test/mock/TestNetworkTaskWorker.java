@@ -31,11 +31,13 @@ import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 
+import java.net.InetAddress;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
+    private MockPermissionManager permissionManager;
     private MockDNSLookup mockDNSLookup;
     private int mockDNSLookupTimeout = -1;
     private final boolean success;
@@ -46,6 +48,8 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     private AccessTypeData data;
     private MockStoragePermissionManager storagePermissionManager;
     private MockDocumentManager documentManager;
+    private boolean localNetworkPermissionRelevant;
+    private InetAddress targetAddress;
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success) {
         this(context, networkTask, wakeLock, success, 10);
@@ -91,7 +95,15 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setSuccess(success);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         logEntry.setMessage(success ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful));
+        if (localNetworkPermissionRelevant) {
+            return new ExecutionResult(interrupted, logEntry, targetAddress);
+        }
         return new ExecutionResult(interrupted, logEntry);
+    }
+
+    public void setLocalNetworkPermissionRelevant(InetAddress targetAddress) {
+        this.localNetworkPermissionRelevant = true;
+        this.targetAddress = targetAddress;
     }
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {
@@ -131,9 +143,13 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         return data;
     }
 
+    public void setPermissionManager(MockPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
     @Override
     public IPermissionManager getPermissionManager() {
-        return new MockPermissionManager();
+        return Objects.requireNonNullElseGet(permissionManager, MockPermissionManager::new);
     }
 
     @Override

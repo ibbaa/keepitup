@@ -2923,6 +2923,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Invalid credentials")));
         onView(withId(R.id.textview_dialog_credential_info_message)).check(matches(withText(startsWith("The following credentials"))));
@@ -3010,6 +3011,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(isRoot()).perform(ViewActions.pressBack());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -3064,6 +3066,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -3127,6 +3130,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -3172,6 +3176,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
@@ -3221,6 +3226,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -3276,6 +3282,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.textview_dialog_credential_info_title)).check(matches(withText("Credentials not exported")));
@@ -3330,6 +3337,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withText("Credentials not exported")).check(doesNotExist());
@@ -3388,6 +3396,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.checkbox_dialog_export_encrypt_encrypt)).perform(click());
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());

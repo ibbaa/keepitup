@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -41,6 +42,7 @@ import net.ibbaa.keepitup.service.network.SNMPCommandResult;
 import net.ibbaa.keepitup.service.network.SNMPInterfaceResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
 import net.ibbaa.keepitup.test.mock.MockNetworkManager;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestSNMPNetworkTaskWorker;
@@ -100,6 +102,13 @@ public class SNMPNetworkTaskWorkerTest {
         MockTimeService timeService = (MockTimeService) worker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
+    }
+
+    private void prepareLocalNetwork(TestSNMPNetworkTaskWorker worker, boolean hasLocalNetworkPermission, boolean localAddress) {
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(hasLocalNetworkPermission);
+        worker.setPermissionManager(permissionManager);
+        ((MockNetworkManager) worker.getNetworkManager()).setLocalAddress(localAddress);
     }
 
     @Test
@@ -797,6 +806,103 @@ public class SNMPNetworkTaskWorkerTest {
         LogEntry logEntry = executionResult.getLogEntry();
         assertTrue(logEntry.isSuccess());
         assertEquals("SNMP request to 127.0.0.1:161 successful. 2 interfaces found. All monitored interfaces are up. Several interfaces with duplicate names were found: eth0. Monitoring by name may be unreliable. Request time: 0 msec.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        prepareLocalNetwork(worker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("127.0.0.1"), ((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. SNMP request to 127.0.0.1:161 failed. Request time: 0 msec.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingLocalAddressCommandExceptionThrown() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        prepareWorkerWithCommandException(dnsLookupResult, new RuntimeException("TestException"));
+        prepareLocalNetwork(worker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("127.0.0.1"), ((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. SNMP request to 127.0.0.1:161 failed. RuntimeException: TestException", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingNonLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        prepareLocalNetwork(worker, false, false);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("127.0.0.1"), ((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. Request time: 0 msec.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionGrantedLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(false, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        prepareLocalNetwork(worker, true, true);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. Request time: 0 msec.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), "127.0.0.1", null);
+        SNMPCommandResult snmpCommandResult = new SNMPCommandResult(true, Collections.emptyMap(), getEmptyInterfaceResult(), false, null, Collections.emptyList(), 0);
+        prepareWorker(dnsLookupResult, snmpCommandResult);
+        prepareLocalNetwork(worker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("SNMP request to 127.0.0.1:161 successful. Request time: 0 msec.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingDNSLookupFailed() throws Exception {
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), "127.0.0.1", exception);
+        prepareWorker(dnsLookupResult, null);
+        prepareLocalNetwork(worker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), getAccessTypeData());
+        assertFalse(executionResult.isLocalNetworkPermissionRelevant());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("DNS lookup for 127.0.0.1 failed. IllegalArgumentException: TestException", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingCommunityInvalid() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        prepareWorker(dnsLookupResult, null);
+        AccessTypeData data = new AccessTypeData(getAccessTypeData());
+        data.setSnmpVersion(SNMPVersion.V2C);
+        data.setSnmpCommunityValid(false);
+        prepareLocalNetwork(worker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = worker.execute(getNetworkTask(), data);
+        assertFalse(executionResult.isLocalNetworkPermissionRelevant());
+        worker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) worker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("SNMP request to 127.0.0.1:161 failed. SNMP authentication data is invalid.", executionResult.getLogEntry().getMessage());
     }
 
     @Test

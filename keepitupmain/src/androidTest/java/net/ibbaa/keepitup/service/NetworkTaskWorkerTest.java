@@ -45,6 +45,7 @@ import net.ibbaa.keepitup.test.mock.MockDNSLookup;
 import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockNetworkManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskWorker;
@@ -321,6 +322,159 @@ public class NetworkTaskWorkerTest {
         activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
         assertLastScheduledInDatabase(task, getTestTimestamp());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingLocalAddress() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, false);
+        setCurrentTime(testNetworkTaskWorker);
+        testNetworkTaskWorker.setLocalNetworkPermissionRelevant(InetAddress.getByName("192.168.178.1"));
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(false);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("Local network access is not allowed. failed", entries.get(0).getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingNonLocalAddress() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, false);
+        setCurrentTime(testNetworkTaskWorker);
+        testNetworkTaskWorker.setLocalNetworkPermissionRelevant(InetAddress.getByName("192.168.178.1"));
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(false);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(false);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("failed", entries.get(0).getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingUnknownAddress() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, false);
+        setCurrentTime(testNetworkTaskWorker);
+        testNetworkTaskWorker.setLocalNetworkPermissionRelevant(null);
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(false);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("Local network access is not allowed. This may be the cause if the target is in the local network. failed", entries.get(0).getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionGrantedLocalAddress() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, false);
+        setCurrentTime(testNetworkTaskWorker);
+        testNetworkTaskWorker.setLocalNetworkPermissionRelevant(InetAddress.getByName("192.168.178.1"));
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(true);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("failed", entries.get(0).getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingNotRelevant() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, false);
+        setCurrentTime(testNetworkTaskWorker);
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(false);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("failed", entries.get(0).getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingSuccess() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true, 10, false);
+        setCurrentTime(testNetworkTaskWorker);
+        testNetworkTaskWorker.setLocalNetworkPermissionRelevant(InetAddress.getByName("192.168.178.1"));
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(false);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("successful", entries.get(0).getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingInterrupted() throws Exception {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, true);
+        setCurrentTime(testNetworkTaskWorker);
+        testNetworkTaskWorker.setLocalNetworkPermissionRelevant(InetAddress.getByName("192.168.178.1"));
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(false);
+        testNetworkTaskWorker.setPermissionManager(permissionManager);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        networkManager.setLocalAddress(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        assertEquals("failed", entries.get(0).getMessage());
     }
 
     @Test

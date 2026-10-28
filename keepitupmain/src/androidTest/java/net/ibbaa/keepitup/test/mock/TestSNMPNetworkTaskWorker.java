@@ -27,14 +27,17 @@ import net.ibbaa.keepitup.model.SNMPVersion;
 import net.ibbaa.keepitup.service.SNMPNetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.SNMPCommandResult;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
 
+    private MockPermissionManager permissionManager;
     private MockDNSLookup mockDNSLookup;
     private final MockSNMPCommand mockSNMPCommand;
     private List<SNMPItem> mockSNMPItems;
@@ -80,5 +83,14 @@ public class TestSNMPNetworkTaskWorker extends SNMPNetworkTaskWorker {
     protected Callable<SNMPCommandResult> getSNMPCommand(long networkTaskId, InetAddress address, int port, SNMPVersion snmpVersion, SNMPTransport snmpTransport, SNMPAuthInfo authInfo, List<SNMPItem> snmpItems, long lastSysUpTime, boolean ip6) {
         capturedLastSysUpTime = lastSysUpTime;
         return mockSNMPCommand;
+    }
+
+    public void setPermissionManager(MockPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    @Override
+    public IPermissionManager getPermissionManager() {
+        return Objects.requireNonNullElseGet(permissionManager, MockPermissionManager::new);
     }
 }

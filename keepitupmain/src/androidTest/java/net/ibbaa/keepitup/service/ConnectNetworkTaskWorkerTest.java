@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -35,6 +36,8 @@ import net.ibbaa.keepitup.service.network.ConnectCommandResult;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.test.mock.MockConnectCommand;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
+import net.ibbaa.keepitup.test.mock.MockNetworkManager;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestConnectNetworkTaskWorker;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -69,6 +72,13 @@ public class ConnectNetworkTaskWorkerTest {
         MockTimeService timeService = (MockTimeService) connectNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
+    }
+
+    private void prepareLocalNetwork(TestConnectNetworkTaskWorker worker, boolean hasLocalNetworkPermission, boolean localAddress) {
+        MockPermissionManager permissionManager = new MockPermissionManager();
+        permissionManager.setHasLocalNetworkPermission(hasLocalNetworkPermission);
+        worker.setPermissionManager(permissionManager);
+        ((MockNetworkManager) worker.getNetworkManager()).setLocalAddress(localAddress);
     }
 
     @Test
@@ -239,6 +249,75 @@ public class ConnectNetworkTaskWorkerTest {
         assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 5 connection attempts. 0 successful connection attempts. 3 timeouts. 2 other errors. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 1, 0, 500, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        prepareLocalNetwork(connectNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        connectNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("127.0.0.1"), ((MockNetworkManager) connectNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Local network access is not allowed. Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 1 timeout. 0 other errors.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingNonLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 1, 0, 500, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        prepareLocalNetwork(connectNetworkTaskWorker, false, false);
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        connectNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertEquals(InetAddress.getByName("127.0.0.1"), ((MockNetworkManager) connectNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 1 timeout. 0 other errors.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionGrantedLocalAddress() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 1, 0, 500, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        prepareLocalNetwork(connectNetworkTaskWorker, true, true);
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        connectNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) connectNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 1 timeout. 0 other errors.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), "127.0.0.1", null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 1, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        prepareLocalNetwork(connectNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertTrue(executionResult.isLocalNetworkPermissionRelevant());
+        assertEquals(InetAddress.getByName("127.0.0.1"), executionResult.getTargetAddress());
+        connectNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) connectNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec connect time.", executionResult.getLogEntry().getMessage());
+    }
+
+    @Test
+    public void testLocalNetworkPermissionMissingDNSLookupFailed() throws Exception {
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), "host", exception);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, null);
+        prepareLocalNetwork(connectNetworkTaskWorker, false, true);
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        assertFalse(executionResult.isLocalNetworkPermissionRelevant());
+        connectNetworkTaskWorker.addLocalNetworkPermissionHint(executionResult);
+        assertNull(((MockNetworkManager) connectNetworkTaskWorker.getNetworkManager()).getLastLocalAddressCheck());
+        assertEquals("DNS lookup for host failed. IllegalArgumentException: TestException", executionResult.getLogEntry().getMessage());
     }
 
     @Test
