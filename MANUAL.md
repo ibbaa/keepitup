@@ -277,6 +277,81 @@ intervals enabled** switch, which leaves any configured intervals intact.
 
 ---
 
+## Permissions
+
+The app requests only a few runtime permissions. They are not strictly
+required to start the app, but without them its usefulness is very
+limited. It is strongly recommended to grant all of them. Their current
+state is shown in the [System](#system) screen.
+
+### Notification Permission
+
+Required on Android 13 and later to show failure and status notifications,
+including high-priority notifications and the alarm notification. The app
+asks for this permission once on first start. If it is denied, network
+tasks still run and results are logged, but no notifications are shown.
+
+Without this permission, the app also does not start the foreground
+service that normally runs while network tasks are active, because its
+notification cannot be shown. The network tasks themselves are scheduled
+with alarms and do not depend on this service. However, the running
+service makes Android less likely to throttle the app or to stop and
+restart it. Some devices handle a large number of alarms at short
+intervals, e.g. every minute, much more reliably while the service is
+running. Without the notification permission, network task execution may
+therefore be less reliable.
+
+The permission can be granted later via the
+[Notifications](#notifications-1) entry in the System screen.
+
+### Local Network Access
+
+Required on Android 17 and later to reach devices in the local network,
+e.g. a router, NAS or printer in the same Wi-Fi. In the Android dialog and
+settings, this permission is named **Nearby devices**. The app asks for it
+once on first start, after the notification permission.
+
+Without this permission, tasks targeting local addresses fail:
+
+- **Connect**, **Download** and **SNMP** run into a timeout or an error
+- **Ping** only reports a timeout, which cannot be distinguished from an
+  unreachable host
+
+When a task fails and the permission is missing, the log entry starts with
+a hint. If the target is known to be in the local network, the hint says
+that local network access is not allowed. If the target address is
+unknown, e.g. because the download address could not be connected, the
+hint states that the missing permission may be the cause.
+
+Name resolution (DNS) is not affected, even if the DNS server is located
+in the local network, because it is handled by the Android system. Targets
+reached via a VPN or the internet are usually not affected either.
+
+If the request was denied, Android may not show the dialog again. The
+permission can be granted via the [Local Network](#local-network) entry in
+the System screen, which opens the app settings. There, select
+**Permissions**, then **Nearby devices** and choose **Allow**.
+
+### Exact Alarms
+
+Network tasks are scheduled with exact alarms. This permission is granted
+automatically when the app is installed and the user is not asked for it.
+On Android 12 and later, it can be revoked in the Android settings under
+**Alarms & reminders**.
+
+The app does not work without this permission. If it is revoked, Android
+stops the app and no network tasks are executed. When the app is opened
+again, a dialog explains that the permission is missing and leads to the
+Android settings to grant it again.
+
+### Resetting permission requests
+
+The app asks for each permission only once. After
+[Reset configuration](#reset-export-and-import), it asks again on the next
+start, as long as Android still allows showing the dialog.
+
+---
+
 ## System
 
 ### Reset, Export and Import
@@ -312,6 +387,13 @@ which is enabled by default and should be left enabled.
 
 Shows whether the app is allowed to send notifications. If disallowed, tap
 to open the Android notification settings for the app.
+
+### Local Network
+
+Visible on all Android versions; below Android 17 it always shows
+**Allowed**. If disallowed, tap to open the app settings, where local
+network access can be allowed under **Permissions** → **Nearby devices**.
+See [Local Network Access](#local-network-access).
 
 ### Theme
 
