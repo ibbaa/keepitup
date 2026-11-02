@@ -150,6 +150,8 @@ public abstract class BaseUITest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(false);
         noBackupPreferenceManager = new NoBackupPreferenceManager(TestRegistry.getContext());
         noBackupPreferenceManager.removeAllPreferences();
+        noBackupPreferenceManager.setPreferenceAskedNotificationPermission(true);
+        noBackupPreferenceManager.setPreferenceAskedLocalNetworkPermission(true);
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));

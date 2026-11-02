@@ -46,8 +46,6 @@ public class SystemClipboardManagerTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         waitUntilWindowFocused(activityScenario);
         clipboardManager = new SystemClipboardManager(TestRegistry.getContext());

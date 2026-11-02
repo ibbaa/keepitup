@@ -543,8 +543,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testLocalNetworkPermissionRequestedAfterNotificationPermission() {
-        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(false);
@@ -561,8 +559,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testLocalNetworkPermissionNotRequestedIfGranted() {
-        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(false);
@@ -576,8 +572,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testLocalNetworkPermissionNotRequestedAfterLocalNetworkPermission() {
-        getNoBackupPreferenceManager().setPreferenceAskedNotificationPermission(true);
-        getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(true);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         getNoBackupPreferenceManager().setPreferenceAskedLocalNetworkPermission(false);

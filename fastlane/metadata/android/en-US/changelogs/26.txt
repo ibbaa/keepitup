@@ -1,1 +1,2 @@
-
+* New target API level is 37 (Android 17), applied all required changes                                                                                                                                                                                                                                     │keepitupmain/src/androidTest/java/net/ibbaa/keepitup/ui/BaseUITest.java          [ ask ]
+* Android 17: New permission for local network access (shown as "Nearby devices"), required for network tasks with targets in the local network
