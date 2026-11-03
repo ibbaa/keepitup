@@ -380,32 +380,17 @@ public class SystemActivity extends SettingsInputActivity implements MessageSupp
         CardView batteryOptimizationCardView = findViewById(R.id.cardview_activity_system_battery_optimization);
         batteryOptimizationText = findViewById(R.id.textview_activity_system_battery_optimization);
         IPowerManager powerManager = getPowerManager();
-        if (powerManager.isBatteryOptimizationIrrelevant()) {
-            Log.d(SystemActivity.class.getName(), "Battery optimization is irrelevant");
-            batteryOptimizationCardView.setEnabled(false);
-            batteryOptimizationCardView.setVisibility(View.GONE);
-            return;
-        } else {
-            Log.d(SystemActivity.class.getName(), "Battery optimization is relevant");
-            batteryOptimizationCardView.setEnabled(true);
-            batteryOptimizationCardView.setVisibility(View.VISIBLE);
-        }
-        if (powerManager.isBatteryOptimized()) {
+        if (powerManager.isBackgroundRestricted()) {
+            Log.d(SystemActivity.class.getName(), "Background usage is restricted");
+            batteryOptimizationText.setText(R.string.string_restricted);
+        } else if (powerManager.isBatteryOptimized()) {
             Log.d(SystemActivity.class.getName(), "Battery optimization is active");
             batteryOptimizationText.setText(R.string.string_active);
         } else {
             Log.d(SystemActivity.class.getName(), "Battery optimization is inactive");
             batteryOptimizationText.setText(R.string.string_inactive);
         }
-        if (powerManager.supportsBatteryOptimization()) {
-            Log.d(SystemActivity.class.getName(), "Battery optimization is supported");
-            batteryOptimizationCardView.setOnClickListener(this::showBatteryOptimizationDialog);
-            batteryOptimizationCardView.setEnabled(true);
-        } else {
-            Log.d(SystemActivity.class.getName(), "Battery optimization is not supported");
-            batteryOptimizationCardView.setOnClickListener(null);
-            batteryOptimizationCardView.setEnabled(false);
-        }
+        batteryOptimizationCardView.setOnClickListener(this::showBatteryOptimizationDialog);
     }
 
     private void prepareNotificationsEnabledField() {

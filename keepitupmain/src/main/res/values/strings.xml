@@ -40,6 +40,7 @@
     <string name="string_msec">msec</string>
     <string name="string_active">Active</string>
     <string name="string_inactive">Inactive</string>
+    <string name="string_restricted">Restricted</string>
     <string name="string_default">default</string>
     <string name="string_defined">defined</string>
     <string name="string_invalid">invalid</string>

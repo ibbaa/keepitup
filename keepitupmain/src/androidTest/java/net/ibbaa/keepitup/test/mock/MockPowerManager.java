@@ -21,37 +21,30 @@ import net.ibbaa.keepitup.service.IPowerManager;
 @SuppressWarnings({"unused"})
 public class MockPowerManager implements IPowerManager {
 
-    private boolean supportsBatteryOptimization;
     private boolean batteryOptimized;
-    private boolean isBatteryOptimizationIrrelevant;
+    private boolean backgroundRestricted;
+    private boolean usesAppBatteryUsageSettings;
 
     public MockPowerManager() {
-        this.supportsBatteryOptimization = true;
-        this.batteryOptimized = true;
-        this.isBatteryOptimizationIrrelevant = false;
+        reset();
     }
 
     public void reset() {
-        this.supportsBatteryOptimization = true;
         this.batteryOptimized = true;
-        this.isBatteryOptimizationIrrelevant = false;
-    }
-
-    public void setSupportsBatteryOptimization(boolean supportsBatteryOptimization) {
-        this.supportsBatteryOptimization = supportsBatteryOptimization;
+        this.backgroundRestricted = false;
+        this.usesAppBatteryUsageSettings = false;
     }
 
     public void setBatteryOptimized(boolean batteryOptimized) {
         this.batteryOptimized = batteryOptimized;
     }
 
-    public void setBatteryOptimizationIrrelevant(boolean batteryOptimizationIrrelevant) {
-        isBatteryOptimizationIrrelevant = batteryOptimizationIrrelevant;
+    public void setBackgroundRestricted(boolean backgroundRestricted) {
+        this.backgroundRestricted = backgroundRestricted;
     }
 
-    @Override
-    public boolean supportsBatteryOptimization() {
-        return supportsBatteryOptimization;
+    public void setUsesAppBatteryUsageSettings(boolean usesAppBatteryUsageSettings) {
+        this.usesAppBatteryUsageSettings = usesAppBatteryUsageSettings;
     }
 
     @Override
@@ -60,7 +53,12 @@ public class MockPowerManager implements IPowerManager {
     }
 
     @Override
-    public boolean isBatteryOptimizationIrrelevant() {
-        return isBatteryOptimizationIrrelevant;
+    public boolean isBackgroundRestricted() {
+        return backgroundRestricted;
+    }
+
+    @Override
+    public boolean usesAppBatteryUsageSettings() {
+        return usesAppBatteryUsageSettings;
     }
 }

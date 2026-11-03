@@ -375,13 +375,18 @@ file paths.
 
 ### Battery Optimization
 
-Visible on Android below version 15. Shows whether battery optimization is
-active or inactive for the app, and links to the Android settings to change
-it. It is recommended to disable battery optimization for reliable task
-execution, especially at short intervals.
+Shows **Active** or **Inactive** for battery optimization, or **Restricted**
+if background usage is restricted for the app, and links to the Android
+settings to change it. With only a few tasks and longer
+intervals, the default is usually sufficient. With many tasks or short
+intervals, it is recommended to disable battery optimization for reliable
+task execution. This may increase power consumption.
 
-On Android 15 and later, the equivalent setting is background activity,
-which is enabled by default and should be left enabled.
+On Android 15 and later, the setting is found under **App battery usage** in
+the app settings. **Allow background usage** should be left enabled, otherwise
+network tasks do not run while the app is in the background. To disable battery
+optimization, tap the text **Allow background usage** and choose
+**Unrestricted**. Menu names may differ depending on the device.
 
 ### Notifications
 

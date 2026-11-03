@@ -19,6 +19,10 @@
     <string name="label_dialog_battery_optimization_title">Battery Optimization</string>
     <string name="text_dialog_battery_optimization_info_active">Battery optimization is active for this app.</string>
     <string name="text_dialog_battery_optimization_info_not_active">Battery optimization is not active for this app.</string>
-    <string name="text_dialog_battery_optimization_info">%s Active battery optimization may cause the network tasks to be triggered less often as configured by the interval setting if the device is unplugged. You can change the battery optimization setting for the app in the Android settings. Turning off battery optimization may result in higher power consumption.</string>
+    <string name="text_dialog_battery_optimization_description">Active battery optimization may cause the network tasks to be triggered less often as configured by the interval setting if the device is unplugged.</string>
+    <string name="text_dialog_battery_optimization_restricted">Background usage is restricted for this app. Network tasks will not run while the app is in the background.</string>
+    <string name="text_dialog_battery_optimization_settings_hint_optimization_list">To turn off battery optimization, show all apps in the Android settings, scroll to this app, tap it and choose Not optimized.</string>
+    <string name="text_dialog_battery_optimization_settings_hint_app_battery_usage">To turn off battery optimization, select App battery usage in the Android settings, tap the text Allow background usage and choose Unrestricted. Do not turn off the switch: network tasks would no longer run in the background. Menu names may differ depending on the device.</string>
+    <string name="text_dialog_battery_optimization_settings_hint_restricted">To remove the restriction, select App battery usage in the Android settings and allow background usage. Menu names may differ depending on the device.</string>
     <string name="text_dialog_battery_optimization_link">Click here to change battery optimization settings</string>
 </resources>

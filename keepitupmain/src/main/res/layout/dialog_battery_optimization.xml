@@ -38,6 +38,18 @@
             android:text="@string/label_dialog_battery_optimization_title" />
 
         <TextView
+            android:id="@+id/textview_dialog_battery_optimization_restricted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="@dimen/textview_dialog_battery_optimization_restricted_padding"
+            android:textStyle="bold"
+            android:textSize="@dimen/textview_dialog_battery_optimization_restricted_text_size"
+            android:visibility="gone"
+            android:text="@string/text_dialog_battery_optimization_restricted" />
+
+        <TextView
             android:id="@+id/textview_dialog_battery_optimization_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,6 +58,28 @@
             android:padding="@dimen/textview_dialog_battery_optimization_info_padding"
             android:textStyle="normal"
             android:textSize="@dimen/textview_dialog_battery_optimization_info_text_size"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textview_dialog_battery_optimization_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="@dimen/textview_dialog_battery_optimization_description_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_battery_optimization_description_text_size"
+            android:text="@string/text_dialog_battery_optimization_description" />
+
+        <TextView
+            android:id="@+id/textview_dialog_battery_optimization_settings_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="@dimen/textview_dialog_battery_optimization_settings_hint_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_battery_optimization_settings_hint_text_size"
             android:text="" />
 
         <TextView

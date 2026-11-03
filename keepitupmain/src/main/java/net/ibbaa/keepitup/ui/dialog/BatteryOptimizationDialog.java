@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -61,10 +62,23 @@ public class BatteryOptimizationDialog extends DialogFragmentBase {
 
     private void prepareBatteryOptimizationInfo(View view) {
         Log.d(BatteryOptimizationDialog.class.getName(), "prepareBatteryOptimizationInfo");
-        String active = getPowerManager().isBatteryOptimized() ? getResources().getString(R.string.text_dialog_battery_optimization_info_active) : getResources().getString(R.string.text_dialog_battery_optimization_info_not_active);
-        String formattedInfo = getResources().getString(R.string.text_dialog_battery_optimization_info, active);
+        IPowerManager powerManager = getPowerManager();
+        boolean restricted = powerManager.isBackgroundRestricted();
+        TextView restrictedText = view.findViewById(R.id.textview_dialog_battery_optimization_restricted);
         TextView infoText = view.findViewById(R.id.textview_dialog_battery_optimization_info);
-        infoText.setText(formattedInfo);
+        TextView descriptionText = view.findViewById(R.id.textview_dialog_battery_optimization_description);
+        TextView settingsHintText = view.findViewById(R.id.textview_dialog_battery_optimization_settings_hint);
+        restrictedText.setVisibility(restricted ? View.VISIBLE : View.GONE);
+        infoText.setVisibility(restricted ? View.GONE : View.VISIBLE);
+        descriptionText.setVisibility(restricted ? View.GONE : View.VISIBLE);
+        infoText.setText(powerManager.isBatteryOptimized() ? R.string.text_dialog_battery_optimization_info_active : R.string.text_dialog_battery_optimization_info_not_active);
+        if (restricted) {
+            settingsHintText.setText(R.string.text_dialog_battery_optimization_settings_hint_restricted);
+        } else if (powerManager.usesAppBatteryUsageSettings()) {
+            settingsHintText.setText(R.string.text_dialog_battery_optimization_settings_hint_app_battery_usage);
+        } else {
+            settingsHintText.setText(R.string.text_dialog_battery_optimization_settings_hint_optimization_list);
+        }
     }
 
     private void prepareBatteryOptimizationLink(View view) {
@@ -85,8 +99,14 @@ public class BatteryOptimizationDialog extends DialogFragmentBase {
 
     private void onBatteryOptimizationLinkClicked(View view) {
         Log.d(BatteryOptimizationDialog.class.getName(), "onBatteryOptimizationLinkClicked");
+        IPowerManager powerManager = getPowerManager();
         Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        if (powerManager.usesAppBatteryUsageSettings() || powerManager.isBackgroundRestricted()) {
+            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.fromParts("package", requireContext().getPackageName(), null));
+        } else {
+            intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        }
         startActivity(intent);
     }
 

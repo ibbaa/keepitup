@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.service;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
@@ -26,17 +27,12 @@ public class SystemPowerManager implements IPowerManager {
 
     private final String packageName;
     private final PowerManager powerManager;
+    private final ActivityManager activityManager;
 
     public SystemPowerManager(Context context) {
         this.packageName = context.getPackageName();
         this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-    }
-
-    @Override
-    public boolean supportsBatteryOptimization() {
-        boolean supportsBatteryOptimization = Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM;
-        Log.d(SystemPowerManager.class.getName(), "supportsBatteryOptimization: " + supportsBatteryOptimization);
-        return supportsBatteryOptimization;
+        this.activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
     }
 
     @Override
@@ -47,9 +43,16 @@ public class SystemPowerManager implements IPowerManager {
     }
 
     @Override
-    public boolean isBatteryOptimizationIrrelevant() {
-        boolean isBatteryOptimizationIrrelevant = Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM;
-        Log.d(SystemPowerManager.class.getName(), "isBatteryOptimizationIrrelevant: " + isBatteryOptimizationIrrelevant);
-        return isBatteryOptimizationIrrelevant;
+    public boolean isBackgroundRestricted() {
+        boolean isBackgroundRestricted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && activityManager.isBackgroundRestricted();
+        Log.d(SystemPowerManager.class.getName(), "isBackgroundRestricted: " + isBackgroundRestricted);
+        return isBackgroundRestricted;
+    }
+
+    @Override
+    public boolean usesAppBatteryUsageSettings() {
+        boolean usesAppBatteryUsageSettings = Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM;
+        Log.d(SystemPowerManager.class.getName(), "usesAppBatteryUsageSettings: " + usesAppBatteryUsageSettings);
+        return usesAppBatteryUsageSettings;
     }
 }

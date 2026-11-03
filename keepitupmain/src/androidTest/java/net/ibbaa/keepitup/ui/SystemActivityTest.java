@@ -97,7 +97,6 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7789,7 +7788,6 @@ public class SystemActivityTest extends BaseUITest {
         MockPowerManager powerManager = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -7812,25 +7810,46 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testBatteryOptimizationIrrelevant() {
+    public void testBatteryOptimizationAppBatteryUsageSettings() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectScheduler(activityScenario);
+        injectStorageManager(activityScenario);
+        injectThemeManager(activityScenario);
+        MockPowerManager powerManager = new MockPowerManager();
+        powerManager.setUsesAppBatteryUsageSettings(true);
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        onView(withId(R.id.textview_dialog_battery_optimization_settings_hint)).check(matches(withText(startsWith("To turn off battery optimization, select App battery usage"))));
+        powerManager.setBatteryOptimized(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Inactive")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBatteryOptimizationRestricted() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
         injectScheduler(activityScenario);
         injectStorageManager(activityScenario);
         injectThemeManager(activityScenario);
         MockPowerManager powerManager = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager.setBatteryOptimizationIrrelevant(true);
-        powerManager.setSupportsBatteryOptimization(false);
+        powerManager.setBackgroundRestricted(true);
         onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(Matchers.not(isDisplayed())));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(Matchers.not(isDisplayed())));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Restricted")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        onView(withId(R.id.textview_dialog_battery_optimization_restricted)).check(matches(isDisplayed()));
+        powerManager.setBackgroundRestricted(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
         activityScenario.close();
     }
 
@@ -7843,14 +7862,12 @@ public class SystemActivityTest extends BaseUITest {
         final MockPowerManager powerManager1 = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager1));
         onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         final MockPowerManager powerManager2 = new MockPowerManager();
         activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager2));
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
         powerManager2.setBatteryOptimized(false);
         onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
