@@ -5,6 +5,9 @@
 The main screen shows a list of all configured network tasks. Each task
 monitors one network service at a configurable interval.
 
+After a device restart, network tasks resume once the device has been
+unlocked for the first time.
+
 ### Adding and editing tasks
 
 Tap the **+** button to add a new task. Tap the edit icon to edit it. The same
