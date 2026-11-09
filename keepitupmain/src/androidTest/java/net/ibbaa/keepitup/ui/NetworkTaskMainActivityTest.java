@@ -144,6 +144,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getAccessTypeDataDAO().insertAccessTypeData(data4);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
+        rebindNetworkTasks(activityScenario);
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(4)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Status: Stopped")));
@@ -215,6 +216,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getAccessTypeDataDAO().insertAccessTypeData(data3);
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
+        rebindNetworkTasks(activityScenario);
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Status: Stopped")));
@@ -4064,6 +4066,10 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     private void injectPermissionManager(ActivityScenario<?> activityScenario) {
         ((NetworkTaskMainActivity) getActivity(activityScenario)).injectPermissionManager(permissionManager);
+    }
+
+    private void rebindNetworkTasks(ActivityScenario<?> activityScenario) {
+        activityScenario.onActivity(activity -> ((NetworkTaskMainActivity) activity).getAdapter().notifyDataSetChanged());
     }
 
     private void resetGlobalHeaderHandler() {

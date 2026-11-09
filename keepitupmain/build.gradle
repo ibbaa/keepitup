@@ -41,6 +41,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        animationsDisabled = true
+    }
     lint {
         lintConfig = file("lint.xml")
         disable 'ExpiredTargetSdkVersion'

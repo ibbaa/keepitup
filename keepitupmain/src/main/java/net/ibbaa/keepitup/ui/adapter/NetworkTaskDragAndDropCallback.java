@@ -94,6 +94,11 @@ public class NetworkTaskDragAndDropCallback extends ItemTouchHelper.Callback {
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
+        if (recyclerView.isComputingLayout()) {
+            Log.d(NetworkTaskDragAndDropCallback.class.getName(), "clearView called during layout, posting data set change");
+            recyclerView.post(() -> mainActivity.getAdapter().notifyDataSetChanged());
+            return;
+        }
         mainActivity.getAdapter().notifyDataSetChanged();
     }
 }
