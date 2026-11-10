@@ -25,12 +25,16 @@ import static org.junit.Assert.fail;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
+import android.view.inspector.WindowInspector;
 import android.widget.GridLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -92,6 +96,10 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class BaseUITest {
+
+    private static final long WINDOW_FOCUS_TIMEOUT = 2000;
+    private static final long WINDOW_FOCUS_POLL_INTERVAL = 50;
+    private static final long WINDOW_FOCUS_FALLBACK_WAIT = 500;
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
@@ -243,7 +251,54 @@ public abstract class BaseUITest {
         int orientation = TestRegistry.getContext().getResources().getConfiguration().orientation;
         activityScenario.onActivity(activity -> activity.setRequestedOrientation((orientation == Configuration.ORIENTATION_PORTRAIT) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        onView(isRoot()).perform(waitFor(1000));
+        SystemClock.sleep(1000);
+        waitUntilTopWindowFocused();
+    }
+
+    public void waitUntilTopWindowFocused() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            SystemClock.sleep(WINDOW_FOCUS_FALLBACK_WAIT);
+            return;
+        }
+        long start = SystemClock.uptimeMillis();
+        while (SystemClock.uptimeMillis() - start < WINDOW_FOCUS_TIMEOUT) {
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            final boolean[] done = {false};
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> done[0] = isTopWindowFocused());
+            if (done[0]) {
+                return;
+            }
+            SystemClock.sleep(WINDOW_FOCUS_POLL_INTERVAL);
+        }
+        Log.d(BaseUITest.class.getName(), "Top window did not get focus within " + WINDOW_FOCUS_TIMEOUT + " ms");
+    }
+
+    public static void waitUntilTopWindowFocused(UiController uiController) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            uiController.loopMainThreadForAtLeast(WINDOW_FOCUS_FALLBACK_WAIT);
+            return;
+        }
+        long start = SystemClock.uptimeMillis();
+        while (SystemClock.uptimeMillis() - start < WINDOW_FOCUS_TIMEOUT) {
+            uiController.loopMainThreadUntilIdle();
+            if (isTopWindowFocused()) {
+                return;
+            }
+            uiController.loopMainThreadForAtLeast(WINDOW_FOCUS_POLL_INTERVAL);
+        }
+        Log.d(BaseUITest.class.getName(), "Top window did not get focus within " + WINDOW_FOCUS_TIMEOUT + " ms");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private static boolean isTopWindowFocused() {
+        List<View> windowViews = WindowInspector.getGlobalWindowViews();
+        for (int ii = windowViews.size() - 1; ii >= 0; ii--) {
+            View windowView = windowViews.get(ii);
+            if (windowView.getVisibility() == View.VISIBLE) {
+                return windowView.isAttachedToWindow() && windowView.hasWindowFocus();
+            }
+        }
+        return true;
     }
 
     public void waitUntilAllDialogsClosed(ActivityScenario<?> scenario) {
@@ -485,6 +540,7 @@ public abstract class BaseUITest {
             @Override
             public void perform(UiController uiController, View view) {
                 view.performClick();
+                waitUntilTopWindowFocused(uiController);
             }
         };
     }
@@ -504,7 +560,7 @@ public abstract class BaseUITest {
             @Override
             public void perform(UiController uiController, View view) {
                 view.performClick();
-                uiController.loopMainThreadUntilIdle();
+                waitUntilTopWindowFocused(uiController);
             }
         };
     }

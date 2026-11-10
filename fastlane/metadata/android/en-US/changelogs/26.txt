@@ -1,3 +1,4 @@
 * New target API level is 37 (Android 17), applied all required changes
 * Android 17: New permission for local network access (shown as "Nearby devices"), required for network tasks with targets in the local network
 * Battery optimization is available again on Android 15 and later, the system settings now also show if background usage is restricted
+* Fixed a bug that may cause a crash under very rare conditions when using drag and drop

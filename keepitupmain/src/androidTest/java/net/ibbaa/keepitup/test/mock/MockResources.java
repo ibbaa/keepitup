@@ -56,7 +56,7 @@ public class MockResources extends Resources {
 
     @SuppressWarnings({"Convert2MethodRef", "deprecation"})
     public MockResources(AssetManager assetManager, Resources testResources, Resources targetResources) {
-        super(assetManager, null, null);
+        super(assetManager, targetResources.getDisplayMetrics(), targetResources.getConfiguration());
         this.testResources = testResources;
         this.targetResources = targetResources;
         testStringResources = new HashMap<>();
