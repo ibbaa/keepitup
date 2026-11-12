@@ -43,6 +43,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -100,6 +101,9 @@ public abstract class BaseUITest {
     private static final long WINDOW_FOCUS_TIMEOUT = 2000;
     private static final long WINDOW_FOCUS_POLL_INTERVAL = 50;
     private static final long WINDOW_FOCUS_FALLBACK_WAIT = 500;
+    private static final long WINDOW_SETTLE_TIME = 150;
+    private static final long WINDOW_SETTLE_TIMEOUT = 2000;
+    private static final long WINDOW_SETTLE_POLL_INTERVAL = 25;
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
@@ -563,6 +567,50 @@ public abstract class BaseUITest {
                 waitUntilTopWindowFocused(uiController);
             }
         };
+    }
+
+    public static ViewAction clickAfterWindowSettled() {
+        ViewAction click = ViewActions.click();
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return click.getConstraints();
+            }
+
+            @Override
+            public String getDescription() {
+                return "click after window settled";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                waitUntilWindowSettled(uiController, view);
+                click.perform(uiController, view);
+            }
+        };
+    }
+
+    private static void waitUntilWindowSettled(UiController uiController, View view) {
+        View rootView = view.getRootView();
+        long start = SystemClock.uptimeMillis();
+        String lastGeometry = getWindowGeometry(rootView);
+        while (SystemClock.uptimeMillis() - start < WINDOW_SETTLE_TIMEOUT) {
+            uiController.loopMainThreadUntilIdle();
+            String geometry = getWindowGeometry(rootView);
+            long sinceLastDraw = SystemClock.uptimeMillis() - rootView.getDrawingTime();
+            if (geometry.equals(lastGeometry) && sinceLastDraw >= WINDOW_SETTLE_TIME) {
+                return;
+            }
+            lastGeometry = geometry;
+            uiController.loopMainThreadForAtLeast(WINDOW_SETTLE_POLL_INTERVAL);
+        }
+        Log.d(BaseUITest.class.getName(), "Window did not settle within " + WINDOW_SETTLE_TIMEOUT + " ms");
+    }
+
+    private static String getWindowGeometry(View rootView) {
+        int[] location = new int[2];
+        rootView.getLocationOnScreen(location);
+        return location[0] + "," + location[1] + "," + rootView.getWidth() + "," + rootView.getHeight();
     }
 
     public static Matcher<View> isEllipsized() {

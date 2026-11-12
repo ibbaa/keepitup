@@ -20,7 +20,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
@@ -133,6 +132,6 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
     private void openBatteryOptimizationDialog() {
         BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
         batteryOptimizationDialog.show(getActivity(activityScenario).getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused();
     }
 }

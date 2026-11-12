@@ -166,15 +166,15 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_only_wifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_stop_on_success_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_only_wifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_stop_on_success_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isChecked()));
@@ -183,20 +183,20 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_stop_on_success_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_only_wifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_stop_on_success_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).check(matches(isNotChecked()));
@@ -205,19 +205,19 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("no")));
         onView(withText("Download")).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_use_default_headers_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_use_default_headers_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_use_default_headers_on_off)).check(matches(withText("yes")));
     }
@@ -230,10 +230,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("9"));
-        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
@@ -259,8 +259,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertNull(data.getSnmpPrivPassphrase());
         onView(withText("Ping")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
         assertEquals(AccessType.PING, task.getAccessType());
@@ -289,8 +289,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_certificate_settings_ignore_ssl_error)).perform(click());
         onView(withId(R.id.imageview_dialog_certificate_settings_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
         assertNotNull(task);
@@ -374,7 +374,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         NetworkTask resultTask = dialog.getNetworkTask();
         assertEquals(AccessType.DOWNLOAD, resultTask.getAccessType());
         assertEquals(80, resultTask.getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -411,7 +411,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertFalse(resultData.isIgnoreSSLError());
         assertNull(resultData.getSnmpCommunity());
         assertEquals(SNMPTransport.UDP, resultData.getSnmpTransport());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -426,7 +426,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(closeSoftKeyboard());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText(StringUtil.getSecretPlaceholder())));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c)).perform(click());
@@ -444,7 +444,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("authpass", resultData.getSnmpAuthPassphrase());
         assertEquals(SNMPPrivAlgorithm.AES256, resultData.getSnmpPrivAlgorithm());
         assertEquals("privpass", resultData.getSnmpPrivPassphrase());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -481,7 +481,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         data = dialog.getAccessTypeData();
         assertEquals("public", data.getSnmpCommunity());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -492,10 +492,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).perform(replaceText("9"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("65000"));
-        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
@@ -568,8 +568,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(resolves.isEmpty());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         initialTask = dialog.getInitialNetworkTask();
         task = dialog.getNetworkTask();
         assertEquals(initialTask.getId(), task.getId());
@@ -633,14 +633,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testHighPrioPreservedOnNotificationChange() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_high_prio_on_off)).check(matches(withText("yes")));
     }
@@ -793,7 +793,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_resolves_label)).check(matches(withText("Resolve rules")));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_no_resolve), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(isDisplayed()));
@@ -825,7 +825,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
@@ -852,7 +852,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("invalid-url"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_resolves_label)).check(matches(withText("Resolve rules")));
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
@@ -888,7 +888,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
@@ -905,7 +905,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
         rotateScreen(activityScenario);
@@ -923,7 +923,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
@@ -948,7 +948,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match.host.com"));
@@ -974,7 +974,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match1.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
@@ -1016,7 +1016,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://example.com:8080/path"));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
         onView(withId(R.id.edittext_dialog_resolve_edit_match_host)).perform(replaceText("match1.host.com"));
         onView(withId(R.id.edittext_dialog_resolve_edit_match_port)).perform(replaceText("9090"));
@@ -1062,7 +1062,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         injectPermissionManager();
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_resolves_label)).check(matches(withText("Resolve rules")));
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match.host.com:9090")));
@@ -1098,7 +1098,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         injectPermissionManager();
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_dialog_resolves_resolves)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_resolve_match), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Match: match1.host.com:9090")));
         onView(allOf(withId(R.id.textview_list_item_resolve_connect_to), withChildDescendantAtPosition(withId(R.id.listview_dialog_resolves_resolves), 0))).check(matches(withText("Connect-to: connect1.host.com:443")));
@@ -1128,7 +1128,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
@@ -1146,7 +1146,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
     }
@@ -1161,7 +1161,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
@@ -1181,7 +1181,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(not(isDisplayed())));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(not(isDisplayed())));
     }
@@ -1192,8 +1192,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1203,7 +1203,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
@@ -1225,8 +1225,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1237,7 +1237,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (1 header)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(scrollTo(), clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
@@ -1260,8 +1260,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1271,7 +1271,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
@@ -1299,8 +1299,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1311,7 +1311,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(scrollTo(), clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("AName")));
@@ -1340,8 +1340,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
@@ -1354,7 +1354,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
@@ -1382,8 +1382,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
@@ -1394,7 +1394,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_label)).check(matches(withText("Headers network task")));
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Authorization")));
@@ -1422,8 +1422,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_restore)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_headers_restore)).check(matches(withText("Restore default headers")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
@@ -1457,8 +1457,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_headers_restore)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_headers_restore)).check(matches(withText("Restore default headers")));
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
@@ -1494,14 +1494,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertNull(dialog.getInitialHeaders());
         assertNull(dialog.getHeaders());
@@ -1513,8 +1513,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
@@ -1522,7 +1522,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertNull(dialog.getInitialHeaders());
         assertNull(dialog.getHeaders());
@@ -1534,8 +1534,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
@@ -1556,8 +1556,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
         rotateScreen(activityScenario);
@@ -1580,8 +1580,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("BName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("BValue"));
@@ -1618,8 +1618,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("BName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("BValue"));
@@ -1658,8 +1658,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
@@ -1693,8 +1693,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         resetGlobalHeaderHandler();
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(click());
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Authorization"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("authvalue"));
@@ -1705,7 +1705,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_label)).check(matches(withText("HTTP Headers:")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
-        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(click());
+        onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
@@ -1734,11 +1734,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     public void testOnOkCancelClickedDialogDismissed() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_activity_main_network_task_add)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -1750,7 +1750,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).perform(replaceText("11"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("65528"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
@@ -1764,7 +1764,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("0"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
@@ -1776,7 +1776,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Maximum: 10")).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -1788,7 +1788,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("99999"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("11"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
@@ -1802,7 +1802,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("25"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
@@ -1814,7 +1814,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Maximum: 10")).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -1824,7 +1824,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http:/test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("URL")).check(matches(isDisplayed()));
         onView(withText("No valid URL")).check(matches(isDisplayed()));
@@ -1834,7 +1834,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("55"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -1845,7 +1845,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("123.456"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("invalid community"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
@@ -1857,7 +1857,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("15"));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("public"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
@@ -1867,7 +1867,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Value contains invalid characters")).check(doesNotExist());
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -1878,7 +1878,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
@@ -1888,7 +1888,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withText("No value specified"), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -2017,7 +2017,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
@@ -2102,7 +2102,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_udp)).check(matches(isChecked()));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(scrollTo());
@@ -2123,7 +2123,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         AccessTypeData data = dialog.getAccessTypeData();
         assertEquals(SNMPVersion.V1, data.getSnmpVersion());
         assertEquals(SNMPTransport.TCP, data.getSnmpTransport());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -2134,8 +2134,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("2"));
-        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
@@ -2198,8 +2198,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testHighPrioStateSavedOnScreenRotation() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_high_prio)).check(matches(isChecked()));
@@ -3046,7 +3046,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isEnabled()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isEnabled()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
@@ -3071,7 +3071,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3088,7 +3088,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3107,7 +3107,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
@@ -3116,7 +3116,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("newcommunity")));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3141,7 +3141,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         rotateScreen(activityScenario);
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(typeText("newcommunity"), closeSoftKeyboard());
@@ -3154,7 +3154,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3178,7 +3178,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(true)));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
         onView(withText("Ping")).perform(click());
@@ -3187,7 +3187,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(togglePassword());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(withPasswordVisibility(false)));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3234,7 +3234,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v2c)).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(isDisplayed()));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3253,7 +3253,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(not(isDisplayed())));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3262,7 +3262,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_udp)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).check(matches(isChecked()));
         rotateScreen(activityScenario);
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).check(matches(isChecked()));
@@ -3272,7 +3272,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_udp)).check(matches(isNotChecked()));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertEquals(SNMPTransport.TCP, dialog.getAccessTypeData().getSnmpTransport());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3283,26 +3283,26 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).check(matches(isNotChecked()));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertEquals(SNMPTransport.UDP, dialog.getAccessTypeData().getSnmpTransport());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
     public void testSNMPTransportReturnedByGetAccessTypeData() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         AccessTypeData data = dialog.getAccessTypeData();
         assertEquals(SNMPTransport.TCP, data.getSnmpTransport());
         assertEquals(SNMPVersion.V2C, data.getSnmpVersion());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
     public void testSNMPTransportNotReturnedWhenSNMPHidden() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withText("Ping")).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         AccessTypeData data = dialog.getAccessTypeData();
@@ -3324,7 +3324,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(isDisplayed()));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3332,7 +3332,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_transport)).check(matches(not(isDisplayed())));
         onView(withText("SNMP")).perform(click());
@@ -3340,7 +3340,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).check(matches(isChecked()));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3376,7 +3376,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertEquals("", data.getSnmpPrivPassphrase());
         assertNull(data.getSnmpCommunity());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3399,7 +3399,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertNull(data.getSnmpPrivPassphrase());
         assertNull(data.getSnmpCommunity());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3434,14 +3434,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertEquals("", data.getSnmpPrivPassphrase());
         assertNull(data.getSnmpCommunity());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
     public void testSNMPV3AuthDataReturnedByGetAccessTypeData() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3458,14 +3458,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertEquals("", data.getSnmpPrivPassphrase());
         assertNull(data.getSnmpCommunity());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
     public void testSNMPAuthDialogWithPassphrase() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3490,14 +3490,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertEquals("privpass123", data.getSnmpPrivPassphrase());
         assertNull(data.getSnmpCommunity());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
     public void testSNMPAuthPassphraseAndPrivDataNotTakenOverWhenAuthAlgorithmHidden() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3527,14 +3527,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("authpass123", data.getSnmpAuthPassphrase());
         assertEquals(SNMPPrivAlgorithm.AES256, data.getSnmpPrivAlgorithm());
         assertEquals("privpass123", data.getSnmpPrivPassphrase());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
     public void testSNMPPrivPassphraseNotTakenOverWhenPrivAlgorithmHidden() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("SNMP")).perform(click());
-        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(click());
+        onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3559,7 +3559,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(SNMPAuthAlgorithm.SHA256, data.getSnmpAuthAlgorithm());
         assertEquals(SNMPPrivAlgorithm.NONE, data.getSnmpPrivAlgorithm());
         assertEquals("privpass123", data.getSnmpPrivPassphrase());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3582,7 +3582,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertNull(data.getSnmpAuthPassphrase());
         assertEquals(SNMPPrivAlgorithm.AES128, data.getSnmpPrivAlgorithm());
         assertNull(data.getSnmpPrivPassphrase());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3593,14 +3593,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("123.456"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("Community")).check(doesNotExist());
         onView(withText("Value contains invalid characters")).check(doesNotExist());
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -3616,7 +3616,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("22")));
         assertEquals(22, dialog.getNetworkTask().getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3639,7 +3639,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("SNMP")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("161")));
         assertEquals(161, dialog.getNetworkTask().getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3653,7 +3653,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("443")));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertEquals(443, dialog.getNetworkTask().getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3674,7 +3674,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("163")));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertEquals(163, dialog.getNetworkTask().getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3694,7 +3694,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("443")));
         dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertEquals(443, dialog.getNetworkTask().getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3719,7 +3719,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("163")));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertEquals(163, dialog.getNetworkTask().getPort());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3944,7 +3944,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(data.isIgnoreSSLError());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3963,7 +3963,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertFalse(data.isIgnoreSSLError());
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -3989,7 +3989,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(data.isAllowLegacyTLS());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(60, data.getFailureOnCertificateExpiryDays());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -4005,7 +4005,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         AccessTypeData data = dialog.getAccessTypeData();
         assertFalse(data.isIgnoreSSLError());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -4022,7 +4022,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         AccessTypeData data = dialog.getAccessTypeData();
         assertFalse(initialData.isIgnoreSSLError());
         assertTrue(data.isIgnoreSSLError());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -4047,7 +4047,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_certificate_settings_failure_on_certificate_expiry)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_certificate_settings_expiry_days)).check(matches(withText("90")));
         onView(withId(R.id.imageview_dialog_certificate_settings_cancel)).perform(click());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -4068,7 +4068,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(data.isIgnoreSSLError());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(45, data.getFailureOnCertificateExpiryDays());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -4089,7 +4089,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(data.isIgnoreSSLError());
         assertTrue(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     @Test
@@ -4109,7 +4109,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         AccessTypeData data = dialog.getAccessTypeData();
         assertFalse(data.isFailureOnCertificateExpiry());
         assertEquals(30, data.getFailureOnCertificateExpiryDays());
-        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
     }
 
     private MockClipboardManager prepareMockClipboardManager() {
