@@ -19,7 +19,6 @@ package net.ibbaa.keepitup.ui.dialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -190,7 +189,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
         contextOptionsDialog.setArguments(bundle);
         contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return contextOptionsDialog;
     }
 
@@ -200,7 +199,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
         contextOptionsDialog.setArguments(bundle);
         contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return contextOptionsDialog;
     }
 

@@ -21,7 +21,6 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -86,7 +85,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -100,7 +99,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertFalse(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
@@ -112,7 +111,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("");
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
@@ -126,7 +125,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertFalse(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
@@ -138,7 +137,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -153,7 +152,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
@@ -163,7 +162,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertFalse(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
@@ -176,7 +175,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editText.setText("abc");
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -184,7 +183,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         clipboardManager.putData("123");
         contextOptionsSupportManager.showContextOptionsDialog(editText);
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));

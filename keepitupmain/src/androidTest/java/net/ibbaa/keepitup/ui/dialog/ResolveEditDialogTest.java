@@ -607,7 +607,7 @@ public class ResolveEditDialogTest extends BaseUITest {
         bundle = BundleUtil.booleanToBundle(resolveEditDialog.getValidateListKey(), validateList, bundle);
         resolveEditDialog.setArguments(bundle);
         resolveEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ResolveEditDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return resolveEditDialog;
     }
 

@@ -414,7 +414,7 @@ public class BasicAuthDialogTest extends BaseUITest {
             basicAuthDialog.setArguments(bundle);
         }
         basicAuthDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ExportEncryptDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return basicAuthDialog;
     }
 

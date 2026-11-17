@@ -21,6 +21,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -160,7 +161,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
         assertEquals(SNMPTransport.TCP, dialog.getSNMPTransport());
         assertEquals(SNMPAuthAlgorithm.SHA256, dialog.getSNMPAuthAlgorithm());
         assertEquals(SNMPPrivAlgorithm.AES256, dialog.getSNMPPrivAlgorithm());
-        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(scrollTo(), click());
         activityScenario.close();
     }
 
@@ -327,7 +328,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).perform(replaceText("161"));
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(scrollTo(), click());
         activityScenario.close();
     }
 
@@ -361,7 +362,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).perform(replaceText("161"));
-        onView(withId(R.id.imageview_dialog_snmp_defaults_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_defaults_ok)).perform(scrollTo(), click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -436,7 +437,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).check(matches(withText("8162")));
         assertTrue(clipboardManager.hasData());
         assertEquals("8162", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(scrollTo(), click());
         activityScenario.close();
     }
 
@@ -450,7 +451,7 @@ public class SNMPDefaultsDialogTest extends BaseUITest {
     private SNMPDefaultsDialog openSNMPDefaultsDialog() {
         SNMPDefaultsDialog dialog = new SNMPDefaultsDialog();
         dialog.show(getActivity(activityScenario).getSupportFragmentManager(), SNMPDefaultsDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return dialog;
     }
 

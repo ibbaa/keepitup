@@ -1237,7 +1237,7 @@ public class ResolvesDialogTest extends BaseUITest {
         BundleUtil.stringToBundle(resolvesDialog.getNetworkTaskURLKey(), url, bundle);
         resolvesDialog.setArguments(bundle);
         resolvesDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ResolvesDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
     }
 
     private ResolvesDialog getDialog() {

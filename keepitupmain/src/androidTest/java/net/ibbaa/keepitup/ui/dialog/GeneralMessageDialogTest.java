@@ -142,7 +142,7 @@ public class GeneralMessageDialogTest extends BaseUITest {
         }
         errorDialog.setArguments(bundle);
         errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralMessageDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return errorDialog;
     }
 }

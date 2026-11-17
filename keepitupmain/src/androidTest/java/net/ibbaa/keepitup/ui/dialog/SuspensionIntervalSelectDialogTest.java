@@ -692,7 +692,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         }
         intervalSelectDialog.setArguments(bundle);
         intervalSelectDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SuspensionIntervalSelectDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return intervalSelectDialog;
     }
 

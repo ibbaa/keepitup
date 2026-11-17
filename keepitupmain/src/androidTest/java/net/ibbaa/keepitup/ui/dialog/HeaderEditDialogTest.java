@@ -1005,10 +1005,10 @@ public class HeaderEditDialogTest extends BaseUITest {
     @Test
     public void testCopyPasteNameCancelScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
         rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
@@ -1053,11 +1053,11 @@ public class HeaderEditDialogTest extends BaseUITest {
     @Test
     public void testCopyPasteValueCancelScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        HeaderEditDialog dialog = openHeaderEditDialog(new Header());
+        openHeaderEditDialog(new Header());
         onView(isRoot()).perform(waitFor(500));
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(dialog);
-        clipboardManager.putData("abc");
         rotateScreen(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -1196,6 +1196,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText(""));
         rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
@@ -1244,6 +1246,8 @@ public class HeaderEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText(""));
         rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
@@ -1393,7 +1397,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         bundle = BundleUtil.booleanToBundle(headerEditDialog.getShowConfirmAuthorizationHeaderNoticeKey(), showConfirmAuthorizationHeaderNotice, bundle);
         headerEditDialog.setArguments(bundle);
         headerEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), HeaderEditDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return headerEditDialog;
     }
 

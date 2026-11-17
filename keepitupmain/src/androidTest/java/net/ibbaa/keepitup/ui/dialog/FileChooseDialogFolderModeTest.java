@@ -2967,7 +2967,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FOLDER.name(), bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         return fileChooseDialog;
     }
 

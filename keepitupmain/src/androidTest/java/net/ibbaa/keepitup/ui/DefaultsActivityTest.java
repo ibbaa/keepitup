@@ -1377,7 +1377,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_cancel)).perform(scrollTo(), click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
@@ -1463,7 +1463,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("AValue"));
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_headers_ok)).perform(scrollTo(), click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("AName: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
@@ -3646,14 +3646,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(click());
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).perform(replaceText("162"));
         rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_defaults_cancel)).perform(scrollTo(), click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(161, preferenceManager.getPreferenceSNMPPort());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_snmp_settings)).perform(click());
         onView(withId(R.id.edittext_dialog_snmp_defaults_snmp_port)).perform(replaceText("162"));
         rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_snmp_defaults_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_snmp_defaults_ok)).perform(scrollTo(), click());
         assertEquals(162, preferenceManager.getPreferenceSNMPPort());
         activityScenario.close();
     }

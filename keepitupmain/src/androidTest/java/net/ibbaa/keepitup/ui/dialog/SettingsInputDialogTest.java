@@ -393,7 +393,7 @@ public class SettingsInputDialogTest extends BaseUITest {
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(input.toBundle());
         inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return inputDialog;
     }
 

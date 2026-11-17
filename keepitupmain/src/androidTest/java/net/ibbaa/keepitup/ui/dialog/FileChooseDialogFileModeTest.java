@@ -4133,7 +4133,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), file, bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         return fileChooseDialog;
     }
 

@@ -795,7 +795,7 @@ public class ExportEncryptDialogTest extends BaseUITest {
             exportEncryptDialog.setArguments(bundle);
         }
         exportEncryptDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ExportEncryptDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return exportEncryptDialog;
     }
 

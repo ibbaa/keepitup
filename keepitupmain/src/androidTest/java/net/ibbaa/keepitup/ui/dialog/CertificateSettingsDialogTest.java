@@ -568,7 +568,7 @@ public class CertificateSettingsDialogTest extends BaseUITest {
         BundleUtil.booleanToBundle(dialog.getFieldDependenciesEnabledKey(), fieldDependenciesEnabled, arguments);
         dialog.setArguments(arguments);
         dialog.show(getActivity(activityScenario).getSupportFragmentManager(), CertificateSettingsDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return dialog;
     }
 

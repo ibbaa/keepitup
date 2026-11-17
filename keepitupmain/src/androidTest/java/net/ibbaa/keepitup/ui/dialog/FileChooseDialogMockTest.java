@@ -19,7 +19,6 @@ package net.ibbaa.keepitup.ui.dialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertTrue;
@@ -76,7 +75,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     public void testAbsoluteFolderError() {
         fileManager.setAbsolutePath(null);
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -86,7 +85,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         setMockFileManagerData();
         fileManager.setAbsoluteParent(null);
         openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -97,7 +96,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     public void testAbsoluteFolderErrorWithFile() {
         fileManager.setAbsolutePath(null);
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -107,7 +106,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         setMockFileManagerData();
         fileManager.setAbsoluteParent(null);
         openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -118,7 +117,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     public void testFileListError() {
         fileManager.setFileEntries(null);
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -130,7 +129,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     public void testFileListErrorWithFile() {
         fileManager.setFileEntries(null);
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -142,7 +141,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     public void testInitialFolderEmptyError() {
         fileManager.setRelativeParent(null);
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Fatal file error.")));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         FileEntryAdapter adapter = dialog.getAdapter();
@@ -152,7 +151,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testSelectFileParentIsSelectedError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         FileEntryAdapter adapter = dialog.getAdapter();
         adapter.selectItem(0);
@@ -164,7 +163,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testSelectFileParentIsSelectedErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         FileEntryAdapter adapter = dialog.getAdapter();
@@ -177,7 +176,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testSelectFileNonParentIsSelectedError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         FileEntryAdapter adapter = dialog.getAdapter();
         adapter.selectItem(2);
@@ -189,7 +188,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testSelectFileNonParentIsSelectedErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         FileEntryAdapter adapter = dialog.getAdapter();
@@ -202,7 +201,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testSelectFileNonParentNotSelectedError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         fileManager.setNestedPath(null);
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).perform(click());
@@ -213,7 +212,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testSelectFileNonParentNotSelectedErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         fileManager.setNestedPath(null);
@@ -225,7 +224,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentAbsoluteFolderError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         fileManager.setAbsolutePath(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
@@ -239,7 +238,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentAbsoluteFolderErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         fileManager.setAbsolutePath(null);
@@ -254,7 +253,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentAbsoluteParentError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         fileManager.setAbsoluteParent(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
@@ -268,7 +267,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentAbsoluteParentErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         fileManager.setAbsoluteParent(null);
@@ -283,7 +282,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentRelativeParentError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         fileManager.setRelativeParent(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
@@ -297,7 +296,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentRelativeParentErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         fileManager.setRelativeParent(null);
@@ -312,7 +311,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentRelativeParent() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText("absoluteFolder")));
@@ -326,7 +325,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileParentRelativeParentWitHFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
@@ -341,7 +340,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileNonParentError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         fileManager.setAbsolutePath(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).perform(click());
@@ -355,7 +354,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testOpenFileNonParentErrorWithFile() {
         FileChooseDialog dialog = openFileChooseDialog("folder", "file");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         fileManager.setAbsolutePath(null);
@@ -370,7 +369,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Test
     public void testShowFilesError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         fileManager.setRelativeParent(null);
         onView(withId(R.id.checkbox_dialog_file_choose_show_files)).perform(click());
@@ -421,7 +420,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), file, bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         return fileChooseDialog;
     }
 
@@ -433,7 +432,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         bundle = BundleUtil.bundleToBundle(fileChooseDialog.getEncryptionInfoKey(), encryptionInfo.toBundle(), bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-        onView(isRoot()).perform(waitFor(1000));
+        waitUntilTopWindowFocused(1000);
         return fileChooseDialog;
     }
 

@@ -649,7 +649,7 @@ public class SNMPInterfacesDialogTest extends BaseUITest {
         SNMPInterfacesDialog dialog = new SNMPInterfacesDialog();
         dialog.setArguments(buildDialogBundle(dialog, initialItems));
         dialog.show(getActivity(activityScenario).getSupportFragmentManager(), SNMPInterfacesDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
     }
 
     private void showTestDialog(List<SNMPItem> initialItems, SNMPScanResult mockResult) {
@@ -657,7 +657,7 @@ public class SNMPInterfacesDialogTest extends BaseUITest {
         dialog.setMockResult(mockResult);
         dialog.setArguments(buildDialogBundle(dialog, initialItems));
         dialog.show(getActivity(activityScenario).getSupportFragmentManager(), SNMPInterfacesDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
     }
 
     private Bundle buildDialogBundle(SNMPInterfacesDialog dialog, List<SNMPItem> initialItems) {

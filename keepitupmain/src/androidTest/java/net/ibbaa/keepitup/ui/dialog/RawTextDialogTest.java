@@ -85,6 +85,6 @@ public class RawTextDialogTest extends BaseUITest {
         Bundle bundle = BundleUtil.integerToBundle(rawTextDialog.getResourceIdKey(), R.raw.license);
         rawTextDialog.setArguments(bundle);
         rawTextDialog.show(getActivity(activityScenario).getSupportFragmentManager(), RawTextDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
     }
 }

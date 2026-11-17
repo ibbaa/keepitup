@@ -970,7 +970,7 @@ public class SNMPAuthDialogTest extends BaseUITest {
         Bundle args = BundleUtil.bundleToBundle(dialog.getAccessTypeDataKey(), data.toBundle(), new Bundle());
         dialog.setArguments(args);
         dialog.show(getActivity(activityScenario).getSupportFragmentManager(), SNMPAuthDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return dialog;
     }
 

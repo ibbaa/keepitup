@@ -19,7 +19,6 @@ package net.ibbaa.keepitup.ui.dialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import androidx.test.core.app.ActivityScenario;
@@ -73,7 +72,7 @@ public class ProgressDialogTest extends BaseUITest {
     private ProgressDialog openProgressDialog() {
         ProgressDialog progressDialog = new ProgressDialog();
         progressDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return progressDialog;
     }
 }

@@ -20,7 +20,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
@@ -106,7 +105,7 @@ public class ConfirmDialogTest extends BaseUITest {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(confirmDialog.getMessageKey(), "Message"));
         confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return confirmDialog;
     }
 
@@ -115,7 +114,7 @@ public class ConfirmDialogTest extends BaseUITest {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey()}, new String[]{"Message", "Description"}));
         confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return confirmDialog;
     }
 }

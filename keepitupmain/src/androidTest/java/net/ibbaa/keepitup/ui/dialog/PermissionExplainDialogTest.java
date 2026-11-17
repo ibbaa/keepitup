@@ -139,7 +139,7 @@ public class PermissionExplainDialogTest extends BaseUITest {
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{permissionExplainDialog.getMessageKey(), PermissionExplainDialog.Permission.class.getSimpleName()}, new String[]{"Message", permission == null ? null : permission.name()});
         permissionExplainDialog.setArguments(bundle);
         permissionExplainDialog.show(getActivity(activityScenario).getSupportFragmentManager(), PermissionExplainDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
         return permissionExplainDialog;
     }
 }

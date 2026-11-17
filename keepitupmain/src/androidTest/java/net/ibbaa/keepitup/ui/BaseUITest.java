@@ -259,6 +259,15 @@ public abstract class BaseUITest {
         waitUntilTopWindowFocused();
     }
 
+    public void waitUntilTopWindowFocused(long minimumWait) {
+        long start = SystemClock.uptimeMillis();
+        while (SystemClock.uptimeMillis() - start < minimumWait) {
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            SystemClock.sleep(WINDOW_FOCUS_POLL_INTERVAL);
+        }
+        waitUntilTopWindowFocused();
+    }
+
     public void waitUntilTopWindowFocused() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             SystemClock.sleep(WINDOW_FOCUS_FALLBACK_WAIT);

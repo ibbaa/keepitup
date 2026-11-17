@@ -78,6 +78,6 @@ public class AlarmPermissionDialogTest extends BaseUITest {
     private void openAlarmPermissionDialog() {
         AlarmPermissionDialog alarmPermissionDialog = new AlarmPermissionDialog();
         alarmPermissionDialog.show(getActivity(activityScenario).getSupportFragmentManager(), AlarmPermissionDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
+        waitUntilTopWindowFocused(500);
     }
 }
