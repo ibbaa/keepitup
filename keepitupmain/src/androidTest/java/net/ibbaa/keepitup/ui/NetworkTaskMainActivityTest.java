@@ -2485,7 +2485,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
@@ -2518,7 +2518,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.textview_list_item_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withTextColor(R.color.textErrorColor)));
         onView(allOf(withId(R.id.cardview_list_item_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
-        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(typeText("123"));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
@@ -2936,7 +2936,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         onView(isRoot()).perform(waitFor(500));
@@ -3020,7 +3020,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3073,7 +3073,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3132,7 +3132,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3178,7 +3178,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3233,7 +3233,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3289,7 +3289,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3340,7 +3340,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
@@ -3398,7 +3398,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);

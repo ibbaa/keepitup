@@ -1749,7 +1749,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -2056,7 +2056,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -2278,7 +2278,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -2390,7 +2390,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -2708,7 +2708,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -3005,7 +3005,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -3317,7 +3317,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -3545,7 +3545,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("config", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -3653,7 +3653,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -3967,7 +3967,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         waitUntilAllDialogsClosed(activityScenario);
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
@@ -4266,7 +4266,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -4444,7 +4444,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -4615,7 +4615,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         File folder = getFileManager().getExternalDirectory("folderExport", 0);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
@@ -4922,7 +4922,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
@@ -5204,7 +5204,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
@@ -5356,7 +5356,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -5458,7 +5458,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_export_encrypt_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withText("Filename"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
@@ -5972,7 +5972,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -6129,7 +6129,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -6323,7 +6323,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
@@ -6559,7 +6559,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -6801,7 +6801,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(typeText("password"), closeSoftKeyboard());
@@ -7042,7 +7042,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -7194,7 +7194,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertFalse(getTimeBasedSuspensionScheduler().isRunning());
@@ -7288,7 +7288,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("An error occurred importing the configuration. Some settings may have been imported.")));
@@ -7440,7 +7440,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Version mismatch. The imported file has been created with a newer version. Import not possible.")));
@@ -7592,7 +7592,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_message_message)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
@@ -7688,7 +7688,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
         activityScenario.close();
@@ -7703,7 +7703,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_import)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withText("Filename"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());

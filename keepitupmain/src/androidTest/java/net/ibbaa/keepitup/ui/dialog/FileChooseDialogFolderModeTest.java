@@ -2952,12 +2952,12 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
     public void testInvalidFolderPathTraversal() {
         openFileChooseDialog("");
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("download/../../.."));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withText("Folder"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No valid folder path"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("download"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
     }
 

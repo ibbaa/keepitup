@@ -607,7 +607,7 @@ public abstract class BaseUITest {
             uiController.loopMainThreadUntilIdle();
             String geometry = getWindowGeometry(rootView);
             long sinceLastDraw = SystemClock.uptimeMillis() - rootView.getDrawingTime();
-            if (geometry.equals(lastGeometry) && sinceLastDraw >= WINDOW_SETTLE_TIME) {
+            if (rootView.hasWindowFocus() && geometry.equals(lastGeometry) && sinceLastDraw >= WINDOW_SETTLE_TIME) {
                 return;
             }
             lastGeometry = geometry;
