@@ -127,10 +127,13 @@ whenever a new rule is added.
 
 Custom HTTP headers can be configured per task or globally under
 [Defaults](#defaults). Each header is defined by a name and a value.
+Header values may only contain printable ASCII characters and tabs.
 
 For Basic Authentication, select **Basic Auth** instead of entering the
 header manually. Enter a username and password and the `Authorization`
-header is built automatically. Basic Auth headers are stored encrypted
+header is built automatically. Username and password are encoded as UTF-8,
+so non-ASCII characters are allowed, but control characters (e.g. tabs or
+line breaks) are not. Basic Auth headers are stored encrypted
 (see [Security](DEVELOPMENT.md#security)).
 
 The **Use default headers** switch on the Download task controls whether

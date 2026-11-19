@@ -177,6 +177,31 @@ public class BasicAuthDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testValuesInvalidControlCharacters() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        BasicAuthDialog dialog = openBasicAuthDialog();
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc\tdef"));
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("123\t456"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Username"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("äbc"));
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("pässwörd€"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        assertEquals("äbc", dialog.getUsername());
+        assertEquals("pässwörd€", dialog.getPassword());
+        assertEquals("äbc:pässwörd€", dialog.getUsernameAndPassword());
+        activityScenario.close();
+    }
+
+    @Test
     public void testValuesInvalidScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openBasicAuthDialog();

@@ -127,8 +127,11 @@ public class HeaderValidatorTest {
         assertTrue(validator.validateValue(header));
         assertTrue(validator.validate(header));
         header = getHeader("Content-Type", "Äpfel mit Ümläutén");
-        assertTrue(validator.validateValue(header));
-        assertTrue(validator.validate(header));
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
+        header = getHeader("Content-Type", "Test€More");
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
         header = getHeader("Content-Type", "  ");
         assertTrue(validator.validateValue(header));
         assertTrue(validator.validate(header));
@@ -141,6 +144,37 @@ public class HeaderValidatorTest {
         header = getHeader("Content-Type", "  Test ");
         assertTrue(validator.validateValue(header));
         assertTrue(validator.validate(header));
+    }
+
+    @Test
+    public void testValidateValueBasicAuth() {
+        Header header = getBasicAuthHeader(null);
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
+        header = getBasicAuthHeader(new String(new char[8193]));
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
+        header = getBasicAuthHeader("user:Test\nMore");
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
+        header = getBasicAuthHeader("user:Test\u007FMore");
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
+        header = getBasicAuthHeader("user:Test\tMore");
+        assertFalse(validator.validateValue(header));
+        assertFalse(validator.validate(header));
+        header = getBasicAuthHeader("üser:pässwörd€");
+        assertTrue(validator.validateValue(header));
+        assertTrue(validator.validate(header));
+        header = getBasicAuthHeader("user:password");
+        assertTrue(validator.validateValue(header));
+        assertTrue(validator.validate(header));
+    }
+
+    private Header getBasicAuthHeader(String value) {
+        Header header = getHeader("Authorization", value);
+        header.setHeaderType(HeaderType.BASICAUTH);
+        return header;
     }
 
     private Header getHeader(String name, String value) {

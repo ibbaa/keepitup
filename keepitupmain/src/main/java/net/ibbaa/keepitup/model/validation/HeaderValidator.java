@@ -84,7 +84,8 @@ public class HeaderValidator {
             Log.d(HeaderValidator.class.getName(), "value is too long. Returning false.");
             return false;
         }
-        if (!HTTPUtil.validateHeaderValue(value)) {
+        boolean validCharacters = HTTPUtil.isBasicAuthHeader(header) ? HTTPUtil.validateBasicAuthCredentials(value) : HTTPUtil.validateHeaderValue(value);
+        if (!validCharacters) {
             Log.d(HeaderValidator.class.getName(), "value has invalid characters. Returning false.");
             return false;
         }

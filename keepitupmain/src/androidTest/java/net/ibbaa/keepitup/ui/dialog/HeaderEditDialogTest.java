@@ -776,6 +776,61 @@ public class HeaderEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testValueValidationFailedNonAscii() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Äpfel"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Header value"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Apfel"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderNonAsciiOk() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        HeaderEditDialog dialog = openHeaderEditDialog(getHeader(1), false);
+        onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
+        onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("üser"));
+        onView(withId(R.id.edittext_dialog_basic_auth_password)).perform(replaceText("pässwörd€"));
+        onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        Header header = dialog.getHeader();
+        assertEquals(HeaderType.BASICAUTH, header.getHeaderType());
+        assertEquals("üser:pässwörd€", header.getValue());
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testBasicAuthHeaderControlCharactersValidationFailed() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        Header basicAuthHeader = getHeader(1);
+        basicAuthHeader.setHeaderType(HeaderType.BASICAUTH);
+        basicAuthHeader.setName("Authorization");
+        basicAuthHeader.setValue("abc\tdef:123\t456");
+        openHeaderEditDialog(basicAuthHeader, false);
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withText(StringUtil.getSecretPlaceholder())));
+        onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Basic auth username"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Basic auth password"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testNameAndValueValidationFailed() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openHeaderEditDialog(getHeader(1));

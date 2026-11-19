@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 public class BasicAuthUsernameFieldValidator extends BaseStringValidator implements FieldValidator {
@@ -38,7 +39,7 @@ public class BasicAuthUsernameFieldValidator extends BaseStringValidator impleme
         if (!result.isValidationSuccessful()) {
             return result;
         }
-        if (!StringUtil.isEmpty(value) && value.contains(":")) {
+        if (!StringUtil.isEmpty(value) && (value.contains(":") || !HTTPUtil.validateBasicAuthCredentials(value))) {
             Log.d(BasicAuthUsernameFieldValidator.class.getName(), "Value has invalid characters. Validation failed.");
             return new ValidationResult(false, getField(), failedMessageInvalidCharacters);
         }

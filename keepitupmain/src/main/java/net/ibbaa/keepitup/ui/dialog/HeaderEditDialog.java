@@ -374,6 +374,10 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
 
     private boolean validateValue(EditText editText) {
         Log.d(HeaderEditDialog.class.getName(), "validateValue");
+        if (basicAuthCheckBox != null && basicAuthCheckBox.isChecked()) {
+            Log.d(HeaderEditDialog.class.getName(), "Basic auth header. Value is validated by the basic auth validators.");
+            return true;
+        }
         HeaderValidator validator = new StandardHeaderValidator(getContext());
         ValidationResult result = validator.validateValue(getValue());
         Log.d(HeaderEditDialog.class.getName(), "Validation result: " + result);
@@ -385,11 +389,12 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         List<ValidationResult> validationResults = new ArrayList<>();
         HeaderValidator validator = new StandardHeaderValidator(getContext());
         ValidationResult nameResult = validator.validateName(getName());
-        ValidationResult valueResult = validator.validateValue(getValue());
+        boolean basicAuth = getHeaderType().isBasicAuth();
+        ValidationResult valueResult = basicAuth ? null : validator.validateValue(getValue());
         if (!nameResult.isValidationSuccessful()) {
             validationResults.add(nameResult);
         }
-        if (getHeaderType().isBasicAuth()) {
+        if (basicAuth) {
             String[] usernameAndPassword = StringUtil.splitAtFirstColon(getValue());
             String username = usernameAndPassword[0];
             String password = usernameAndPassword[1];
@@ -417,7 +422,7 @@ public class HeaderEditDialog extends DialogFragmentBase implements ContextOptio
         } else {
             Log.e(HeaderEditDialog.class.getName(), "globalHeaderEditSupport is null");
         }
-        if (!valueResult.isValidationSuccessful()) {
+        if (valueResult != null && !valueResult.isValidationSuccessful()) {
             validationResults.add(valueResult);
         }
         return validationResults;

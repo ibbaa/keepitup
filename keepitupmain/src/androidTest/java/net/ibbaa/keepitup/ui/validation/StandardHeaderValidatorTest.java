@@ -142,9 +142,9 @@ public class StandardHeaderValidatorTest {
         assertEquals("Header value", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validateValue("Äpfel");
-        assertTrue(result.isValidationSuccessful());
+        assertFalse(result.isValidationSuccessful());
         assertEquals("Header value", result.getFieldName());
-        assertEquals("Validation successful", result.getMessage());
+        assertEquals("Value contains invalid characters", result.getMessage());
         result = validator.validateValue("Test\tMore");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Header value", result.getFieldName());

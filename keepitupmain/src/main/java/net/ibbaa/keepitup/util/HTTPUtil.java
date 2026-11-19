@@ -41,7 +41,8 @@ public class HTTPUtil {
     private static final Pattern FILENAME_UNQUOTED = Pattern.compile("filename\\s*=\\s*([^;\\s]+)", Pattern.CASE_INSENSITIVE);
     private static final Pattern MIME_TYPE = Pattern.compile("\\s*(\\w*/\\w*)\\s*", Pattern.CASE_INSENSITIVE);
     private static final Pattern HEADER_NAME_PATTERN = Pattern.compile("^[!#$%&'*+\\-.^_`|~0-9A-Za-z]+$");
-    private static final Pattern HEADER_VALUE_PATTERN = Pattern.compile("^[\\t\\x20-\\x7E\\x80-\\uFFFF]*$");
+    private static final Pattern HEADER_VALUE_PATTERN = Pattern.compile("^[\\t\\x20-\\x7E]*$");
+    private static final Pattern BASIC_AUTH_CREDENTIALS_PATTERN = Pattern.compile("^[^\\x00-\\x1F\\x7F]*$");
 
     public static boolean isDownloadTask(NetworkTask task) {
         return task != null && task.getAccessType() != null && task.getAccessType().isDownload();
@@ -53,6 +54,10 @@ public class HTTPUtil {
 
     public static boolean validateHeaderValue(String value) {
         return HEADER_VALUE_PATTERN.matcher(value).matches();
+    }
+
+    public static boolean validateBasicAuthCredentials(String value) {
+        return BASIC_AUTH_CREDENTIALS_PATTERN.matcher(value).matches();
     }
 
     public static boolean isHTTPReturnCodeRedirect(int returnCode) {

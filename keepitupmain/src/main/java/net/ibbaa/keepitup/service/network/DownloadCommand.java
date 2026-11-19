@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -281,7 +282,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     String[] usernameAndPassword = StringUtil.splitAtFirstColon(value);
                     String username = usernameAndPassword[0];
                     String password = usernameAndPassword[1];
-                    value = Credentials.basic(username, password);
+                    value = Credentials.basic(username, password, StandardCharsets.UTF_8);
                 }
                 requestBuilder.header(currentHeader.getName(), value);
             }

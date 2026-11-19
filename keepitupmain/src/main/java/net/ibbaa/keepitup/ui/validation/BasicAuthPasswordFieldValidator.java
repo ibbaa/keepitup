@@ -20,6 +20,8 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.HTTPUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 public class BasicAuthPasswordFieldValidator extends BaseStringValidator implements FieldValidator {
 
@@ -31,6 +33,14 @@ public class BasicAuthPasswordFieldValidator extends BaseStringValidator impleme
     public ValidationResult validate(String value) {
         Log.d(BasicAuthPasswordFieldValidator.class.getName(), "validate");
         int maximum = (getResources().getInteger(R.integer.http_header_value_max_length) / 2) - 1;
-        return validateString(value, -1, maximum, true, false);
+        ValidationResult result = validateString(value, -1, maximum, true, false);
+        if (!result.isValidationSuccessful()) {
+            return result;
+        }
+        if (!StringUtil.isEmpty(value) && !HTTPUtil.validateBasicAuthCredentials(value)) {
+            Log.d(BasicAuthPasswordFieldValidator.class.getName(), "Value has invalid characters. Validation failed.");
+            return new ValidationResult(false, getField(), getResources().getString(R.string.invalid_characters));
+        }
+        return result;
     }
 }

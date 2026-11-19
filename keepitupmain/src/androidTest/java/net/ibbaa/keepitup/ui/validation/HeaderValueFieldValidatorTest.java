@@ -60,9 +60,13 @@ public class HeaderValueFieldValidatorTest {
         assertEquals("Value", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validate("Äpfel");
-        assertTrue(result.isValidationSuccessful());
+        assertFalse(result.isValidationSuccessful());
         assertEquals("Value", result.getFieldName());
-        assertEquals("Validation successful", result.getMessage());
+        assertEquals("Value contains invalid characters", result.getMessage());
+        result = validator.validate("Test€More");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Value", result.getFieldName());
+        assertEquals("Value contains invalid characters", result.getMessage());
         result = validator.validate("Test\tMore");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Value", result.getFieldName());

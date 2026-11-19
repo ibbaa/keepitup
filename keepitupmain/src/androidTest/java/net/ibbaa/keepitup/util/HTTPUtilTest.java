@@ -80,9 +80,29 @@ public class HTTPUtilTest {
         assertFalse(HTTPUtil.validateHeaderValue("Name\nTest"));
         assertFalse(HTTPUtil.validateHeaderValue("Name\rTest"));
         assertFalse(HTTPUtil.validateHeaderValue("Test\u007FMore"));
+        assertFalse(HTTPUtil.validateHeaderValue("Äpfel"));
+        assertFalse(HTTPUtil.validateHeaderValue("Test\u0080More"));
+        assertFalse(HTTPUtil.validateHeaderValue("Test€More"));
         assertTrue(HTTPUtil.validateHeaderValue("Name\tTest"));
-        assertTrue(HTTPUtil.validateHeaderValue("Äpfel"));
+        assertTrue(HTTPUtil.validateHeaderValue(" !~Value"));
+        assertTrue(HTTPUtil.validateHeaderValue(""));
         assertTrue(HTTPUtil.validateHeaderValue("Value"));
+    }
+
+    @Test
+    public void testValidateBasicAuthCredentials() {
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Test\u0001More"));
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Name\nTest"));
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Name\rTest"));
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Test\u007FMore"));
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Name\tTest"));
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Test\u0000More"));
+        assertFalse(HTTPUtil.validateBasicAuthCredentials("Test\u001FMore"));
+        assertTrue(HTTPUtil.validateBasicAuthCredentials("Äpfel"));
+        assertTrue(HTTPUtil.validateBasicAuthCredentials(" !~"));
+        assertTrue(HTTPUtil.validateBasicAuthCredentials("üser:pässwörd€"));
+        assertTrue(HTTPUtil.validateBasicAuthCredentials("username:password"));
+        assertTrue(HTTPUtil.validateBasicAuthCredentials(""));
     }
 
     @Test
