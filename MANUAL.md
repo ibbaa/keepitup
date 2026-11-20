@@ -52,7 +52,8 @@ Sends ICMP echo requests to the target host.
 
 - **Host** — hostname or IP address
 - **Ping count** — number of pings per execution
-- **Package size** — ICMP packet size in bytes
+- **Package size** — ICMP packet size in bytes; hidden and ignored if
+  *Enforce default ping package size* is enabled in the global settings
 - **Stop on success** — stops as soon as one ping succeeds
 
 An execution is considered successful if at least one ping succeeds. The
@@ -275,9 +276,12 @@ intervals enabled** switch, which leaves any configured intervals intact.
 
 ### Other Settings
 
-- **Enforce default ping package size** — if enabled, the globally
-  configured ping package size is used for all tasks and cannot be
-  overridden per task
+- **Enforce default ping package size** — if enabled, the package size
+  option is omitted from the ping command entirely, so the system ping
+  utility uses its built-in default (typically 56 bytes on Linux/Android);
+  the package size configured per task or in the defaults is ignored and
+  the field is hidden in the task edit dialog. This is intended for devices
+  whose ping utility does not support setting the package size
 - **Log to file** — enables writing log entries to files in addition to the
     database; a folder can be selected after enabling
 
