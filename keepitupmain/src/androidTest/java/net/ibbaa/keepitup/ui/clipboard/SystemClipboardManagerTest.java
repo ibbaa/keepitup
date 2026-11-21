@@ -47,7 +47,7 @@ public class SystemClipboardManagerTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
-        waitUntilWindowFocused(activityScenario);
+        waitUntilActivityFocused(activityScenario);
         clipboardManager = new SystemClipboardManager(TestRegistry.getContext());
     }
 

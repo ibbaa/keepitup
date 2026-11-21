@@ -340,7 +340,7 @@ public abstract class BaseUITest {
         }
     }
 
-    public void waitUntilWindowFocused(ActivityScenario<?> scenario) {
+    public void waitUntilActivityFocused(ActivityScenario<?> scenario) {
         int waits = 20;
         while (waits > 0) {
             final boolean[] hasFocus = {false};
@@ -349,7 +349,8 @@ public abstract class BaseUITest {
                 return;
             }
             waits--;
-            onView(isRoot()).perform(waitFor(500));
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            SystemClock.sleep(500);
         }
         fail("Activity has no window focus");
     }
