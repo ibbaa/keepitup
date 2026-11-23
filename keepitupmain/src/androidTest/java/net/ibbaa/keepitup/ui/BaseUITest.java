@@ -579,6 +579,26 @@ public abstract class BaseUITest {
         };
     }
 
+    public static ViewAction requestFocus() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isDisplayed();
+            }
+
+            @Override
+            public String getDescription() {
+                return "request focus";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.requestFocus();
+                uiController.loopMainThreadUntilIdle();
+            }
+        };
+    }
+
     public static ViewAction clickAfterWindowSettled() {
         ViewAction click = ViewActions.click();
         return new ViewAction() {

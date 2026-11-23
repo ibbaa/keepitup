@@ -19,8 +19,12 @@ package net.ibbaa.keepitup.service.alarm;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
+import androidx.core.content.ContextCompat;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -29,10 +33,13 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestUtil;
+import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -48,8 +55,20 @@ public class AlarmServiceTest {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 300);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
-        TestRegistry.getContext().startService(startIntent);
-        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 300);
+        AtomicBoolean broadcastReceived = new AtomicBoolean(false);
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                broadcastReceived.set(true);
+            }
+        };
+        ContextCompat.registerReceiver(TestRegistry.getContext(), receiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()), ContextCompat.RECEIVER_NOT_EXPORTED);
+        try {
+            TestRegistry.getContext().startService(startIntent);
+            TestUtil.waitUntil(broadcastReceived::get, 300);
+        } finally {
+            TestRegistry.getContext().unregisterReceiver(receiver);
+        }
         assertFalse(AlarmService.isRunning());
     }
 

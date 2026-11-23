@@ -838,7 +838,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         assertEquals(0, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(isDisplayed()));
@@ -1021,7 +1021,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         assertTrue(header3.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name1")));
@@ -1044,7 +1044,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(HeaderType.GENERIC, header2.getHeaderType());
         assertTrue(header2.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("Name3")));
@@ -1171,7 +1171,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(HeaderType.GENERIC, header3.getHeaderType());
         assertTrue(header3.isValueValid());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withId(R.id.listview_dialog_headers_headers)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
@@ -1593,7 +1593,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name3"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value3"));
@@ -1642,7 +1642,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name3"));
@@ -1693,7 +1693,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).perform(replaceText("abc"));
@@ -1747,7 +1747,7 @@ public class HeadersDialogTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).perform(click());
         rotateScreen(activityScenario);

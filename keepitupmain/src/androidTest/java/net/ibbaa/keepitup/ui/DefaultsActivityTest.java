@@ -279,7 +279,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testDisplayValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -407,7 +407,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testSetPreferencesOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -1723,7 +1723,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
@@ -1755,7 +1755,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         rotateScreen(activityScenario);
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
@@ -1793,24 +1793,24 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 4))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("4 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(scrollTo());
@@ -1883,24 +1883,24 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(2)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 4))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(isRoot()).perform(waitFor(500));
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_defaults_global_headers_value)))).check(matches(isDisplayed()));
@@ -2074,17 +2074,17 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(8)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 7))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(6)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 5))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(4)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("Name1"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Value1"));
@@ -3118,7 +3118,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testResetValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -3246,7 +3246,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testPreserveValuesOnScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());

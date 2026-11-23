@@ -536,13 +536,13 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
         onView(isRoot()).perform(waitFor(500));
-        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(performClickIgnoringVisibility());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(performClickIgnoringVisibility());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));
@@ -578,7 +578,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_header_edit_name)).check(matches(not(isFocusable())));
         onView(withId(R.id.edittext_dialog_header_edit_value)).check(matches(not(isFocusable())));
-        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.edittext_dialog_header_edit_name)).perform(performClickIgnoringVisibility());
         rotateScreen(activityScenario);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
@@ -587,7 +587,7 @@ public class HeaderEditDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_basic_auth_ok)).perform(click());
         onView(withId(R.id.checkbox_dialog_header_edit_basic_auth)).check(matches(isChecked()));
-        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(clickAfterWindowSettled());
+        onView(withId(R.id.edittext_dialog_header_edit_value)).perform(performClickIgnoringVisibility());
         onView(withId(R.id.edittext_dialog_basic_auth_username)).check(matches(withText("abc")));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withText(StringUtil.getSecretPlaceholder())));
         onView(withId(R.id.edittext_dialog_basic_auth_password)).check(matches(withPasswordVisibility(true)));

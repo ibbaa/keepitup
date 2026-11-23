@@ -357,13 +357,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
         onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(2)));
         assertEquals(0, getAdapter(activityScenario).getItem(0).getNetworkTask().getIndex());
         assertEquals(1, getAdapter(activityScenario).getItem(1).getNetworkTask().getIndex());
         onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(1)));
         assertEquals(0, getAdapter(activityScenario).getItem(0).getNetworkTask().getIndex());
         activityScenario.close();
@@ -412,12 +412,12 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Network task 3")));
         onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
         onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
         activityScenario.close();
@@ -441,7 +441,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Last execution: not executed")));
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
@@ -473,7 +473,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_failure_count), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Failures since last success: 1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution message: connection failed")));
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_certificate_settings)).perform(performClickIgnoringVisibility());
@@ -508,7 +508,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertTrue(downloadData.isFailureOnCertificateExpiry());
         assertEquals(45, downloadData.getFailureOnCertificateExpiryDays());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.1"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("30"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -774,7 +774,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Ping, package size: 56")));
@@ -818,7 +818,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Host: localhost")));
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("  http://localhost  "));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("URL: http://localhost")));
@@ -906,7 +906,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
         List<Resolve> resolvesBefore = getResolveDAO().readAllResolvesForNetworkTask(taskBefore.getId());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_certificate_settings)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -941,7 +941,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
@@ -977,7 +977,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
@@ -1002,7 +1002,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
@@ -1053,7 +1053,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.1"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: SNMPv2c")));
@@ -1075,7 +1075,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.100"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("10"));
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v1)).perform(click());
@@ -1101,7 +1101,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.100"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -1111,8 +1111,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         AccessTypeData accessTypeData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task.getId());
         assertNull(accessTypeData.getSnmpCommunity());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("SNMP")).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("15"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
@@ -1180,7 +1180,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interfaces: 3 configured, 0 monitored")));
@@ -1332,7 +1332,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_only_wifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
@@ -1496,7 +1496,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -1517,7 +1517,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -1545,7 +1545,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -1576,7 +1576,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
@@ -1614,7 +1614,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
@@ -1655,7 +1655,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -1700,7 +1700,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -1788,14 +1788,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).perform(click());
@@ -1835,7 +1835,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
@@ -1871,7 +1871,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -1889,7 +1889,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_header_edit_ok)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("CName"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("CValue"));
@@ -1926,7 +1926,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -1945,7 +1945,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("CName"));
@@ -1983,7 +1983,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -2034,7 +2034,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -2101,7 +2101,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
@@ -2127,7 +2127,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2204,7 +2204,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2231,7 +2231,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_header_edit_name)).perform(replaceText("ABC"));
         onView(withId(R.id.edittext_dialog_header_edit_value)).perform(replaceText("Test"));
@@ -2259,7 +2259,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2309,7 +2309,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2321,7 +2321,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         corruptKey();
@@ -2398,7 +2398,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2445,7 +2445,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2565,7 +2565,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2601,7 +2601,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2613,7 +2613,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("www.test.com"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         NetworkTask task1 = getNetworkTaskDAO().readAllNetworkTasks().get(0);
@@ -2638,11 +2638,11 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         corruptKey();
         activityScenario.onActivity(Activity::recreate);
@@ -2662,7 +2662,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         corruptKey();
@@ -2675,7 +2675,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_credential_info_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_community_label)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_community), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
@@ -2696,7 +2696,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -2748,7 +2748,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -2835,7 +2835,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2883,7 +2883,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -2897,7 +2897,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -2980,7 +2980,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -3057,7 +3057,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -3107,7 +3107,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -3121,7 +3121,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("www.test.com"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -3166,9 +3166,9 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_snmp_community)).perform(replaceText("testcommunity"));
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("System")).perform(click());
@@ -3212,7 +3212,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3267,7 +3267,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3322,7 +3322,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_auth)).perform(performClickIgnoringVisibility());
         onView(isRoot()).perform(waitFor(500));
@@ -3374,7 +3374,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.switch_dialog_network_task_edit_use_default_headers)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).perform(clickAfterWindowSettled());
@@ -3431,7 +3431,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.textview_list_item_network_task_resolve_rules), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Resolve rules: 0 defined")));
@@ -3562,7 +3562,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_resolve_edit_ok)).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (0 rules)")));
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
@@ -3586,7 +3586,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
@@ -3643,7 +3643,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.test.com"));
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_resolves_add)).perform(click());
@@ -3685,11 +3685,11 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_headers_ok)).perform(click());
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (2 rules)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (3 headers)")));
-        onView(withText("Connect")).perform(click());
+        onView(withText("Connect")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("www.test.com"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(clickAfterWindowSettled());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).perform(click());
-        onView(withText("Download")).perform(click());
+        onView(withText("Download")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_resolve_rules_value)).check(matches(withText("Click here (1 rule)")));
         onView(withId(R.id.textview_dialog_network_task_edit_headers_value)).check(matches(withText("Click here (2 headers)")));
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(clickAfterWindowSettled());
@@ -3745,7 +3745,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.textview_list_item_network_task_snmp_interfaces), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_network_task_edit_snmp_interfaces_value)).check(matches(withText("Click here (3 interfaces)")));
         onView(withId(R.id.linearlayout_dialog_network_task_edit_snmp_interfaces)).perform(forceClick());
         onView(withId(R.id.listview_dialog_snmp_interfaces_items)).check(matches(withListSize(3)));
@@ -3802,7 +3802,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class, getBypassSystemSAFBundle());
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        onView(withText("SNMP")).perform(click());
+        onView(withText("SNMP")).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("192.168.1.1"));
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_version_v3)).perform(click());
         onView(withId(R.id.radiobutton_dialog_network_task_edit_snmp_transport_tcp)).perform(clickAfterWindowSettled());

@@ -6803,7 +6803,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.edittext_dialog_password_input_password)).perform(typeText("password"), closeSoftKeyboard());
         onView(withId(R.id.imageview_dialog_password_input_ok)).perform(click());
         waitUntilAllDialogsClosed(activityScenario);
