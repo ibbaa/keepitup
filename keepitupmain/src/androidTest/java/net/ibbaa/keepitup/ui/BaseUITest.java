@@ -29,18 +29,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
-import android.view.inspector.WindowInspector;
 import android.widget.GridLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.action.ViewActions;
@@ -67,6 +66,7 @@ import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
+import net.ibbaa.keepitup.test.idling.WindowFocusIdlingResource;
 import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.EllipsizedMatcher;
@@ -99,6 +99,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class BaseUITest {
 
     private static final long WINDOW_FOCUS_TIMEOUT = 2000;
+    private static final long WINDOW_FOCUS_SETTLED_TIMEOUT = 4000;
     private static final long WINDOW_FOCUS_POLL_INTERVAL = 50;
     private static final long WINDOW_FOCUS_FALLBACK_WAIT = 500;
     private static final long WINDOW_SETTLE_TIME = 150;
@@ -120,6 +121,7 @@ public abstract class BaseUITest {
     private NoBackupPreferenceManager noBackupPreferenceManager;
     private IFileManager fileManager;
     private MockTimeService timeService;
+    private WindowFocusIdlingResource windowFocusIdlingResource;
 
     @Before
     public void beforeEachTestMethod() {
@@ -171,10 +173,16 @@ public abstract class BaseUITest {
         SystemThemeManager themeManager = new SystemThemeManager();
         themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         timeService = (MockTimeService) timeBasedSuspensionScheduler.getTimeService();
+        windowFocusIdlingResource = new WindowFocusIdlingResource();
+        IdlingRegistry.getInstance().register(windowFocusIdlingResource);
     }
 
     @After
     public void afterEachTestMethod() {
+        if (windowFocusIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(windowFocusIdlingResource);
+            windowFocusIdlingResource = null;
+        }
         Log.initialize(null);
         Dump.initialize(null);
         MainKeyAccess mainKeyAccess = new MainKeyAccess(TestRegistry.getContext());
@@ -274,16 +282,16 @@ public abstract class BaseUITest {
             return;
         }
         long start = SystemClock.uptimeMillis();
-        while (SystemClock.uptimeMillis() - start < WINDOW_FOCUS_TIMEOUT) {
+        while (SystemClock.uptimeMillis() - start < WINDOW_FOCUS_SETTLED_TIMEOUT) {
             InstrumentationRegistry.getInstrumentation().waitForIdleSync();
             final boolean[] done = {false};
-            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> done[0] = isTopWindowFocused());
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> done[0] = isTopWindowSettled());
             if (done[0]) {
                 return;
             }
             SystemClock.sleep(WINDOW_FOCUS_POLL_INTERVAL);
         }
-        Log.d(BaseUITest.class.getName(), "Top window did not get focus within " + WINDOW_FOCUS_TIMEOUT + " ms");
+        Log.d(BaseUITest.class.getName(), "Top window did not get focus within " + WINDOW_FOCUS_SETTLED_TIMEOUT + " ms");
     }
 
     public static void waitUntilTopWindowFocused(UiController uiController) {
@@ -294,7 +302,7 @@ public abstract class BaseUITest {
         long start = SystemClock.uptimeMillis();
         while (SystemClock.uptimeMillis() - start < WINDOW_FOCUS_TIMEOUT) {
             uiController.loopMainThreadUntilIdle();
-            if (isTopWindowFocused()) {
+            if (WindowFocusIdlingResource.isTopWindowFocused()) {
                 return;
             }
             uiController.loopMainThreadForAtLeast(WINDOW_FOCUS_POLL_INTERVAL);
@@ -302,16 +310,11 @@ public abstract class BaseUITest {
         Log.d(BaseUITest.class.getName(), "Top window did not get focus within " + WINDOW_FOCUS_TIMEOUT + " ms");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private static boolean isTopWindowFocused() {
-        List<View> windowViews = WindowInspector.getGlobalWindowViews();
-        for (int ii = windowViews.size() - 1; ii >= 0; ii--) {
-            View windowView = windowViews.get(ii);
-            if (windowView.getVisibility() == View.VISIBLE) {
-                return windowView.isAttachedToWindow() && windowView.hasWindowFocus();
-            }
+    private boolean isTopWindowSettled() {
+        if (windowFocusIdlingResource != null) {
+            return windowFocusIdlingResource.checkIdle();
         }
-        return true;
+        return WindowFocusIdlingResource.isTopWindowFocused();
     }
 
     public void waitUntilAllDialogsClosed(ActivityScenario<?> scenario) {
