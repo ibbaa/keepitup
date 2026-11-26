@@ -281,7 +281,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(withRecyclerView(R.id.listview_dialog_suspension_intervals_intervals).atPosition(0)).perform(ViewActions.swipeRight());
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         assertTrue(getInterval1().isEqual(getDialog().getAdapter().getAllItems().get(0)));
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(clickAfterWindowSettled());
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));

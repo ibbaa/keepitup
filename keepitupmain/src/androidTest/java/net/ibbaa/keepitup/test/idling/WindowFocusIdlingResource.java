@@ -131,17 +131,33 @@ public class WindowFocusIdlingResource implements IdlingResource {
             return null;
         }
         List<View> windowViews = WindowInspector.getGlobalWindowViews();
+        View topWindow = getTopWindow(windowViews, false);
+        if (topWindow == null) {
+            topWindow = getTopWindow(windowViews, true);
+        }
+        if (topWindow == null || (topWindow.isAttachedToWindow() && topWindow.hasWindowFocus())) {
+            return null;
+        }
+        return topWindow;
+    }
+
+    private static View getTopWindow(List<View> windowViews, boolean baseApplication) {
         for (int ii = windowViews.size() - 1; ii >= 0; ii--) {
             View windowView = windowViews.get(ii);
-            if (windowView.getVisibility() != View.VISIBLE || isNotFocusable(windowView)) {
+            if (windowView.getVisibility() != View.VISIBLE || isNotFocusable(windowView) || isBaseApplication(windowView) != baseApplication) {
                 continue;
-            }
-            if (windowView.isAttachedToWindow() && windowView.hasWindowFocus()) {
-                return null;
             }
             return windowView;
         }
         return null;
+    }
+
+    private static boolean isBaseApplication(View windowView) {
+        ViewGroup.LayoutParams params = windowView.getLayoutParams();
+        if (params instanceof WindowManager.LayoutParams windowParams) {
+            return windowParams.type == WindowManager.LayoutParams.TYPE_BASE_APPLICATION;
+        }
+        return false;
     }
 
     private static boolean isNotFocusable(View windowView) {

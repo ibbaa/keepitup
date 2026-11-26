@@ -354,7 +354,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals(1, getAdapter(activityScenario).getItem(1).getNetworkTask().getIndex());
         assertEquals(2, getAdapter(activityScenario).getItem(2).getNetworkTask().getIndex());
         onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
         onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());

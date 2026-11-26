@@ -133,7 +133,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
         onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
@@ -143,7 +143,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message1")));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
@@ -291,7 +291,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message1")));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(clickAfterWindowSettled());
         rotateScreen(activityScenario);
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
         onView(withText("Delete logs")).check(doesNotExist());

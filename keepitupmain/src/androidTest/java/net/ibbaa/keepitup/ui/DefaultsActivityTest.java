@@ -1656,7 +1656,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_defaults_global_headers)).perform(click());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(clickAfterWindowSettled());
         onView(withId(R.id.imageview_dialog_headers_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_global_headers_label)).check(matches(withText("HTTP Headers")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));

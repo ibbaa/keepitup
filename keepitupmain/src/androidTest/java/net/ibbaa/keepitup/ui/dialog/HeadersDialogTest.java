@@ -723,7 +723,7 @@ public class HeadersDialogTest extends BaseUITest {
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withRecyclerView(R.id.listview_dialog_headers_headers).atPosition(0)).perform(ViewActions.swipeRight());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Really delete?")));
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(clickAfterWindowSettled());
         assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(allOf(withId(R.id.textview_list_item_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_headers_headers), 0))).check(matches(withText("User-Agent")));
